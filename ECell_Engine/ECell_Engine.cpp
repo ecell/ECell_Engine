@@ -7,12 +7,18 @@
 
 int main()
 {
-	Timer main_loop_timer;
+	SimulationLoop simulationLoop;
+	std::string command;
 
-	float next_console_refresh_time = CONSOLE_DISPLAY_REFRESH_RATE;
+	while (true)
+	{
+		std::cin >> command;
+		simulationLoop.LoopCommandCenter(command);
+	}
+
 	//std::cout << "next_console_refresh_time:" << next_console_refresh_time << std::endl;
 
-	while (main_loop_timer.readHighResTimer() < 10.0)
+	/*while (main_loop_timer.readHighResTimer() < 10.0)
 	{
 		if (main_loop_timer.readHighResTimer() > next_console_refresh_time)
 		{
@@ -21,6 +27,6 @@ int main()
 			std::cout << std::flush;
 		}
 	}
-	std::cout << std::endl;
+	std::cout << std::endl;*/
 	return 0;
 }
