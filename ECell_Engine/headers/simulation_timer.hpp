@@ -2,14 +2,24 @@
 	Defines the interface to manipulate the simulation time
 */
 #include <ctime>
+#include "system_time.hpp"
 
 class Timer
 {
 public:
 	//Members
-	float start_time = 0.0f;
+	float deltaTime = DEFAULT_SIMULATION_DELTA_TIME;
+	float startTime = .0f;
 
 	//Methods
+	
+	/// <summary>
+	/// Checks that the current simulation delta time 
+	/// does not exceed the value defined by the macro
+	/// MAX_SIMULATION_DELTA_TIME. If it does, its
+	/// value is set back to DEFAULT_SIMULATION_DELTA_TIME
+	/// </summary>
+	void CheckSimulationDeltaTime();
 	
 	/// <param name="_t1">Time 1</param>
 	/// <param name="_t2">Time 2</param>

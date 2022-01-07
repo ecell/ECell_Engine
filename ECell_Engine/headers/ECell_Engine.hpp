@@ -1,6 +1,9 @@
 ﻿#pragma once
 
 #include <iostream>
-#include <stdio.h>
+#include <thread>
 
 #include "simulation_loop.hpp"
+#include "input_manager.hpp"
+
+

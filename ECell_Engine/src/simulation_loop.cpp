@@ -1,7 +1,4 @@
-#include <iostream>
-
 #include "simulation_loop.hpp"
-#include "simulation_loop_commands.hpp"
 
 // Declaring accessors of SimulationLoop
 SimulationState SimulationLoop::GetSimulationState()
@@ -10,30 +7,29 @@ SimulationState SimulationLoop::GetSimulationState()
 }
 
 // Declaring logic of SimulationLoop
-void SimulationLoop::LoopCommandCenter(std::string _command)
+void SimulationLoop::LoopLogic()
 {
-	if (_command == "pause")
+	while (true)
 	{
-		PauseCommand pauseCommand(this);
-		pauseCommand.Execute();
-	}
+		while (simulationState != SimulationState::isPlaying)
+		{
+			std::this_thread::yield();
+		}
 
-	else if (_command == "play")
-	{
-		PlayCommand playCommand(this);
-		playCommand.Execute();
-	}
+		float beginTime = simulationTimer.ReadHighResTimer();
 
-	else if (_command == "stop")
-	{
-		StopCommand stopCommand(this);
-		stopCommand.Execute();
-	}
+		//update subsystem 1
+		//update subsystem 2
+		//...
+		//update subsystem N
 
-	else
-	{
-		std::cout << "The command:" << _command << " was not recognized" << std::endl;
+		float endTime = simulationTimer.ReadHighResTimer();
+		simulationTimer.deltaTime = simulationTimer.GetDuration(beginTime, endTime);
+		simulationTimer.CheckSimulationDeltaTime();
+
+		beginTime = endTime;		
 	}
+	std::cout << "Exiting simulation Loop" << std::endl;
 }
 
 //Declaring mutators of SimulationLoop

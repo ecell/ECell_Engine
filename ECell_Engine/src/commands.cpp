@@ -1,11 +1,5 @@
-#include <iostream>
-
-#include "simulation_loop_commands.hpp"
-
-PauseCommand::PauseCommand(SimulationLoop* _simulationLoop)
-{
-	receiver = _simulationLoop;
-}
+#include "commands.hpp"
+#include "simulation_loop.hpp"
 
 void PauseCommand::Execute()
 {
@@ -28,11 +22,6 @@ void PauseCommand::Execute()
 	}
 }
 
-PlayCommand::PlayCommand(SimulationLoop* _simulationLoop)
-{
-	receiver = _simulationLoop;
-}
-
 void PlayCommand::Execute()
 {
 	std::cout << "The PLAY command was called" << std::endl;
@@ -44,7 +33,6 @@ void PlayCommand::Execute()
 		break;
 	case(SimulationState::isPaused):
 		std::cout << "Resuming the simulation" << std::endl;
-
 		break;
 	case(SimulationState::isStopped):
 		std::cout << "Launching the simulation" << std::endl;
@@ -56,11 +44,6 @@ void PlayCommand::Execute()
 		break;
 	}
 	receiver->SetSimulationState(SimulationState::isPlaying);
-}
-
-StopCommand::StopCommand(SimulationLoop* _simulationLoop)
-{
-	receiver = _simulationLoop;
 }
 
 void StopCommand::Execute()
