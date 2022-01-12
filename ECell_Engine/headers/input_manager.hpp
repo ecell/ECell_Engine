@@ -5,7 +5,6 @@ class ECellEngine;
 
 #include "string.h"
 #include "commands.hpp"
-//#include "ECell_Engine.hpp"
 
 class KeyboardInput
 {
@@ -23,9 +22,30 @@ public:
 	{
 	};
 
+#pragma region Mutators
+	/// <summary>
+	/// Set the pointers of every Commands struct declared in the
+	/// engine and handled by the <see cref="input_manager"/>.
+	/// Namely <see cref="engineCommands"/>, <see cref="simulationLoopCommands"/>.
+	/// </summary>
+	void SetSystemCommands(EngineCommands*, SimulationLoopCommands*);
+#pragma endregion
+
+#pragma region Logic
+	/// <summary>
+	/// The method processing the <see cref="command"/>.
+	/// </summary>
 	void Pointsman();
 
-	void SetSystemCommands(EngineCommands*, SimulationLoopCommands*);
-
+	/// <summary>
+	/// The method starting up the input manager.
+	/// Typically called in a new thread when the ECellEngine
+	/// is starting up.
+	/// </summary>
 	void Start();
+#pragma endregion
+
+	
+
+	
 };

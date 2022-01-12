@@ -10,7 +10,6 @@ class KeyboardInput;
 #include "simulation_loop.hpp"
 #include "input_manager.hpp"
 #include "commands.hpp"
-
 class ECellEngine
 {
 public:
@@ -25,16 +24,29 @@ public:
 	{
 
 	}
-
-	void Main();
-
+#pragma region Mutators
+	/// <summary>
+	/// Set the <see cref="keyboardInput"/> public pointer member.
+	/// </summary>
 	void SetKeyboardInput(KeyboardInput* _KI)
 	{
 		keyboardInput = _KI;
 	}
 
+	/// <summary>
+	/// Set the <see cref="simulationLoop"/> public pointer member.
+	/// </summary>
 	void SetSimulationLoop(SimulationLoop* _SimuLoop)
 	{
 		simulationLoop = _SimuLoop;
 	}
+#pragma endregion
+
+#pragma region Logic
+	/// <summary>
+	/// The method to start up the engine.
+	/// </summary>
+	void Main();
+#pragma endregion
+
 };

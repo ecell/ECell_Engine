@@ -1,10 +1,11 @@
-﻿/*
-	The main entrance of the simulation engine.
-	Contains the simulation loop.
-*/
+﻿#include "launcher.hpp"
 
-#include "launcher.hpp"
-
+/// <summary>
+/// Initializes the main subsystems. 
+/// Links the subsystems to the engine.
+/// Starts the engine.
+/// </summary>
+/// <returns>The 0 exit code.</returns>
 int main()
 {
 	ECellEngine engine;

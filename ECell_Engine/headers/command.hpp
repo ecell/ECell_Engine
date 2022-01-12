@@ -1,5 +1,9 @@
 #pragma once
 
+///<summary>
+/// The base command class.
+/// Extracted from the Command design pattern and used accordingly.
+///</summary>
 class Command
 {
 protected:

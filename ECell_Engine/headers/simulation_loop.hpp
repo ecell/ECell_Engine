@@ -30,14 +30,29 @@ public:
 
 	}
 
-	//Accessors
+#pragma region Accessors
+	/// <summary>
+	/// Get the <see cref="simulationState"/> private member.
+	/// </summary>
 	SimulationState GetSimulationState();
+#pragma endregion
 
-	//Class logic
-	void LoopLogic();
-
-	//Mutators
+#pragma region Mutators
+	/// <summary>
+	/// Set the <see cref="simulationState"/> private member.
+	/// </summary>
 	void SetSimulationState(SimulationState _simulationState);
+#pragma endregion
+
+#pragma region Logic
+	/// <summary>
+	/// The core of the simulation loop. Calls every simulation's
+	/// subsystem to be updated.
+	/// Typically called in a new thread when the ECellEngine
+	/// is starting up.
+	/// </summary>
+	void LoopLogic();
+#pragma endregion
 
 };
 

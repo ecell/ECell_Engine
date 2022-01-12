@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+//partial definitions:
 class ECellEngine;
 class SimulationLoop;
 
@@ -9,6 +10,10 @@ class SimulationLoop;
 
 #pragma region Main Application Commands
 
+/// <summary>
+/// The command to quit the application. Effectively
+/// exits from every running thread and then terminates.
+/// </summary>
 class QuitCommand : Command
 {
 public:
@@ -21,6 +26,10 @@ private:
 	ECellEngine* receiver;
 };
 
+/// <summary>
+/// The struct encapsulating every command having a global
+/// effect on the application.
+/// </summary>
 struct EngineCommands
 {
 public:
@@ -39,6 +48,9 @@ public:
 
 
 #pragma region Simulation Loop Commands
+/// <summary>
+/// The command to display the current state of the simulation.
+/// </summary>
 class DisplayCommand : Command
 {
 public:
@@ -51,6 +63,9 @@ private:
 	SimulationLoop* receiver;
 };
 
+/// <summary>
+/// The command to pause the simulation.
+/// </summary>
 class PauseCommand : Command
 {
 public:
@@ -63,6 +78,9 @@ private:
 	SimulationLoop* receiver;
 };
 
+/// <summary>
+/// The command to start or resume the simulation.
+/// </summary>
 class PlayCommand : Command
 {
 public:
@@ -75,6 +93,9 @@ private:
 	SimulationLoop* receiver;
 };
 
+/// <summary>
+/// The command to stop the simulation
+/// </summary>
 class StopCommand : Command
 {
 public:
@@ -87,6 +108,10 @@ private:
 	SimulationLoop* receiver;
 };
 
+/// <summary>
+/// The struct encapsulating every command having an effect
+/// on the simulation.
+/// </summary>
 struct SimulationLoopCommands
 {
 public:

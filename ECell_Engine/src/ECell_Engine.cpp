@@ -12,6 +12,4 @@ void  ECellEngine::Main()
 
 	sLThread.join();
 	kIThread.join();
-
-
 }
