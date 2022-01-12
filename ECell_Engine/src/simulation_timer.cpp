@@ -18,6 +18,13 @@ float Timer::ReadHighResTimer()
 	return (float)std::clock() / CLOCKS_PER_SEC;
 }
 
+void Timer::ResetTimes()
+{
+	startTime = .0f;
+	deltaTime = DEFAULT_SIMULATION_DELTA_TIME;
+	elapsedTime = .0f;
+}
+
 void Timer::SetStartTime()
 {
 	startTime = (float)std::clock() / CLOCKS_PER_SEC;

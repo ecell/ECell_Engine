@@ -10,6 +10,7 @@ public:
 	//Members
 	float deltaTime = DEFAULT_SIMULATION_DELTA_TIME;
 	float startTime = .0f;
+	float elapsedTime = .0f;
 
 	//Methods
 	
@@ -31,6 +32,8 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	float ReadHighResTimer();
+
+	void ResetTimes();
 
 	void SetStartTime();
 	

@@ -3,6 +3,10 @@
 #include <iostream>
 #include <thread>
 
+//partial definitions:
+class ECellEngine;
+
+#include "commands.hpp"
 #include "system_time.hpp"
 #include "simulation_timer.hpp"
 
@@ -12,11 +16,19 @@ enum SimulationState { isPaused, isPlaying, isStopped };
 class SimulationLoop
 {
 private:
-	//float nextConsoleDisplayRefreshTime;
+	ECellEngine* refEngine;
 	SimulationState simulationState = SimulationState::isStopped;
 
 public:
 	Timer simulationTimer;
+	SimulationLoopCommands simulationLoopCommands;
+
+	SimulationLoop(ECellEngine* _refEngine) :
+		refEngine(_refEngine),
+		simulationLoopCommands(this)
+	{
+
+	}
 
 	//Accessors
 	SimulationState GetSimulationState();
@@ -26,11 +38,6 @@ public:
 
 	//Mutators
 	void SetSimulationState(SimulationState _simulationState);
-
-	/*SimulationLoop()
-	{
-		nextConsoleDisplayRefreshTime = CONSOLE_DISPLAY_REFRESH_RATE;
-	};*/
 
 };
 

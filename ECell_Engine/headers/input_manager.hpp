@@ -1,14 +1,31 @@
-#include "simulation_loop.hpp"
-#include "commands_center.hpp"
+#pragma once
+
+//partial definitions
+class ECellEngine;
+
+#include "string.h"
+#include "commands.hpp"
+//#include "ECell_Engine.hpp"
 
 class KeyboardInput
 {
 private:
-	SimulationLoop* refSimulationLoop;
+	EngineCommands* engineCommands;
+	SimulationLoopCommands* simulationLoopCommands;
+
+	ECellEngine* refEngine;
+
 	std::string command;
 
 public:
-	void Start();
+	KeyboardInput(ECellEngine* _refEngine) :
+		refEngine(_refEngine)
+	{
+	};
 
-	KeyboardInput(SimulationLoop* _refSimuLoop) : refSimulationLoop(_refSimuLoop) {};
+	void Pointsman();
+
+	void SetSystemCommands(EngineCommands*, SimulationLoopCommands*);
+
+	void Start();
 };

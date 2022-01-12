@@ -9,7 +9,7 @@ file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS "headers/*.hpp" "engine_system_
 
 
 
-add_executable(ECell_Engine "ECell_Engine.cpp" ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(ECell_Engine "launcher.cpp" ${SOURCE_FILES} ${HEADER_FILES})
 
 target_link_libraries (ECell_Engine Threads::Threads)
 
