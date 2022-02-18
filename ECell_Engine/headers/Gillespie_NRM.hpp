@@ -15,6 +15,7 @@ private:
 	std::vector<OutRow> outTable;
 	std::vector<DepRow> depTable;
 	std::vector<std::pair<int, float>> tauTable;
+	std::vector<short int> trace;
 	IndexedTauMinHeap itmh;
 	rng_state rng;
 
@@ -63,7 +64,15 @@ public:
 
 		itmh.Initialize(&tauTable);
 
+		trace.reserve(1000);
+
 		RunForward(0.1f);
+
+		std::cout << std::endl;
+		reverse(&rng);
+
+		RunBackward(0.f);
+
 		//std::cout << itmh;
 	}
 
@@ -72,5 +81,7 @@ public:
 	void ApplyInOutForward(int _i);
 
 	void RunForward(float _targetTime);
+
+	void RunBackward(float _targetTime);
 
 };
