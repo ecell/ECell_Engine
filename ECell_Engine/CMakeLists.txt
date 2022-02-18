@@ -4,8 +4,8 @@ cmake_minimum_required (VERSION 3.12)
 
 find_package (Threads)
 
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/*.cpp")
-file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS "headers/*.hpp" "engine_system_files/*.hpp")
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/*.c" "src/*.cpp")
+file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS "headers/*.h" "headers/*.hpp" "engine_system_files/*.hpp")
 
 
 

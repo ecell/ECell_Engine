@@ -1,5 +1,6 @@
 #include "ECell_Engine.hpp"
 #include "simulation_loop.hpp"
+#include "Gillespie_NRM.hpp"
 
 // Declaring accessors of SimulationLoop
 SimulationState SimulationLoop::GetSimulationState()
@@ -10,6 +11,9 @@ SimulationState SimulationLoop::GetSimulationState()
 // Declaring logic of SimulationLoop
 void SimulationLoop::LoopLogic()
 {
+	Gillespie_NRM_R WorldStateSimulator(7, 5, 123);
+	//std::cout << WorldStateSimulator.imht
+
 	while (refEngine->isRunning)
 	{
 		while(simulationState != SimulationState::isPlaying && refEngine->isRunning)
@@ -23,6 +27,9 @@ void SimulationLoop::LoopLogic()
 		//update subsystem 2
 		//...
 		//update subsystem N
+
+		//Play catch up on the Gillespie Simulation
+		//WorldStateSimulator.RunForward(simulationTimer.deltaTime);
 
 		float endTime = simulationTimer.ReadHighResTimer();
 		simulationTimer.deltaTime = simulationTimer.GetDuration(beginTime, endTime);
