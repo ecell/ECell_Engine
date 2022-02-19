@@ -23,13 +23,9 @@ void SimulationLoop::LoopLogic()
 
 		float beginTime = simulationTimer.ReadHighResTimer();
 
-		//update subsystem 1
-		//update subsystem 2
-		//...
-		//update subsystem N
-
+		//Update Subsystems
 		//Play catch up on the Gillespie Simulation
-		//WorldStateSimulator.RunForward(simulationTimer.deltaTime);
+		WorldStateSimulator.RunForward(simulationTimer.elapsedTime);
 
 		float endTime = simulationTimer.ReadHighResTimer();
 		simulationTimer.deltaTime = simulationTimer.GetDuration(beginTime, endTime);

@@ -87,29 +87,50 @@ private:
 public:
 	IndexedTauMinHeap(){}
 
-	/*IndexedTauMinHeap(std::vector<std::pair<int, float>>* _heap) : heap(_heap)
-	{
-		heapSize = heap->size();
-		pointers.reserve(heapSize);
-		for (int i = 0; i < heapSize; i++)
-		{
-			pointers.push_back(i);
-		}
-
-		BuildMinHeap();
-	}*/
-
 	friend std::ostream& operator<<(std::ostream& os, const IndexedTauMinHeap& _itmh);
 
+#pragma region - Accessors -
+	/// <summary>
+	/// Gets the root node.
+	/// </summary>
+	/// <reamrks>Contrary to classic MinHeaps, the root is not popped/extracted.</remarks>
 	std::pair<int, float> GetRoot();
-	float GetTauFromPointer(int);
 
+	/// <summary>
+	/// Gets the value tau of the node indicated by the pointer <paramref name="_ptr"/>.
+	/// </summary>
+	/// <param name="_ptr">Index of the node in <see cref="pointers"/>.</param>
+	float GetTauFromPointer(int _ptr);
+#pragma endregion
 
-	void SetTauInRoot(float);
-	void SetTauFromPointer(int, float);
+#pragma region - Mutators -
+	/// <summary>
+	/// Sets the value tau in the node at the root of the MinHeap.
+	/// </summary>
+	void SetTauInRoot(float _newTau);
 
+	/// <summary>
+	/// Sets the value tau in the node indicated by the pointer <paramref name="_ptr"/>.
+	/// </summary>
+	void SetTauFromPointer(int _ptr, float _newTau);
+#pragma endregion 
+
+#pragma region - Logic -
+	/// <summary>
+	/// Initializes the Indexed MinHeap.
+	/// </summary>
+	/// <param name="_heap">Pointer to the vector to be indexed Min-Heapified.</param>
 	void Initialize(std::vector<std::pair<int, float>>* _heap);
 
+	/// <summary>
+	/// Min-heapifies the heap root.
+	/// </summary>
 	void UpdateRoot();
-	void UpdateFromPointer(int, float);
+
+	/// <summary>
+	/// Updates the indexed Minheap. Either bubles up the node (if <paramref name="_oldTau"/>
+	/// is lower than its parent), or min-heapifies it.
+	/// </summary>
+	void UpdateFromPointer(int _ptr, float _oldTau);
+#pragma endregion
 };
