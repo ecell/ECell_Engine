@@ -108,8 +108,6 @@ void IndexedTauMinHeap::Swap(int _i, int _j)
 	std::pair<int, float> temp = heap->at(_i);
 	heap->at(_i) = heap->at(_j);
 	heap->at(_j) = temp;
-
-	
 }
 
 void IndexedTauMinHeap::UpdateRoot()

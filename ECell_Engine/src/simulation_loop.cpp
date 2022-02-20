@@ -1,6 +1,5 @@
 #include "ECell_Engine.hpp"
 #include "simulation_loop.hpp"
-#include "Gillespie_NRM.hpp"
 
 // Declaring accessors of SimulationLoop
 SimulationState SimulationLoop::GetSimulationState()
@@ -11,9 +10,6 @@ SimulationState SimulationLoop::GetSimulationState()
 // Declaring logic of SimulationLoop
 void SimulationLoop::LoopLogic()
 {
-	Gillespie_NRM_R WorldStateSimulator(7, 5, 123);
-	//std::cout << WorldStateSimulator.imht
-
 	while (refEngine->isRunning)
 	{
 		while(simulationState != SimulationState::isPlaying && refEngine->isRunning)

@@ -9,6 +9,7 @@ class ECellEngine;
 #include "commands.hpp"
 #include "system_time.hpp"
 #include "simulation_timer.hpp"
+#include "Gillespie_NRM.hpp"
 
 
 enum SimulationState { isPaused, isPlaying, isStopped };
@@ -18,9 +19,10 @@ class SimulationLoop
 private:
 	ECellEngine* refEngine;
 	SimulationState simulationState = SimulationState::isStopped;
-
+	
 public:
 	Timer simulationTimer;
+	Gillespie_NRM_R WorldStateSimulator;
 	SimulationLoopCommands simulationLoopCommands;
 
 	SimulationLoop(ECellEngine* _refEngine) :

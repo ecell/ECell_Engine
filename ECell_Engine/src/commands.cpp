@@ -17,7 +17,8 @@ void DisplayCommand::Execute()
 		"Simulation state:" << std::endl <<
 
 		"Total elapsed time: "<< receiver->simulationTimer.elapsedTime <<
-		", last delta time: " << receiver->simulationTimer.deltaTime << std::endl;
+		", last delta time: " << receiver->simulationTimer.deltaTime << std::endl <<
+		"World State: " << receiver->WorldStateSimulator;
 
 }
 
@@ -59,6 +60,8 @@ void PlayCommand::Execute()
 
 		//start simulation time
 		receiver->simulationTimer.SetStartTime();
+		//initializes Gillespie NRM Reversible
+		receiver->WorldStateSimulator.Initializes(7,5,123);
 		break;
 	default:
 		break;
