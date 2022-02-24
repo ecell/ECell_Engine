@@ -10,6 +10,8 @@ class KeyboardInput;
 #include "simulation_loop.hpp"
 #include "input_manager.hpp"
 #include "commands.hpp"
+#include "sbml_example.hpp"
+
 class ECellEngine
 {
 public:

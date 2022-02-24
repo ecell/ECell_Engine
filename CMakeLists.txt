@@ -9,5 +9,7 @@ project ("ECell_Engine")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+find_package(PkgConfig REQUIRED)
+
 # Incluez les sous-projets.
 add_subdirectory ("ECell_Engine")

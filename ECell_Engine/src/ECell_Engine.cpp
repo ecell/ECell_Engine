@@ -7,9 +7,18 @@
 
 void  ECellEngine::Main()
 {
+	SBMLDocument* sbmlDoc = 0;
+	bool SBMLok = false;
+	sbmlDoc = createExampleEnzymaticReaction();
+	SBMLok = validateExampleSBML(sbmlDoc);
+	if (SBMLok) writeExampleSBML(sbmlDoc, "enzymaticreaction.xml");
+	delete sbmlDoc;
+
 	std::thread sLThread{ &SimulationLoop::LoopLogic, simulationLoop };
 	std::thread kIThread{ &KeyboardInput::Start, keyboardInput };
 
 	sLThread.join();
 	kIThread.join();
+
+
 }
