@@ -128,6 +128,9 @@ SBMLDocument* createExampleEnzymaticReaction()
     //---------------------------------------------------------------------------
     Model* model = sbmlDoc->createModel();
     model->setId("EnzymaticReaction");
+    model->setSubstanceUnits("mole");
+    model->setTimeUnits("second");
+    model->setExtentUnits("mole");
     //---------------------------------------------------------------------------
     //
     // Creates UnitDefinition objects inside the Model object.
@@ -136,6 +139,7 @@ SBMLDocument* createExampleEnzymaticReaction()
     // Temporary pointers (reused more than once below).
     UnitDefinition* unitdef;
     Unit* unit;
+    
     //---------------------------------------------------------------------------  
     // (UnitDefinition1) Creates an UnitDefinition object ("per_second")
     //---------------------------------------------------------------------------
@@ -143,8 +147,11 @@ SBMLDocument* createExampleEnzymaticReaction()
     unitdef->setId("per_second");
     //  Creates an Unit inside the UnitDefinition object 
     unit = unitdef->createUnit();
+    unit->setScale(0);
+    unit->setMultiplier(1);
     unit->setKind(UNIT_KIND_SECOND);
     unit->setExponent(-1);
+
     //--------------------------------------------------------------------------------
     // (UnitDefinition2) Creates an UnitDefinition object ("litre_per_mole_per_second") 
     //--------------------------------------------------------------------------------
@@ -157,14 +164,20 @@ SBMLDocument* createExampleEnzymaticReaction()
 
     //  Creates an Unit inside the UnitDefinition object ("litre_per_mole_per_second")
     unit = unitdef->createUnit();
+    unit->setScale(0);
+    unit->setMultiplier(1);
     unit->setKind(UNIT_KIND_MOLE);
     unit->setExponent(-1);
     //  Creates an Unit inside the UnitDefinition object ("litre_per_mole_per_second")
     unit = unitdef->createUnit();
+    unit->setScale(0);
+    unit->setMultiplier(1);
     unit->setKind(UNIT_KIND_LITRE);
     unit->setExponent(1);
     //  Creates an Unit inside the UnitDefinition object ("litre_per_mole_per_second")
     unit = unitdef->createUnit();
+    unit->setScale(0);
+    unit->setMultiplier(1);
     unit->setKind(UNIT_KIND_SECOND);
     unit->setExponent(-1);
     //---------------------------------------------------------------------------
@@ -177,6 +190,9 @@ SBMLDocument* createExampleEnzymaticReaction()
     // Creates a Compartment object ("cytosol")
     comp = model->createCompartment();
     comp->setId(compName);
+    comp->setConstant(true);
+    comp->setUnits("litre");
+    comp->setSpatialDimensions(3.f);
 
     // Sets the "size" attribute of the Compartment object.
     //
@@ -199,6 +215,9 @@ SBMLDocument* createExampleEnzymaticReaction()
     //---------------------------------------------------------------------------
     // Create the Species objects inside the Model object. 
     sp = model->createSpecies();
+    sp->setConstant(false);
+    sp->setHasOnlySubstanceUnits(false);
+    sp->setBoundaryCondition(false);
     sp->setId("ES");
     sp->setName("ES");
     // Sets the "compartment" attribute of the Species object to identify the 
@@ -222,6 +241,9 @@ SBMLDocument* createExampleEnzymaticReaction()
     // (Species2) Creates a Species object ("P")
     //---------------------------------------------------------------------------
     sp = model->createSpecies();
+    sp->setConstant(false);
+    sp->setHasOnlySubstanceUnits(false);
+    sp->setBoundaryCondition(false);
     sp->setCompartment(compName);
     sp->setId("P");
     sp->setName("P");
@@ -230,6 +252,9 @@ SBMLDocument* createExampleEnzymaticReaction()
     // (Species3) Creates a Species object ("S")
     //---------------------------------------------------------------------------
     sp = model->createSpecies();
+    sp->setConstant(false);
+    sp->setHasOnlySubstanceUnits(false);
+    sp->setBoundaryCondition(false);
     sp->setCompartment(compName);
     sp->setId("S");
     sp->setName("S");
@@ -238,6 +263,9 @@ SBMLDocument* createExampleEnzymaticReaction()
     // (Species4) Creates a Species object ("E")
     //---------------------------------------------------------------------------
     sp = model->createSpecies();
+    sp->setConstant(false);
+    sp->setHasOnlySubstanceUnits(false);
+    sp->setBoundaryCondition(false);
     sp->setCompartment(compName);
     sp->setId("E");
     sp->setName("E");
@@ -258,21 +286,26 @@ SBMLDocument* createExampleEnzymaticReaction()
     //---------------------------------------------------------------------------
     reaction = model->createReaction();
     reaction->setId("veq");
+    reaction->setReversible(false);
+    reaction->setFast(false);
     // (Reactant1) Creates a Reactant object that references Species "E"
     // in the model.  The object will be created within the reaction in the
     // SBML <listOfReactants>.
     spr = reaction->createReactant();
     spr->setSpecies("E");
+    spr->setConstant(true);
     // (Reactant2) Creates a Reactant object that references Species "S"
     // in the model.
     spr = reaction->createReactant();
     spr->setSpecies("S");
+    spr->setConstant(true);
     //---------------------------------------------------------------------------
     // (Product1) Creates a Product object that references Species "ES" in
     // the model.
     //---------------------------------------------------------------------------
     spr = reaction->createProduct();
     spr->setSpecies("ES");
+    spr->setConstant(true);
     //---------------------------------------------------------------------------
     // Creates a KineticLaw object inside the Reaction object ("veq"). 
     //---------------------------------------------------------------------------
@@ -434,6 +467,7 @@ SBMLDocument* createExampleEnzymaticReaction()
     //---------------------------------------------------------------------------
     // Creates a Parameter ("kon")
     Parameter* para = kl->createParameter();
+    para->setConstant(false);
     para->setId("kon");
     para->setValue(1000000);
     para->setUnits("litre_per_mole_per_second");
@@ -456,6 +490,7 @@ SBMLDocument* createExampleEnzymaticReaction()
     // model.
     spr = reaction->createReactant();
     spr->setSpecies("ES");
+    spr->setConstant(true);
     //---------------------------------------------------------------------------
     // Creates a Product object inside the Reaction object ("vcat"). 
     //---------------------------------------------------------------------------
@@ -463,9 +498,11 @@ SBMLDocument* createExampleEnzymaticReaction()
     // (Product1) Creates a Product object that references Species "E" in the model.
     spr = reaction->createProduct();
     spr->setSpecies("E");
+    spr->setConstant(true);
     // (Product2) Creates a Product object that references Species "P" in the model.
     spr = reaction->createProduct();
     spr->setSpecies("P");
+    spr->setConstant(true);
     //---------------------------------------------------------------------------
     // Creates a KineticLaw object inside the Reaction object ("vcat"). 
     //---------------------------------------------------------------------------

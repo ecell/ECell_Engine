@@ -23,5 +23,5 @@ const static string ProgramVersion = "1.0.0";
 //
 // The SBML Level and Version of the example SBML models.
 //
-const static unsigned int Level = 2;
-const static unsigned int Version = 4;
+const static unsigned int Level = 3;
+const static unsigned int Version = 2;
