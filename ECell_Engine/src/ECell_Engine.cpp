@@ -7,12 +7,17 @@
 
 void  ECellEngine::Main()
 {
+	SBML_Writer sbmlWriter;
+	SBML_Parser sbmlParser;
+
 	SBMLDocument* sbmlDoc = 0;
 	bool SBMLok = false;
-	sbmlDoc = createExampleEnzymaticReaction_();
-	SBMLok = validateExampleSBML_(sbmlDoc);
-	if (SBMLok) writeExampleSBML_(sbmlDoc, "enzymaticreaction.xml");
+	sbmlDoc = sbmlWriter.GibsonAndBruckToyModel();
+	SBMLok = sbmlParser.ValidateSBML(sbmlDoc);
+	if (SBMLok) sbmlWriter.WriteSBML(sbmlDoc, "GibsonAndBruckToyModel.xml");
 	delete sbmlDoc;
+
+
 
 	std::thread sLThread{ &SimulationLoop::LoopLogic, simulationLoop };
 	std::thread kIThread{ &KeyboardInput::Start, keyboardInput };

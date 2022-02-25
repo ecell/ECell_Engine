@@ -2,7 +2,7 @@
  *
  * Adapted from:
  *
- * File:        example.cpp (https://sbml.org/software/libsbml/5.18.0/docs/formatted/cpp-api/libsbml-example.html)
+ * File: example.cpp (https://sbml.org/software/libsbml/5.18.0/docs/formatted/cpp-api/libsbml-example.html)
  * Description: Create an example model.
  * @author  Akiya Jouraku
  *
@@ -43,60 +43,54 @@
 
 #include <sbml/SBMLTypes.h>
 
-// These variables are used in writeExampleSBML when writing an SBML
-// document.  They are handed to libSBML functions in order to include
-// the program information into comments within the SBML file.
-const static std::string ProgramName = "createExampleModels";
-const static std::string ProgramVersion = "1.0.0";
-
-// The SBML Level and Version of the example SBML models.
-const static unsigned int Level = 3;
-const static unsigned int Version = 2;
-
-struct ReactionPointersCapsule
+class SBML_Writer
 {
-    Reaction* r;
-    SpeciesReference* spr;
-    KineticLaw* kl;
+private:
+    // The SBML Level and Version of the example SBML models.
+    const static unsigned int Level = 3;
+    const static unsigned int Version = 2;
+
+    struct ReactionPointersCapsule
+    {
+        Reaction* r;
+        SpeciesReference* spr;
+        KineticLaw* kl;
+    };
+
+    void DefineParameter(
+        Parameter* _para_ptr,
+        const std::string& _paraID,
+        const std::string _unit,
+        const double _value);
+
+    void DefineSpecies(
+        Species* _sp_ptr,
+        const std::string& _id,
+        const std::string& _name,
+        const std::string& _compartmentID,
+        const std::string& _unit,
+        const double _initialQuantity);
+
+    void DefineReaction(
+        ReactionPointersCapsule* _rpc,
+        const std::string& _rID,
+        const std::vector<std::string>& _reactantIDs,
+        const std::vector<std::string>& _productIDs,
+        const std::string& _kParamID);
+
+public:
+    /// <summary>
+    /// Creates an SBML Document corresponding to the toy model in the paper of
+    /// Gibson and Brick (2000,  DOI: 10.1021/jp993732q).
+    /// </summary>
+    /// <returns></returns>
+    SBMLDocument* GibsonAndBruckToyModel();
+
+    /// <summary>
+    ///  Writes the given SBMLDocument to the given file.
+    /// </summary>
+    /// <param name="sbmlDoc">The SBMLDocument object to write.</param>
+    /// <param name="filename">The name of the file to write.</param>
+    /// <returns>True if it managed to write the document, false otherwise.</returns>
+    bool WriteSBML(const SBMLDocument* sbmlDoc, const std::string& filename);
 };
-
-// Function for creating the Example SBML documents.
-SBMLDocument* createExampleEnzymaticReaction_();
-
-Parameter* defineParameter(
-    Parameter* _para_ptr,
-    const std::string& _paraID,
-    const std::string _unit,
-    const double _value);
-
-Species* defineSpecies(
-	Species* _sp_ptr,
-	const std::string& _id,
-	const std::string& _name,
-	const std::string& _compartmentID,
-	const std::string& _unit,
-	const double _initialQuantity);
-
-void defineReaction(
-    ReactionPointersCapsule* _rpc,
-    const std::string& _rID,
-    const std::vector<std::string>& _reactantIDs,
-    const std::vector<std::string>& _productIDs,
-    const std::string& _kParamID);
-
-/// <summary>
-/// Performs validation checks and explain what went wrong if necessary.
-/// This function is based on validateSBML.cpp implemented by
-/// Sarah Keating, Ben Bornstein, and Michael Hucka.
-/// </summary>
-/// <param name="sbmlDoc">The SBMLDocument object to check.</param>
-/// <returns>True is no problems were found, false otherwise.</returns>
-bool validateExampleSBML_(SBMLDocument* sbmlDoc);
-
-/// <summary>
-///  Writes the given SBMLDocument to the given file.
-/// </summary>
-/// <param name="sbmlDoc">The SBMLDocument object to write.</param>
-/// <param name="filename">The name of the file to write.</param>
-/// <returns>True if it managed to write the document, false otherwise.</returns>
-bool writeExampleSBML_(const SBMLDocument* sbmlDoc, const std::string& filename);

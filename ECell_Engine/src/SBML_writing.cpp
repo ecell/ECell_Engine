@@ -42,53 +42,11 @@
  */
 
 #include <iostream>
-#include "generate_models.hpp"
+#include "SBML_writing.hpp"
 using namespace std;
 LIBSBML_CPP_NAMESPACE_USE
 
-
-//===============================================================================
-//
-// Main routine
-//
-//  Creates SBML models represented in "Example models expressed in XML using
-//  SBML" in Section 7 of the SBML Level 3 Version 2 specification(*). 
-//
-//   (*) The specification document is available at the following URL:
-//       http://sbml.org/Documents/Specifications
-//
-//===============================================================================
-//
-//int main(int argc, char* argv[])
-//{
-//    SBMLDocument* sbmlDoc = 0;
-//    bool SBMLok = false;
-//    try
-//    {
-//        //-------------------------------------------------
-//        // 7.1 A Simple example application of SBML
-//        //-------------------------------------------------
-//        sbmlDoc = createExampleEnzymaticReaction();
-//        SBMLok = validateExampleSBML(sbmlDoc);
-//        if (SBMLok) writeExampleSBML(sbmlDoc, "enzymaticreaction.xml");
-//        delete sbmlDoc;
-//        if (!SBMLok) return 1;
-//    }
-//    catch (std::bad_alloc& e)
-//    {
-//        cerr << e.what() << ": Unable to allocate memory." << endl;
-//        return 1;
-//    }
-//    catch (...)
-//    {
-//        cerr << "Unexpected exceptional condition encountered." << endl;
-//        return 1;
-//    }
-//    // A 0 return status is the standard Unix/Linux way to say "all ok".
-//    return 0;
-//}
-
-Parameter* defineParameter(
+void SBML_Writer::DefineParameter(
     Parameter* _para_ptr,
     const std::string& _paraID,
     const std::string _unit,
@@ -97,11 +55,9 @@ Parameter* defineParameter(
     _para_ptr->setId(_paraID);
     _para_ptr->setValue(_value);
     _para_ptr->setUnits(_unit);
-
-    return _para_ptr;
 }
 
-Species* defineSpecies(
+void SBML_Writer::DefineSpecies(
     Species* _sp_ptr,
     const std::string& _id,
     const std::string& _name,
@@ -134,11 +90,9 @@ Species* defineSpecies(
     
     _sp_ptr->setSubstanceUnits(_unit);
     _sp_ptr->setInitialAmount(_initialQuantity);
-
-    return _sp_ptr;
 }
 
-void defineReaction(
+void SBML_Writer::DefineReaction(
     ReactionPointersCapsule* _rpc,
     const std::string& _rID,
     const std::vector<std::string>& _reactantIDs,
@@ -148,7 +102,7 @@ void defineReaction(
     _rpc->r->setId(_rID);
     _rpc->r->setReversible(false);
 
-    // (Reactant1) Creates the Reactants.
+    // Creates the Reactants.
     // The object will be created within the reaction in the SBML <listOfReactants>.
     for (auto it = _reactantIDs.begin(); it != _reactantIDs.end(); ++it)
     {
@@ -157,7 +111,7 @@ void defineReaction(
         _rpc->spr->setConstant(false);
     }
 
-    // (Reactant1) Creates the Reactants.
+    // Creates the products.
     for (auto it = _productIDs.begin(); it != _productIDs.end(); ++it)
     {
         _rpc->spr = _rpc->r->createProduct();
@@ -199,7 +153,7 @@ void defineReaction(
 //===============================================================================
 // Functions for creating the Example SBML documents.
 //===============================================================================
-SBMLDocument* createExampleEnzymaticReaction_()
+SBMLDocument* SBML_Writer::GibsonAndBruckToyModel()
 {
     const unsigned int level = Level;
     const unsigned int version = Version;
@@ -209,7 +163,7 @@ SBMLDocument* createExampleEnzymaticReaction_()
 
     // Creates a Model object inside the SBMLDocument object. 
     Model* model = sbmlDoc->createModel();
-    model->setId("Gillespie_Gibson_Example");
+    model->setId("GibsonAndBruckToyModel");
     model->setSubstanceUnits("item");
     model->setTimeUnits("second");
     model->setExtentUnits("item");
@@ -276,25 +230,25 @@ SBMLDocument* createExampleEnzymaticReaction_()
     Species* sp;
 
     sp = model->createSpecies();
-    sp = defineSpecies(sp, "A", "A", compName, "item", 6);
+    DefineSpecies(sp, "A", "A", compName, "item", 6);
 
     sp = model->createSpecies();
-    sp = defineSpecies(sp, "B", "B", compName, "item", 14);
+    DefineSpecies(sp, "B", "B", compName, "item", 14);
 
     sp = model->createSpecies();
-    sp = defineSpecies(sp, "C", "C", compName, "item", 8);
+    DefineSpecies(sp, "C", "C", compName, "item", 8);
 
     sp = model->createSpecies();
-    sp = defineSpecies(sp, "D", "D", compName, "item", 12);
+    DefineSpecies(sp, "D", "D", compName, "item", 12);
 
     sp = model->createSpecies();
-    sp = defineSpecies(sp, "E", "E", compName, "item", 9);
+    DefineSpecies(sp, "E", "E", compName, "item", 9);
 
     sp = model->createSpecies();
-    sp = defineSpecies(sp, "F", "F", compName, "item", 3);
+    DefineSpecies(sp, "F", "F", compName, "item", 3);
 
     sp = model->createSpecies();
-    sp = defineSpecies(sp, "G", "G", compName, "item", 3);
+    DefineSpecies(sp, "G", "G", compName, "item", 3);
     
 
     //---------------------------------------------------------------------------
@@ -306,143 +260,36 @@ SBMLDocument* createExampleEnzymaticReaction_()
 
     // Creates the reaction
     rpc.r = model->createReaction();
-    defineReaction(&rpc, "R1", {"A", "B"}, {"C"}, "k1");
+    DefineReaction(&rpc, "R1", {"A", "B"}, {"C"}, "k1");
     // Creates local Parameter object inside the KineticLaw object associated with the
     // last created reaction.
     para = rpc.kl->createParameter();
-    defineParameter(para, "k1", "item_per_second", 1);
+    DefineParameter(para, "k1", "item_per_second", 1);
 
     rpc.r = model->createReaction();
-    defineReaction(&rpc, "R2", { "B", "C" }, { "D" }, "k2");
+    DefineReaction(&rpc, "R2", { "B", "C" }, { "D" }, "k2");
     para = rpc.kl->createParameter();
-    defineParameter(para, "k2", "item_per_second", 1);
+    DefineParameter(para, "k2", "item_per_second", 1);
 
     rpc.r = model->createReaction();
-    defineReaction(&rpc, "R3", { "D", "E" }, { "D","F" }, "k3");
+    DefineReaction(&rpc, "R3", { "D", "E" }, { "D","F" }, "k3");
     para = rpc.kl->createParameter();
-    defineParameter(para, "k3", "item_per_second", 1);
+    DefineParameter(para, "k3", "item_per_second", 1);
 
     rpc.r = model->createReaction();
-    defineReaction(&rpc, "R4", { "F" }, { "D", "G" }, "k4");
+    DefineReaction(&rpc, "R4", { "F" }, { "D", "G" }, "k4");
     para = rpc.kl->createParameter();
-    defineParameter(para, "k4", "item_per_second", 1);
+    DefineParameter(para, "k4", "item_per_second", 1);
 
     rpc.r = model->createReaction();
-    defineReaction(&rpc, "R5", { "E", "G" }, { "A" }, "k5");
+    DefineReaction(&rpc, "R5", { "E", "G" }, { "A" }, "k5");
     para = rpc.kl->createParameter();
-    defineParameter(para, "k5", "item_per_second", 1);
+    DefineParameter(para, "k5", "item_per_second", 1);
     
     return sbmlDoc;
 }
 
-//===============================================================================
-// Helper functions for writing/validating the given SBML documents.
-//===============================================================================
-bool validateExampleSBML_(SBMLDocument* sbmlDoc)
-{
-    if (!sbmlDoc)
-    {
-        cerr << "validateExampleSBML: given a null SBML Document" << endl;
-        return false;
-    }
-
-    string consistencyMessages;
-    string validationMessages;
-    bool noProblems = true;
-    unsigned int numCheckFailures = 0;
-    unsigned int numConsistencyErrors = 0;
-    unsigned int numConsistencyWarnings = 0;
-    unsigned int numValidationErrors = 0;
-    unsigned int numValidationWarnings = 0;
-    // LibSBML 3.3 is lenient when generating models from scratch using the
-    // API for creating objects.  Once the whole model is done and before it
-    // gets written out, it's important to check that the whole model is in
-    // fact complete, consistent and valid.
-    numCheckFailures = sbmlDoc->checkInternalConsistency();
-    if (numCheckFailures > 0)
-    {
-        noProblems = false;
-        for (unsigned int i = 0; i < numCheckFailures; i++)
-        {
-            const SBMLError* sbmlErr = sbmlDoc->getError(i);
-            if (sbmlErr->isFatal() || sbmlErr->isError())
-            {
-                ++numConsistencyErrors;
-            }
-            else
-            {
-                ++numConsistencyWarnings;
-            }
-        }
-        ostringstream oss;
-        sbmlDoc->printErrors(oss);
-        consistencyMessages = oss.str();
-    }
-    // If the internal checks fail, it makes little sense to attempt
-    // further validation, because the model may be too compromised to
-    // be properly interpreted.
-    if (numConsistencyErrors > 0)
-    {
-        consistencyMessages += "Further validation aborted.";
-    }
-    else
-    {
-        numCheckFailures = sbmlDoc->checkConsistency();
-        if (numCheckFailures > 0)
-        {
-            noProblems = false;
-            for (unsigned int i = 0; i < numCheckFailures; i++)
-            {
-                const SBMLError* sbmlErr = sbmlDoc->getError(i);
-                if (sbmlErr->isFatal() || sbmlErr->isError())
-                {
-                    ++numValidationErrors;
-                }
-                else
-                {
-                    ++numValidationWarnings;
-                }
-            }
-            ostringstream oss;
-            sbmlDoc->printErrors(oss);
-            validationMessages = oss.str();
-        }
-    }
-    if (noProblems)
-        return true;
-    else
-    {
-        if (numConsistencyErrors > 0)
-        {
-            cout << "ERROR: encountered " << numConsistencyErrors
-                << " consistency error" << (numConsistencyErrors == 1 ? "" : "s")
-                << " in model '" << sbmlDoc->getModel()->getId() << "'." << endl;
-        }
-        if (numConsistencyWarnings > 0)
-        {
-            cout << "Notice: encountered " << numConsistencyWarnings
-                << " consistency warning" << (numConsistencyWarnings == 1 ? "" : "s")
-                << " in model '" << sbmlDoc->getModel()->getId() << "'." << endl;
-        }
-        cout << endl << consistencyMessages;
-        if (numValidationErrors > 0)
-        {
-            cout << "ERROR: encountered " << numValidationErrors
-                << " validation error" << (numValidationErrors == 1 ? "" : "s")
-                << " in model '" << sbmlDoc->getModel()->getId() << "'." << endl;
-        }
-        if (numValidationWarnings > 0)
-        {
-            cout << "Notice: encountered " << numValidationWarnings
-                << " validation warning" << (numValidationWarnings == 1 ? "" : "s")
-                << " in model '" << sbmlDoc->getModel()->getId() << "'." << endl;
-        }
-        cout << endl << validationMessages;
-        return (numConsistencyErrors == 0 && numValidationErrors == 0);
-    }
-}
-
-bool writeExampleSBML_(const SBMLDocument* sbmlDoc, const string& filename)
+bool SBML_Writer::WriteSBML(const SBMLDocument* sbmlDoc, const string& filename)
 {
     SBMLWriter sbmlWriter;
     bool result = sbmlWriter.writeSBML(sbmlDoc, filename);
