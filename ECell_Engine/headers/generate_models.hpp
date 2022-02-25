@@ -53,6 +53,13 @@ const static std::string ProgramVersion = "1.0.0";
 const static unsigned int Level = 3;
 const static unsigned int Version = 2;
 
+struct ReactionPointersCapsule
+{
+    Reaction* r;
+    SpeciesReference* spr;
+    KineticLaw* kl;
+};
+
 // Function for creating the Example SBML documents.
 SBMLDocument* createExampleEnzymaticReaction_();
 
@@ -70,10 +77,8 @@ Species* defineSpecies(
 	const std::string& _unit,
 	const double _initialQuantity);
 
-Reaction* defineReaction(
-    Reaction* _r_ptr,
-    SpeciesReference* _spr_ptr,
-    KineticLaw* _kl_ptr,
+void defineReaction(
+    ReactionPointersCapsule* _rpc,
     const std::string& _rID,
     const std::vector<std::string>& _reactantIDs,
     const std::vector<std::string>& _productIDs,
