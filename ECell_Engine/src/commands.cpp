@@ -3,7 +3,22 @@
 #include "simulation_loop.hpp"
 
 
-#pragma region Main Application Commands
+#pragma region IOCommands
+void OpenCommand::AskUser()
+{
+	std::cout << std::endl << "Give file name: ";
+	std::cin >> answer;
+	answer = "GibsonAndBruckToyModel.xml";
+}
+
+void OpenCommand::Execute()
+{
+	AskUser();
+	receiver->OpenFile(&answer);
+}
+#pragma endregion
+
+#pragma region Engine Commands
 void QuitCommand::Execute()
 {
 	receiver->isRunning = false;
@@ -18,8 +33,13 @@ void DisplayCommand::Execute()
 
 		"Total elapsed time: "<< receiver->simulationTimer.elapsedTime <<
 		", last delta time: " << receiver->simulationTimer.deltaTime << std::endl <<
-		"World State: " << receiver->WorldStateSimulator;
+		"Simulation Environment: " << receiver->GetSimulationEnvironment();
 
+}
+
+void LoadCommand::Execute()
+{
+	receiver->SetSimulationEnvironment();
 }
 
 void PauseCommand::Execute()
@@ -60,8 +80,6 @@ void PlayCommand::Execute()
 
 		//start simulation time
 		receiver->simulationTimer.SetStartTime();
-		//initializes Gillespie NRM Reversible
-		receiver->WorldStateSimulator.Initializes(7,5,123);
 		break;
 	default:
 		break;

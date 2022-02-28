@@ -44,11 +44,11 @@
 
 #include "SBML_parsing.hpp"
 
-bool SBML_Parser::ValidateSBML(SBMLDocument* sbmlDoc)
+bool SBML_Parser::ValidateSBML(SBMLDocument* _sbmlDoc)
 {
-    if (!sbmlDoc)
+    if (!_sbmlDoc)
     {
-        std::cerr << "validateExampleSBML: given a null SBML Document" << std::endl;
+        std::cerr << "ValidateSBML: given a null SBML Document" << std::endl;
         return false;
     }
 
@@ -64,13 +64,13 @@ bool SBML_Parser::ValidateSBML(SBMLDocument* sbmlDoc)
     // API for creating objects.  Once the whole model is done and before it
     // gets written out, it's important to check that the whole model is in
     // fact complete, consistent and valid.
-    numCheckFailures = sbmlDoc->checkInternalConsistency();
+    numCheckFailures = _sbmlDoc->checkInternalConsistency();
     if (numCheckFailures > 0)
     {
         noProblems = false;
         for (unsigned int i = 0; i < numCheckFailures; i++)
         {
-            const SBMLError* sbmlErr = sbmlDoc->getError(i);
+            const SBMLError* sbmlErr = _sbmlDoc->getError(i);
             if (sbmlErr->isFatal() || sbmlErr->isError())
             {
                 ++numConsistencyErrors;
@@ -81,7 +81,7 @@ bool SBML_Parser::ValidateSBML(SBMLDocument* sbmlDoc)
             }
         }
         std::ostringstream oss;
-        sbmlDoc->printErrors(oss);
+        _sbmlDoc->printErrors(oss);
         consistencyMessages = oss.str();
     }
     // If the internal checks fail, it makes little sense to attempt
@@ -93,13 +93,13 @@ bool SBML_Parser::ValidateSBML(SBMLDocument* sbmlDoc)
     }
     else
     {
-        numCheckFailures = sbmlDoc->checkConsistency();
+        numCheckFailures = _sbmlDoc->checkConsistency();
         if (numCheckFailures > 0)
         {
             noProblems = false;
             for (unsigned int i = 0; i < numCheckFailures; i++)
             {
-                const SBMLError* sbmlErr = sbmlDoc->getError(i);
+                const SBMLError* sbmlErr = _sbmlDoc->getError(i);
                 if (sbmlErr->isFatal() || sbmlErr->isError())
                 {
                     ++numValidationErrors;
@@ -110,7 +110,7 @@ bool SBML_Parser::ValidateSBML(SBMLDocument* sbmlDoc)
                 }
             }
             std::ostringstream oss;
-            sbmlDoc->printErrors(oss);
+            _sbmlDoc->printErrors(oss);
             validationMessages = oss.str();
         }
     }
@@ -122,26 +122,26 @@ bool SBML_Parser::ValidateSBML(SBMLDocument* sbmlDoc)
         {
             std::cout << "ERROR: encountered " << numConsistencyErrors
                 << " consistency error" << (numConsistencyErrors == 1 ? "" : "s")
-                << " in model '" << sbmlDoc->getModel()->getId() << "'." << std::endl;
+                << " in model '" << _sbmlDoc->getModel()->getId() << "'." << std::endl;
         }
         if (numConsistencyWarnings > 0)
         {
             std::cout << "Notice: encountered " << numConsistencyWarnings
                 << " consistency warning" << (numConsistencyWarnings == 1 ? "" : "s")
-                << " in model '" << sbmlDoc->getModel()->getId() << "'." << std::endl;
+                << " in model '" << _sbmlDoc->getModel()->getId() << "'." << std::endl;
         }
         std::cout << std::endl << consistencyMessages;
         if (numValidationErrors > 0)
         {
             std::cout << "ERROR: encountered " << numValidationErrors
                 << " validation error" << (numValidationErrors == 1 ? "" : "s")
-                << " in model '" << sbmlDoc->getModel()->getId() << "'." << std::endl;
+                << " in model '" << _sbmlDoc->getModel()->getId() << "'." << std::endl;
         }
         if (numValidationWarnings > 0)
         {
             std::cout << "Notice: encountered " << numValidationWarnings
                 << " validation warning" << (numValidationWarnings == 1 ? "" : "s")
-                << " in model '" << sbmlDoc->getModel()->getId() << "'." << std::endl;
+                << " in model '" << _sbmlDoc->getModel()->getId() << "'." << std::endl;
         }
         std::cout << std::endl << validationMessages;
         return (numConsistencyErrors == 0 && numValidationErrors == 0);
@@ -150,12 +150,66 @@ bool SBML_Parser::ValidateSBML(SBMLDocument* sbmlDoc)
 
 SBMLDocument* SBML_Parser::OpenSBMLFile(const char* _filePath)
 {
+    std::cout << "Trying to read SBML file: " << _filePath << std::endl;
 	SBMLDocument* document = readSBMLFromFile(_filePath);
-
-
+    bool SBMLok = ValidateSBML(document);
+    if (SBMLok)
+    {
+        std::cout << "Overall, " << _filePath << " is ok." << std::endl;
+        return document;
+    }
+    else
+    {
+        std::cout << _filePath << " the validation process (see errors above)." << std::endl;
+        return nullptr;
+    }
 }
 
-void Gillespie_SBML_Parser::ProcessSBMLDocument(SBMLDocument* _document)
+void SBML_Parser::PrettyPrintSBMLDocument(SBMLDocument* _sbmlDoc)
 {
+    Model* sbmlModel = _sbmlDoc->getModel();
+
+    const std::string modelID = sbmlModel->getId();
+    unsigned int level = sbmlModel->getLevel();
+    unsigned int version = sbmlModel->getVersion();
+
+    std::cout << "Loading model " << modelID << "." << std::endl;
+    std::cout << "Compliant with SBML core level " << level << " version " << version << "." << std::endl;
+
+    std::cout << "Species defined:" << std::endl;
+    for (int i = 0; i < sbmlModel->getNumSpecies(); ++i)
+    {
+        Species* sp = sbmlModel->getSpecies(i);
+        std::cout <<
+            "\t" << sp->getId() << ": " << std::endl <<
+            "\t Initial Amount: " << sp->getInitialAmount() << std::endl <<
+            "\t Has Only Substance Unit: " << sp->getHasOnlySubstanceUnits() << std::endl <<
+            "\t Compartment: " << sp->getCompartment() << std::endl <<
+            "\t Constant: " << sp->getConstant() << std::endl <<
+            "\t Boundary Condition: " << sp->getBoundaryCondition() << std::endl;
+    }
+
+    std::cout << "Reactions defined:" << std::endl;
+    for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
+    {
+        Reaction* r = sbmlModel->getReaction(i);
+        int nbReactants = r->getNumReactants();
+        int nbProducts = r->getNumProducts();
+        std::cout <<
+            "\t" << r->getId() << ":" << std::endl <<
+
+            "\t " << r->getReactant(0)->getSpecies();
+        for (int j = 1; j < nbReactants; ++j)
+        {
+            std::cout << " + " << r->getReactant(j)->getSpecies();
+        }
+        std::cout << " --> " << r->getProduct(0)->getSpecies();
+        for (int j = 1; j < nbProducts; ++j)
+        {
+            std::cout << " + " << r->getProduct(j)->getSpecies();
+        }
+        std::cout << std::endl;
+        std::cout << "\t Kinetic Law: " << r->getKineticLaw()->getFormula() << std::endl;;
+    }
 
 }

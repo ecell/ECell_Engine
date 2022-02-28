@@ -120,8 +120,6 @@ void Gillespie_NRM_R::Initializes(int _nbMolecules, int _nbReactions, unsigned l
 	std::vector<int> in3 = { 5 };
 	std::vector<int> in4 = { 4,6 };
 
-	propensities = { 0,0,0,0,0 };
-
 	inkTable = { InkRow(&in0, 1), InkRow(&in1, 1), InkRow(&in2, 1),
 				 InkRow(&in3, 1), InkRow(&in4, 1) };
 
@@ -134,6 +132,8 @@ void Gillespie_NRM_R::Initializes(int _nbMolecules, int _nbReactions, unsigned l
 	outTable = { OutRow(&OutRow0),OutRow(&OutRow1),OutRow(&OutRow2),
 				 OutRow(&OutRow3),OutRow(&OutRow4) };
 
+	propensities = { 0,0,0,0,0 };
+
 	t = 0.f;
 
 	BuildDep(_nbReactions);
@@ -142,6 +142,76 @@ void Gillespie_NRM_R::Initializes(int _nbMolecules, int _nbReactions, unsigned l
 	init_state(_rng_seed, &rng);
 	GenerateTAUs(_nbReactions);
 
+	itmh.Initialize(&tauTable);
+
+	trace.reserve(1000);
+}
+
+void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
+{
+	Model* sbmlModel = _sbmlDoc->getModel();
+	int nbSpecies = sbmlModel->getNumSpecies();
+	int nbReactions = sbmlModel->getNumReactions();
+
+	//Reserve space for the tables
+	quantities.reserve(nbSpecies);
+	inkTable.reserve(nbReactions);
+	outTable.reserve(nbReactions);
+	tauTable.reserve(nbReactions);
+	propensities.reserve(nbReactions);
+	t = 0.f;
+
+	//Build the map between species' names and
+	//index of appearance.
+	//Also fills in the species quantities table.
+	std::unordered_map<std::string, int> sp_name_idx_map;
+	Species* sp;
+	for (int i = 0; i < nbSpecies; ++i)
+	{
+		sp = sbmlModel->getSpecies(i);
+		sp_name_idx_map[sp->getId()] = i;
+		quantities.push_back(sp->getInitialAmount());
+	}
+
+	//Fill the Ink and Out tables
+	Reaction* r;
+	int nbReactants;
+	int nbProducts;
+	for (int i = 0; i < nbReactions; ++i)
+	{
+		r = sbmlModel->getReaction(i);
+		propensities.push_back(0);
+
+		nbReactants = r->getNumReactants();
+		std::vector<int> in;
+		in.reserve(nbReactants);
+		for (int j = 0; j < nbReactants; ++j)
+		{
+			in.push_back(sp_name_idx_map[r->getReactant(j)->getSpecies()]);
+		}
+		inkTable.push_back(InkRow(&in, 1));
+
+
+		nbProducts = r->getNumProducts();
+		std::vector<int> out;
+		out.reserve(nbProducts);
+		for (int j = 0; j < nbProducts; ++j)
+		{
+			out.push_back(sp_name_idx_map[r->getProduct(j)->getSpecies()]);
+		}
+		outTable.push_back(OutRow(&out));
+	}
+
+	//Build the data structure representing the dependency graph.
+	BuildDep(nbReactions);
+
+	//Initializes the reversible Random Number Generator
+	init_state(123, &rng);
+
+	//Draw the first reaction times
+	GenerateTAUs(nbReactions);
+
+	//Builds the reaction times indexed priority queue (indexed Minheap)
 	itmh.Initialize(&tauTable);
 
 	trace.reserve(1000);

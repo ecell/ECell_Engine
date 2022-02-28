@@ -2,6 +2,11 @@
 #include "simulation_loop.hpp"
 
 // Declaring accessors of SimulationLoop
+Gillespie_NRM_R SimulationLoop::GetSimulationEnvironment()
+{
+	return this->gillespieSimulationEnv;
+}
+
 SimulationState SimulationLoop::GetSimulationState()
 {
 	return this->simulationState;
@@ -21,7 +26,7 @@ void SimulationLoop::LoopLogic()
 
 		//Update Subsystems
 		//Play catch up on the Gillespie Simulation
-		WorldStateSimulator.RunForward(simulationTimer.elapsedTime);
+		gillespieSimulationEnv.RunForward(simulationTimer.elapsedTime);
 
 		float endTime = simulationTimer.ReadHighResTimer();
 		simulationTimer.deltaTime = simulationTimer.GetDuration(beginTime, endTime);
@@ -34,6 +39,12 @@ void SimulationLoop::LoopLogic()
 }
 
 //Declaring mutators of SimulationLoop
+
+void SimulationLoop::SetSimulationEnvironment()
+{
+	gillespieSimulationEnv.Initializes(refEngine->GetActiveDocument());
+}
+
 void SimulationLoop::SetSimulationState(SimulationState _simulationState)
 {
 	this->simulationState = _simulationState;

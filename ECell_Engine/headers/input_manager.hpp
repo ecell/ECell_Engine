@@ -1,4 +1,7 @@
 #pragma once
+#include <iostream>
+#include <iterator>
+#include <vector>
 
 //partial definitions
 class ECellEngine;
@@ -10,6 +13,7 @@ class KeyboardInput
 {
 private:
 	EngineCommands* engineCommands;
+	IOCommands* ioCommands;
 	SimulationLoopCommands* simulationLoopCommands;
 
 	ECellEngine* refEngine;
@@ -26,16 +30,17 @@ public:
 	/// <summary>
 	/// Set the pointers of every Commands struct declared in the
 	/// engine and handled by the <see cref="input_manager"/>.
-	/// Namely <see cref="engineCommands"/>, <see cref="simulationLoopCommands"/>.
+	/// Namely <see cref="engineCommands"/>,  <see cref="ioCommands"/>,
+	///  <see cref="simulationLoopCommands"/>.
 	/// </summary>
-	void SetSystemCommands(EngineCommands*, SimulationLoopCommands*);
+	void SetSystemCommands(EngineCommands*, IOCommands*, SimulationLoopCommands*);
 #pragma endregion
 
 #pragma region Logic
 	/// <summary>
 	/// The method processing the <see cref="command"/>.
 	/// </summary>
-	void Pointsman();
+	void Pointsman(std::vector<std::string> _cmdSplit);
 
 	/// <summary>
 	/// The method starting up the input manager.

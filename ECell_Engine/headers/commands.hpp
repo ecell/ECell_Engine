@@ -8,7 +8,39 @@ class SimulationLoop;
 
 #include "command.hpp"
 
-#pragma region Main Application Commands
+#pragma region IO Commands
+class OpenCommand : Command
+{
+public:
+	void Execute();
+
+	OpenCommand() {};
+	OpenCommand(ECellEngine* _refEngine) : receiver(_refEngine) {};
+
+private:
+	ECellEngine* receiver;
+	std::string answer;
+
+protected:
+	virtual void AskUser();
+};
+
+struct IOCommands
+{
+public:
+	OpenCommand openCommand;
+
+	IOCommands() {};
+
+	IOCommands(ECellEngine* _refEngine) :
+		openCommand(_refEngine)
+	{
+
+	};
+};
+#pragma endregion
+
+#pragma region Engine Commands
 
 /// <summary>
 /// The command to quit the application. Effectively
@@ -58,6 +90,21 @@ public:
 
 	DisplayCommand(){};
 	DisplayCommand(SimulationLoop* _refSimuLoop) : receiver(_refSimuLoop) {};
+
+private:
+	SimulationLoop* receiver;
+};
+
+/// <summary>
+/// The command to load the current active model in the simulation environment.
+/// </summary>
+class LoadCommand : Command
+{
+public:
+	virtual void Execute();
+
+	LoadCommand() {};
+	LoadCommand(SimulationLoop* _refSimuLoop) : receiver(_refSimuLoop) {};
 
 private:
 	SimulationLoop* receiver;
@@ -116,6 +163,7 @@ struct SimulationLoopCommands
 {
 public:
 	DisplayCommand displayCommand;
+	LoadCommand loadCommand;
 	PauseCommand pauseCommand;
 	PlayCommand playCommand;
 	StopCommand stopCommand;
@@ -124,6 +172,7 @@ public:
 
 	SimulationLoopCommands(SimulationLoop* _refSimuLoop) :
 		displayCommand(_refSimuLoop),
+		loadCommand(_refSimuLoop),
 		pauseCommand(_refSimuLoop),
 		playCommand(_refSimuLoop),
 		stopCommand(_refSimuLoop)

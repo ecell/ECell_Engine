@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <sbml/SBMLTypes.h>
 extern "C" {
 #include "revrand.h"
 }
@@ -78,11 +79,19 @@ public:
 
 	/// <summary>
 	/// Sets up the data structures for the simulation to run.
+	/// In this version everything is hard-coded inside the method.
 	/// </summary>
 	/// <param name="_nbMolecules">Number of molecules in the system</param>
 	/// <param name="_nbReactions">Number of reactions in the system</param>
 	/// <param name="_rng_seed">Seed of the reversible rng.</param>
 	void Initializes(int _nbMolecules, int _nbReactions, unsigned long _rng_seed);
+
+	/// <summary>
+	/// Sets up the data structures for the simulation to run.
+	/// </summary>
+	/// <param name="_sbmlDoc">The pointer to the SBMLDocument encoding the
+	/// model we wish to use.</param>
+	void Initializes(SBMLDocument* _sbmlDoc);
 
 	/// <summary>
 	/// Runs the Gillespie algorithm (Next Generation Method) in the forward way.

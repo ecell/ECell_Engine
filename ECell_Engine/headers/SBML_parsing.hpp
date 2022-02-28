@@ -12,9 +12,6 @@ public:
 	bool ValidateSBML(SBMLDocument* _document);
 
 	SBMLDocument* OpenSBMLFile(const char* _filePath);
-};
 
-class Gillespie_SBML_Parser : SBML_Parser
-{
-	void ProcessSBMLDocument(SBMLDocument* _document);
+	void PrettyPrintSBMLDocument(SBMLDocument* _document); 
 };

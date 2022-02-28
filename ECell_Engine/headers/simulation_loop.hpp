@@ -19,10 +19,11 @@ class SimulationLoop
 private:
 	ECellEngine* refEngine;
 	SimulationState simulationState = SimulationState::isStopped;
+	Gillespie_NRM_R gillespieSimulationEnv;
 	
 public:
 	Timer simulationTimer;
-	Gillespie_NRM_R WorldStateSimulator;
+	
 	SimulationLoopCommands simulationLoopCommands;
 
 	SimulationLoop(ECellEngine* _refEngine) :
@@ -34,6 +35,11 @@ public:
 
 #pragma region Accessors
 	/// <summary>
+	/// Get the <see cref="gillespieSimulationEnv"/>
+	/// </summary>
+	Gillespie_NRM_R GetSimulationEnvironment();
+
+	/// <summary>
 	/// Get the <see cref="simulationState"/> private member.
 	/// </summary>
 	SimulationState GetSimulationState();
@@ -41,9 +47,16 @@ public:
 
 #pragma region Mutators
 	/// <summary>
+	/// Uses the current active SBML Document in the ECell Engine to initialize
+	/// the simulation environment <see cref="gillespieSimulationEnv"/>.
+	/// </summary>
+	void SetSimulationEnvironment();
+
+	/// <summary>
 	/// Set the <see cref="simulationState"/> private member.
 	/// </summary>
 	void SetSimulationState(SimulationState _simulationState);
+	
 #pragma endregion
 
 #pragma region Logic
