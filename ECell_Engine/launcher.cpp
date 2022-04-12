@@ -14,7 +14,10 @@ int main()
 	engine.SetSimulationLoop(&simulationLoop);
 
 	KeyboardInput keyboardInput(&engine);
-	keyboardInput.SetSystemCommands(&engine.engineCommands, &simulationLoop.simulationLoopCommands);
+	keyboardInput.SetSystemCommands(
+		&engine.engineCommands,
+		&engine.ioCommands,
+		&simulationLoop.simulationLoopCommands);
 	
 	engine.SetKeyboardInput(&keyboardInput);
 
