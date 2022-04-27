@@ -75,7 +75,9 @@ private:
         ReactionPointersCapsule* _rpc,
         const std::string& _rID,
         const std::vector<std::string>& _reactantIDs,
+        const std::vector<int>& _reactantStoichs,
         const std::vector<std::string>& _productIDs,
+        const std::vector<int>& _productStoichs,
         const std::string& _kParamID);
 
 public:
