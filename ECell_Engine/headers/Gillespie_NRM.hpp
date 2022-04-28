@@ -6,6 +6,7 @@ extern "C" {
 #include "revrand.h"
 }
 #include "Gillespie_NRM_Data.hpp"
+#include "math_utility.hpp"
 
 class Gillespie_NRM_R
 {

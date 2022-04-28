@@ -4,9 +4,10 @@
 struct InkRow
 {
 	std::vector<int> in;
+	std::vector<int> s;//stoichiometry
 	float k;
 
-	InkRow(std::vector<int>* _in, float _k) : in(*_in), k(_k)
+	InkRow(std::vector<int>* _in, std::vector<int>* _s, float _k) : in(*_in), s(*_s), k(_k)
 	{
 
 	}
@@ -15,7 +16,8 @@ struct InkRow
 struct OutRow
 {
 	std::vector<int> out;
-	OutRow(std::vector<int>* _out) : out(*_out)
+	std::vector<int> s;//stoichiometry
+	OutRow(std::vector<int>* _out, std::vector<int>* _s) : out(*_out), s(*_s)
 	{
 
 	}

@@ -19,12 +19,12 @@ void Gillespie_NRM_R::ApplyInOutBackward(int _i)
 {
 	for (auto it = inkTable[_i].in.cbegin(); it != inkTable[_i].in.cend(); ++it)
 	{
-		quantities.at(*it)++;
+		quantities.at(*it) += inkTable[_i].s.at(*it);
 	}
 
 	for (auto it = outTable[_i].out.cbegin(); it != outTable[_i].out.cend(); ++it)
 	{
-		quantities.at(*it)--;
+		quantities.at(*it) -= outTable[_i].s.at(*it);
 	}
 }
 
@@ -32,12 +32,12 @@ void Gillespie_NRM_R::ApplyInOutForward(int _i)
 {
 	for (auto it = inkTable[_i].in.cbegin(); it != inkTable[_i].in.cend(); ++it)
 	{
-		quantities.at(*it)--;
+		quantities.at(*it) -= inkTable[_i].s.at(*it);
 	}
 
 	for (auto it = outTable[_i].out.cbegin(); it != outTable[_i].out.cend(); ++it)
 	{
-		quantities.at(*it)++;
+		quantities.at(*it) += outTable[_i].s.at(*it);
 	}
 }
 
@@ -84,7 +84,7 @@ float Gillespie_NRM_R::ComputePropensity(int _i)
 		it != inkTable[_i].in.cend();
 		++it)
 	{
-		a *= quantities[*it];
+		a *= nCr(quantities[*it], inkTable[_i].s[*it]);
 	}
 
 	propensities[_i] = a;
@@ -119,18 +119,30 @@ void Gillespie_NRM_R::Initializes(int _nbMolecules, int _nbReactions, unsigned l
 	std::vector<int> in2 = { 3,4 };
 	std::vector<int> in3 = { 5 };
 	std::vector<int> in4 = { 4,6 };
+	
+	std::vector<int> inS0 = { 1,1 };
+	std::vector<int> inS1 = { 1,1 };
+	std::vector<int> inS2 = { 1,1 };
+	std::vector<int> inS3 = { 1 };
+	std::vector<int> inS4 = { 1,1 };
 
-	inkTable = { InkRow(&in0, 1), InkRow(&in1, 1), InkRow(&in2, 1),
-				 InkRow(&in3, 1), InkRow(&in4, 1) };
+	inkTable = { InkRow(&in0, &inS0, 1), InkRow(&in1, &inS1, 1), InkRow(&in2, &inS2, 1),
+				 InkRow(&in3, &inS3, 1), InkRow(&in4, &inS4, 1) };
 
 	std::vector<int> OutRow0 = { 2 };
 	std::vector<int> OutRow1 = { 3 };
 	std::vector<int> OutRow2 = { 4,5 };
 	std::vector<int> OutRow3 = { 3,6 };
 	std::vector<int> OutRow4 = { 0 };
+	
+	std::vector<int> outS0 = { 1 };
+	std::vector<int> outS1 = { 1 };
+	std::vector<int> outS2 = { 1,1 };
+	std::vector<int> outS3 = { 1,1 };
+	std::vector<int> outS4 = { 1 };
 
-	outTable = { OutRow(&OutRow0),OutRow(&OutRow1),OutRow(&OutRow2),
-				 OutRow(&OutRow3),OutRow(&OutRow4) };
+	outTable = { OutRow(&OutRow0, &outS0),OutRow(&OutRow1, &outS1),OutRow(&OutRow2, &outS2),
+				 OutRow(&OutRow3, &outS3),OutRow(&OutRow4, &outS4) };
 
 	propensities = { 0,0,0,0,0 };
 
@@ -185,21 +197,27 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 		nbReactants = r->getNumReactants();
 		std::vector<int> in;
 		in.reserve(nbReactants);
+		std::vector<int> inS;
+		inS.reserve(nbReactants);
 		for (int j = 0; j < nbReactants; ++j)
 		{
 			in.push_back(sp_name_idx_map[r->getReactant(j)->getSpecies()]);
+			inS.push_back(r->getReactant(j)->getStoichiometry());
 		}
-		inkTable.push_back(InkRow(&in, 1));
+		inkTable.push_back(InkRow(&in, &inS, 1));
 
 
 		nbProducts = r->getNumProducts();
 		std::vector<int> out;
 		out.reserve(nbProducts);
+		std::vector<int> outS;
+		outS.reserve(nbReactants);
 		for (int j = 0; j < nbProducts; ++j)
 		{
 			out.push_back(sp_name_idx_map[r->getProduct(j)->getSpecies()]);
+			outS.push_back(r->getReactant(j)->getStoichiometry());
 		}
-		outTable.push_back(OutRow(&out));
+		outTable.push_back(OutRow(&out, &outS));
 	}
 
 	//Build the data structure representing the dependency graph.

@@ -96,7 +96,9 @@ void SBML_Writer::DefineReaction(
     ReactionPointersCapsule* _rpc,
     const std::string& _rID,
     const std::vector<std::string>& _reactantIDs,
+    const std::vector<int>& _reactantStoichs,
     const std::vector<std::string>& _productIDs,
+    const std::vector<int>& _productStoichs,
     const std::string& _kParamID)
 {
     _rpc->r->setId(_rID);
@@ -104,19 +106,25 @@ void SBML_Writer::DefineReaction(
 
     // Creates the Reactants.
     // The object will be created within the reaction in the SBML <listOfReactants>.
+    int cnt = 0;
     for (auto it = _reactantIDs.begin(); it != _reactantIDs.end(); ++it)
     {
         _rpc->spr = _rpc->r->createReactant();
         _rpc->spr->setSpecies(*it);
+        _rpc->spr->setStoichiometry(_reactantStoichs[cnt]);
         _rpc->spr->setConstant(false);
+        cnt++;
     }
 
     // Creates the products.
+    cnt = 0;
     for (auto it = _productIDs.begin(); it != _productIDs.end(); ++it)
     {
         _rpc->spr = _rpc->r->createProduct();
         _rpc->spr->setSpecies(*it);
+        _rpc->spr->setStoichiometry(_productStoichs[cnt]);
         _rpc->spr->setConstant(false);
+        cnt++;
     }
 
     //---------------------------------------------------------------------------
@@ -260,29 +268,29 @@ SBMLDocument* SBML_Writer::GibsonAndBruckToyModel()
 
     // Creates the reaction
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R1", {"A", "B"}, {"C"}, "k1");
+    DefineReaction(&rpc, "R1", {"A", "B"}, { 1, 1 }, {"C"}, { 1 }, "k1");
     // Creates local Parameter object inside the KineticLaw object associated with the
     // last created reaction.
     para = rpc.kl->createParameter();
     DefineParameter(para, "k1", "item_per_second", 1);
 
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R2", { "B", "C" }, { "D" }, "k2");
+    DefineReaction(&rpc, "R2", { "B", "C" }, { 1, 1 }, { "D" }, { 1 }, "k2");
     para = rpc.kl->createParameter();
     DefineParameter(para, "k2", "item_per_second", 1);
 
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R3", { "D", "E" }, { "D","F" }, "k3");
+    DefineReaction(&rpc, "R3", { "D", "E" }, { 1, 1 }, { "D","F" }, { 1, 1 }, "k3");
     para = rpc.kl->createParameter();
     DefineParameter(para, "k3", "item_per_second", 1);
 
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R4", { "F" }, { "D", "G" }, "k4");
+    DefineReaction(&rpc, "R4", { "F" }, { 1 }, { "D", "G" }, { 1, 1 }, "k4");
     para = rpc.kl->createParameter();
     DefineParameter(para, "k4", "item_per_second", 1);
 
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R5", { "E", "G" }, { "A" }, "k5");
+    DefineReaction(&rpc, "R5", { "E", "G" }, { 1, 1 }, { "A" }, { 1 }, "k5");
     para = rpc.kl->createParameter();
     DefineParameter(para, "k5", "item_per_second", 1);
     
