@@ -141,11 +141,14 @@ void SBML_Writer::DefineReaction(
     mathXMLString += _kParamID;
     mathXMLString += " </ci>";
 
+    cnt = 0;
     for (auto it = _reactantIDs.begin(); it != _reactantIDs.end(); ++it)
     {
-        mathXMLString += "    <ci> ";
+        /*mathXMLString += "    <ci> ";
         mathXMLString += *it;
-        mathXMLString += " </ci>";
+        mathXMLString += " </ci>";*/
+        mathXMLString += str_nCR(*it, _reactantStoichs[cnt]);
+        cnt++;
     }
 
     mathXMLString +=
@@ -298,11 +301,11 @@ SBMLDocument* SBML_Writer::GibsonAndBruckToyModel()
 
     // Creates the reaction
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R1", {"A", "B"}, { 1, 1 }, {"C"}, { 1 }, "k1");
+    DefineReaction(&rpc, "R1", {"A", "B"}, { 2, 1 }, {"C"}, { 1 }, "k1");
     // Creates local Parameter object inside the KineticLaw object associated with the
     // last created reaction.
     para = rpc.kl->createParameter();
-    DefineParameter(para, "k1", "per_item_per_second", 1);
+    DefineParameter(para, "k1", "per_itemSQ_per_second", 1);
 
     rpc.r = model->createReaction();
     DefineReaction(&rpc, "R2", { "B", "C" }, { 1, 1 }, { "D" }, { 1 }, "k2");
