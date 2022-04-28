@@ -141,11 +141,14 @@ void SBML_Writer::DefineReaction(
     mathXMLString += _kParamID;
     mathXMLString += " </ci>";
 
+    cnt = 0;
     for (auto it = _reactantIDs.begin(); it != _reactantIDs.end(); ++it)
     {
-        mathXMLString += "    <ci> ";
+        /*mathXMLString += "    <ci> ";
         mathXMLString += *it;
-        mathXMLString += " </ci>";
+        mathXMLString += " </ci>";*/
+        mathXMLString += str_nCR(*it, _reactantStoichs[cnt]);
+        cnt++;
     }
 
     mathXMLString +=
@@ -194,22 +197,52 @@ SBMLDocument* SBML_Writer::GibsonAndBruckToyModel()
     //unit->setExponent(1);
 
     //---------------------------------------------------------------------------  
-    // (UnitDefinition1) Creates an UnitDefinition object ("count_per_second")
+    // (UnitDefinition1) Creates an UnitDefinition object ("per_second")
     //---------------------------------------------------------------------------
     unitdef = model->createUnitDefinition();
-    unitdef->setId("item_per_second");
-    //  Creates an Unit inside the UnitDefinition object 
-    unit = unitdef->createUnit();
-    unit->setId("item");
-    unit->setKind(UNIT_KIND_ITEM);
-    unit->setMultiplier(1);
-    unit->setScale(0);
-    unit->setExponent(1);
+    unitdef->setId("per_second");
 
     //  Creates an Unit inside the UnitDefinition object 
     unit = unitdef->createUnit();
     unit->setKind(UNIT_KIND_SECOND);
-    unit->setId("per_second");
+    unit->setMultiplier(1);
+    unit->setScale(0);
+    unit->setExponent(-1);
+
+    //---------------------------------------------------------------------------  
+    // (UnitDefinition1) Creates an UnitDefinition object ("per_item_per_second")
+    //---------------------------------------------------------------------------
+    unitdef = model->createUnitDefinition();
+    unitdef->setId("per_item_per_second");
+    //  Creates an Unit inside the UnitDefinition object 
+    unit = unitdef->createUnit();
+    unit->setKind(UNIT_KIND_ITEM);
+    unit->setMultiplier(1);
+    unit->setScale(0);
+    unit->setExponent(-1);
+
+    //  Creates an Unit inside the UnitDefinition object 
+    unit = unitdef->createUnit();
+    unit->setKind(UNIT_KIND_SECOND);
+    unit->setMultiplier(1);
+    unit->setScale(0);
+    unit->setExponent(-1);
+
+    //---------------------------------------------------------------------------  
+    // (UnitDefinition1) Creates an UnitDefinition object ("per_itemSQ_per_second")
+    //---------------------------------------------------------------------------
+    unitdef = model->createUnitDefinition();
+    unitdef->setId("per_itemSQ_per_second");
+    //  Creates an Unit inside the UnitDefinition object 
+    unit = unitdef->createUnit();
+    unit->setKind(UNIT_KIND_ITEM);
+    unit->setMultiplier(1);
+    unit->setScale(0);
+    unit->setExponent(-2);
+
+    //  Creates an Unit inside the UnitDefinition object 
+    unit = unitdef->createUnit();
+    unit->setKind(UNIT_KIND_SECOND);
     unit->setMultiplier(1);
     unit->setScale(0);
     unit->setExponent(-1);
@@ -268,31 +301,31 @@ SBMLDocument* SBML_Writer::GibsonAndBruckToyModel()
 
     // Creates the reaction
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R1", {"A", "B"}, { 1, 1 }, {"C"}, { 1 }, "k1");
+    DefineReaction(&rpc, "R1", {"A", "B"}, { 2, 1 }, {"C"}, { 1 }, "k1");
     // Creates local Parameter object inside the KineticLaw object associated with the
     // last created reaction.
     para = rpc.kl->createParameter();
-    DefineParameter(para, "k1", "item_per_second", 1);
+    DefineParameter(para, "k1", "per_itemSQ_per_second", 1);
 
     rpc.r = model->createReaction();
     DefineReaction(&rpc, "R2", { "B", "C" }, { 1, 1 }, { "D" }, { 1 }, "k2");
     para = rpc.kl->createParameter();
-    DefineParameter(para, "k2", "item_per_second", 1);
+    DefineParameter(para, "k2", "per_item_per_second", 1);
 
     rpc.r = model->createReaction();
     DefineReaction(&rpc, "R3", { "D", "E" }, { 1, 1 }, { "D","F" }, { 1, 1 }, "k3");
     para = rpc.kl->createParameter();
-    DefineParameter(para, "k3", "item_per_second", 1);
+    DefineParameter(para, "k3", "per_item_per_second", 1);
 
     rpc.r = model->createReaction();
     DefineReaction(&rpc, "R4", { "F" }, { 1 }, { "D", "G" }, { 1, 1 }, "k4");
     para = rpc.kl->createParameter();
-    DefineParameter(para, "k4", "item_per_second", 1);
+    DefineParameter(para, "k4", "per_second", 1);
 
     rpc.r = model->createReaction();
     DefineReaction(&rpc, "R5", { "E", "G" }, { 1, 1 }, { "A" }, { 1 }, "k5");
     para = rpc.kl->createParameter();
-    DefineParameter(para, "k5", "item_per_second", 1);
+    DefineParameter(para, "k5", "per_item_per_second", 1);
     
     return sbmlDoc;
 }
