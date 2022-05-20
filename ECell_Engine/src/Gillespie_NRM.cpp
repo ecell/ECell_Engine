@@ -187,6 +187,7 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 
 	//Fill the Ink and Out tables
 	Reaction* r;
+	KineticLaw* kl;
 	int nbReactants;
 	int nbProducts;
 	for (int i = 0; i < nbReactions; ++i)
@@ -204,6 +205,11 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 			in.push_back(sp_name_idx_map[r->getReactant(j)->getSpecies()]);
 			inS.push_back(r->getReactant(j)->getStoichiometry());
 		}
+
+		kl = r->getKineticLaw();
+		/// TODO
+		///parse the MathML expression
+
 		inkTable.push_back(InkRow(&in, &inS, 1));
 
 
