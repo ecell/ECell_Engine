@@ -17,27 +17,35 @@ std::ostream& operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r)
 
 void Gillespie_NRM_R::ApplyInOutBackward(int _i)
 {
+	short reaction_mol_idx = 0;
 	for (auto it = inkTable[_i].in.cbegin(); it != inkTable[_i].in.cend(); ++it)
 	{
-		quantities.at(*it) += inkTable[_i].s.at(*it);
+		quantities.at(*it) += inkTable[_i].s.at(reaction_mol_idx);
+		reaction_mol_idx++;
 	}
 
+	reaction_mol_idx = 0;
 	for (auto it = outTable[_i].out.cbegin(); it != outTable[_i].out.cend(); ++it)
 	{
-		quantities.at(*it) -= outTable[_i].s.at(*it);
+		quantities.at(*it) -= outTable[_i].s.at(reaction_mol_idx);
+		reaction_mol_idx++;
 	}
 }
 
 void Gillespie_NRM_R::ApplyInOutForward(int _i)
 {
+	short reaction_mol_idx = 0;
 	for (auto it = inkTable[_i].in.cbegin(); it != inkTable[_i].in.cend(); ++it)
 	{
-		quantities.at(*it) -= inkTable[_i].s.at(*it);
+		quantities.at(*it) -= inkTable[_i].s.at(reaction_mol_idx);
+		reaction_mol_idx++;
 	}
 
+	reaction_mol_idx = 0;
 	for (auto it = outTable[_i].out.cbegin(); it != outTable[_i].out.cend(); ++it)
 	{
-		quantities.at(*it) += outTable[_i].s.at(*it);
+		quantities.at(*it) += outTable[_i].s.at(reaction_mol_idx);
+		reaction_mol_idx++;
 	}
 }
 
@@ -79,12 +87,13 @@ void Gillespie_NRM_R::BuildDep( int _nbReactions)
 float Gillespie_NRM_R::ComputePropensity(int _i)
 {
 	float a = inkTable[_i].k;
-
+	short reaction_mol_idx = 0;
 	for (auto it = inkTable[_i].in.cbegin();
 		it != inkTable[_i].in.cend();
 		++it)
 	{
-		a *= nCr(quantities[*it], inkTable[_i].s[*it]);
+		a *= nCr(quantities[*it], inkTable[_i].s[reaction_mol_idx]);
+		reaction_mol_idx++;
 	}
 
 	propensities[_i] = a;
@@ -212,7 +221,6 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 
 		inkTable.push_back(InkRow(&in, &inS, 1));
 
-
 		nbProducts = r->getNumProducts();
 		std::vector<int> out;
 		out.reserve(nbProducts);
@@ -221,7 +229,7 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 		for (int j = 0; j < nbProducts; ++j)
 		{
 			out.push_back(sp_name_idx_map[r->getProduct(j)->getSpecies()]);
-			outS.push_back(r->getReactant(j)->getStoichiometry());
+			outS.push_back(r->getProduct(j)->getStoichiometry());
 		}
 		outTable.push_back(OutRow(&out, &outS));
 	}

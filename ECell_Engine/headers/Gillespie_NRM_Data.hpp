@@ -112,7 +112,7 @@ public:
 	void SetTauInRoot(float _newTau);
 
 	/// <summary>
-	/// Sets the value tau in the node indicated by the pointer <paramref name="_ptr"/>.
+	/// Sets the value tau in the node indicated by the pointer <paramref name="_ptr".
 	/// </summary>
 	void SetTauFromPointer(int _ptr, float _newTau);
 #pragma endregion 
