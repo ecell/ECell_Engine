@@ -170,7 +170,6 @@ void Gillespie_NRM_R::GenerateTAUs(int _nbReactions)
 	//std::cout << std::endl;
 }
 
-
 void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 {
 	Model* sbmlModel = _sbmlDoc->getModel();
@@ -213,17 +212,19 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	{
 		param = sbmlModel->getParameter(i);
 		//std::cout << "Processing parameter " << param->getId() << "; constant = " << param->getConstant() << std::endl;
+		parameters[i] = NAN;
 		param_name_idx_map[param->getId()] = i;
 		parameters_map[param->getId()] = &parameters[i];
 		if (param->getConstant())
 		{
 			parameters[i] = (float)param->getValue();
 		}
-	}	
+		std::cout << "parameters" << "[" << i << "]=" << parameters[i] << std::endl;
+	}
 
 	//Processes the parameters defined through rules
 	Rule* rule;
-	
+	std::queue<Rule> rulesQ;
 	for (int i = 0; i < nbRules; i++)
 	{
 		rule = sbmlModel->getRule(i);
@@ -232,9 +233,32 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 			//std::cout << "Processing rule for parameter " << rule->getVariable() << ": " <<
 			//astEvaluator->Evaluate(rule->getMath(), &parameters_map) << std::endl;
 			//*parameters_map[rule->getVariable()] = astEvaluator->Evaluate(rule->getMath(), &parameters_map);
-			parameters[param_name_idx_map[rule->getVariable()]] = astEvaluator->Evaluate(rule->getMath(), &parameters_map);
+			//std::cout << "is rule " << rule->getVariable() << " sound for evaluation: " << astEvaluator->isSound(rule->getMath(), &parameters_map) << std::endl;
+			if (astEvaluator->isSound(rule->getMath(), &parameters_map))
+			{
+				parameters[param_name_idx_map[rule->getVariable()]] = astEvaluator->Evaluate(rule->getMath(), &parameters_map);
+			}
+			else
+			{
+				rulesQ.push(*rule);
+			}
 		}
-	}	
+	}
+
+	int nbRulesQ = rulesQ.size();
+	while (nbRulesQ > 0)
+	{
+		if (astEvaluator->isSound(rulesQ.front().getMath(), &parameters_map))
+		{
+			parameters[param_name_idx_map[rulesQ.front().getVariable()]] = astEvaluator->Evaluate(rulesQ.front().getMath(), &parameters_map);
+			nbRulesQ--;
+		}
+		else
+		{
+			rulesQ.push(rulesQ.front());
+		}
+		rulesQ.pop();
+	}
 
 	//Fill the In and Out tables
 	Reaction* r;
@@ -243,8 +267,6 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	int nbProducts;
 	for (int i = 0; i < nbReactions; ++i)
 	{
-		std::cout << std::endl;
-
 		r = sbmlModel->getReaction(i);
 		propensities.push_back(0);
 

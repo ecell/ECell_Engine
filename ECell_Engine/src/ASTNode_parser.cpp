@@ -235,29 +235,6 @@ void ASTEvaluator::ExtractVariables(ASTNodeEx* _node, std::unordered_map<std::st
 	}
 }
 
-//ASTNodeEx* ASTEvaluator::Initializes(const ASTNode* _origin)
-//{
-//	std::cout << "Processing parent node " << _origin->getId() << std::endl;
-//	formulasNodes.push_back(ASTNodeEx(_origin));
-//	int idx = formulasNodes.size() - 1;
-//	std::cout << idx << " Nodes were registered." << std::endl;
-//	if (_origin->getNumChildren() > 0)
-//	{
-//		//std::cout << "Processing left child " << std::endl;
-//		ASTNodeEx* left = Initializes(_origin->getLeftChild());
-//		formulasNodes[idx].setLeftChildEx(left);
-//	}
-//
-//	if (_origin->getNumChildren() > 1)
-//	{
-//		//std::cout << "Processing right child " << std::endl;		
-//		ASTNodeEx* right = Initializes(_origin->getRightChild());
-//		formulasNodes[idx].setRightChildEx(right);
-//	}
-//	std::cout << "Returning link to node " << idx << std::endl;
-//	return &formulasNodes[idx];
-//}
-
 int ASTEvaluator::Initializes(const ASTNode* _origin)
 {
 	//std::cout << "Processing parent node " << _origin->getId() << std::endl;
@@ -279,6 +256,39 @@ int ASTEvaluator::Initializes(const ASTNode* _origin)
 	}
 	//std::cout << "Returning link to node " << idx << std::endl;
 	return idx;
+}
+
+bool ASTEvaluator::isSound(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap)
+{
+	//std::cout << "Scanning for parameters; Current node of type " << _node->getTypeEx() << " for reduction." << std::endl;
+	switch (_node->getType())
+	{
+	case ASTNodeType_t::AST_NAME:
+	{
+		auto keyPos = (*_namesMap).find(_node->getName());
+		//std::cout << "Variable " << _node->getName() << " with value " << (*keyPos->second) << " is sound: " << !isnan(*keyPos->second) << std::endl;
+		return !isnan(*keyPos->second);
+		break;
+	}
+	default:
+
+		if (_node->getNumChildren() == 0)
+		{
+			return true;
+		}
+
+		else if (_node->getNumChildren() == 1)
+		{
+			return isSound(_node->getLeftChild(), _namesMap);
+		}
+
+		else if (_node->getNumChildren() == 2)
+		{
+			return isSound(_node->getLeftChild(), _namesMap) && isSound(_node->getRightChild(), _namesMap);
+		}
+
+		break;
+	}
 }
 
 std::string ASTEvaluator::PrettyPrintFormula(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap)

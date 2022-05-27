@@ -318,7 +318,7 @@ SBMLDocument* SBML_Writer::GibsonAndBruckToyModel()
     DefineParameter(para, "k1", "per_item_per_second");
 
     para = model->createParameter();
-    DefineParameter(para, "k2", "per_item_per_second", 2);
+    DefineParameter(para, "k2", "per_item_per_second");
 
     para = model->createParameter();
     DefineParameter(para, "k3", "per_item_per_second", 1);
@@ -334,6 +334,9 @@ SBMLDocument* SBML_Writer::GibsonAndBruckToyModel()
     //---------------------------------------------------------------------------
     AssignmentRule* ar = model->createAssignmentRule();
     DefineParameterAssignementRule(ar, "k1", "1per_item_per_second+(2dimensionless*k2-1per_item_per_second/2dimensionless)");
+
+    ar = model->createAssignmentRule();
+    DefineParameterAssignementRule(ar, "k2", "2dimensionless*k3");
 
     //---------------------------------------------------------------------------
     // Creates Reaction objects inside the Model object.

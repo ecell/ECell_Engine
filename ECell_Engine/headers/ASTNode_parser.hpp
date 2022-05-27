@@ -90,6 +90,8 @@ public:
 	
 	int Initializes(const ASTNode* _origin);
 
+	bool isSound(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap);
+
 	std::string PrettyPrintFormula(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap);
 	
 	std::string PrettyPrintFormula(ASTNodeEx* _node);

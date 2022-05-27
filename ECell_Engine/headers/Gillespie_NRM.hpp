@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <queue>
 #include <sbml/SBMLTypes.h>
 extern "C" {
 #include "revrand.h"
