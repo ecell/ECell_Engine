@@ -7,22 +7,27 @@ extern "C" {
 }
 #include "Gillespie_NRM_Data.hpp"
 #include "math_utility.hpp"
+#include "ASTNode_parser.hpp"
 
 class Gillespie_NRM_R
 {
 private:
 	std::vector<int> quantities;
-	std::vector<InkRow> inkTable;
+	std::vector<InRow> inTable;
+	std::vector<float> parameters;
+	std::vector<int> kineticLaws;
 	std::vector<float> propensities;
 	std::vector<OutRow> outTable;
 	std::vector<DepRow> depTable;
 	std::vector<std::pair<int, float>> tauTable;
 	IndexedTauMinHeap itmh;
-
+	
 	std::vector<short int> trace;
 	short int traceBlockSize = 0;
 	
 	rng_state rng;
+
+	ASTEvaluator* astEvaluator;
 
 	/// <summary>
 	/// Updates the <see cref="inkTable"/> and <see cref="outTable"/> according
@@ -44,7 +49,8 @@ private:
 	/// </summary>
 	/// <param name="_nbReactions">The number of reactions on which the algorithm
 	/// will run.</param>
-	void BuildDep(int _nbReactions);
+	//void BuildDep(int _nbReactions);
+	void BuildDep(int _nbReactions, std::unordered_map<std::string, int>* _namesMap);
 
 	/// <summary>
 	/// Computes the propensity of reaction <paramref name="_i"/>.

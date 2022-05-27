@@ -1,13 +1,12 @@
 #include <iostream>
 #include <vector>
 
-struct InkRow
+struct InRow
 {
 	std::vector<int> in;
 	std::vector<int> s;//stoichiometry
-	float k;
 
-	InkRow(std::vector<int>* _in, std::vector<int>* _s, float _k) : in(*_in), s(*_s), k(_k)
+	InRow(std::vector<int>* _in, std::vector<int>* _s) : in(*_in), s(*_s)
 	{
 
 	}

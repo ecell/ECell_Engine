@@ -18,9 +18,9 @@ std::ostream& operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r)
 void Gillespie_NRM_R::ApplyInOutBackward(int _i)
 {
 	short reaction_mol_idx = 0;
-	for (auto it = inkTable[_i].in.cbegin(); it != inkTable[_i].in.cend(); ++it)
+	for (auto it = inTable[_i].in.cbegin(); it != inTable[_i].in.cend(); ++it)
 	{
-		quantities.at(*it) += inkTable[_i].s.at(reaction_mol_idx);
+		quantities.at(*it) += inTable[_i].s.at(reaction_mol_idx);
 		reaction_mol_idx++;
 	}
 
@@ -35,9 +35,9 @@ void Gillespie_NRM_R::ApplyInOutBackward(int _i)
 void Gillespie_NRM_R::ApplyInOutForward(int _i)
 {
 	short reaction_mol_idx = 0;
-	for (auto it = inkTable[_i].in.cbegin(); it != inkTable[_i].in.cend(); ++it)
+	for (auto it = inTable[_i].in.cbegin(); it != inTable[_i].in.cend(); ++it)
 	{
-		quantities.at(*it) -= inkTable[_i].s.at(reaction_mol_idx);
+		quantities.at(*it) -= inTable[_i].s.at(reaction_mol_idx);
 		reaction_mol_idx++;
 	}
 
@@ -49,7 +49,42 @@ void Gillespie_NRM_R::ApplyInOutForward(int _i)
 	}
 }
 
-void Gillespie_NRM_R::BuildDep( int _nbReactions)
+//void Gillespie_NRM_R::BuildDep( int _nbReactions)
+//{
+//	for (int i = 0; i < _nbReactions; i++)
+//	{
+//		std::vector<int> iDep;
+//		std::vector<int> inOutSymDiff;
+//
+//		std::set_symmetric_difference(
+//			inTable[i].in.begin(), inTable[i].in.end(),
+//			outTable[i].out.begin(), outTable[i].out.end(),
+//			std::back_inserter(inOutSymDiff));		
+//
+//		for (int j = 0; j < _nbReactions; j++)
+//		{
+//			if (j != i) //a rule is always in its own dependency so no need to check i==j
+//			{
+//				std::vector<int> intersection;
+//				std::set_intersection(
+//					inOutSymDiff.begin(), inOutSymDiff.end(),
+//					inTable[j].in.begin(), inTable[j].in.end(),
+//					std::back_inserter(intersection));
+//
+//				if (intersection.size() > 0)
+//				{
+//					iDep.push_back(j);
+//				}
+//			}
+//		}
+//
+//		DepRow depRow(iDep);
+//
+//		depTable.push_back(depRow);
+//	}
+//}
+
+void Gillespie_NRM_R::BuildDep(int _nbReactions, std::unordered_map<std::string, int>* _nameMap)
 {
 	for (int i = 0; i < _nbReactions; i++)
 	{
@@ -57,19 +92,36 @@ void Gillespie_NRM_R::BuildDep( int _nbReactions)
 		std::vector<int> inOutSymDiff;
 
 		std::set_symmetric_difference(
-			inkTable[i].in.begin(), inkTable[i].in.end(),
+			inTable[i].in.begin(), inTable[i].in.end(),
 			outTable[i].out.begin(), outTable[i].out.end(),
 			std::back_inserter(inOutSymDiff));		
 
+		
 		for (int j = 0; j < _nbReactions; j++)
 		{
 			if (j != i) //a rule is always in its own dependency so no need to check i==j
 			{
+				std::vector<int> klSpecies;
+				astEvaluator->ExtractVariables(astEvaluator->getNode(kineticLaws[j]), _nameMap, &klSpecies);
+				/*std::cout << "Variables extracted for reaction " << j <<": ";
+				for (auto it = klSpecies.begin(); it != klSpecies.end(); ++it)
+				{
+					std::cout << " " << *it;
+				}
+				std::cout << std::endl;*/
+
 				std::vector<int> intersection;
 				std::set_intersection(
 					inOutSymDiff.begin(), inOutSymDiff.end(),
-					inkTable[j].in.begin(), inkTable[j].in.end(),
+					klSpecies.begin(), klSpecies.end(),
 					std::back_inserter(intersection));
+
+				/*std::cout << "Intersection with modified species: ";
+				for (auto it = intersection.begin(); it != intersection.end(); ++it)
+				{
+					std::cout << " " << *it;
+				}
+				std::cout << std::endl;*/
 
 				if (intersection.size() > 0)
 				{
@@ -79,23 +131,22 @@ void Gillespie_NRM_R::BuildDep( int _nbReactions)
 		}
 
 		DepRow depRow(iDep);
-
 		depTable.push_back(depRow);
 	}
 }
 
 float Gillespie_NRM_R::ComputePropensity(int _i)
 {
-	float a = inkTable[_i].k;
+	/*float a = parameters[_i];
 	short reaction_mol_idx = 0;
-	for (auto it = inkTable[_i].in.cbegin();
-		it != inkTable[_i].in.cend();
+	for (auto it = inTable[_i].in.cbegin();
+		it != inTable[_i].in.cend();
 		++it)
 	{
-		a *= nCr(quantities[*it], inkTable[_i].s[reaction_mol_idx]);
+		a *= nCr(quantities[*it], inTable[_i].s[reaction_mol_idx]);
 		reaction_mol_idx++;
-	}
-
+	}*/
+	float a = astEvaluator->Evaluate(astEvaluator->getNode(kineticLaws[_i]));
 	propensities[_i] = a;
 
 	return a;
@@ -119,65 +170,21 @@ void Gillespie_NRM_R::GenerateTAUs(int _nbReactions)
 	//std::cout << std::endl;
 }
 
-void Gillespie_NRM_R::Initializes(int _nbMolecules, int _nbReactions, unsigned long _rng_seed)
-{
-	quantities = { 6,14,8,12,9,3,5 };
-
-	std::vector<int> in0 = { 0,1 };
-	std::vector<int> in1 = { 1,2 };
-	std::vector<int> in2 = { 3,4 };
-	std::vector<int> in3 = { 5 };
-	std::vector<int> in4 = { 4,6 };
-	
-	std::vector<int> inS0 = { 1,1 };
-	std::vector<int> inS1 = { 1,1 };
-	std::vector<int> inS2 = { 1,1 };
-	std::vector<int> inS3 = { 1 };
-	std::vector<int> inS4 = { 1,1 };
-
-	inkTable = { InkRow(&in0, &inS0, 1), InkRow(&in1, &inS1, 1), InkRow(&in2, &inS2, 1),
-				 InkRow(&in3, &inS3, 1), InkRow(&in4, &inS4, 1) };
-
-	std::vector<int> OutRow0 = { 2 };
-	std::vector<int> OutRow1 = { 3 };
-	std::vector<int> OutRow2 = { 4,5 };
-	std::vector<int> OutRow3 = { 3,6 };
-	std::vector<int> OutRow4 = { 0 };
-	
-	std::vector<int> outS0 = { 1 };
-	std::vector<int> outS1 = { 1 };
-	std::vector<int> outS2 = { 1,1 };
-	std::vector<int> outS3 = { 1,1 };
-	std::vector<int> outS4 = { 1 };
-
-	outTable = { OutRow(&OutRow0, &outS0),OutRow(&OutRow1, &outS1),OutRow(&OutRow2, &outS2),
-				 OutRow(&OutRow3, &outS3),OutRow(&OutRow4, &outS4) };
-
-	propensities = { 0,0,0,0,0 };
-
-	t = 0.f;
-
-	BuildDep(_nbReactions);
-
-	tauTable.reserve(_nbReactions);
-	init_state(_rng_seed, &rng);
-	GenerateTAUs(_nbReactions);
-
-	itmh.Initialize(&tauTable);
-
-	trace.reserve(1000);
-}
 
 void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 {
 	Model* sbmlModel = _sbmlDoc->getModel();
 	int nbSpecies = sbmlModel->getNumSpecies();
 	int nbReactions = sbmlModel->getNumReactions();
+	int nbParameters = sbmlModel->getNumParameters();
+	int nbRules = sbmlModel->getNumRules();
 
 	//Reserve space for the tables
 	quantities.reserve(nbSpecies);
-	inkTable.reserve(nbReactions);
+	parameters.reserve(nbParameters);
+	inTable.reserve(nbReactions);
 	outTable.reserve(nbReactions);
+	kineticLaws.reserve(nbReactions);
 	tauTable.reserve(nbReactions);
 	propensities.reserve(nbReactions);
 	t = 0.f;
@@ -186,21 +193,58 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	//index of appearance.
 	//Also fills in the species quantities table.
 	std::unordered_map<std::string, int> sp_name_idx_map;
+	std::unordered_map<std::string, int*> quantities_map;
 	Species* sp;
 	for (int i = 0; i < nbSpecies; ++i)
 	{
 		sp = sbmlModel->getSpecies(i);
 		sp_name_idx_map[sp->getId()] = i;
+		quantities_map[sp->getId()] = &quantities[i];
 		quantities.push_back(sp->getInitialAmount());
 	}
 
-	//Fill the Ink and Out tables
+	//Retrieve the parameters' values stored in the sbml file.
+	//If the parameter's is not defined as constant, then look
+	//for an assignement
+	std::unordered_map<std::string, int> param_name_idx_map;
+	std::unordered_map<std::string, float*> parameters_map;
+	Parameter* param;
+	for (int i = 0; i < nbParameters; i++)
+	{
+		param = sbmlModel->getParameter(i);
+		//std::cout << "Processing parameter " << param->getId() << "; constant = " << param->getConstant() << std::endl;
+		param_name_idx_map[param->getId()] = i;
+		parameters_map[param->getId()] = &parameters[i];
+		if (param->getConstant())
+		{
+			parameters[i] = (float)param->getValue();
+		}
+	}	
+
+	//Processes the parameters defined through rules
+	Rule* rule;
+	
+	for (int i = 0; i < nbRules; i++)
+	{
+		rule = sbmlModel->getRule(i);
+		if (rule->isParameter())
+		{
+			//std::cout << "Processing rule for parameter " << rule->getVariable() << ": " <<
+			//astEvaluator->Evaluate(rule->getMath(), &parameters_map) << std::endl;
+			//*parameters_map[rule->getVariable()] = astEvaluator->Evaluate(rule->getMath(), &parameters_map);
+			parameters[param_name_idx_map[rule->getVariable()]] = astEvaluator->Evaluate(rule->getMath(), &parameters_map);
+		}
+	}	
+
+	//Fill the In and Out tables
 	Reaction* r;
 	KineticLaw* kl;
 	int nbReactants;
 	int nbProducts;
 	for (int i = 0; i < nbReactions; ++i)
 	{
+		std::cout << std::endl;
+
 		r = sbmlModel->getReaction(i);
 		propensities.push_back(0);
 
@@ -216,10 +260,18 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 		}
 
 		kl = r->getKineticLaw();
-		/// TODO
-		///parse the MathML expression
+		//astEvaluator->PrettyPrintTree(kl->getMath(), 0);
+		int root = astEvaluator->Initializes(kl->getMath());
+		kineticLaws.push_back(root);
+		//kineticLaws[i] = astEvaluator->Initializes(kl->getMath());
+		//astEvaluator->PrettyPrintTree(kineticLaws[i],0);
 
-		inkTable.push_back(InkRow(&in, &inS, 1));
+		astEvaluator->ReduceVariables(astEvaluator->getNode(root), &parameters_map);
+		astEvaluator->ReduceVariables(astEvaluator->getNode(root), &quantities_map);
+		//std::cout << "Test evaluation of the kinetic law upon building: " << astEvaluator->PrettyPrintFormula(astEvaluator->getNode(root)) << "=" << astEvaluator->Evaluate(astEvaluator->getNode(root)) << std::endl;
+		//kineticLaws.push_back(klMath);
+
+		inTable.push_back(InRow(&in, &inS));
 
 		nbProducts = r->getNumProducts();
 		std::vector<int> out;
@@ -234,8 +286,18 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 		outTable.push_back(OutRow(&out, &outS));
 	}
 
+	// for debug
+	/*std::cout << std::endl;
+	for (int i = 0; i < nbReactions; i++)
+	{
+		astEvaluator->PrettyPrintTree(astEvaluator->getNode(kineticLaws[i]), 0);
+		std::cout << "Test evaluation of the kinetic law after building: " << 
+			astEvaluator->PrettyPrintFormula(astEvaluator->getNode(kineticLaws[i])) << "=" << 
+			astEvaluator->Evaluate(astEvaluator->getNode(kineticLaws[i])) << std::endl;
+	}*/
+
 	//Build the data structure representing the dependency graph.
-	BuildDep(nbReactions);
+	BuildDep(nbReactions, &sp_name_idx_map);
 
 	//Initializes the reversible Random Number Generator
 	init_state(123, &rng);
