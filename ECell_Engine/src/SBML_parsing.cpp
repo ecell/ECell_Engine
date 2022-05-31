@@ -195,15 +195,30 @@ void SBML_Parser::PrettyPrintSBMLDocument(SBMLDocument* _sbmlDoc)
         Reaction* r = sbmlModel->getReaction(i);
         int nbReactants = r->getNumReactants();
         int nbProducts = r->getNumProducts();
-        std::cout <<
-            "\t" << r->getId() << ":" << std::endl <<
 
-            "\t " << r->getReactant(0)->getSpecies();
+        std::cout << "\t" << r->getId() << ":" << std::endl;
+        if (nbReactants > 0)
+        {
+            std::cout << "\t " << r->getReactant(0)->getSpecies();
+        }
+        else
+        {
+            std::cout << "\t None";
+        }
         for (int j = 1; j < nbReactants; ++j)
         {
             std::cout << " + " << r->getReactant(j)->getSpecies();
         }
-        std::cout << " --> " << r->getProduct(0)->getSpecies();
+
+        if (nbProducts > 0)
+        {
+            std::cout << " --> " << r->getProduct(0)->getSpecies();
+        }
+        else
+        {
+            std::cout << " --> None";
+        }
+
         for (int j = 1; j < nbProducts; ++j)
         {
             std::cout << " + " << r->getProduct(j)->getSpecies();

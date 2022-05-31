@@ -8,7 +8,8 @@ void OpenCommand::AskUser()
 {
 	std::cout << std::endl << "Give file name: ";
 	std::cin >> answer;
-	answer = "GibsonAndBruckToyModel.xml";//added during dev time to bypass the time to write the name in the console everytime.
+	//answer = "GibsonAndBruckToyModel.xml";//added during dev time to bypass the time to write the name in the console everytime.
+	answer = "p53_L3V2_mod.xml";//added during dev time to bypass the time to write the name in the console everytime.
 }
 
 void OpenCommand::Execute()

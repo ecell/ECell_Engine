@@ -10,7 +10,8 @@ std::ostream& operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r)
 	std::cout << "(";
 	for (auto it = _g_nrm_r.quantities.cbegin(); it != _g_nrm_r.quantities.cend(); ++it)
 	{
-		std::cout << *it << " ";
+		//std::cout << _g_nrm_r.astEvaluator->getNode(*it)->getValueEx() << " ";
+		std::cout << _g_nrm_r.astEvaluator->getNamedNodeValue(*it) << " ";
 	}
 	std::cout << ") " << std::endl;
 }
@@ -18,16 +19,20 @@ std::ostream& operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r)
 void Gillespie_NRM_R::ApplyInOutBackward(int _i)
 {
 	short reaction_mol_idx = 0;
+	int value;
 	for (auto it = inTable[_i].in.cbegin(); it != inTable[_i].in.cend(); ++it)
 	{
-		quantities.at(*it) += inTable[_i].s.at(reaction_mol_idx);
+		value = astEvaluator->getNamedNodeValue(*it);
+		astEvaluator->setNamedNodeValue(*it, value + inTable[_i].s.at(reaction_mol_idx));
 		reaction_mol_idx++;
 	}
 
 	reaction_mol_idx = 0;
 	for (auto it = outTable[_i].out.cbegin(); it != outTable[_i].out.cend(); ++it)
 	{
-		quantities.at(*it) -= outTable[_i].s.at(reaction_mol_idx);
+		//quantities.at(*it) -= outTable[_i].s.at(reaction_mol_idx);
+		value = astEvaluator->getNamedNodeValue(*it);
+		astEvaluator->setNamedNodeValue(*it, value - outTable[_i].s.at(reaction_mol_idx));
 		reaction_mol_idx++;
 	}
 }
@@ -35,54 +40,25 @@ void Gillespie_NRM_R::ApplyInOutBackward(int _i)
 void Gillespie_NRM_R::ApplyInOutForward(int _i)
 {
 	short reaction_mol_idx = 0;
+	int value;
+
 	for (auto it = inTable[_i].in.cbegin(); it != inTable[_i].in.cend(); ++it)
 	{
-		quantities.at(*it) -= inTable[_i].s.at(reaction_mol_idx);
+		//quantities.at(*it) -= inTable[_i].s.at(reaction_mol_idx);
+		value = astEvaluator->getNamedNodeValue(*it);
+		astEvaluator->setNamedNodeValue(*it, value - inTable[_i].s.at(reaction_mol_idx));
 		reaction_mol_idx++;
 	}
 
 	reaction_mol_idx = 0;
 	for (auto it = outTable[_i].out.cbegin(); it != outTable[_i].out.cend(); ++it)
 	{
-		quantities.at(*it) += outTable[_i].s.at(reaction_mol_idx);
+		//quantities.at(*it) += outTable[_i].s.at(reaction_mol_idx);
+		value = astEvaluator->getNamedNodeValue(*it);
+		astEvaluator->setNamedNodeValue(*it, value + outTable[_i].s.at(reaction_mol_idx));
 		reaction_mol_idx++;
 	}
 }
-
-//void Gillespie_NRM_R::BuildDep( int _nbReactions)
-//{
-//	for (int i = 0; i < _nbReactions; i++)
-//	{
-//		std::vector<int> iDep;
-//		std::vector<int> inOutSymDiff;
-//
-//		std::set_symmetric_difference(
-//			inTable[i].in.begin(), inTable[i].in.end(),
-//			outTable[i].out.begin(), outTable[i].out.end(),
-//			std::back_inserter(inOutSymDiff));		
-//
-//		for (int j = 0; j < _nbReactions; j++)
-//		{
-//			if (j != i) //a rule is always in its own dependency so no need to check i==j
-//			{
-//				std::vector<int> intersection;
-//				std::set_intersection(
-//					inOutSymDiff.begin(), inOutSymDiff.end(),
-//					inTable[j].in.begin(), inTable[j].in.end(),
-//					std::back_inserter(intersection));
-//
-//				if (intersection.size() > 0)
-//				{
-//					iDep.push_back(j);
-//				}
-//			}
-//		}
-//
-//		DepRow depRow(iDep);
-//
-//		depTable.push_back(depRow);
-//	}
-//}
 
 void Gillespie_NRM_R::BuildDep(int _nbReactions, std::unordered_map<std::string, int>* _nameMap)
 {
@@ -94,15 +70,25 @@ void Gillespie_NRM_R::BuildDep(int _nbReactions, std::unordered_map<std::string,
 		std::set_symmetric_difference(
 			inTable[i].in.begin(), inTable[i].in.end(),
 			outTable[i].out.begin(), outTable[i].out.end(),
-			std::back_inserter(inOutSymDiff));		
+			std::back_inserter(inOutSymDiff));
 
+		std::sort(inOutSymDiff.begin(), inOutSymDiff.end());
+
+		/*std::cout << "Variables i the symetric diff of reaction " << i << ": ";
+		for (auto it = inOutSymDiff.begin(); it != inOutSymDiff.end(); ++it)
+		{
+			std::cout << " " << *it;
+		}
+		std::cout << std::endl;*/
 		
 		for (int j = 0; j < _nbReactions; j++)
 		{
 			if (j != i) //a rule is always in its own dependency so no need to check i==j
 			{
 				std::vector<int> klSpecies;
+				//astEvaluator->PrettyPrintTree(astEvaluator->getNode(kineticLaws[j]), 0);
 				astEvaluator->ExtractVariables(astEvaluator->getNode(kineticLaws[j]), _nameMap, &klSpecies);
+
 				/*std::cout << "Variables extracted for reaction " << j <<": ";
 				for (auto it = klSpecies.begin(); it != klSpecies.end(); ++it)
 				{
@@ -110,12 +96,14 @@ void Gillespie_NRM_R::BuildDep(int _nbReactions, std::unordered_map<std::string,
 				}
 				std::cout << std::endl;*/
 
+				std::sort(klSpecies.begin(), klSpecies.end());
+
 				std::vector<int> intersection;
 				std::set_intersection(
 					inOutSymDiff.begin(), inOutSymDiff.end(),
 					klSpecies.begin(), klSpecies.end(),
 					std::back_inserter(intersection));
-
+				
 				/*std::cout << "Intersection with modified species: ";
 				for (auto it = intersection.begin(); it != intersection.end(); ++it)
 				{
@@ -137,15 +125,6 @@ void Gillespie_NRM_R::BuildDep(int _nbReactions, std::unordered_map<std::string,
 
 float Gillespie_NRM_R::ComputePropensity(int _i)
 {
-	/*float a = parameters[_i];
-	short reaction_mol_idx = 0;
-	for (auto it = inTable[_i].in.cbegin();
-		it != inTable[_i].in.cend();
-		++it)
-	{
-		a *= nCr(quantities[*it], inTable[_i].s[reaction_mol_idx]);
-		reaction_mol_idx++;
-	}*/
 	float a = astEvaluator->Evaluate(astEvaluator->getNode(kineticLaws[_i]));
 	propensities[_i] = a;
 
@@ -180,7 +159,7 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 
 	//Reserve space for the tables
 	quantities.reserve(nbSpecies);
-	parameters.reserve(nbParameters);
+	//parameters.reserve(nbParameters);
 	inTable.reserve(nbReactions);
 	outTable.reserve(nbReactions);
 	kineticLaws.reserve(nbReactions);
@@ -191,75 +170,140 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	//Build the map between species' names and
 	//index of appearance.
 	//Also fills in the species quantities table.
-	std::unordered_map<std::string, int> sp_name_idx_map;
-	std::unordered_map<std::string, int*> quantities_map;
+	std::unordered_map<std::string, int> variables_name_idx_map = {{"UNKNOWN", -1}};
+	//std::unordered_map<std::string, int*> quantities_map;
 	Species* sp;
+	ASTNode* nameASTNode;
+	ASTNode* valueASTNode;
 	for (int i = 0; i < nbSpecies; ++i)
 	{
 		sp = sbmlModel->getSpecies(i);
-		sp_name_idx_map[sp->getId()] = i;
-		quantities_map[sp->getId()] = &quantities[i];
-		quantities.push_back(sp->getInitialAmount());
+
+		nameASTNode = new ASTNode(ASTNodeType_t::AST_NAME);
+		//nameASTNode->setId(sp->getId().c_str());
+		nameASTNode->setName(sp->getId().c_str());
+		int nameNodeIdx = astEvaluator->Initializes(nameASTNode, &variables_name_idx_map); //nodeIdx is also equal to 2*i
+
+		valueASTNode = new ASTNode(ASTNodeType_t::AST_INTEGER);
+		//valueASTNode->setId(sp->getId().c_str());
+		valueASTNode->setValue(sp->getInitialAmount());
+		int valueNodeIdx = astEvaluator->Initializes(valueASTNode, &variables_name_idx_map); //nodeIdx is also equal to 2*i+1
+
+		ASTNodeEx* nameASTNodeEx = astEvaluator->getNode(nameNodeIdx);
+		//ASTNodeEx* valueASTNodeEx = astEvaluator->getNode(valueNodeIdx);
+		//astNodeEx->setValueEx(sp->getInitialAmount());
+		//astNodeEx->setNameEx(sp->getId().c_str());
+
+		nameASTNodeEx->setLeftChildEx(valueNodeIdx);
+		//nameASTNodeEx->setNumChildrenEx();
+		
+		//quantities_map[sp->getId()] = &quantities[i];
+		quantities.push_back(nameNodeIdx);//index to "astEvaluator.formulasNodes"
+		variables_name_idx_map[sp->getId()] = nameNodeIdx;
+
+		//astEvaluator->addNode(astNodeExSpNameBase);
+		//astEvaluator->addNode(astNodeExSpValue);
+
+		delete nameASTNode;
+		delete valueASTNode;
 	}
+	//delete astNodeSpValue;
 
 	//Retrieve the parameters' values stored in the sbml file.
 	//If the parameter's is not defined as constant, then look
 	//for an assignement
-	std::unordered_map<std::string, int> param_name_idx_map;
-	std::unordered_map<std::string, float*> parameters_map;
+	//std::unordered_map<std::string, int> param_name_idx_map;
+	//std::unordered_map<std::string, float*> parameters_map;
 	Parameter* param;
 	for (int i = 0; i < nbParameters; i++)
 	{
 		param = sbmlModel->getParameter(i);
 		//std::cout << "Processing parameter " << param->getId() << "; constant = " << param->getConstant() << std::endl;
-		parameters[i] = NAN;
-		param_name_idx_map[param->getId()] = i;
-		parameters_map[param->getId()] = &parameters[i];
+		//parameters[i] = NAN;
+		
+		//parameters_map[param->getId()] = &parameters[i];
+		//astNode = new ASTNode(ASTNodeType_t::AST_NAME);
+		//astNode->setId(param->getId().c_str());
+		//astNode->setName(param->getId().c_str());
+
+		//int nodeIdx = astEvaluator->Initializes(astNode, &variables_name_idx_map);
+		
+
+		nameASTNode = new ASTNode(ASTNodeType_t::AST_NAME);
+		//nameASTNode->setId(param->getId().c_str());
+		nameASTNode->setName(param->getId().c_str());
+		int nameNodeIdx = astEvaluator->Initializes(nameASTNode, &variables_name_idx_map); //nodeIdx is also equal to nbSpecies+2*i
+
+		ASTNodeEx* nameASTNodeEx = astEvaluator->getNode(nameNodeIdx);
+		//ASTNodeEx* valueASTNodeEx = astEvaluator->getNode(valueNodeIdx);
+		//astNodeEx->setValueEx(sp->getInitialAmount());
+		//astNodeEx->setNameEx(sp->getId().c_str());
+		
+
+		variables_name_idx_map[param->getId()] = nameNodeIdx;
+		//ASTNodeEx* astNodeEx = astEvaluator->getNode(nodeIdx);
+
 		if (param->getConstant())
 		{
-			parameters[i] = (float)param->getValue();
+			valueASTNode = new ASTNode(ASTNodeType_t::AST_REAL);
+			//valueASTNode->setId(param->getId().c_str());
+			valueASTNode->setValue(param->getValue());
+			int valueNodeIdx = astEvaluator->Initializes(valueASTNode, &variables_name_idx_map); //nodeIdx is also equal to nbSpecies+2*i+1
+
+			//astNodeEx->setTypeEx(ASTNodeType_t::AST_REAL);
+			//astNodeEx->setValueEx(param->getValue());
+			//parameters[i] = (float)param->getValue();
+			//astNode->setValue(param->getValue());
+			nameASTNodeEx->setLeftChildEx(valueNodeIdx);
+			//nameASTNodeEx->setNumChildrenEx();
+			delete valueASTNode;
 		}
-		std::cout << "parameters" << "[" << i << "]=" << parameters[i] << std::endl;
+		delete nameASTNode;
+		
+		//std::cout << "parameters" << "[" << i << "]=" << parameters[i] << std::endl;
 	}
 
 	//Processes the parameters defined through rules
 	Rule* rule;
-	std::queue<Rule> rulesQ;
 	for (int i = 0; i < nbRules; i++)
 	{
+		std::cout << std::endl;
 		rule = sbmlModel->getRule(i);
 		if (rule->isParameter())
 		{
-			//std::cout << "Processing rule for parameter " << rule->getVariable() << ": " <<
-			//astEvaluator->Evaluate(rule->getMath(), &parameters_map) << std::endl;
-			//*parameters_map[rule->getVariable()] = astEvaluator->Evaluate(rule->getMath(), &parameters_map);
-			//std::cout << "is rule " << rule->getVariable() << " sound for evaluation: " << astEvaluator->isSound(rule->getMath(), &parameters_map) << std::endl;
-			if (astEvaluator->isSound(rule->getMath(), &parameters_map))
-			{
-				parameters[param_name_idx_map[rule->getVariable()]] = astEvaluator->Evaluate(rule->getMath(), &parameters_map);
-			}
-			else
-			{
-				rulesQ.push(*rule);
-			}
+			
+
+			nameASTNode = rule->getMath()->deepCopy();
+			nameASTNode->setId(rule->getVariable().c_str());
+			int valueNodeIdx = astEvaluator->Initializes(nameASTNode, &variables_name_idx_map);
+
+			//std::cout << "Processing rule for parameter " << rule->getVariable() << std::endl;
+			//astEvaluator->PrettyPrintTree(astEvaluator->getNode(valueNodeIdx), 0);
+			// 
+			//The ref to the non-constant node that was already created.
+			//Basically the parent of the rule node we just created.
+			ASTNodeEx* paramNameNode = astEvaluator->getNode(variables_name_idx_map[rule->getVariable()]);
+			paramNameNode->setLeftChildEx(valueNodeIdx);
+			paramNameNode->setNumChildrenEx();
 		}
+		delete nameASTNode;
 	}
 
-	int nbRulesQ = rulesQ.size();
-	while (nbRulesQ > 0)
-	{
-		if (astEvaluator->isSound(rulesQ.front().getMath(), &parameters_map))
-		{
-			parameters[param_name_idx_map[rulesQ.front().getVariable()]] = astEvaluator->Evaluate(rulesQ.front().getMath(), &parameters_map);
-			nbRulesQ--;
-		}
-		else
-		{
-			rulesQ.push(rulesQ.front());
-		}
-		rulesQ.pop();
-	}
-
+	//int nbRulesQ = rulesQ.size();
+	//while (nbRulesQ > 0)
+	//{
+	//	if (astEvaluator->isSound(rulesQ.front().getMath(), &parameters_map))
+	//	{
+	//		parameters[param_name_idx_map[rulesQ.front().getVariable()]] = astEvaluator->Evaluate(rulesQ.front().getMath(), &parameters_map);
+	//		nbRulesQ--;
+	//	}
+	//	else
+	//	{
+	//		rulesQ.push(rulesQ.front());
+	//	}
+	//	rulesQ.pop();
+	//}
+	
 	//Fill the In and Out tables
 	Reaction* r;
 	KineticLaw* kl;
@@ -277,19 +321,19 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 		inS.reserve(nbReactants);
 		for (int j = 0; j < nbReactants; ++j)
 		{
-			in.push_back(sp_name_idx_map[r->getReactant(j)->getSpecies()]);
+			in.push_back(variables_name_idx_map[r->getReactant(j)->getSpecies()]);
 			inS.push_back(r->getReactant(j)->getStoichiometry());
 		}
 
 		kl = r->getKineticLaw();
 		//astEvaluator->PrettyPrintTree(kl->getMath(), 0);
-		int root = astEvaluator->Initializes(kl->getMath());
+		int root = astEvaluator->Initializes(kl->getMath(), &variables_name_idx_map);
 		kineticLaws.push_back(root);
 		//kineticLaws[i] = astEvaluator->Initializes(kl->getMath());
 		//astEvaluator->PrettyPrintTree(kineticLaws[i],0);
 
-		astEvaluator->ReduceVariables(astEvaluator->getNode(root), &parameters_map);
-		astEvaluator->ReduceVariables(astEvaluator->getNode(root), &quantities_map);
+		//astEvaluator->ReduceVariables(astEvaluator->getNode(root), &parameters_map);
+		//astEvaluator->ReduceVariables(astEvaluator->getNode(root), &quantities_map);
 		//std::cout << "Test evaluation of the kinetic law upon building: " << astEvaluator->PrettyPrintFormula(astEvaluator->getNode(root)) << "=" << astEvaluator->Evaluate(astEvaluator->getNode(root)) << std::endl;
 		//kineticLaws.push_back(klMath);
 
@@ -302,24 +346,24 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 		outS.reserve(nbReactants);
 		for (int j = 0; j < nbProducts; ++j)
 		{
-			out.push_back(sp_name_idx_map[r->getProduct(j)->getSpecies()]);
+			out.push_back(variables_name_idx_map[r->getProduct(j)->getSpecies()]);
 			outS.push_back(r->getProduct(j)->getStoichiometry());
 		}
 		outTable.push_back(OutRow(&out, &outS));
 	}
 
 	// for debug
-	/*std::cout << std::endl;
-	for (int i = 0; i < nbReactions; i++)
-	{
-		astEvaluator->PrettyPrintTree(astEvaluator->getNode(kineticLaws[i]), 0);
-		std::cout << "Test evaluation of the kinetic law after building: " << 
-			astEvaluator->PrettyPrintFormula(astEvaluator->getNode(kineticLaws[i])) << "=" << 
-			astEvaluator->Evaluate(astEvaluator->getNode(kineticLaws[i])) << std::endl;
-	}*/
+	//std::cout << std::endl;
+	//for (int i = 0; i < nbReactions; i++)
+	//{
+	//	//astEvaluator->PrettyPrintTree(astEvaluator->getNode(kineticLaws[i]), 0);
+	//	std::cout << "Test evaluation of the kinetic law after building: " << 
+	//		astEvaluator->PrettyPrintFormula(astEvaluator->getNode(kineticLaws[i])) << "=" << 
+	//		astEvaluator->Evaluate(astEvaluator->getNode(kineticLaws[i])) << std::endl;
+	//}
 
 	//Build the data structure representing the dependency graph.
-	BuildDep(nbReactions, &sp_name_idx_map);
+	BuildDep(nbReactions, &variables_name_idx_map);
 
 	//Initializes the reversible Random Number Generator
 	init_state(123, &rng);
@@ -358,6 +402,11 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 		//std::cout << std::endl;
 		//std::cout << "Firing Rule number: " << muTau.first << std::endl;
 		//step 4
+		//std::cout << "astEvaluator address " << this->astEvaluator << std::endl;
+		//std::cout << "astEvaluator formulaNodes has " << astEvaluator->getNbNodes() << " nodes" << std::endl;
+		//std::cout << "&itmh: " << &itmh << " nodes" << std::endl;
+		//std::cout << "&tauTable: " << &tauTable << " nodes" << std::endl;
+		int test = 0;
 		ApplyInOutForward(muTau.first);
 		t = muTau.second;
 		ManageTrace();
