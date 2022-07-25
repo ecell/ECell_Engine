@@ -49,12 +49,100 @@ LIBSBML_CPP_NAMESPACE_USE
 void SBML_Writer::DefineParameter(
     Parameter* _para_ptr,
     const std::string& _paraID,
-    const std::string _unit,
+    const std::string& _unit)
+{
+    _para_ptr->setId(_paraID);
+    _para_ptr->setUnits(_unit);
+    _para_ptr->setConstant(false);
+}
+
+void SBML_Writer::DefineParameter(
+    Parameter* _para_ptr,
+    const std::string& _paraID,
+    const std::string& _unit,
     const double _value)
 {
     _para_ptr->setId(_paraID);
     _para_ptr->setValue(_value);
     _para_ptr->setUnits(_unit);
+    _para_ptr->setConstant(true);
+}
+
+void SBML_Writer::DefineParameterAssignementRule(
+    AssignmentRule* _ar,
+    const std::string& _variableID,
+    const std::string& _formula)
+{
+    _ar->setVariable(_variableID);
+    ASTNode* math = SBML_parseL3Formula(_formula.c_str());
+    _ar->setMath(math);
+}
+
+void SBML_Writer::DefineReaction(
+    ReactionPointersCapsule* _rpc,
+    const std::string& _rID,
+    const std::vector<std::string>& _reactantIDs,
+    const std::vector<int>& _reactantStoichs,
+    const std::vector<std::string>& _productIDs,
+    const std::vector<int>& _productStoichs,
+    const std::string& _kParamID)
+{
+    _rpc->r->setId(_rID);
+    _rpc->r->setReversible(false);
+
+    // Creates the Reactants.
+    // The object will be created within the reaction in the SBML <listOfReactants>.
+    int cnt = 0;
+    for (auto it = _reactantIDs.begin(); it != _reactantIDs.end(); ++it)
+    {
+        _rpc->spr = _rpc->r->createReactant();
+        _rpc->spr->setSpecies(*it);
+        _rpc->spr->setStoichiometry(_reactantStoichs[cnt]);
+        _rpc->spr->setConstant(false);
+        cnt++;
+    }
+
+    // Creates the products.
+    cnt = 0;
+    for (auto it = _productIDs.begin(); it != _productIDs.end(); ++it)
+    {
+        _rpc->spr = _rpc->r->createProduct();
+        _rpc->spr->setSpecies(*it);
+        _rpc->spr->setStoichiometry(_productStoichs[cnt]);
+        _rpc->spr->setConstant(false);
+        cnt++;
+    }
+
+    //---------------------------------------------------------------------------
+    // Creates a KineticLaw object inside the Reaction object ("R1"). 
+    //---------------------------------------------------------------------------
+    _rpc->kl = _rpc->r->createKineticLaw();
+
+    ASTNode* astKl_Formula = new ASTNode(AST_NAME);
+    string mathXMLString =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "  <apply>"
+        "    <times/>"
+        "    <ci> ";
+    mathXMLString += _kParamID;
+    mathXMLString += " </ci>";
+    cnt = 0;
+    for (auto it = _reactantIDs.begin(); it != _reactantIDs.end(); ++it)
+    {
+        /*mathXMLString += "    <ci> ";
+        mathXMLString += *it;
+        mathXMLString += " </ci>";*/
+        mathXMLString += str_nCR(*it, _reactantStoichs[cnt]);
+        cnt++;
+    }
+
+    mathXMLString +=
+        "  </apply>"
+        "</math>";
+
+    astKl_Formula = readMathMLFromString(mathXMLString.c_str());
+    _rpc->kl->setMath(astKl_Formula);
+    delete astKl_Formula;
 }
 
 void SBML_Writer::DefineSpecies(
@@ -76,7 +164,7 @@ void SBML_Writer::DefineSpecies(
     _sp_ptr->setName(_name);
     // Sets the "compartment" attribute of the Species object to identify the 
     // compartment in which the Species object is located.
-    
+
     // Sets the "initialAmount" attribute of the Species object.
     //
     //  In SBML, the units of a Species object's initial quantity are
@@ -87,66 +175,9 @@ void SBML_Writer::DefineSpecies(
     //  "substanceUnits" to _unit and "hasOnlySubstanceUnits" to true. 
     //  So, the species defined do not take the unit of the compartement in
     //  which it is located.
-    
+
     _sp_ptr->setSubstanceUnits(_unit);
     _sp_ptr->setInitialAmount(_initialQuantity);
-}
-
-void SBML_Writer::DefineReaction(
-    ReactionPointersCapsule* _rpc,
-    const std::string& _rID,
-    const std::vector<std::string>& _reactantIDs,
-    const std::vector<std::string>& _productIDs,
-    const std::string& _kParamID)
-{
-    _rpc->r->setId(_rID);
-    _rpc->r->setReversible(false);
-
-    // Creates the Reactants.
-    // The object will be created within the reaction in the SBML <listOfReactants>.
-    for (auto it = _reactantIDs.begin(); it != _reactantIDs.end(); ++it)
-    {
-        _rpc->spr = _rpc->r->createReactant();
-        _rpc->spr->setSpecies(*it);
-        _rpc->spr->setConstant(false);
-    }
-
-    // Creates the products.
-    for (auto it = _productIDs.begin(); it != _productIDs.end(); ++it)
-    {
-        _rpc->spr = _rpc->r->createProduct();
-        _rpc->spr->setSpecies(*it);
-        _rpc->spr->setConstant(false);
-    }
-
-    //---------------------------------------------------------------------------
-    // Creates a KineticLaw object inside the Reaction object ("R1"). 
-    //---------------------------------------------------------------------------
-    _rpc->kl = _rpc->r->createKineticLaw();
-
-    ASTNode* astKl_Formula = new ASTNode(AST_NAME);
-    string mathXMLString =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "  <apply>"
-        "    <times/>"
-        "    <ci> ";
-    mathXMLString += _kParamID;
-    mathXMLString += " </ci>";
-
-    for (auto it = _reactantIDs.begin(); it != _reactantIDs.end(); ++it)
-    {
-        mathXMLString += "    <ci> ";
-        mathXMLString += *it;
-        mathXMLString += " </ci>";
-    }
-
-    mathXMLString +=
-        "  </apply>"
-        "</math>";
-
-    astKl_Formula = readMathMLFromString(mathXMLString.c_str());
-    _rpc->kl->setMath(astKl_Formula);
-    delete astKl_Formula;
 }
 
 
@@ -186,22 +217,51 @@ SBMLDocument* SBML_Writer::GibsonAndBruckToyModel()
     //unit->setExponent(1);
 
     //---------------------------------------------------------------------------  
-    // (UnitDefinition1) Creates an UnitDefinition object ("count_per_second")
+    // (UnitDefinition1) Creates an UnitDefinition object ("per_second")
     //---------------------------------------------------------------------------
     unitdef = model->createUnitDefinition();
-    unitdef->setId("item_per_second");
+    unitdef->setId("per_second");
     //  Creates an Unit inside the UnitDefinition object 
     unit = unitdef->createUnit();
-    unit->setId("item");
+    unit->setKind(UNIT_KIND_SECOND);
+    unit->setMultiplier(1);
+    unit->setScale(0);
+    unit->setExponent(-1);
+
+    //---------------------------------------------------------------------------  
+    // (UnitDefinition1) Creates an UnitDefinition object ("per_item_per_second")
+    //---------------------------------------------------------------------------
+    unitdef = model->createUnitDefinition();
+    unitdef->setId("per_item_per_second");
+    //  Creates an Unit inside the UnitDefinition object 
+    unit = unitdef->createUnit();
     unit->setKind(UNIT_KIND_ITEM);
     unit->setMultiplier(1);
     unit->setScale(0);
-    unit->setExponent(1);
+    unit->setExponent(-1);
 
     //  Creates an Unit inside the UnitDefinition object 
     unit = unitdef->createUnit();
     unit->setKind(UNIT_KIND_SECOND);
-    unit->setId("per_second");
+    unit->setMultiplier(1);
+    unit->setScale(0);
+    unit->setExponent(-1);
+
+    //---------------------------------------------------------------------------  
+    // (UnitDefinition1) Creates an UnitDefinition object ("per_itemSQ_per_second")
+    //---------------------------------------------------------------------------
+    unitdef = model->createUnitDefinition();
+    unitdef->setId("per_itemSQ_per_second");
+    //  Creates an Unit inside the UnitDefinition object 
+    unit = unitdef->createUnit();
+    unit->setKind(UNIT_KIND_ITEM);
+    unit->setMultiplier(1);
+    unit->setScale(0);
+    unit->setExponent(-2);
+
+    //  Creates an Unit inside the UnitDefinition object 
+    unit = unitdef->createUnit();
+    unit->setKind(UNIT_KIND_SECOND);
     unit->setMultiplier(1);
     unit->setScale(0);
     unit->setExponent(-1);
@@ -250,41 +310,55 @@ SBMLDocument* SBML_Writer::GibsonAndBruckToyModel()
     sp = model->createSpecies();
     DefineSpecies(sp, "G", "G", compName, "item", 3);
     
+    //---------------------------------------------------------------------------
+    // Creates Global Parameters objects inside the Model object.
+    //---------------------------------------------------------------------------
+    // Temporary pointers
+    Parameter* para = model->createParameter();
+    DefineParameter(para, "k1", "per_item_per_second");
+
+    para = model->createParameter();
+    DefineParameter(para, "k2", "per_item_per_second");
+
+    para = model->createParameter();
+    DefineParameter(para, "k3", "per_item_per_second", 1);
+
+    para = model->createParameter();
+    DefineParameter(para, "k4", "per_second", 1);
+
+    para = model->createParameter();
+    DefineParameter(para, "k5", "per_item_per_second", 1);
+
+    //---------------------------------------------------------------------------
+    // Creates an assignment rule for a parameter inside the Model object.
+    //---------------------------------------------------------------------------
+    AssignmentRule* ar = model->createAssignmentRule();
+    DefineParameterAssignementRule(ar, "k1", "1per_item_per_second+(2dimensionless*k2-1per_item_per_second/2dimensionless)");
+
+    ar = model->createAssignmentRule();
+    DefineParameterAssignementRule(ar, "k2", "2dimensionless*k3");
 
     //---------------------------------------------------------------------------
     // Creates Reaction objects inside the Model object.
     //---------------------------------------------------------------------------
     // Temporary pointers.
     ReactionPointersCapsule rpc;
-    Parameter* para;
 
     // Creates the reaction
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R1", {"A", "B"}, {"C"}, "k1");
-    // Creates local Parameter object inside the KineticLaw object associated with the
-    // last created reaction.
-    para = rpc.kl->createParameter();
-    DefineParameter(para, "k1", "item_per_second", 1);
+    DefineReaction(&rpc, "R1", {"A", "B"}, { 1, 1 }, {"C"}, { 1 }, "k1");
 
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R2", { "B", "C" }, { "D" }, "k2");
-    para = rpc.kl->createParameter();
-    DefineParameter(para, "k2", "item_per_second", 1);
+    DefineReaction(&rpc, "R2", { "B", "C" }, { 1, 1 }, { "D" }, { 1 }, "k2");
 
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R3", { "D", "E" }, { "D","F" }, "k3");
-    para = rpc.kl->createParameter();
-    DefineParameter(para, "k3", "item_per_second", 1);
+    DefineReaction(&rpc, "R3", { "D", "E" }, { 1, 1 }, { "E","F" }, { 1, 1 }, "k3");
 
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R4", { "F" }, { "D", "G" }, "k4");
-    para = rpc.kl->createParameter();
-    DefineParameter(para, "k4", "item_per_second", 1);
+    DefineReaction(&rpc, "R4", { "F" }, { 1 }, { "D", "G" }, { 1, 1 }, "k4");
 
     rpc.r = model->createReaction();
-    DefineReaction(&rpc, "R5", { "E", "G" }, { "A" }, "k5");
-    para = rpc.kl->createParameter();
-    DefineParameter(para, "k5", "item_per_second", 1);
+    DefineReaction(&rpc, "R5", { "E", "G" }, { 1, 1 }, { "A" }, { 1 }, "k5");
     
     return sbmlDoc;
 }

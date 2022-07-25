@@ -28,6 +28,11 @@ void SimulationLoop::LoopLogic()
 		//Play catch up on the Gillespie Simulation
 		gillespieSimulationEnv.RunForward(simulationTimer.elapsedTime);
 
+		//
+		//DO OTHER THINGS REALTED TO THE ENGINE
+		//
+
+		//Compute delta time
 		float endTime = simulationTimer.ReadHighResTimer();
 		simulationTimer.deltaTime = simulationTimer.GetDuration(beginTime, endTime);
 		simulationTimer.CheckSimulationDeltaTime();

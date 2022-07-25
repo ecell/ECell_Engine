@@ -7,12 +7,12 @@
 
 void  ECellEngine::Main()
 {
-	/*SBMLDocument* sbmlDoc = 0;
+	SBMLDocument* sbmlDoc = 0;
 	bool SBMLok = false;
 	sbmlDoc = sbmlWriter.GibsonAndBruckToyModel();
 	SBMLok = sbmlParser.ValidateSBML(sbmlDoc);
 	if (SBMLok) sbmlWriter.WriteSBML(sbmlDoc, "GibsonAndBruckToyModel.xml");
-	delete sbmlDoc;*/
+	delete sbmlDoc;
 
 	/*SBMLDocument* sbmlDoc = sbmlParser.OpenSBMLFile("GibsonAndBruckToyModel.xml");
 	sbmlParser.PrettyPrintSBMLDocument(sbmlDoc);*/

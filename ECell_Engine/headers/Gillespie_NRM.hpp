@@ -1,27 +1,60 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <queue>
 #include <sbml/SBMLTypes.h>
 extern "C" {
 #include "revrand.h"
 }
 #include "Gillespie_NRM_Data.hpp"
+#include "math_utility.hpp"
+#include "ASTNode_parser.hpp"
 
 class Gillespie_NRM_R
 {
 private:
+	// With i the index of an element (i.e. species) in the vector "quantities", 
+	// quantities[i] is the index of the ASTNodeEx in "ASTEvaluator.formulasNodes"
+	// containing the value of the species. This is a shortcut table when we need
+	// the quantity of species i outside of the evaluation table.
 	std::vector<int> quantities;
-	std::vector<InkRow> inkTable;
+
+	// The inTable contains the information about every species mentioned as
+	// reactants in a reaction. There should be as many elements in inTable as there
+	// are reactions.
+	std::vector<InRow> inTable;
+
+
+	//std::vector<float> parameters;
+
+	// With i the index of an element (i.e. kinetic law) in the vector "kineticLaws", 
+	// kineticLaws[i] is the index of the root ASTNodeEx in "ASTEvaluator.formulasNodes"
+	// from where we can evaluate the value of the kineticLaw.
+	std::vector<int> kineticLaws;
+
+	// A shortcut table storing the results of the evaluation of the kineticLaws
 	std::vector<float> propensities;
+
+	// The outTable contains the information about every species mentioned as
+	// products in a reaction. There should as many elements in outTable as there
+	// are reactions.
 	std::vector<OutRow> outTable;
+
+	// The table containing the information about formulas dependencies on species.
+	// The entry i in depTable gives us the index of root ASTNodeEx in 
+	// "ASTEvaluator.formulasNodes" corresponding to the kineticLaws (i.e. propensities)
+	// that must be updated since they depend on species which quantities were just changed
+	// after a reaction was trigerred.
 	std::vector<DepRow> depTable;
 	std::vector<std::pair<int, float>> tauTable;
 	IndexedTauMinHeap itmh;
-
+	
 	std::vector<short int> trace;
 	short int traceBlockSize = 0;
 	
 	rng_state rng;
+
+	
 
 	/// <summary>
 	/// Updates the <see cref="inkTable"/> and <see cref="outTable"/> according
@@ -43,7 +76,8 @@ private:
 	/// </summary>
 	/// <param name="_nbReactions">The number of reactions on which the algorithm
 	/// will run.</param>
-	void BuildDep(int _nbReactions);
+	//void BuildDep(int _nbReactions);
+	void BuildDep(int _nbReactions, std::unordered_map<std::string, int>* _namesMap);
 
 	/// <summary>
 	/// Computes the propensity of reaction <paramref name="_i"/>.
@@ -74,8 +108,25 @@ private:
 
 public:
 	float t;//Gillespie simulation time.
+	ASTEvaluator* astEvaluator;
 
 	friend std::ostream& operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r);
+
+	Gillespie_NRM_R()
+	{
+		astEvaluator = new ASTEvaluator();
+	}
+
+	Gillespie_NRM_R(Gillespie_NRM_R& _g_nrm_r) :astEvaluator(_g_nrm_r.astEvaluator), quantities(_g_nrm_r.quantities)
+	{
+		astEvaluator = new ASTEvaluator(*_g_nrm_r.astEvaluator);
+	};
+
+	~Gillespie_NRM_R()
+	{
+		//std::cout << "Destructor of Gillespie_NRM_R called" << std::endl;
+		delete astEvaluator;
+	}
 
 	/// <summary>
 	/// Sets up the data structures for the simulation to run.
@@ -84,7 +135,7 @@ public:
 	/// <param name="_nbMolecules">Number of molecules in the system</param>
 	/// <param name="_nbReactions">Number of reactions in the system</param>
 	/// <param name="_rng_seed">Seed of the reversible rng.</param>
-	void Initializes(int _nbMolecules, int _nbReactions, unsigned long _rng_seed);
+	//void Initializes(int _nbMolecules, int _nbReactions, unsigned long _rng_seed);
 
 	/// <summary>
 	/// Sets up the data structures for the simulation to run.

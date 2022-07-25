@@ -42,6 +42,7 @@
  */
 
 #include <sbml/SBMLTypes.h>
+#include "math_utility.hpp"
 
 class SBML_Writer
 {
@@ -57,11 +58,56 @@ private:
         KineticLaw* kl;
     };
 
+    /// <summary>
+    ///  Defines a parameter object according to the input parameters
+    /// of the function. Since a no value is provided in this function,
+    /// the parameter's SBML "constant" attribute is set to "false".
+    /// </summary>
+    /// <param name="_para_ptr">Pointer to the object.</param>
+    /// <param name="_paraID">Id.</param>
+    /// <param name="_unit">The name of a unit defined in SBML.</param>
     void DefineParameter(
         Parameter* _para_ptr,
         const std::string& _paraID,
-        const std::string _unit,
+        const std::string& _unit);
+
+    /// <summary>
+    /// Defines a parameter object according to the input parameters
+    /// of the function. Since a value is provided in this function,
+    /// the parameter's SBML "constant" attribute is set to "true".
+    /// </summary>
+    /// <param name="_para_ptr">Pointer to the object.</param>
+    /// <param name="_paraID">Id.</param>
+    /// <param name="_unit">The name of a unit defined in SBML.</param>
+    /// <param name="_value">Numerical value of the parameter.</param>
+    void DefineParameter(
+        Parameter* _para_ptr,
+        const std::string& _paraID,
+        const std::string& _unit,
         const double _value);
+
+    /// <summary>
+    /// Defines an assignment rule to compute the value of a parameter
+    /// such that _variableID=_formula.
+    /// </summary>
+    /// <param name="_ar">Pointer to the object</param>
+    /// <param name="_variableID">ID of the parameter we are defining.
+    /// It must be identical to a parameter ID in the listOfParameters
+    /// of the SBMLDocument being build.</param>
+    /// <param name="_formula">The string based mathematical formula.</param>
+    void DefineParameterAssignementRule(
+        AssignmentRule* _ar,
+        const std::string& _variableID,
+        const std::string& _formula);
+
+    void DefineReaction(
+        ReactionPointersCapsule* _rpc,
+        const std::string& _rID,
+        const std::vector<std::string>& _reactantIDs,
+        const std::vector<int>& _reactantStoichs,
+        const std::vector<std::string>& _productIDs,
+        const std::vector<int>& _productStoichs,
+        const std::string& _kParamID);
 
     void DefineSpecies(
         Species* _sp_ptr,
@@ -70,13 +116,6 @@ private:
         const std::string& _compartmentID,
         const std::string& _unit,
         const double _initialQuantity);
-
-    void DefineReaction(
-        ReactionPointersCapsule* _rpc,
-        const std::string& _rID,
-        const std::vector<std::string>& _reactantIDs,
-        const std::vector<std::string>& _productIDs,
-        const std::string& _kParamID);
 
 public:
     /// <summary>

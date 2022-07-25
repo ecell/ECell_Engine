@@ -1,12 +1,12 @@
 #include <iostream>
 #include <vector>
 
-struct InkRow
+struct InRow
 {
 	std::vector<int> in;
-	float k;
+	std::vector<int> s;//stoichiometry
 
-	InkRow(std::vector<int>* _in, float _k) : in(*_in), k(_k)
+	InRow(std::vector<int>* _in, std::vector<int>* _s) : in(*_in), s(*_s)
 	{
 
 	}
@@ -15,7 +15,8 @@ struct InkRow
 struct OutRow
 {
 	std::vector<int> out;
-	OutRow(std::vector<int>* _out) : out(*_out)
+	std::vector<int> s;//stoichiometry
+	OutRow(std::vector<int>* _out, std::vector<int>* _s) : out(*_out), s(*_s)
 	{
 
 	}
@@ -110,7 +111,7 @@ public:
 	void SetTauInRoot(float _newTau);
 
 	/// <summary>
-	/// Sets the value tau in the node indicated by the pointer <paramref name="_ptr"/>.
+	/// Sets the value tau in the node indicated by the pointer <paramref name="_ptr".
 	/// </summary>
 	void SetTauFromPointer(int _ptr, float _newTau);
 #pragma endregion 
