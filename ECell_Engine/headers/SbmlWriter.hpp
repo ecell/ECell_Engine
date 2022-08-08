@@ -41,10 +41,11 @@
  * -------------------------------------------------------------------------->
  */
 
+
 #include <sbml/SBMLTypes.h>
 #include "MathUtility.hpp"
 
-class SBML_Writer
+class SbmlWriter
 {
 private:
     // The SBML Level and Version of the example SBML models.

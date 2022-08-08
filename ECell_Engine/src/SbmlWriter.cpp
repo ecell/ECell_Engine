@@ -42,11 +42,10 @@
  */
 
 #include <iostream>
-#include "SBML_writing.hpp"
+#include "SbmlWriter.hpp"
 using namespace std;
-LIBSBML_CPP_NAMESPACE_USE
 
-void SBML_Writer::DefineParameter(
+void SbmlWriter::DefineParameter(
     Parameter* _para_ptr,
     const std::string& _paraID,
     const std::string& _unit)
@@ -56,7 +55,7 @@ void SBML_Writer::DefineParameter(
     _para_ptr->setConstant(false);
 }
 
-void SBML_Writer::DefineParameter(
+void SbmlWriter::DefineParameter(
     Parameter* _para_ptr,
     const std::string& _paraID,
     const std::string& _unit,
@@ -68,7 +67,7 @@ void SBML_Writer::DefineParameter(
     _para_ptr->setConstant(true);
 }
 
-void SBML_Writer::DefineParameterAssignementRule(
+void SbmlWriter::DefineParameterAssignementRule(
     AssignmentRule* _ar,
     const std::string& _variableID,
     const std::string& _formula)
@@ -78,7 +77,7 @@ void SBML_Writer::DefineParameterAssignementRule(
     _ar->setMath(math);
 }
 
-void SBML_Writer::DefineReaction(
+void SbmlWriter::DefineReaction(
     ReactionPointersCapsule* _rpc,
     const std::string& _rID,
     const std::vector<std::string>& _reactantIDs,
@@ -145,7 +144,7 @@ void SBML_Writer::DefineReaction(
     delete astKl_Formula;
 }
 
-void SBML_Writer::DefineSpecies(
+void SbmlWriter::DefineSpecies(
     Species* _sp_ptr,
     const std::string& _id,
     const std::string& _name,
@@ -184,7 +183,7 @@ void SBML_Writer::DefineSpecies(
 //===============================================================================
 // Functions for creating the Example SBML documents.
 //===============================================================================
-SBMLDocument* SBML_Writer::GibsonAndBruckToyModel()
+SBMLDocument* SbmlWriter::GibsonAndBruckToyModel()
 {
     const unsigned int level = Level;
     const unsigned int version = Version;
@@ -363,7 +362,7 @@ SBMLDocument* SBML_Writer::GibsonAndBruckToyModel()
     return sbmlDoc;
 }
 
-bool SBML_Writer::WriteSBML(const SBMLDocument* sbmlDoc, const string& filename)
+bool SbmlWriter::WriteSBML(const SBMLDocument* sbmlDoc, const string& filename)
 {
     SBMLWriter sbmlWriter;
     bool result = sbmlWriter.writeSBML(sbmlDoc, filename);

@@ -7,8 +7,8 @@
 #include "simulation_loop.hpp"
 #include "CommandsManager.hpp"
 #include "Commands.hpp"
-#include "SBMLParser.hpp"
-#include "SBML_writing.hpp"
+#include "SbmlParser.hpp"
+#include "SbmlWriter.hpp"
 
 /*
 @brief The main class of the engine.
@@ -18,8 +18,8 @@
 class Engine
 {
 private:
-	SBML_Writer sbmlWriter;
-	SBMLParser sbmlParser;
+	SbmlWriter sbmlWriter;
+	SbmlParser sbmlParser;
 	SBMLDocument* activeDocument;
 
 	SimulationLoop simulationLoop;
