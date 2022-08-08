@@ -15,7 +15,7 @@
 @details Controls everything related to initializing, starting up,
 		 updating and ending the modules of the engine.
 */
-class ECellEngine
+class Engine
 {
 private:
 	SBML_Writer sbmlWriter;
@@ -26,7 +26,7 @@ private:
 	CommandsManager commandsManager;
 
 public:
-	ECellEngine() = default;
+	Engine() = default;
 
 	bool isRunning = true;
 
