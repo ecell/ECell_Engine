@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "commands.hpp"
+#include "Commands.hpp"
 
 /*
 @brief Handles registration of commands, listening to keyboard string inputs

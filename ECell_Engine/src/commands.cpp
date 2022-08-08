@@ -1,4 +1,4 @@
-#include "commands.hpp"
+#include "Commands.hpp"
 #include "Engine.hpp"
 #include "simulation_loop.hpp"
 

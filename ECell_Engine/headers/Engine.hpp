@@ -6,7 +6,7 @@
 
 #include "simulation_loop.hpp"
 #include "CommandsManager.hpp"
-#include "commands.hpp"
+#include "Commands.hpp"
 #include "SBML_parsing.hpp"
 #include "SBML_writing.hpp"
 
