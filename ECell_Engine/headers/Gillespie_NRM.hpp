@@ -7,7 +7,7 @@ extern "C" {
 #include "revrand.h"
 }
 #include "Gillespie_NRM_Data.hpp"
-#include "math_utility.hpp"
+#include "MathUtility.hpp"
 #include "ASTNode_parser.hpp"
 
 class Gillespie_NRM_R

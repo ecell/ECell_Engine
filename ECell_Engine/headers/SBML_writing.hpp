@@ -42,7 +42,7 @@
  */
 
 #include <sbml/SBMLTypes.h>
-#include "math_utility.hpp"
+#include "MathUtility.hpp"
 
 class SBML_Writer
 {

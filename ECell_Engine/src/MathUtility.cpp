@@ -1,4 +1,4 @@
-#include "math_utility.hpp"
+#include "MathUtility.hpp"
 
 int fact(int _n)
 {
