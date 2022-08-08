@@ -4,7 +4,7 @@
 
 
 #pragma region IOCommands
-void OpenCommand::AskUser()
+void OpenCommand::askUser()
 {
 	std::cout << std::endl << "Give file name: ";
 	std::cin >> answer;
@@ -12,22 +12,23 @@ void OpenCommand::AskUser()
 	answer = "p53_L3V2_mod.xml";//added during dev time to bypass the time to write the name in the console everytime.
 }
 
-void OpenCommand::Execute()
+void OpenCommand::execute()
 {
-	AskUser();
+	askUser();
 	receiver->OpenFile(&answer);
 }
 #pragma endregion
 
 #pragma region Engine Commands
-void QuitCommand::Execute()
+void QuitCommand::execute()
 {
 	receiver->isRunning = false;
+	receiver->stop();
 }
 #pragma endregion
 
 #pragma region Simulation Loop Commands
-void DisplayCommand::Execute()
+void DisplayCommand::execute()
 {
 	std::cout <<
 		"Simulation state:" << std::endl <<
@@ -35,17 +36,9 @@ void DisplayCommand::Execute()
 		"Total elapsed time: "<< receiver->simulationTimer.elapsedTime <<
 		", last delta time: " << receiver->simulationTimer.deltaTime << std::endl <<
 		"Simulation Environment: " << receiver->GetSimulationEnvironment();
-
 }
 
-void LoadCommand::Execute()
-{
-	std::cout << "Loading active SBML document... ";
-	receiver->SetSimulationEnvironment();
-	std::cout << "Done" << std::endl;
-}
-
-void PauseCommand::Execute()
+void PauseCommand::execute()
 {
 	//std::cout << "The PAUSE command was called" << std::endl;
 
@@ -66,7 +59,7 @@ void PauseCommand::Execute()
 	}
 }
 
-void PlayCommand::Execute()
+void PlayCommand::execute()
 {
 	//std::cout << "The PLAY command was called" << std::endl;
 
@@ -90,7 +83,7 @@ void PlayCommand::Execute()
 	receiver->SetSimulationState(SimulationState::isPlaying);
 }
 
-void StopCommand::Execute()
+void StopCommand::execute()
 {
 	//std::cout << "The STOP command was called" << std::endl;
 
