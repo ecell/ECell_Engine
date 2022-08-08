@@ -36,6 +36,8 @@ void Engine::start()
 
 	//Simulation Loop commands
 	commandsManager.registerCommand(std::make_shared<DisplayCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<GoBackwardCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<GoForwardCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<PauseCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<PlayCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<StopCommand>(&simulationLoop));
