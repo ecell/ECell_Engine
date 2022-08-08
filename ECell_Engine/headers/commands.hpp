@@ -3,13 +3,13 @@
 #include <iostream>
 
 //partial definitions:
-class ECellEngine;
+class Engine;
 class SimulationLoop;
 
 #include "CommandWithReceiver.hpp"
 
 #pragma region IO Commands
-class OpenCommand : public CommandWithReceiver<ECellEngine>
+class OpenCommand : public CommandWithReceiver<Engine>
 {
 private:
 	std::string answer;
@@ -18,7 +18,7 @@ protected:
 	void askUser();
 
 public:
-	OpenCommand(ECellEngine* _receiver):
+	OpenCommand(Engine* _receiver):
 		CommandWithReceiver("open", _receiver)
 	{
 	}
@@ -33,10 +33,10 @@ public:
 @brief The command to quit the application.
 @details Effectively exits from every running thread and then terminates.
 */
-class QuitCommand : public CommandWithReceiver<ECellEngine>
+class QuitCommand : public CommandWithReceiver<Engine>
 {
 public:
-	QuitCommand(ECellEngine* _receiver):
+	QuitCommand(Engine* _receiver):
 		CommandWithReceiver("quit", _receiver)
 	{
 	}

@@ -6,10 +6,22 @@
 extern "C" {
 #include "revrand.h"
 }
-#include "Gillespie_NRM_Data.hpp"
-#include "math_utility.hpp"
+#include "Gillespie_NRM_R_Data.hpp"
+#include "MathUtility.hpp"
 #include "ASTNode_parser.hpp"
 
+/*
+@brief Gillespie Next Reaction Method Reversed.
+@details Implements the Next Reaction Method [Gibson M. &
+		 Bruck J., DOI:10.1021/jp993732q] of the Gillespie
+		 algorithm for exact stochastic simulation of chemical
+		 reactions. [Gillespie D., DOI:10.1016/0021-9991(76)90041-3].
+		 We adapted it to be able to play the simulation
+		 backward (hence, Reversed). There is no big trick: we
+		 simply keep a trace of which reaction was fired at what
+		 time when played forward and reverse the calculation
+		 from there.
+*/
 class Gillespie_NRM_R
 {
 private:

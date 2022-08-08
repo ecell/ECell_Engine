@@ -1,6 +1,5 @@
 #pragma once
 
-
 /*
 @brief		The base command class.
 @details	Adapted from the Command design pattern.

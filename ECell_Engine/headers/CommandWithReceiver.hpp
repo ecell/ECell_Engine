@@ -1,6 +1,6 @@
 #pragma once
 
-#include "command.hpp"
+#include "Command.hpp"
 
 /*
 @brief Extension of the command pattern with a receiver.

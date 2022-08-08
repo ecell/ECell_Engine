@@ -1,4 +1,3 @@
-#include "ECell_Engine.hpp"
 #include "CommandsManager.hpp"
 
 void CommandsManager::processCommand(std::vector<std::string> const& _cmdSplit)

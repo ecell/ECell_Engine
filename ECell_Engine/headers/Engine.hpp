@@ -4,29 +4,29 @@
 #include <string>
 #include <thread>
 
-#include "simulation_loop.hpp"
+#include "SimulationLoop.hpp"
 #include "CommandsManager.hpp"
-#include "commands.hpp"
-#include "SBML_parsing.hpp"
-#include "SBML_writing.hpp"
+#include "Commands.hpp"
+#include "SbmlParser.hpp"
+#include "SbmlWriter.hpp"
 
 /*
 @brief The main class of the engine.
 @details Controls everything related to initializing, starting up,
 		 updating and ending the modules of the engine.
 */
-class ECellEngine
+class Engine
 {
 private:
-	SBML_Writer sbmlWriter;
-	SBML_Parser sbmlParser;
+	SbmlWriter sbmlWriter;
+	SbmlParser sbmlParser;
 	SBMLDocument* activeDocument;
 
 	SimulationLoop simulationLoop;
 	CommandsManager commandsManager;
 
 public:
-	ECellEngine() = default;
+	Engine() = default;
 
 	bool isRunning = true;
 

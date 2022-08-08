@@ -1,5 +1,4 @@
-#include "ECell_Engine.hpp"
-#include "simulation_loop.hpp"
+#include "SimulationLoop.hpp"
 
 void SimulationLoop::start()
 {

@@ -1,11 +1,6 @@
-﻿/*
-	The main entrance of the simulation engine.
-	Contains the simulation loop.
-*/
+﻿#include "Engine.hpp"
 
-#include "ECell_Engine.hpp"
-
-void ECellEngine::OpenFile(const std::string* _filePath)
+void Engine::OpenFile(const std::string* _filePath)
 {
 	std::cout << "Trying to open file: " << *_filePath << std::endl;
 	SBMLDocument* sbmlDoc = sbmlParser.OpenSBMLFile((*_filePath).c_str());
@@ -16,7 +11,7 @@ void ECellEngine::OpenFile(const std::string* _filePath)
 	simulationLoop.SetSimulationEnvironment(sbmlDoc);
 }
 
-void ECellEngine::start()
+void Engine::start()
 {
 	/*SBMLDocument* sbmlDoc = sbmlParser.OpenSBMLFile("GibsonAndBruckToyModel.xml");
 	sbmlParser.PrettyPrintSBMLDocument(sbmlDoc);*/
@@ -48,13 +43,13 @@ void ECellEngine::start()
 	simulationLoop.start();
 }
 
-void ECellEngine::stop()
+void Engine::stop()
 {
 	simulationLoop.stop();
 	commandsManager.stop();
 }
 
-void  ECellEngine::update()
+void  Engine::update()
 {
 	std::cout << "Engine update" << std::endl;
 

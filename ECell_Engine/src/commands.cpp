@@ -1,6 +1,6 @@
-#include "commands.hpp"
-#include "ECell_Engine.hpp"
-#include "simulation_loop.hpp"
+#include "Commands.hpp"
+#include "Engine.hpp"
+#include "SimulationLoop.hpp"
 
 
 #pragma region IOCommands

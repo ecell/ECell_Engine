@@ -4,8 +4,8 @@
 #include <thread>
 
 #include "system_time.hpp"
-#include "simulation_timer.hpp"
-#include "Gillespie_NRM.hpp"
+#include "Timer.hpp"
+#include "Gillespie_NRM_R.hpp"
 
 
 enum SimulationState { isPaused, isPlaying, isStopped };

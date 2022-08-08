@@ -1,11 +1,13 @@
 #pragma once
 #include <iostream>
 #include <iterator>
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <sstream>
+#include <unordered_map>
+#include <vector>
 
-#include "commands.hpp"
+#include "Commands.hpp"
 
 /*
 @brief Handles registration of commands, listening to keyboard string inputs

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sbml/SBMLTypes.h>
 
-class SBML_Parser
+class SbmlParser
 {
 public:
 	/// <summary>

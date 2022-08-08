@@ -5,7 +5,7 @@ Initializes and runs the engine.
 */
 int main()
 {
-	ECellEngine engine;
+	Engine engine;
 
 	engine.start();
 	engine.update();
