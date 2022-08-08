@@ -7,7 +7,7 @@
 #include "simulation_loop.hpp"
 #include "CommandsManager.hpp"
 #include "Commands.hpp"
-#include "SBML_parsing.hpp"
+#include "SBMLParser.hpp"
 #include "SBML_writing.hpp"
 
 /*
@@ -19,7 +19,7 @@ class Engine
 {
 private:
 	SBML_Writer sbmlWriter;
-	SBML_Parser sbmlParser;
+	SBMLParser sbmlParser;
 	SBMLDocument* activeDocument;
 
 	SimulationLoop simulationLoop;
