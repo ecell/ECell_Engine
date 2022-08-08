@@ -4,7 +4,7 @@
 #include <string>
 #include <thread>
 
-#include "simulation_loop.hpp"
+#include "SimulationLoop.hpp"
 #include "CommandsManager.hpp"
 #include "Commands.hpp"
 #include "SbmlParser.hpp"

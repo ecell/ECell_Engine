@@ -1,4 +1,4 @@
-#include "simulation_loop.hpp"
+#include "SimulationLoop.hpp"
 
 void SimulationLoop::start()
 {
