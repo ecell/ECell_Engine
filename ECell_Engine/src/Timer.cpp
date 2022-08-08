@@ -1,4 +1,4 @@
-#include "simulation_timer.hpp"
+#include "Timer.hpp"
 
 void Timer::CheckSimulationDeltaTime()
 {

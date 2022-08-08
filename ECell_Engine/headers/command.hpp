@@ -1,20 +1,34 @@
 #pragma once
 
-///<summary>
-/// The base command class.
-/// Extracted from the Command design pattern and used accordingly.
-///</summary>
+/*
+@brief		The base command class.
+@details	Adapted from the Command design pattern.
+*/
 class Command
 {
+private:
+	const std::string name;
+
 protected:
-	Command(){};
+	Command(char const* _commandName):
+		name(_commandName)
+	{};
 
 public:
-	virtual ~Command(){};
+	Command(Command&&) = default;
 
-	/// <summary>
-	/// Public interface to execute the action/code
-	/// associated to the command.
-	/// </summary>
-	virtual void Execute() = 0;
+	Command(Command const&) = default;
+
+	virtual ~Command() = default;
+
+	inline std::string const& getName() const noexcept
+	{
+		return name;
+	}
+
+	/*
+	@brief Public interface to execute the action/code
+			associated to the command.
+	*/
+	virtual void execute() = 0;
 };

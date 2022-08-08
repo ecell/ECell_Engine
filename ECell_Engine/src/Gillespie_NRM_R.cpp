@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
-#include "Gillespie_NRM.hpp"
+#include "Gillespie_NRM_R.hpp"
 
 
 std::ostream& operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r)
@@ -267,7 +267,7 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	Rule* rule;
 	for (int i = 0; i < nbRules; i++)
 	{
-		std::cout << std::endl;
+		//std::cout << std::endl;
 		rule = sbmlModel->getRule(i);
 		if (rule->isParameter())
 		{
