@@ -1,5 +1,5 @@
 #include <cstddef>
-#include "Gillespie_NRM_Data.hpp"
+#include "Gillespie_NRM_R_Data.hpp"
 
 
 std::ostream& operator<<(std::ostream& os, const IndexedTauMinHeap& _itmh)
