@@ -167,8 +167,7 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	propensities.reserve(nbReactions);
 	t = 0.f;
 
-	//Build the map between species' names and
-	//index of appearance.
+	//Build the map between species' names and index of appearance.
 	//Also fills in the species quantities table.
 	std::unordered_map<std::string, int> variables_name_idx_map = {{"UNKNOWN", -1}};
 	//std::unordered_map<std::string, int*> quantities_map;
@@ -447,7 +446,7 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 	}
 }
 
-void Gillespie_NRM_R::RunBackward(float _targetTime)
+ushort Gillespie_NRM_R::RunBackward(float _targetTime)
 {
 	int traceSize = trace.size();
 	while (t > _targetTime && traceSize > 0)
@@ -484,7 +483,7 @@ void Gillespie_NRM_R::RunBackward(float _targetTime)
 			//std::cout << "Updating dependency: " << *it << std::endl;
 			a_n = propensities[*it];
 			tau_n = itmh.GetTauFromPointer(*it);
-			
+
 			//propensity at step n-1
 			a_nm1 = ComputePropensity(*it);
 			//tau at step n-1
@@ -495,6 +494,11 @@ void Gillespie_NRM_R::RunBackward(float _targetTime)
 		}
 	}
 
-	std::cout << std::endl;
-	std::cout << itmh;
+	if (traceSize == 0)
+	{
+		std::cout << "We reached the end of the trace." << std::endl;
+		return 1;
+	}
+
+	return 0;
 }

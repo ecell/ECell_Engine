@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <iostream>
 #include <thread>
 
@@ -16,7 +17,8 @@ private:
 	SimulationState simulationState = SimulationState::isStopped;
 	Gillespie_NRM_R gillespieSimulationEnv;
 
-	bool isRunning;
+	std::atomic_bool isRunning;
+	short direction = 1;
 
 public:
 	SimulationLoop() {}
@@ -25,6 +27,15 @@ public:
 	Timer simulationTimer;
 
 #pragma region Accessors
+	
+	/*
+	@brief Gets the direction private member.
+	*/
+	inline short getSimulationDirection()
+	{
+		return direction;
+	}
+	
 	/*
 	@brief Gets the gillespieSimulationEnv private member.
 	*/
@@ -43,6 +54,22 @@ public:
 #pragma endregion
 
 #pragma region Mutators
+	/*
+	@brief Sets the direction private member to -1.
+	*/
+	inline void setSimulationDirectionToBackward()
+	{
+		direction = -1;
+	}
+	
+	/*
+	@brief Sets the direction private member to 1.
+	*/
+	inline void setSimulationDirectionToForward()
+	{
+		direction = 1;
+	}
+
 	/*
 	@brief Initialize the simulation environment gillespieSimulationEnv with 
 			@p _refModel.

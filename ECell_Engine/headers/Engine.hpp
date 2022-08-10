@@ -28,7 +28,7 @@ private:
 public:
 	Engine() = default;
 
-	bool isRunning = true;
+	bool isRunning;
 
 #pragma region Accessors
 	/*
