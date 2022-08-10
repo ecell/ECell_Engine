@@ -15,14 +15,8 @@ void SimulationLoop::stop()
 
 void SimulationLoop::update()
 {
-	std::cout << "SimulationLoop update; isRunning = " << isRunning << std::endl;
-	while (isRunning)
+	if (simulationState == SimulationState::isPlaying && isRunning)
 	{
-		while(simulationState != SimulationState::isPlaying && isRunning)
-		{
-			std::this_thread::yield();
-		}
-
 		float beginTime = simulationTimer.ReadHighResTimer();
 
 		//Update Subsystems
@@ -54,5 +48,4 @@ void SimulationLoop::update()
 
 		beginTime = endTime;		
 	}
-	std::cout << "Exiting simulation Loop" << std::endl;
 }

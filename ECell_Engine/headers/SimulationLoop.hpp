@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <iostream>
 #include <thread>
 
@@ -16,7 +17,7 @@ private:
 	SimulationState simulationState = SimulationState::isStopped;
 	Gillespie_NRM_R gillespieSimulationEnv;
 
-	bool isRunning;
+	std::atomic_bool isRunning;
 	short direction = 1;
 
 public:

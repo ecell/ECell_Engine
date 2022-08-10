@@ -17,13 +17,16 @@ void Engine::start()
 	sbmlParser.PrettyPrintSBMLDocument(sbmlDoc);*/
 	
 	//Writes toy model for tests.
-	/*SBMLDocument* sbmlDoc = 0;
+	/*
+	SBMLDocument* sbmlDoc = 0;
 	bool SBMLok = false;
 	sbmlDoc = sbmlWriter.GibsonAndBruckToyModel();
 	SBMLok = sbmlParser.ValidateSBML(sbmlDoc);
 	if (SBMLok) sbmlWriter.WriteSBML(sbmlDoc, "GibsonAndBruckToyModel.xml");
 	delete sbmlDoc;
-	std::cout << "Engine start" << std::endl;*/
+	*/
+
+	std::cout << "Engine start" << std::endl;
 
 	commandsManager.start();
 
@@ -43,23 +46,24 @@ void Engine::start()
 	commandsManager.registerCommand(std::make_shared<StopCommand>(&simulationLoop));
 
 	simulationLoop.start();
+
+	isRunning = true;
 }
 
 void Engine::stop()
 {
 	simulationLoop.stop();
 	commandsManager.stop();
+
+	isRunning = false;
 }
 
 void  Engine::update()
 {
-	std::cout << "Engine update" << std::endl;
-
-	std::thread sLThread{ &SimulationLoop::update, &simulationLoop };
-	std::thread kIThread{ &CommandsManager::update, &commandsManager };
-
-	sLThread.join();
-	kIThread.join();
-
-	std::cout << "All threads terminated." << std::endl;
+	std::thread commandsThread{ &CommandsManager::update, &commandsManager };
+	while (isRunning)
+	{
+		simulationLoop.update();
+	}
+	commandsThread.join();
 }

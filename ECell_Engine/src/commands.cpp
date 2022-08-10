@@ -22,7 +22,6 @@ void OpenCommand::execute()
 #pragma region Engine Commands
 void QuitCommand::execute()
 {
-	receiver->isRunning = false;
 	receiver->stop();
 }
 #pragma endregion
