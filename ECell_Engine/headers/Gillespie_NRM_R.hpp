@@ -25,38 +25,47 @@ extern "C" {
 class Gillespie_NRM_R
 {
 private:
-	// With i the index of an element (i.e. species) in the vector "quantities", 
-	// quantities[i] is the index of the ASTNodeEx in "ASTEvaluator.formulasNodes"
-	// containing the value of the species. This is a shortcut table when we need
-	// the quantity of species i outside of the evaluation table.
+	/*
+	With i the index of an element (i.e. species) in the vector "quantities", 
+	quantities[i] is the index of the ASTNodeEx in "ASTEvaluator.formulasNodes"
+	containing the value of the species. This is a shortcut table when we need
+	the quantity of species i outside of the evaluation table.
+	*/
 	std::vector<int> quantities;
 
-	// The inTable contains the information about every species mentioned as
-	// reactants in a reaction. There should be as many elements in inTable as there
-	// are reactions.
+	/*
+	The inTable contains the information about every species mentioned as
+	reactants in a reaction. There should be as many elements in inTable as there
+	are reactions.
+	*/
 	std::vector<InRow> inTable;
 
-
-	//std::vector<float> parameters;
-
-	// With i the index of an element (i.e. kinetic law) in the vector "kineticLaws", 
-	// kineticLaws[i] is the index of the root ASTNodeEx in "ASTEvaluator.formulasNodes"
-	// from where we can evaluate the value of the kineticLaw.
+	/*
+	With i the index of an element (i.e. kinetic law) in the vector "kineticLaws", 
+	kineticLaws[i] is the index of the root ASTNodeEx in "ASTEvaluator.formulasNodes"
+	from where we can evaluate the value of the kineticLaw.
+	*/
 	std::vector<int> kineticLaws;
 
-	// A shortcut table storing the results of the evaluation of the kineticLaws
+	/*
+	A shortcut table storing the results of the evaluation of the kineticLaws
+	*/
 	std::vector<float> propensities;
 
-	// The outTable contains the information about every species mentioned as
-	// products in a reaction. There should as many elements in outTable as there
-	// are reactions.
+	/*
+	The outTable contains the information about every species mentioned as
+	products in a reaction. There should as many elements in outTable as there
+	are reactions.
+	*/
 	std::vector<OutRow> outTable;
 
-	// The table containing the information about formulas dependencies on species.
-	// The entry i in depTable gives us the index of root ASTNodeEx in 
-	// "ASTEvaluator.formulasNodes" corresponding to the kineticLaws (i.e. propensities)
-	// that must be updated since they depend on species which quantities were just changed
-	// after a reaction was trigerred.
+	/*
+	The table containing the information about formulas dependencies on species.
+	The entry i in depTable gives us the index of root ASTNodeEx in 
+	"ASTEvaluator.formulasNodes" corresponding to the kineticLaws (i.e. propensities)
+	that must be updated since they depend on species which quantities were just changed
+	after a reaction was trigerred.
+	*/
 	std::vector<DepRow> depTable;
 	std::vector<std::pair<int, float>> tauTable;
 	IndexedTauMinHeap itmh;
@@ -67,55 +76,54 @@ private:
 	rng_state rng;
 
 	
-
-	/// <summary>
-	/// Updates the <see cref="inkTable"/> and <see cref="outTable"/> according
-	/// to the rule of index <paramref name="_i"/> applied in the backward way.
-	/// </summary>
-	/// <param name="_i">Index of the rule</param>
+	/*
+	@brief Updates the inkTable and outTable according
+			to the rule of index @p _i applied in the backward way.
+	@param _i Index of the rule.
+	*/
 	void ApplyInOutBackward(int _i);
 
-	/// <summary>
-	/// Updates the <see cref="inkTable"/> and <see cref="outTable"/> according
-	/// to the rule of index <paramref name="_i"/> applied in the forward way.
-	/// </summary>
-	/// <param name="_i">Index of the rule</param>
+	/*
+	@brief Updates the <see cref="inkTable"/> and <see cref="outTable"/> according
+	to the rule of index @p _i applied in the forward way.
+	]param _i Index of the rule.
+	*/
 	void ApplyInOutForward(int _i);
 
-	/// <summary>
-	/// Builds the dependency graph G mentioned in the Next Reaction Method.
-	/// The dependencies are encoded in the <see cref="depTable"/>.
-	/// </summary>
-	/// <param name="_nbReactions">The number of reactions on which the algorithm
-	/// will run.</param>
-	//void BuildDep(int _nbReactions);
+	/*
+	@brief Builds the dependency graph G mentioned in the Next Reaction Method.
+	@details The dependencies are encoded in the depTable.
+	@param _nbReactions The number of reactions on which the algorithm
+						will run.
+	@param _namesMap The map between reaction names and their order of appearance.
+	*/
 	void BuildDep(int _nbReactions, std::unordered_map<std::string, int>* _namesMap);
 
-	/// <summary>
-	/// Computes the propensity of reaction <paramref name="_i"/>.
-	/// </summary>
-	/// <param name="_i"></param>
-	/// <returns>The propensity that was just computed</returns>
-	/// <remarks>The propensity is also added in the <see cref="propensities"/> vector.</remarks>
+	/*
+	@brief Computes the propensity of reaction @p _i.
+	@param _i The index of the reaction we wish to compute the propensity for.
+	@returns The propensity that was just computed.
+	@remarks The propensity is also added in the propensities vector.
+	*/
 	float ComputePropensity(int _i);
 
-	/// <summary>
-	/// Samples a number according to an exponential distribution of
-	/// parameter <paramref name="_lambda"/>.
-	/// </summary>
-	/// <param name="_lambda"></param>
+	/*
+	@brief Samples a number according to an exponential distribution of parameter @p _lambda.
+	@param _lambda The parameter of the exponential distribution.
+	@returns The sample as a float.
+	*/
 	float Exponential(float _lambda);
 
-	/// <summary>
-	/// Initializes the reactions firing times.
-	/// The timings are stored in the <see cref="tauTable"/>
-	/// </summary>
-	/// <param name="_nbReactions"></param>
+	/*
+	@brief Initializes the reactions firing times.
+	@details The timings are stored in the tauTable.
+	@param _nbReactions The number of reactions for which we need to instantiate the values
+	*/
 	void GenerateTAUs(int _nbReactions);
 
-	/// <summary>
-	/// Manages reaction trace memory allocation.
-	/// </summary>
+	/*
+	@brief Manages reaction trace memory allocation.
+	*/
 	void ManageTrace();
 
 public:
@@ -129,43 +137,34 @@ public:
 		astEvaluator = new ASTEvaluator();
 	}
 
-	Gillespie_NRM_R(Gillespie_NRM_R& _g_nrm_r) :astEvaluator(_g_nrm_r.astEvaluator), quantities(_g_nrm_r.quantities)
+	Gillespie_NRM_R(Gillespie_NRM_R& _g_nrm_r) :
+		astEvaluator(_g_nrm_r.astEvaluator), quantities(_g_nrm_r.quantities)
 	{
 		astEvaluator = new ASTEvaluator(*_g_nrm_r.astEvaluator);
 	};
 
 	~Gillespie_NRM_R()
 	{
-		//std::cout << "Destructor of Gillespie_NRM_R called" << std::endl;
 		delete astEvaluator;
 	}
 
-	/// <summary>
-	/// Sets up the data structures for the simulation to run.
-	/// In this version everything is hard-coded inside the method.
-	/// </summary>
-	/// <param name="_nbMolecules">Number of molecules in the system</param>
-	/// <param name="_nbReactions">Number of reactions in the system</param>
-	/// <param name="_rng_seed">Seed of the reversible rng.</param>
-	//void Initializes(int _nbMolecules, int _nbReactions, unsigned long _rng_seed);
-
-	/// <summary>
-	/// Sets up the data structures for the simulation to run.
-	/// </summary>
-	/// <param name="_sbmlDoc">The pointer to the SBMLDocument encoding the
-	/// model we wish to use.</param>
+	/*
+	 @brief Sets up the data structures for the simulation to run.
+	 @param _sbmlDoc The pointer to the SBMLDocument encoding the
+				model we wish to use.
+	*/
 	void Initializes(SBMLDocument* _sbmlDoc);
 
-	/// <summary>
-	/// Runs the Gillespie algorithm (Next Generation Method) in the forward way.
-	/// </summary>
-	/// <param name="_targetTime">The max time until which we simulate.</param>
+	/*
+	@brief Runs the Gillespie algorithm (Next Generation Method) forward.
+	@param[in] _targetTime The max time until which we simulate.
+	*/
 	void RunForward(float _targetTime);
 
-	/// <summary>
-	/// Runs the Gillespie algorithm (Next Generation Method) in the backward way.
-	/// </summary>
-	/// <param name="_targetTime">The max time until which we simulate.</param>
-	void RunBackward(float _targetTime);
+	/*
+	@brief Runs the Gillespie algorithm (Next Generation Method) backward.
+	@param[in] _targetTime The max time until which we simulate.
+	*/
+	ushort RunBackward(float _targetTime);
 
 };
