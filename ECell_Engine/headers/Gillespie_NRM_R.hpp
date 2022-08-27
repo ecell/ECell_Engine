@@ -165,6 +165,6 @@ public:
 	@brief Runs the Gillespie algorithm (Next Generation Method) backward.
 	@param[in] _targetTime The max time until which we simulate.
 	*/
-	ushort RunBackward(float _targetTime);
+	short RunBackward(float _targetTime);
 
 };

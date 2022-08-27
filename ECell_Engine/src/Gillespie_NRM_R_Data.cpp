@@ -6,9 +6,11 @@ std::ostream& operator<<(std::ostream& os, const IndexedTauMinHeap& _itmh)
 {
 	for (auto it = _itmh.heap->cbegin(); it != _itmh.heap->cend(); ++it)
 	{
-		std::cout << "(" << it->first << ", " << it->second <<") ";
+		os << "(" << it->first << ", " << it->second <<") ";
 	}
-	std::cout << std::endl;
+	os << std::endl;
+
+	return os;
 }
 
 std::pair<int, float> IndexedTauMinHeap::GetRoot()

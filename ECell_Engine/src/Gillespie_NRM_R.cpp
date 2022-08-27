@@ -7,13 +7,15 @@
 
 std::ostream& operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r)
 {
-	std::cout << "(";
+	os << "(";
 	for (auto it = _g_nrm_r.quantities.cbegin(); it != _g_nrm_r.quantities.cend(); ++it)
 	{
 		//std::cout << _g_nrm_r.astEvaluator->getNode(*it)->getValueEx() << " ";
-		std::cout << _g_nrm_r.astEvaluator->getNamedNodeValue(*it) << " ";
+		os << _g_nrm_r.astEvaluator->getNamedNodeValue(*it) << " ";
 	}
-	std::cout << ") " << std::endl;
+	os << ") " << std::endl;
+
+	return os;
 }
 
 void Gillespie_NRM_R::ApplyInOutBackward(int _i)
@@ -446,7 +448,7 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 	}
 }
 
-ushort Gillespie_NRM_R::RunBackward(float _targetTime)
+short Gillespie_NRM_R::RunBackward(float _targetTime)
 {
 	int traceSize = trace.size();
 	while (t > _targetTime && traceSize > 0)
