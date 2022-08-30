@@ -1,5 +1,10 @@
 {
   "name": "ecell-engine",
   "version": "0.1.0",
-  "dependencies": ["libxml2"]
+  "dependencies": [
+    "libxml2",
+    "imgui",
+    "glfw3",
+    "vulkan"
+  ]
 }

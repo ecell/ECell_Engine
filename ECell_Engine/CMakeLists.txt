@@ -22,13 +22,21 @@ message(STATUS "LibSBML_INCLUDEDIR: ${LibSBML_INCLUDEDIR}")
 message(STATUS "LibSBML_LIBDIR: ${LibSBML_LIBDIR}")
 message(STATUS "LibSBML_LIBS: ${LibSBML_LIBS}")
 
+find_package(glfw3 CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
+find_package(Vulkan REQUIRED)
+include_directories(${Vulkan_INCLUDE_DIRS})
+
 # Add ECell_Engine source file
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/*.c" "src/*.cpp")
 file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS "headers/*.h" "headers/*.hpp" "engine_system_files/*.hpp")
 
 add_executable(ECellEngine "Main.cpp" ${SOURCE_FILES} ${HEADER_FILES})
 
-target_link_libraries (ECellEngine ${LIBSBML_LIBRARIES})
+target_link_libraries(ECellEngine PRIVATE ${LIBSBML_LIBRARIES})
+target_link_libraries(ECellEngine PRIVATE imgui::imgui)
+target_link_libraries(ECellEngine PRIVATE glfw)
+target_link_libraries(ECellEngine PRIVATE Vulkan::Vulkan)
 
 target_include_directories(ECellEngine
 						PRIVATE
