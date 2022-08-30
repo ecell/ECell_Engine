@@ -47,6 +47,8 @@ void Engine::start()
 
 	simulationLoop.start();
 
+	editor.start();
+
 	isRunning = true;
 }
 
@@ -54,16 +56,18 @@ void Engine::stop()
 {
 	simulationLoop.stop();
 	commandsManager.stop();
+	editor.stop();
 
 	isRunning = false;
 }
 
-void  Engine::update()
+void Engine::update()
 {
 	std::thread commandsThread{ &CommandsManager::update, &commandsManager };
 	while (isRunning)
 	{
 		simulationLoop.update();
+		editor.update();
 	}
 	commandsThread.join();
 }

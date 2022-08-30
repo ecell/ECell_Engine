@@ -31,7 +31,17 @@ include_directories(${Vulkan_INCLUDE_DIRS})
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/*.c" "src/*.cpp")
 file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS "headers/*.h" "headers/*.hpp" "engine_system_files/*.hpp")
 
-add_executable(ECellEngine "Main.cpp" ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(ECellEngine 
+"Main.cpp"
+${SOURCE_FILES}
+${HEADER_FILES}
+							
+"Editor/imgui_impl_glfw.cpp"
+"Editor/imgui_impl_glfw.h"
+"Editor/imgui_impl_vulkan.cpp"
+"Editor/imgui_impl_vulkan.h"
+"Editor/Editor.cpp"
+"Editor/Editor.hpp")
 
 target_link_libraries(ECellEngine PRIVATE ${LIBSBML_LIBRARIES})
 target_link_libraries(ECellEngine PRIVATE imgui::imgui)
@@ -42,6 +52,7 @@ target_include_directories(ECellEngine
 						PRIVATE
 							"./headers"
 							"./engine_system_files"
+							"./Editor"
 							${libsbml_DIR}
 							"../libsbml/src"
 )
