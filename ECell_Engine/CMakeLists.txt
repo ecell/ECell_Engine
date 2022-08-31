@@ -41,7 +41,11 @@ ${HEADER_FILES}
 "Editor/imgui_impl_vulkan.cpp"
 "Editor/imgui_impl_vulkan.h"
 "Editor/Editor.cpp"
-"Editor/Editor.hpp")
+"Editor/Editor.hpp"
+"Editor/EditorUtility.hpp"
+"Editor/Windows.cpp"
+"Editor/Windows.hpp"
+)
 
 target_link_libraries(ECellEngine PRIVATE ${LIBSBML_LIBRARIES})
 target_link_libraries(ECellEngine PRIVATE imgui::imgui)

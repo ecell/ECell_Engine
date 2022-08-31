@@ -24,7 +24,7 @@ private:
 	SBMLDocument* activeDocument;
 
 	CommandsManager commandsManager;
-	Editor editor;
+	ECellEngine::Editor::Editor editor;
 	SimulationLoop simulationLoop;
 	
 

@@ -1,29 +1,10 @@
+
 #include "Editor.hpp"
+#include "EditorUtility.hpp"
 
-static void checkVkResult(VkResult err)
-{
-    if (err == 0)
-        return;
-    fprintf(stderr, "[vulkan] Error: VkResult = %d\n", err);
-    if (err < 0)
-        abort();
-}
+using namespace ECellEngine::Editor::Utility;
 
-#ifdef IMGUI_VULKAN_DEBUG_REPORT
-static VKAPI_ATTR VkBool32 VKAPI_CALL debug_report(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData)
-{
-    (void)flags; (void)object; (void)location; (void)messageCode; (void)pUserData; (void)pLayerPrefix; // Unused arguments
-    fprintf(stderr, "[vulkan] Debug report from ObjectType: %i\nMessage: %s\n\n", objectType, pMessage);
-    return VK_FALSE;
-}
-#endif // IMGUI_VULKAN_DEBUG_REPORT
-
-static void glfwErrorCallback(int error, const char* description)
-{
-    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
-}
-
-void Editor::cleanupVulkan()
+void ECellEngine::Editor::Editor::cleanupVulkan()
 {
     vkDestroyDescriptorPool(device, descriptorPool, allocator);
 
@@ -37,12 +18,12 @@ void Editor::cleanupVulkan()
     vkDestroyInstance(instance, allocator);
 }
 
-void Editor::cleanupVulkanWindow()
+void ECellEngine::Editor::Editor::cleanupVulkanWindow()
 {
     ImGui_ImplVulkanH_DestroyWindow(instance, device, &mainWindowData, allocator);
 }
 
-void Editor::frameRender(ImGui_ImplVulkanH_Window* wd, ImDrawData* draw_data)
+void ECellEngine::Editor::Editor::frameRender(ImGui_ImplVulkanH_Window* wd, ImDrawData* draw_data)
 {
     VkSemaphore image_acquired_semaphore = wd->FrameSemaphores[wd->SemaphoreIndex].ImageAcquiredSemaphore;
     VkSemaphore render_complete_semaphore = wd->FrameSemaphores[wd->SemaphoreIndex].RenderCompleteSemaphore;
@@ -107,7 +88,7 @@ void Editor::frameRender(ImGui_ImplVulkanH_Window* wd, ImDrawData* draw_data)
     }
 }
 
-void Editor::framePresent(ImGui_ImplVulkanH_Window* wd)
+void ECellEngine::Editor::Editor::framePresent(ImGui_ImplVulkanH_Window* wd)
 {
     if (swapChainRebuild)
         return;
@@ -129,7 +110,7 @@ void Editor::framePresent(ImGui_ImplVulkanH_Window* wd)
     wd->SemaphoreIndex = (wd->SemaphoreIndex + 1) % wd->ImageCount; // Now we can use the next set of semaphores
 }
 
-void Editor::setupVulkan(const char** extensions, uint32_t extensions_count)
+void ECellEngine::Editor::Editor::setupVulkan(const char** extensions, uint32_t extensions_count)
 {
     // Create Vulkan Instance
     {
@@ -269,7 +250,7 @@ void Editor::setupVulkan(const char** extensions, uint32_t extensions_count)
     }
 }
 
-void Editor::setupVulkanWindow(ImGui_ImplVulkanH_Window* wd, VkSurfaceKHR surface, int width, int height)
+void ECellEngine::Editor::Editor::setupVulkanWindow(ImGui_ImplVulkanH_Window* wd, VkSurfaceKHR surface, int width, int height)
 {
     wd->Surface = surface;
 
@@ -302,7 +283,7 @@ void Editor::setupVulkanWindow(ImGui_ImplVulkanH_Window* wd, VkSurfaceKHR surfac
 }
 
 
-void Editor::start()
+void ECellEngine::Editor::Editor::start()
 {
     // Setup GLFW window
     glfwSetErrorCallback(glfwErrorCallback);
@@ -411,7 +392,7 @@ void Editor::start()
     bool show_demo_window = true;
 }
 
-void Editor::stop()
+void ECellEngine::Editor::Editor::stop()
 {
     // Cleanup
     err = vkDeviceWaitIdle(device);
@@ -427,7 +408,7 @@ void Editor::stop()
     glfwTerminate();
 }
 
-void Editor::update()
+void ECellEngine::Editor::Editor::update()
 {
     // Main loop
     if (!glfwWindowShouldClose(window))
@@ -458,20 +439,16 @@ void Editor::update()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (showDemoWindow)
-            ImGui::ShowDemoWindow(&showDemoWindow);
+        // -- CUSTOM WINDOWS SPACE START --
+        
+        // Show the big demo window
+        // Most of the sample code is in ImGui::ShowDemoWindow()!
+        // You can browse its code to learn more about Dear ImGui.
+        if (showDemoWindow) ImGui::ShowDemoWindow(&showDemoWindow);
+        
+        Windows::OptionsWindow(&showDemoWindow);
 
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        {
-            static float f = 0.0f;
-
-            ImGui::Begin("Options");                          // Create a window called "Hello, world!" and append into it.
-            ImGui::Checkbox("Demo Window", &showDemoWindow);      // Edit bools storing our window open/close state
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
+        // -- CUSTOM WINDOWS SPACE END --
 
         // Rendering
         ImGui::Render();

@@ -3,12 +3,12 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
-#include <stdio.h>          // printf, fprintf
-#include <stdlib.h>         // abort
 #define GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
+
+#include "Windows.hpp"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -17,70 +17,69 @@
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
 
-//#define IMGUI_UNLIMITED_FRAME_RATE
-#ifdef _DEBUG
-#define IMGUI_VULKAN_DEBUG_REPORT
-#endif
-
-class Editor
+namespace ECellEngine::Editor
 {
-private:
-	GLFWwindow*				 window;
-
-	VkResult				 err;
-	VkAllocationCallbacks*	 allocator;
-	VkInstance               instance;
-	VkPhysicalDevice         physicalDevice;
-	VkDevice                 device;
-	uint32_t                 queueFamily;
-	VkQueue                  queue;
-	VkDebugReportCallbackEXT debugReport;
-	VkPipelineCache          pipelineCache;
-	VkDescriptorPool         descriptorPool;
-
-	ImGui_ImplVulkanH_Window mainWindowData;
-	int                      minImageCount;
-	bool                     swapChainRebuild;
-
-	bool					 showDemoWindow;
-
-public:
-	Editor()
+	class Editor
 	{
-		window = NULL;
+	private:
+		GLFWwindow* window;
 
-		allocator = NULL;
-		instance = VK_NULL_HANDLE;
-		physicalDevice = VK_NULL_HANDLE;
-		device = VK_NULL_HANDLE;
-		queueFamily = (uint32_t)-1;
-		queue = VK_NULL_HANDLE;
-		debugReport = VK_NULL_HANDLE;
-		pipelineCache = VK_NULL_HANDLE;
-		descriptorPool = VK_NULL_HANDLE;
+		VkResult				 err;
+		VkAllocationCallbacks* allocator;
+		VkInstance               instance;
+		VkPhysicalDevice         physicalDevice;
+		VkDevice                 device;
+		uint32_t                 queueFamily;
+		VkQueue                  queue;
+		VkDebugReportCallbackEXT debugReport;
+		VkPipelineCache          pipelineCache;
+		VkDescriptorPool         descriptorPool;
 
-		mainWindowData;
-		minImageCount = 2;
-		swapChainRebuild = false;
+		ImGui_ImplVulkanH_Window mainWindowData;
+		int                      minImageCount;
+		bool                     swapChainRebuild;
 
-		showDemoWindow = false;
-	}
+		bool					 showDemoWindow;
 
-	void cleanupVulkan();
+	public:
+		Editor()
+		{
+			window = NULL;
 
-	void cleanupVulkanWindow();
+			err = VK_ERROR_UNKNOWN;
+			allocator = NULL;
+			instance = VK_NULL_HANDLE;
+			physicalDevice = VK_NULL_HANDLE;
+			device = VK_NULL_HANDLE;
+			queueFamily = (uint32_t)-1;
+			queue = VK_NULL_HANDLE;
+			debugReport = VK_NULL_HANDLE;
+			pipelineCache = VK_NULL_HANDLE;
+			descriptorPool = VK_NULL_HANDLE;
 
-	void frameRender(ImGui_ImplVulkanH_Window* _wd, ImDrawData* _draw_data);
+			mainWindowData;
+			minImageCount = 2;
+			swapChainRebuild = false;
 
-	void framePresent(ImGui_ImplVulkanH_Window* _wd);
+			showDemoWindow = false;
+		}
 
-	void setupVulkan(const char** _extensions, uint32_t _extensions_count);
+		void cleanupVulkan();
 
-	void setupVulkanWindow(ImGui_ImplVulkanH_Window* _wd, VkSurfaceKHR _surface, int _width, int _height);
+		void cleanupVulkanWindow();
 
-	void start();
+		void frameRender(ImGui_ImplVulkanH_Window* _wd, ImDrawData* _draw_data);
 
-	void stop();
+		void framePresent(ImGui_ImplVulkanH_Window* _wd);
 
-	void update();    
-};
+		void setupVulkan(const char** _extensions, uint32_t _extensions_count);
+
+		void setupVulkanWindow(ImGui_ImplVulkanH_Window* _wd, VkSurfaceKHR _surface, int _width, int _height);
+
+		void start();
+
+		void stop();
+
+		void update();
+	};
+}
