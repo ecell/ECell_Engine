@@ -7,7 +7,6 @@
 #include "SimulationLoop.hpp"
 #include "CommandsManager.hpp"
 #include "Commands.hpp"
-#include "Editor.hpp"
 #include "SbmlParser.hpp"
 #include "SbmlWriter.hpp"
 
@@ -23,8 +22,8 @@ private:
 	SbmlParser sbmlParser;
 	SBMLDocument* activeDocument;
 
-	CommandsManager commandsManager;
-	ECellEngine::Editor::Editor editor;
+	//CommandsManager commandsManager;
+	//ECellEngine::Editor::Editor editor;
 	SimulationLoop simulationLoop;
 	
 

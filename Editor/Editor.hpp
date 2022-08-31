@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 
+#include "Engine.hpp"
 #include "Windows.hpp"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
@@ -22,6 +23,8 @@ namespace ECellEngine::Editor
 	class Editor
 	{
 	private:
+		Engine engine;
+
 		GLFWwindow* window;
 
 		VkResult				 err;
@@ -40,6 +43,19 @@ namespace ECellEngine::Editor
 		bool                     swapChainRebuild;
 
 		bool					 showDemoWindow;
+
+
+		void cleanupVulkan();
+
+		void cleanupVulkanWindow();
+
+		void frameRender(ImGui_ImplVulkanH_Window* _wd, ImDrawData* _draw_data);
+
+		void framePresent(ImGui_ImplVulkanH_Window* _wd);
+
+		void setupVulkan(const char** _extensions, uint32_t _extensions_count);
+
+		void setupVulkanWindow(ImGui_ImplVulkanH_Window* _wd, VkSurfaceKHR _surface, int _width, int _height);
 
 	public:
 		Editor()
@@ -62,19 +78,7 @@ namespace ECellEngine::Editor
 			swapChainRebuild = false;
 
 			showDemoWindow = false;
-		}
-
-		void cleanupVulkan();
-
-		void cleanupVulkanWindow();
-
-		void frameRender(ImGui_ImplVulkanH_Window* _wd, ImDrawData* _draw_data);
-
-		void framePresent(ImGui_ImplVulkanH_Window* _wd);
-
-		void setupVulkan(const char** _extensions, uint32_t _extensions_count);
-
-		void setupVulkanWindow(ImGui_ImplVulkanH_Window* _wd, VkSurfaceKHR _surface, int _width, int _height);
+		}		
 
 		void start();
 

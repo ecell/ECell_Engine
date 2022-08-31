@@ -32,6 +32,14 @@ IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
 ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG)
 
 
+
+# For consistency we separate the potential .lib generated
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib" CACHE STRING "")
+
+set(BUILD_SHARED_LIBS True)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS True)
+
 # Incluez les sous-projets.
 add_subdirectory ("libsbml")
 add_subdirectory ("ECell_Engine")
+add_subdirectory ("Editor")

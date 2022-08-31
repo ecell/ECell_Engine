@@ -390,10 +390,15 @@ void ECellEngine::Editor::Editor::start()
 
     // Our state
     bool show_demo_window = true;
+
+    //Start the engine
+    engine.start();
 }
 
 void ECellEngine::Editor::Editor::stop()
 {
+    engine.stop();
+
     // Cleanup
     err = vkDeviceWaitIdle(device);
     checkVkResult(err);
@@ -411,7 +416,7 @@ void ECellEngine::Editor::Editor::stop()
 void ECellEngine::Editor::Editor::update()
 {
     // Main loop
-    if (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window))
     {
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
@@ -419,6 +424,8 @@ void ECellEngine::Editor::Editor::update()
         // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
         // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
+
+        engine.update();
 
         // Resize swap chain?
         if (swapChainRebuild)
@@ -446,7 +453,7 @@ void ECellEngine::Editor::Editor::update()
         // You can browse its code to learn more about Dear ImGui.
         if (showDemoWindow) ImGui::ShowDemoWindow(&showDemoWindow);
         
-        Windows::OptionsWindow(&showDemoWindow);
+        Windows::Options(&showDemoWindow);
 
         // -- CUSTOM WINDOWS SPACE END --
 
