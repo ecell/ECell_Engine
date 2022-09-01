@@ -36,7 +36,7 @@ jobs:
       - name: Install CMake
         uses: jwlawson/actions-setup-cmake@v1.8
         with:
-          cmake-version: '3.12.0'
+          cmake-version: '3.21.0'
           
       - name: Setup VCPKG
         uses: lukka/run-vcpkg@v10
@@ -86,7 +86,7 @@ jobs:
       - name: Install CMake
         uses: jwlawson/actions-setup-cmake@v1.8
         with:
-          cmake-version: '3.12.0'
+          cmake-version: '3.21.0'
 
       - name: Setup VCPKG
         uses: lukka/run-vcpkg@v10
