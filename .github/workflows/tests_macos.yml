@@ -23,13 +23,8 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - name: Install ninja
-        uses: seanmiddleditch/gha-setup-ninja@master
-
-      - name: Install CMake
-        uses: jwlawson/actions-setup-cmake@v1.8
-        with:
-          cmake-version: '3.21.0'
+      - name: Install CMake and ninja
+        uses: lukka/get-cmake@latest
 
       - name: Setup VCPKG
         uses: lukka/run-vcpkg@v10
