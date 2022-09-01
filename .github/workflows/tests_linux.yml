@@ -83,10 +83,10 @@ jobs:
       - name: Install CMake and ninja
         uses: lukka/get-cmake@latest
 
-      - name: Remove local lzma lib
+      - name: Install lzma lib
         run: |
-          sudo apt remove lzma
-          sudo apt autoclean && sudo apt autoremove
+          sudo apt update
+          sudo apt install lzma
 
       - name: Setup VCPKG
         uses: lukka/run-vcpkg@v10
