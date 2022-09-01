@@ -1,0 +1,57 @@
+name: Windows
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+  workflow_dispatch:
+
+jobs:
+  windows_msvc:
+    name: Windows | MSVC
+    runs-on: windows-2019
+
+    strategy:
+      fail-fast: false
+      matrix:
+        build_config: [Release, Debug]
+        msvc_toolset: [v140, v141, v142]
+        target_architecture: [x64, Win32]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: Setup VCPKG
+        uses: lukka/run-vcpkg@v10
+        with:
+          # This is the glob expression used to locate the vcpkg.json and add its
+          # hash to the cache key. Change it to match a single manifest file you want
+          # to use.
+          vcpkgJsonGlob: '**/vcpkg.json'
+
+      - name: Run CMake consuming CMakePreset.json and vcpkg.json by mean of vcpkg.
+        uses: lukka/run-cmake@v10
+        with:
+          # This is the name of the CMakePresets.json's configuration to use to generate
+          # the project files. This configuration leverages the vcpkg.cmake toolchain file to
+          # run vcpkg and install all dependencies specified in vcpkg.json.
+          configurePreset: "MSVC"
+
+          # All parameters passed to cmake project generation
+          configurePresetCmdString: "[`--preset`, `$[env.CONFIGURE_PRESET_NAME]`, `-A`, `${{ matrix.target_architecture }}`, `-T`, `${{ matrix.msvc_toolset }}`]"
+
+          # This is the name of the CMakePresets.json's configuration to build the project.
+          buildPreset: "MSVC ${{matrix.build_config}}"
+
+#      - name: Generate Project
+#        run: cmake --preset="MSVC" -A ${{ matrix.target_architecture }} -T ${{ matrix.msvc_toolset }}
+
+#      - name: Build ECellEngine
+#        run: cmake --build --preset="MSVC ${{ matrix.build_config }}"
+
+#      - name: Run Tests
+#        run: ctest --preset="MSVC ${{ matrix.build_config }}"
