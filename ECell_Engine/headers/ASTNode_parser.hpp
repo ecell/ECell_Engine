@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <unordered_map>
+
 #include <sbml/SBMLTypes.h>
 
 class ASTNodeEx : ASTNode

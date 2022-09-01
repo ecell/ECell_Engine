@@ -33,7 +33,7 @@ jobs:
           # to use.
           vcpkgJsonGlob: '**/vcpkg.json'
 
-      - name: Run CMake consuming CMakePreset.json and vcpkg.json by mean of vcpkg.
+      - name: Build ECellEngine
         uses: lukka/run-cmake@v10
         with:
           # This is the name of the CMakePresets.json's configuration to use to generate
