@@ -1,0 +1,108 @@
+name: Linux
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+  workflow_dispatch:
+
+jobs:
+  ubuntu_clang:
+    name: Ubuntu | Clang
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        build_config: [Release, Debug]
+        clang_version: [6, 7, 8, 9, 10, 11, 12]
+
+    env:
+      clang_compiler_version: -${{ matrix.clang_version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: Install suitable compiler
+        run: sudo apt-get install clang++-${{ matrix.clang_version }}
+
+      - name: Install ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v1.8
+        with:
+          cmake-version: '3.12.0'
+          
+      - name: Setup VCPKG
+        uses: lukka/run-vcpkg@v10
+        with:
+          # This is the glob expression used to locate the vcpkg.json and add its
+          # hash to the cache key. Change it to match a single manifest file you want
+          # to use.
+          vcpkgJsonGlob: '**/vcpkg.json'
+
+      - name: Build ECellEngine
+        uses: lukka/run-cmake@v10
+        with:
+          # This is the name of the CMakePresets.json's configuration to use to generate
+          # the project files. This configuration leverages the vcpkg.cmake toolchain file to
+          # run vcpkg and install all dependencies specified in vcpkg.json.
+          configurePreset: "Clang"
+          
+          # This is the name of the CMakePresets.json's configuration to build the project.
+          buildPreset: "Clang ${{ matrix.build_config }}"
+
+
+  ubuntu_gcc:
+    name: Ubuntu | GCC
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        build_config: [Release, Debug]
+        gcc_version: [6, 7, 8, 9, 10, 11]
+
+    env:
+      gcc_compiler_version: -${{ matrix.gcc_version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: Install suitable compiler
+        run: sudo apt-get install g++-${{ matrix.gcc_version }}
+
+      - name: Install ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v1.8
+        with:
+          cmake-version: '3.12.0'
+
+      - name: Setup VCPKG
+        uses: lukka/run-vcpkg@v10
+        with:
+          # This is the glob expression used to locate the vcpkg.json and add its
+          # hash to the cache key. Change it to match a single manifest file you want
+          # to use.
+          vcpkgJsonGlob: '**/vcpkg.json'
+
+      - name: Build ECellEngine
+        uses: lukka/run-cmake@v10
+        with:
+          # This is the name of the CMakePresets.json's configuration to use to generate
+          # the project files. This configuration leverages the vcpkg.cmake toolchain file to
+          # run vcpkg and install all dependencies specified in vcpkg.json.
+          configurePreset: "GCC"
+          
+          # This is the name of the CMakePresets.json's configuration to build the project.
+          buildPreset: "GCC ${{ matrix.build_config }}"

@@ -1,4 +1,4 @@
-name: Windows
+name: MacOS
 
 on:
   push:
@@ -8,22 +8,28 @@ on:
   workflow_dispatch:
 
 jobs:
-  windows_msvc:
-    name: Windows | MSVC
-    runs-on: windows-2019
+  macos_clang:
+    name: MacOS | Clang
+    runs-on: macos-latest
 
     strategy:
       fail-fast: false
       matrix:
         build_config: [Release, Debug]
-        msvc_toolset: [v140, v141, v142]
-        target_architecture: [x64, Win32]
-
+        
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           submodules: 'recursive'
+
+      - name: Install ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v1.8
+        with:
+          cmake-version: '3.12.0'
 
       - name: Setup VCPKG
         uses: lukka/run-vcpkg@v10
@@ -39,10 +45,7 @@ jobs:
           # This is the name of the CMakePresets.json's configuration to use to generate
           # the project files. This configuration leverages the vcpkg.cmake toolchain file to
           # run vcpkg and install all dependencies specified in vcpkg.json.
-          configurePreset: "MSVC"
-
-          # All parameters passed to cmake project generation
-          configurePresetCmdString: "[`--preset`, `$[env.CONFIGURE_PRESET_NAME]`, `-A`, `${{ matrix.target_architecture }}`, `-T`, `${{ matrix.msvc_toolset }}`]"
-
+          configurePreset: "Clang"
+          
           # This is the name of the CMakePresets.json's configuration to build the project.
-          buildPreset: "MSVC ${{ matrix.build_config }}"
+          buildPreset: "Clang ${{ matrix.build_config }}"
