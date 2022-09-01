@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         build_config: [Release, Debug]
-        clang_version: [6, 7, 8, 9, 10, 11, 12]
+        clang_version: [7, 8, 9, 10, 11, 12]
 
     env:
       clang_compiler_version: -${{ matrix.clang_version }}
@@ -66,7 +66,7 @@ jobs:
       fail-fast: false
       matrix:
         build_config: [Release, Debug]
-        gcc_version: [6, 7, 8, 9, 10, 11]
+        gcc_version: [7, 8, 9, 10, 11]
 
     env:
       gcc_compiler_version: -${{ matrix.gcc_version }}
