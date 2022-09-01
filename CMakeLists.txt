@@ -5,11 +5,6 @@ cmake_minimum_required (VERSION 3.12)
 
 project ("ECell_Engine")
 
-# specify the C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-
 # In Windows, generated dlls and .exe must be at the same place
 # This makes sure that the libsbml.dll will be at the same place
 # as the ECellEngine.exe 
