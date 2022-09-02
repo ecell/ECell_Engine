@@ -461,7 +461,8 @@ void ECellEngine::Editor::Editor::update()
         {
             ImGui::ShowDemoWindow(&showDemoWindow);
         }
-        
+
+        fileIOWidget.draw();
         optionsWidget.draw();
         sfcWidget.draw();
 

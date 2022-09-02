@@ -9,6 +9,7 @@
 #include <vulkan/vulkan.h>
 
 #include "Engine.hpp"
+#include "FileIOWidget.hpp"
 #include "OptionsWidget.hpp"
 #include "SimulationFlowControlWidget.hpp"
 
@@ -43,6 +44,7 @@ namespace ECellEngine::Editor
 		int                      minImageCount;
 		bool                     swapChainRebuild;
 
+		FileIOWidget fileIOWidget;
 		OptionsWidget optionsWidget;
 		SimulationFlowControlWidget sfcWidget;
 
@@ -65,7 +67,8 @@ namespace ECellEngine::Editor
 
 	public:
 		Editor() :
-			optionsWidget(&showDemoWindow, engine.getCommandsManager()),
+			fileIOWidget(engine.getCommandsManager(), engine.getFileIOManager()),
+			optionsWidget(engine.getCommandsManager(), &showDemoWindow),
 			sfcWidget(engine.getCommandsManager())
 		{
 			window = NULL;

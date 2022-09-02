@@ -12,7 +12,7 @@ namespace ECellEngine::Editor
 		bool* showDemoWindow;
 
 	public:
-		OptionsWidget(bool* _showDemoWindow, CommandsManager* _cmdManager) :
+		OptionsWidget(CommandsManager* _cmdManager, bool* _showDemoWindow) :
 			Widget(_cmdManager), showDemoWindow(_showDemoWindow)
 		{
 
