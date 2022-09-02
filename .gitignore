@@ -33,4 +33,6 @@
 
 .vs/
 
-out/
+# ignore build directories
+[Oo]ut/
+[Bb]uild/
