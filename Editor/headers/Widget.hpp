@@ -6,6 +6,9 @@
 
 namespace ECellEngine::Editor
 {
+	/*
+	@brief Base class to write any widget of the editor.
+	*/
 	class Widget
 	{
 	protected:
@@ -18,6 +21,9 @@ namespace ECellEngine::Editor
 
 		}
 
+		/*
+		@brief The method to call each frame to draw the content of the widget.
+		*/
 		virtual void draw() = 0;
 
 	};
