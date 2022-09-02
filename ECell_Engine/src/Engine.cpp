@@ -1,16 +1,5 @@
 ﻿#include "Engine.hpp"
 
-void Engine::OpenFile(const std::string* _filePath)
-{
-	std::cout << "Trying to open file: " << *_filePath << std::endl;
-	SBMLDocument* sbmlDoc = sbmlParser.OpenSBMLFile((*_filePath).c_str());
-
-	sbmlParser.PrettyPrintSBMLDocument(sbmlDoc);
-	SetActiveSBMLDocument(sbmlDoc);
-
-	simulationLoop.SetSimulationEnvironment(sbmlDoc);
-}
-
 void Engine::start()
 {
 	/*SBMLDocument* sbmlDoc = sbmlParser.OpenSBMLFile("GibsonAndBruckToyModel.xml");
@@ -31,10 +20,11 @@ void Engine::start()
 	commandsManager.start();
 
 	//Engine Commands
-	commandsManager.registerCommand(std::make_shared<QuitCommand>(this));
+	commandsManager.registerCommand(std::make_shared<AddFileAsSBMLCommand>(this));
+	commandsManager.registerCommand(std::make_shared<QuitCommand>(this));	
 
 	//IO Commands
-	commandsManager.registerCommand(std::make_shared<OpenCommand>(this));
+	commandsManager.registerCommand(std::make_shared<SetFilePathCommand>(&fileIOManager));
 
 	//Simulation Loop commands
 	commandsManager.registerCommand(std::make_shared<DisplayCommand>(&simulationLoop));

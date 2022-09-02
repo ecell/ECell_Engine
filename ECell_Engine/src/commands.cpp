@@ -4,18 +4,28 @@
 
 
 #pragma region IOCommands
-void OpenCommand::askUser()
+
+void SetFilePathCommand::execute()
 {
-	std::cout << std::endl << "Give file name: ";
-	std::cin >> answer;
+	std::string path;
+	std::cin >> path;
 	//answer = "GibsonAndBruckToyModel.xml";//added during dev time to bypass the time to write the name in the console everytime.
-	answer = "p53_L3V2_mod.xml";//added during dev time to bypass the time to write the name in the console everytime.
+	path = "p53_L3V2_mod.xml";//added during dev time to bypass the time to write the name in the console everytime.
+	receiver->setTargetFilePath(path);
 }
 
-void OpenCommand::execute()
+void AddFileAsSBMLCommand::execute()
 {
-	askUser();
-	receiver->OpenFile(&answer);
+	SBMLDocument* out = receiver->getFileIOManager()->tryOpenTargetFileAsSBML();
+	if (out != nullptr)
+	{
+		receiver->addSBMLDocument(out);
+		std::cout << "Open SBML file - SUCCESS." << std::endl;
+	}
+	else
+	{
+		std::cout << "Open SBML file - FAILED." << std::endl;
+	}
 }
 #pragma endregion
 

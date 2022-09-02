@@ -5,10 +5,9 @@
 #include <thread>
 
 #include "SimulationLoop.hpp"
+#include "FileIOManager.hpp"
 #include "CommandsManager.hpp"
 #include "Commands.hpp"
-#include "SbmlParser.hpp"
-#include "SbmlWriter.hpp"
 
 /*
 @brief The main class of the engine.
@@ -17,14 +16,11 @@
 */
 class Engine
 {
-private:
-	SbmlWriter sbmlWriter;
-	SbmlParser sbmlParser;
-	SBMLDocument* activeDocument;
-
+	FileIOManager fileIOManager;
 	CommandsManager commandsManager;
 	SimulationLoop simulationLoop;
 	
+	std::vector<SBMLDocument*> loadedSBMLDocuments;
 
 public:
 	Engine() = default;
@@ -33,13 +29,14 @@ public:
 
 #pragma region Accessors
 	/*
-	@brief Gets the @a activeDocument private member.
+	@brief Gets the @a sbmlDocument at index @a _idx in
+			the @a loadedSBMLDocuments private member.
 	*/
-	inline SBMLDocument* GetActiveDocument()
+	inline SBMLDocument* getSBMLDocument(short _idx)
 	{
-		return activeDocument;
+		return loadedSBMLDocuments.at(_idx);
 	}
-	
+
 	/*
 	@brief Gets the pointer to @a commandsManager private member.
 	*/
@@ -47,24 +44,27 @@ public:
 	{
 		return &commandsManager;
 	}
+
+	/*
+	@brief Gets the pointer to @a fileIOManager private member.
+	*/
+	inline FileIOManager* getFileIOManager()
+	{
+		return &fileIOManager;
+	}
 #pragma endregion
 
 #pragma region Mutators
 	/*
-	@brief Sets the @a activeDocument private member.
+	@brief Adds the @a _sbmlDoc to the @a loadedSBMLDocuments private member.
 	*/
-	inline void SetActiveSBMLDocument(SBMLDocument* _sbmlDoc)
+	inline void addSBMLDocument(SBMLDocument* _sbmlDoc)
 	{
-		activeDocument = _sbmlDoc;
+		loadedSBMLDocuments.push_back(_sbmlDoc);
 	}
 #pragma endregion
 
-#pragma region Logic	
-	/*
-	@brief The main entry to sorting.
-	*/
-	void OpenFile(const std::string* _filePath);
-
+#pragma region Logic
 	/*
 	@brief Initializes every sub modules or variable needed for the engine
 			to be able to start running.

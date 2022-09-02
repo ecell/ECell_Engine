@@ -5,21 +5,16 @@
 //partial definitions:
 class Engine;
 class SimulationLoop;
+class FileIOManager;
 
 #include "CommandWithReceiver.hpp"
 
 #pragma region IO Commands
-class OpenCommand : public CommandWithReceiver<Engine>
+class SetFilePathCommand : public CommandWithReceiver<FileIOManager>
 {
-private:
-	std::string answer;
-
-protected:
-	void askUser();
-
 public:
-	OpenCommand(Engine* _receiver):
-		CommandWithReceiver("open", _receiver)
+	SetFilePathCommand(FileIOManager* _receiver):
+		CommandWithReceiver("setFilePath", _receiver)
 	{
 	}
 
@@ -28,7 +23,16 @@ public:
 #pragma endregion
 
 #pragma region Engine Commands
+class AddFileAsSBMLCommand : public CommandWithReceiver<Engine>
+{
+public:
+	AddFileAsSBMLCommand(Engine* _receiver) :
+		CommandWithReceiver("addFileAsSBML", _receiver)
+	{
+	}
 
+	void execute() override;
+};
 /*
 @brief The command to quit the application.
 @details Effectively exits from every running thread and then terminates.
