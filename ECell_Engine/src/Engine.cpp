@@ -28,22 +28,21 @@ void Engine::start()
 
 	std::cout << "Engine start" << std::endl;
 
-	//commandsManager.start();
+	commandsManager.start();
 
 	//Engine Commands
-	//commandsManager.registerCommand(std::make_shared<QuitCommand>(this));
+	commandsManager.registerCommand(std::make_shared<QuitCommand>(this));
 
 	//IO Commands
-	//commandsManager.registerCommand(std::make_shared<OpenCommand>(this));
-	//commandsManager.registerCommand(std::make_shared<LoadCommand>(this));
+	commandsManager.registerCommand(std::make_shared<OpenCommand>(this));
 
 	//Simulation Loop commands
-	//commandsManager.registerCommand(std::make_shared<DisplayCommand>(&simulationLoop));
-	//commandsManager.registerCommand(std::make_shared<GoBackwardCommand>(&simulationLoop));
-	//commandsManager.registerCommand(std::make_shared<GoForwardCommand>(&simulationLoop));
-	//commandsManager.registerCommand(std::make_shared<PauseCommand>(&simulationLoop));
-	//commandsManager.registerCommand(std::make_shared<PlayCommand>(&simulationLoop));
-	//commandsManager.registerCommand(std::make_shared<StopCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<DisplayCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<GoBackwardCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<GoForwardCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<PauseCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<PlayCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<StopCommand>(&simulationLoop));
 
 	simulationLoop.start();
 
@@ -55,8 +54,6 @@ void Engine::start()
 void Engine::stop()
 {
 	simulationLoop.stop();
-	//commandsManager.stop();
-	//editor.stop();
 
 	isRunning = false;
 }
@@ -64,11 +61,4 @@ void Engine::stop()
 void Engine::update()
 {
 	simulationLoop.update();
-	//std::thread commandsThread{ &CommandsManager::update, &commandsManager };
-	//if (isRunning)
-	//{
-	//	simulationLoop.update();
-	//	editor.update();
-	//}
-	////commandsThread.join();
 }

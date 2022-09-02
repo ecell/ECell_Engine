@@ -22,8 +22,7 @@ private:
 	SbmlParser sbmlParser;
 	SBMLDocument* activeDocument;
 
-	//CommandsManager commandsManager;
-	//ECellEngine::Editor::Editor editor;
+	CommandsManager commandsManager;
 	SimulationLoop simulationLoop;
 	
 
@@ -39,6 +38,14 @@ public:
 	inline SBMLDocument* GetActiveDocument()
 	{
 		return activeDocument;
+	}
+	
+	/*
+	@brief Gets the pointer to @a commandsManager private member.
+	*/
+	inline CommandsManager* getCommandsManager()
+	{
+		return &commandsManager;
 	}
 #pragma endregion
 

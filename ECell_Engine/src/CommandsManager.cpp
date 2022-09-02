@@ -1,6 +1,6 @@
 #include "CommandsManager.hpp"
 
-void CommandsManager::processCommand(std::vector<std::string> const& _cmdSplit)
+void CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit)
 {
 	std::shared_ptr<Command> matchingCommand = tryGetRegisteredCommand(_cmdSplit[0]);
 
@@ -41,15 +41,15 @@ std::shared_ptr<Command> CommandsManager::tryGetRegisteredCommand(std::string co
 
 void CommandsManager::update()
 {
+	std::string commandInput;
+	std::vector<std::string> commandInputSplit;
+
 	std::cout << "CommandsManager update" << std::endl;
 	while (isListening)
 	{
-		std::cin >> commandInput;
-		std::istringstream iss(commandInput);
-		std::vector<std::string> results(std::istream_iterator<std::string>{iss},
-			std::istream_iterator<std::string>());
-
-		processCommand(results);
+		commandInput = waitForConsoleInput();
+		commandInputSplit = splitStr(commandInput);
+		interpretCommand(commandInputSplit);
 	};
 	std::cout << "Exiting keyboard input polling loop" << std::endl;
 }

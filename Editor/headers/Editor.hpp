@@ -9,7 +9,8 @@
 #include <vulkan/vulkan.h>
 
 #include "Engine.hpp"
-#include "Windows.hpp"
+#include "OptionsWidget.hpp"
+#include "SimulationFlowControlWidget.hpp"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -42,6 +43,9 @@ namespace ECellEngine::Editor
 		int                      minImageCount;
 		bool                     swapChainRebuild;
 
+		OptionsWidget optionsWidget;
+		SimulationFlowControlWidget sfcWidget;
+
 		bool					 showDemoWindow;
 
 
@@ -53,12 +57,16 @@ namespace ECellEngine::Editor
 
 		void framePresent(ImGui_ImplVulkanH_Window* _wd);
 
-		void setupVulkan(const char** _extensions, uint32_t _extensions_count);
+		void initializeEditorWindow();
 
-		void setupVulkanWindow(ImGui_ImplVulkanH_Window* _wd, VkSurfaceKHR _surface, int _width, int _height);
+		void initializeVulkan(const char** _extensions, uint32_t _extensions_count);
+
+		void initializeVulkanWindow(ImGui_ImplVulkanH_Window* _wd, VkSurfaceKHR _surface, int _width, int _height);
 
 	public:
-		Editor()
+		Editor() :
+			optionsWidget(&showDemoWindow, engine.getCommandsManager()),
+			sfcWidget(engine.getCommandsManager())
 		{
 			window = NULL;
 

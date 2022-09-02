@@ -110,7 +110,113 @@ void ECellEngine::Editor::Editor::framePresent(ImGui_ImplVulkanH_Window* wd)
     wd->SemaphoreIndex = (wd->SemaphoreIndex + 1) % wd->ImageCount; // Now we can use the next set of semaphores
 }
 
-void ECellEngine::Editor::Editor::setupVulkan(const char** extensions, uint32_t extensions_count)
+void ECellEngine::Editor::Editor::initializeEditorWindow()
+{
+    // Setup GLFW window
+    glfwSetErrorCallback(glfwErrorCallback);
+    if (!glfwInit())
+        return;
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+Vulkan example", NULL, NULL);
+
+    // Setup Vulkan
+    if (!glfwVulkanSupported())
+    {
+        printf("GLFW: Vulkan Not Supported\n");
+        return;
+    }
+    uint32_t extensions_count = 0;
+    const char** extensions = glfwGetRequiredInstanceExtensions(&extensions_count);
+    initializeVulkan(extensions, extensions_count);
+
+    // Create Window Surface
+    VkSurfaceKHR surface;
+    err = glfwCreateWindowSurface(instance, window, allocator, &surface);
+    checkVkResult(err);
+
+    // Create Framebuffers
+    int w, h;
+    glfwGetFramebufferSize(window, &w, &h);
+    //ImGui_ImplVulkanH_Window* wd = &mainWindowData;
+    initializeVulkanWindow(&mainWindowData, surface, w, h);
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplGlfw_InitForVulkan(window, true);
+    ImGui_ImplVulkan_InitInfo init_info = {};
+    init_info.Instance = instance;
+    init_info.PhysicalDevice = physicalDevice;
+    init_info.Device = device;
+    init_info.QueueFamily = queueFamily;
+    init_info.Queue = queue;
+    init_info.PipelineCache = pipelineCache;
+    init_info.DescriptorPool = descriptorPool;
+    init_info.Subpass = 0;
+    init_info.MinImageCount = minImageCount;
+    init_info.ImageCount = (&mainWindowData)->ImageCount;
+    init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+    init_info.Allocator = allocator;
+    init_info.CheckVkResultFn = checkVkResult;
+    ImGui_ImplVulkan_Init(&init_info, (&mainWindowData)->RenderPass);
+
+    // Load Fonts
+    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
+    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
+    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
+    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
+    // - Read 'docs/FONTS.md' for more instructions and details.
+    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
+    //io.Fonts->AddFontDefault();
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
+    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+    //IM_ASSERT(font != NULL);
+
+    // Upload Fonts
+    {
+        // Use any command queue
+        VkCommandPool command_pool = (&mainWindowData)->Frames[(&mainWindowData)->FrameIndex].CommandPool;
+        VkCommandBuffer command_buffer = (&mainWindowData)->Frames[(&mainWindowData)->FrameIndex].CommandBuffer;
+
+        err = vkResetCommandPool(device, command_pool, 0);
+        checkVkResult(err);
+        VkCommandBufferBeginInfo begin_info = {};
+        begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        begin_info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+        err = vkBeginCommandBuffer(command_buffer, &begin_info);
+        checkVkResult(err);
+
+        ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
+
+        VkSubmitInfo end_info = {};
+        end_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        end_info.commandBufferCount = 1;
+        end_info.pCommandBuffers = &command_buffer;
+        err = vkEndCommandBuffer(command_buffer);
+        checkVkResult(err);
+        err = vkQueueSubmit(queue, 1, &end_info, VK_NULL_HANDLE);
+        checkVkResult(err);
+
+        err = vkDeviceWaitIdle(device);
+        checkVkResult(err);
+        ImGui_ImplVulkan_DestroyFontUploadObjects();
+    }
+}
+
+void ECellEngine::Editor::Editor::initializeVulkan(const char** extensions, uint32_t extensions_count)
 {
     // Create Vulkan Instance
     {
@@ -168,7 +274,7 @@ void ECellEngine::Editor::Editor::setupVulkan(const char** extensions, uint32_t 
         checkVkResult(err);
 
         // If a number >1 of GPUs got reported, find discrete GPU if present, or use first one available. This covers
-        // most common cases (multi-gpu/integrated+dedicated graphics). Handling more complicated setups (multiple
+        // most common cases (multi-gpu/integrated+dedicated graphics). Handling more complicated initializes (multiple
         // dedicated GPUs) is out of scope of this sample.
         int use_gpu = 0;
         for (int i = 0; i < (int)gpu_count; i++)
@@ -250,7 +356,7 @@ void ECellEngine::Editor::Editor::setupVulkan(const char** extensions, uint32_t 
     }
 }
 
-void ECellEngine::Editor::Editor::setupVulkanWindow(ImGui_ImplVulkanH_Window* wd, VkSurfaceKHR surface, int width, int height)
+void ECellEngine::Editor::Editor::initializeVulkanWindow(ImGui_ImplVulkanH_Window* wd, VkSurfaceKHR surface, int width, int height)
 {
     wd->Surface = surface;
 
@@ -285,108 +391,8 @@ void ECellEngine::Editor::Editor::setupVulkanWindow(ImGui_ImplVulkanH_Window* wd
 
 void ECellEngine::Editor::Editor::start()
 {
-    // Setup GLFW window
-    glfwSetErrorCallback(glfwErrorCallback);
-    if (!glfwInit())
-        return;
-
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+Vulkan example", NULL, NULL);
-
-    // Setup Vulkan
-    if (!glfwVulkanSupported())
-    {
-        printf("GLFW: Vulkan Not Supported\n");
-        return;
-    }
-    uint32_t extensions_count = 0;
-    const char** extensions = glfwGetRequiredInstanceExtensions(&extensions_count);
-    setupVulkan(extensions, extensions_count);
-
-    // Create Window Surface
-    VkSurfaceKHR surface;
-    err = glfwCreateWindowSurface(instance, window, allocator, &surface);
-    checkVkResult(err);
-
-    // Create Framebuffers
-    int w, h;
-    glfwGetFramebufferSize(window, &w, &h);
-    //ImGui_ImplVulkanH_Window* wd = &mainWindowData;
-    setupVulkanWindow(&mainWindowData, surface, w, h);
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForVulkan(window, true);
-    ImGui_ImplVulkan_InitInfo init_info = {};
-    init_info.Instance = instance;
-    init_info.PhysicalDevice = physicalDevice;
-    init_info.Device = device;
-    init_info.QueueFamily = queueFamily;
-    init_info.Queue = queue;
-    init_info.PipelineCache = pipelineCache;
-    init_info.DescriptorPool = descriptorPool;
-    init_info.Subpass = 0;
-    init_info.MinImageCount = minImageCount;
-    init_info.ImageCount = (&mainWindowData)->ImageCount;
-    init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
-    init_info.Allocator = allocator;
-    init_info.CheckVkResultFn = checkVkResult;
-    ImGui_ImplVulkan_Init(&init_info, (&mainWindowData)->RenderPass);
-
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
-
-    // Upload Fonts
-    {
-        // Use any command queue
-        VkCommandPool command_pool = (&mainWindowData)->Frames[(&mainWindowData)->FrameIndex].CommandPool;
-        VkCommandBuffer command_buffer = (&mainWindowData)->Frames[(&mainWindowData)->FrameIndex].CommandBuffer;
-
-        err = vkResetCommandPool(device, command_pool, 0);
-        checkVkResult(err);
-        VkCommandBufferBeginInfo begin_info = {};
-        begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        begin_info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-        err = vkBeginCommandBuffer(command_buffer, &begin_info);
-        checkVkResult(err);
-
-        ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
-
-        VkSubmitInfo end_info = {};
-        end_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        end_info.commandBufferCount = 1;
-        end_info.pCommandBuffers = &command_buffer;
-        err = vkEndCommandBuffer(command_buffer);
-        checkVkResult(err);
-        err = vkQueueSubmit(queue, 1, &end_info, VK_NULL_HANDLE);
-        checkVkResult(err);
-
-        err = vkDeviceWaitIdle(device);
-        checkVkResult(err);
-        ImGui_ImplVulkan_DestroyFontUploadObjects();
-    }
+    //Start glfw & Vulkan
+    initializeEditorWindow();
 
     // Our state
     bool show_demo_window = true;
@@ -451,9 +457,13 @@ void ECellEngine::Editor::Editor::update()
         // Show the big demo window
         // Most of the sample code is in ImGui::ShowDemoWindow()!
         // You can browse its code to learn more about Dear ImGui.
-        if (showDemoWindow) ImGui::ShowDemoWindow(&showDemoWindow);
+        if (showDemoWindow)
+        {
+            ImGui::ShowDemoWindow(&showDemoWindow);
+        }
         
-        Windows::Options(&showDemoWindow);
+        optionsWidget.draw();
+        sfcWidget.draw();
 
         // -- CUSTOM WINDOWS SPACE END --
 

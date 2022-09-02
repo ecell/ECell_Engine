@@ -9,19 +9,13 @@ find_package(Vulkan REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
 
 add_executable( ECellEngineEditor
-"Main.cpp"
-"Main.hpp"
-"CommandsManager.cpp"				
-"CommandsManager.hpp"				
-"imgui_impl_glfw.cpp"
-"imgui_impl_glfw.h"
-"imgui_impl_vulkan.cpp"
-"imgui_impl_vulkan.h"
-"Editor.cpp"
-"Editor.hpp"
-"EditorUtility.hpp"
-"Windows.cpp"
-"Windows.hpp")
+"src/Main.cpp"	
+"src/imgui_impl_glfw.cpp"
+"src/imgui_impl_vulkan.cpp"
+"src/Editor.cpp"
+"src/OptionsWidget.cpp"
+"src/SimulationFlowControlWidget.cpp"
+)
 
 target_link_libraries(ECellEngineEditor PRIVATE ECellEngine)
 target_link_libraries(ECellEngineEditor PRIVATE imgui::imgui)
@@ -30,7 +24,7 @@ target_link_libraries(ECellEngineEditor PRIVATE Vulkan::Vulkan)
 
 target_include_directories(ECellEngineEditor
 							PRIVATE
-								"./"
+								"./headers"
 								"../ECell_Engine/engine_system_files"
 								"../ECell_Engine/headers"
 )

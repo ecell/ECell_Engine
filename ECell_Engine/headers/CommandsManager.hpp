@@ -17,8 +17,32 @@ class CommandsManager
 {
 private:
 	bool isListening;
-	std::string commandInput;
 	std::unordered_map<std::string, std::shared_ptr<Command>> commands;
+
+	/*
+	@brief Splits a string according to white spaces
+	@param _str The string we want to split.
+	@returns A vector containing the token of the splitted string.
+	*/
+	inline std::vector<std::string> splitStr(std::string _str)
+	{
+		std::istringstream iss(_str);
+		std::vector<std::string> results(std::istream_iterator<std::string>{iss},
+			std::istream_iterator<std::string>());
+		return results;
+	}
+
+	/*
+	@brief Blocks the execution of the current thread to and gets
+			a string input from the console.
+	@returns The string input.
+	*/
+	inline std::string waitForConsoleInput()
+	{
+		std::string input;
+		std::cin >> input;
+		return input;
+	}
 
 public:
 	CommandsManager() = default;
@@ -26,18 +50,18 @@ public:
 	/*
 	@brief Searches for a command matching @p _cmdSplit and calls executes
 			it if found.
-	@param[in] _cmdSplit The command content. The first element should be the 
+	@param _cmdSplit The command content. The first element should be the 
 				command's name.
 	*/
-	void processCommand(std::vector<std::string> const& _cmdSplit);
+	void interpretCommand(std::vector<std::string> const& _cmdSplit);
 
 	/*
 	@brief Adds @p _command to the register.
-	@param[in] _command The command to try to register.
+	@param _command The command to try to register.
 	@returns False if the command already exists. True otherwise (and the command
 			 is duely registered).
 	*/
-	bool registerCommand(std::shared_ptr<Command> _command);	
+	bool registerCommand(std::shared_ptr<Command> _command);
 
 	/*
 	@brief Does everything needed to start listening to commands.
@@ -52,7 +76,7 @@ public:
 	/*
 	@brief  Searches in the hash table of registered commands whether one has a name
 			that matches @p _commandName.
-	@param[in] _commandName Target name of the command we are looking for.
+	@param _commandName Target name of the command we are looking for.
 	@returns The command encapsulated as a std::shared_ptr if a match was found. A
 			 nullptr otherwise.
 	*/
