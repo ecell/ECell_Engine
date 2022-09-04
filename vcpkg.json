@@ -5,6 +5,7 @@
     "libxml2",
     "imgui",
     "glfw3",
-    "vulkan"
+    "vulkan",
+    "implot"
   ]
 }

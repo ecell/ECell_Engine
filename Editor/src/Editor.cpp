@@ -144,6 +144,7 @@ void ECellEngine::Editor::Editor::initializeEditorWindow()
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -410,6 +411,7 @@ void ECellEngine::Editor::Editor::stop()
     checkVkResult(err);
     ImGui_ImplVulkan_Shutdown();
     ImGui_ImplGlfw_Shutdown();
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
 
     cleanupVulkanWindow();
@@ -460,6 +462,7 @@ void ECellEngine::Editor::Editor::update()
         if (showDemoWindow)
         {
             ImGui::ShowDemoWindow(&showDemoWindow);
+            ImPlot::ShowDemoWindow(&showDemoWindow);
         }
 
         fileIOWidget.draw();
