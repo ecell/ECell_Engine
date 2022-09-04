@@ -188,7 +188,14 @@ float ASTEvaluator::EvaluateNode(ASTNodeEx* _node)
 		return EvaluateNode(getNode(_node->getLeftChildEx())) - EvaluateNode(getNode(_node->getRightChildEx()));
 		break;
 	case ASTNodeType_t::AST_TIMES:
-		return EvaluateNode(getNode(_node->getLeftChildEx())) * EvaluateNode(getNode(_node->getRightChildEx()));
+		if (_node->getRightChildEx() == -1)//to deal with special cases where there are no right hand terms to TIMES node
+		{
+			return EvaluateNode(getNode(_node->getLeftChildEx()));
+		}
+		else
+		{
+			return EvaluateNode(getNode(_node->getLeftChildEx())) * EvaluateNode(getNode(_node->getRightChildEx()));
+		}
 		break;
 	case ASTNodeType_t::AST_DIVIDE:
 		return EvaluateNode(getNode(_node->getLeftChildEx())) / EvaluateNode(getNode(_node->getRightChildEx()));
