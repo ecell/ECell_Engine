@@ -28,15 +28,7 @@ public:
 	bool isRunning;
 
 #pragma region Accessors
-	/*
-	@brief Gets the @a sbmlDocument at index @a _idx in
-			the @a loadedSBMLDocuments private member.
-	*/
-	inline SBMLDocument* getSBMLDocument(short _idx)
-	{
-		return loadedSBMLDocuments.at(_idx);
-	}
-
+	
 	/*
 	@brief Gets the pointer to @a commandsManager private member.
 	*/
@@ -52,6 +44,23 @@ public:
 	{
 		return &fileIOManager;
 	}
+
+	/*
+	@brief Gets the @a sbmlDocument at index @a _idx in
+			the @a loadedSBMLDocuments private member.
+	*/
+	inline SBMLDocument* getSBMLDocument(short _idx)
+	{
+		return loadedSBMLDocuments.at(_idx);
+	}
+	
+	/*
+	@brief Gets the pointer to @a loadedSBMLDocuments private member.
+	*/
+	inline std::vector<SBMLDocument*>* getLoadedSBMLDocuments()
+	{
+		return &loadedSBMLDocuments;
+	}
 #pragma endregion
 
 #pragma region Mutators
@@ -65,6 +74,13 @@ public:
 #pragma endregion
 
 #pragma region Logic
+
+	/*
+	@brief Sends the SBMLDocument at index @a _idx in @a loadedSBMLDocuments
+			to the simulation loop for simulation.
+	*/
+	void forwardSimulationTarget(const int& _idx);
+
 	/*
 	@brief Initializes every sub modules or variable needed for the engine
 			to be able to start running.

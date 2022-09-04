@@ -1,5 +1,10 @@
 ﻿#include "Engine.hpp"
 
+void Engine::forwardSimulationTarget(const int& _idx)
+{
+	simulationLoop.SetSimulationEnvironment(loadedSBMLDocuments[_idx]);
+}
+
 void Engine::start()
 {
 	/*SBMLDocument* sbmlDoc = sbmlParser.OpenSBMLFile("GibsonAndBruckToyModel.xml");
@@ -21,6 +26,7 @@ void Engine::start()
 
 	//Engine Commands
 	commandsManager.registerCommand(std::make_shared<AddFileAsSBMLCommand>(this));
+	commandsManager.registerCommand(std::make_shared<AddSimulationTargetCommand>(this));
 	commandsManager.registerCommand(std::make_shared<QuitCommand>(this));	
 
 	//IO Commands

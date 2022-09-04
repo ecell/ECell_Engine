@@ -43,6 +43,20 @@ public:
 };
 
 /*
+@brief The command to add a loaded SBML file to the targets to simulate.
+*/
+class AddSimulationTargetCommand : public CommandWithReceiver<Engine>
+{
+public:
+	AddSimulationTargetCommand(Engine* _receiver) :
+		CommandWithReceiver("addSimulationTarget", _receiver)
+	{
+	}
+
+	void execute(const std::vector<std::string>& _args) override;
+};
+
+/*
 @brief The command to quit the application.
 @details Effectively exits from every running thread and then terminates.
 */

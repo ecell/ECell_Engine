@@ -17,7 +17,7 @@ private:
 	SimulationState simulationState = SimulationState::isStopped;
 	Gillespie_NRM_R gillespieSimulationEnv;
 
-	std::atomic_bool isRunning;
+	bool isRunning;
 	short direction = 1;
 
 public:

@@ -11,7 +11,9 @@ void SetFilePathCommand::execute(const std::vector<std::string>& _args)
 	//path = "p53_L3V2_mod.xml";//added during dev time to bypass the time to write the name in the console everytime.
 	receiver->setTargetFilePath(_args[1]);
 }
+#pragma endregion
 
+#pragma region Engine Commands
 void AddFileAsSBMLCommand::execute(const std::vector<std::string>& _args)
 {
 	SBMLDocument* out = receiver->getFileIOManager()->tryOpenTargetFileAsSBML();
@@ -25,9 +27,12 @@ void AddFileAsSBMLCommand::execute(const std::vector<std::string>& _args)
 		std::cout << "Open SBML file - FAILED." << std::endl;
 	}
 }
-#pragma endregion
 
-#pragma region Engine Commands
+void AddSimulationTargetCommand::execute(const std::vector<std::string>& _args)
+{
+	receiver->forwardSimulationTarget(std::stoi(_args[1]));
+}
+
 void QuitCommand::execute(const std::vector<std::string>& _args)
 {
 	receiver->stop();

@@ -17,6 +17,8 @@ namespace ECellEngine::Editor
 		const std::vector<std::string> playCommandArray = { "play" };
 		const std::vector<std::string> stopCommandArray = { "stop" };
 
+		void drawSimulationControls();
+
 	public:
 		SimulationFlowControlWidget(CommandsManager* _cmdsManager) :
 			Widget(_cmdsManager)

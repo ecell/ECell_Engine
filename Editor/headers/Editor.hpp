@@ -66,7 +66,7 @@ namespace ECellEngine::Editor
 
 	public:
 		Editor() :
-			fileIOWidget(engine.getCommandsManager()),
+			fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
 			optionsWidget(engine.getCommandsManager()),
 			sfcWidget(engine.getCommandsManager())
 		{
