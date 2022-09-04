@@ -36,7 +36,7 @@ void ECellEngine::Editor::FileIOWidget::drawLoadedSBMLDocuments()
             if (ImGui::Button("Set As Simulation Target"))
             {
                 addSimulationTargetCommandArray[1] = std::to_string(i);
-                engineCmdsManager->tryGetRegisteredCommand("addSimulationTarget");
+                engineCmdsManager->interpretCommand(addSimulationTargetCommandArray);
             }
             ImGui::TableNextRow();
         }
