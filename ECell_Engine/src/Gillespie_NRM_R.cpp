@@ -332,6 +332,8 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	itmh.Initialize(&tauTable);
 
 	trace.reserve(1000);
+
+	initialized = true;
 }
 
 void Gillespie_NRM_R::ManageTrace()

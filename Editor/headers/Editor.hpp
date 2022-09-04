@@ -69,7 +69,7 @@ namespace ECellEngine::Editor
 	public:
 		Editor() :
 			fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
-			msvWidget(engine.getCommandsManager(), &(engine.getSimulationLoop()->GetSimulationEnvironment())),
+			msvWidget(engine.getCommandsManager(), engine.getSimulationLoop()),
 			optionsWidget(engine.getCommandsManager()),
 			sfcWidget(engine.getCommandsManager())
 		{
