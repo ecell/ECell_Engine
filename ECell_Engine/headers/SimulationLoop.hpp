@@ -39,17 +39,17 @@ public:
 	/*
 	@brief Gets the gillespieSimulationEnv private member.
 	*/
-	inline Gillespie_NRM_R GetSimulationEnvironment()
+	inline Gillespie_NRM_R* getSimulationEnvironment()
 	{
-		return gillespieSimulationEnv;
+		return &gillespieSimulationEnv;
 	}
 
 	/*
 	@brief Gets the simulationState private member.
 	*/
-	inline SimulationState GetSimulationState()
+	inline SimulationState* getSimulationState()
 	{
-		return simulationState;
+		return &simulationState;
 	}
 #pragma endregion
 

@@ -47,7 +47,7 @@ void DisplayCommand::execute(const std::vector<std::string>& _args)
 
 		"Total elapsed time: " << receiver->simulationTimer.elapsedTime <<
 		", last delta time: " << receiver->simulationTimer.deltaTime << std::endl <<
-		"Simulation Environment: " << receiver->GetSimulationEnvironment();
+		"Simulation Environment: " << receiver->getSimulationEnvironment();
 }
 
 void GoForwardCommand::execute(const std::vector<std::string>& _args)
@@ -82,7 +82,7 @@ void PauseCommand::execute(const std::vector<std::string>& _args)
 {
 	//std::cout << "The PAUSE command was called" << std::endl;
 
-	switch (receiver->GetSimulationState())
+	switch (*receiver->getSimulationState())
 	{
 	case(SimulationState::isPlaying):
 		std::cout << "Pausing the simulation." << std::endl;
@@ -103,7 +103,7 @@ void PlayCommand::execute(const std::vector<std::string>& _args)
 {
 	//std::cout << "The PLAY command was called" << std::endl;
 
-	switch (receiver->GetSimulationState())
+	switch (*receiver->getSimulationState())
 	{
 	case(SimulationState::isPlaying):
 		std::cout << "The simulation is already playing." << std::endl;
@@ -127,7 +127,7 @@ void StopCommand::execute(const std::vector<std::string>& _args)
 {
 	//std::cout << "The STOP command was called" << std::endl;
 
-	switch (receiver->GetSimulationState())
+	switch (*receiver->getSimulationState())
 	{
 	case(SimulationState::isPlaying):
 		std::cout << "Stopping the simulation." << std::endl;
