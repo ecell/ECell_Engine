@@ -11,6 +11,7 @@
 
 #include "Engine.hpp"
 #include "FileIOWidget.hpp"
+#include "ModelStateVisualizationWidget.hpp"
 #include "OptionsWidget.hpp"
 #include "SimulationFlowControlWidget.hpp"
 
@@ -46,6 +47,7 @@ namespace ECellEngine::Editor
 		bool                     swapChainRebuild;
 
 		FileIOWidget fileIOWidget;
+		ModelStateVisualizationWidget msvWidget;
 		OptionsWidget optionsWidget;
 		SimulationFlowControlWidget sfcWidget;
 
@@ -67,6 +69,7 @@ namespace ECellEngine::Editor
 	public:
 		Editor() :
 			fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
+			msvWidget(engine.getCommandsManager(), &(engine.getSimulationLoop()->GetSimulationEnvironment())),
 			optionsWidget(engine.getCommandsManager()),
 			sfcWidget(engine.getCommandsManager())
 		{

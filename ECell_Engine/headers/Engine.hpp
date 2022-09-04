@@ -46,6 +46,14 @@ public:
 	}
 
 	/*
+	@brief Gets the pointer to @a loadedSBMLDocuments private member.
+	*/
+	inline std::vector<SBMLDocument*>* getLoadedSBMLDocuments()
+	{
+		return &loadedSBMLDocuments;
+	}
+
+	/*
 	@brief Gets the @a sbmlDocument at index @a _idx in
 			the @a loadedSBMLDocuments private member.
 	*/
@@ -55,12 +63,13 @@ public:
 	}
 	
 	/*
-	@brief Gets the pointer to @a loadedSBMLDocuments private member.
+	@brief Gets the pointer to @a simulationLoop private member.
 	*/
-	inline std::vector<SBMLDocument*>* getLoadedSBMLDocuments()
+	inline SimulationLoop* getSimulationLoop()
 	{
-		return &loadedSBMLDocuments;
+		return &simulationLoop;
 	}
+	
 #pragma endregion
 
 #pragma region Mutators

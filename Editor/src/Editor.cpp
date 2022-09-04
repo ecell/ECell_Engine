@@ -459,6 +459,7 @@ void ECellEngine::Editor::Editor::update()
         // -- CUSTOM WINDOWS SPACE START --
         
         fileIOWidget.draw();
+        msvWidget.draw();
         optionsWidget.draw();
         sfcWidget.draw();
 

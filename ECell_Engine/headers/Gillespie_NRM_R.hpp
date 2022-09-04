@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include <math.h>
@@ -72,6 +74,8 @@ private:
 	
 	std::vector<short int> trace;
 	short int traceBlockSize = 0;
+
+	bool initialized = false;//true is the Initialize() method completed at least once. False, otherwise.
 	
 	rng_state rng;
 
@@ -149,11 +153,28 @@ public:
 	}
 
 	/*
+	@brief Gets a pointer to the @a quantities private memeber.
+	*/
+	inline std::vector<int>* getQuantities()
+	{
+		return &quantities;
+	}
+
+	/*
 	 @brief Sets up the data structures for the simulation to run.
 	 @param _sbmlDoc The pointer to the SBMLDocument encoding the
 				model we wish to use.
 	*/
 	void Initializes(SBMLDocument* _sbmlDoc);
+
+
+	/*
+	@brief Gets the value of the @a initialized private member.
+	*/
+	inline bool isInitialized()
+	{
+		return initialized;
+	}
 
 	/*
 	@brief Runs the Gillespie algorithm (Next Generation Method) forward.

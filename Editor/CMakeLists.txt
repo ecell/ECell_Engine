@@ -15,6 +15,7 @@ add_executable( ECellEngineEditor
 "src/imgui_impl_vulkan.cpp"
 "src/Editor.cpp"
 "src/FileIOWidget.cpp"
+"src/ModelStateVisualizationWidget.cpp"
 "src/OptionsWidget.cpp"
 "src/SimulationFlowControlWidget.cpp"
 )
