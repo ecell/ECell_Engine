@@ -49,8 +49,6 @@ namespace ECellEngine::Editor
 		OptionsWidget optionsWidget;
 		SimulationFlowControlWidget sfcWidget;
 
-		bool					 showDemoWindow;
-
 
 		void cleanupVulkan();
 
@@ -68,8 +66,8 @@ namespace ECellEngine::Editor
 
 	public:
 		Editor() :
-			fileIOWidget(engine.getCommandsManager(), engine.getFileIOManager()),
-			optionsWidget(engine.getCommandsManager(), &showDemoWindow),
+			fileIOWidget(engine.getCommandsManager()),
+			optionsWidget(engine.getCommandsManager()),
 			sfcWidget(engine.getCommandsManager())
 		{
 			window = NULL;
@@ -88,8 +86,6 @@ namespace ECellEngine::Editor
 			mainWindowData;
 			minImageCount = 2;
 			swapChainRebuild = false;
-
-			showDemoWindow = false;
 		}		
 
 		void start();

@@ -12,7 +12,9 @@ void ECellEngine::Editor::FileIOWidget::draw()
     ImGui::SameLine();
     if (ImGui::Button("Open"))
     {
-        engineFileIOManager->setTargetFilePath(path);
+        setFilePathCommandArray[1] = path;
+        engineCmdsManager->interpretCommand(setFilePathCommandArray);
+
         engineCmdsManager->interpretCommand(addFileAsSBMLCommandArray);
     }
 

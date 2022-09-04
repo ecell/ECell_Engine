@@ -423,6 +423,8 @@ void ECellEngine::Editor::Editor::stop()
 
 void ECellEngine::Editor::Editor::update()
 {
+    static bool* showDemoWindow = optionsWidget.getShowDemoWindow();
+
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
@@ -456,18 +458,19 @@ void ECellEngine::Editor::Editor::update()
 
         // -- CUSTOM WINDOWS SPACE START --
         
-        // Show the big demo window
-        // Most of the sample code is in ImGui::ShowDemoWindow()!
-        // You can browse its code to learn more about Dear ImGui.
-        if (showDemoWindow)
-        {
-            ImGui::ShowDemoWindow(&showDemoWindow);
-            ImPlot::ShowDemoWindow(&showDemoWindow);
-        }
-
         fileIOWidget.draw();
         optionsWidget.draw();
         sfcWidget.draw();
+
+        // Show the big demo window
+        // Most of the sample code is in ImGui::ShowDemoWindow()!
+        // You can browse its code to learn more about Dear ImGui.
+        //showDemoWindow = optionsWidget.getShowDemoWindow();
+        if (*showDemoWindow)
+        {
+            ImGui::ShowDemoWindow(showDemoWindow);
+            ImPlot::ShowDemoWindow(showDemoWindow);
+        }
 
         // -- CUSTOM WINDOWS SPACE END --
 

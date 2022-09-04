@@ -10,14 +10,13 @@ namespace ECellEngine::Editor
 	class FileIOWidget : public Widget
 	{
 	private:
-		FileIOManager* engineFileIOManager;
-
+		std::vector<std::string> setFilePathCommandArray = { "setFilePath", "path"};
 		const std::vector<std::string> addFileAsSBMLCommandArray = { "addFileAsSBML" };
 
 	public:
 
-		FileIOWidget(CommandsManager* _cmdsManager, FileIOManager* _fileIOManager) :
-			Widget(_cmdsManager), engineFileIOManager(_fileIOManager)
+		FileIOWidget(CommandsManager* _cmdsManager) :
+			Widget(_cmdsManager)
 		{
 
 		}
