@@ -161,7 +161,6 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 
 	//Reserve space for the tables
 	quantities.reserve(nbSpecies);
-	//parameters.reserve(nbParameters);
 	inTable.reserve(nbReactions);
 	outTable.reserve(nbReactions);
 	kineticLaws.reserve(nbReactions);
@@ -172,7 +171,6 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	//Build the map between species' names and index of appearance.
 	//Also fills in the species quantities table.
 	std::unordered_map<std::string, int> variables_name_idx_map = {{"UNKNOWN", -1}};
-	//std::unordered_map<std::string, int*> quantities_map;
 	Species* sp;
 	ASTNode* nameASTNode;
 	ASTNode* valueASTNode;
@@ -181,80 +179,41 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 		sp = sbmlModel->getSpecies(i);
 
 		nameASTNode = new ASTNode(ASTNodeType_t::AST_NAME);
-		//nameASTNode->setId(sp->getId().c_str());
 		nameASTNode->setName(sp->getId().c_str());
 		int nameNodeIdx = astEvaluator->Initializes(nameASTNode, &variables_name_idx_map); //nodeIdx is also equal to 2*i
 
 		valueASTNode = new ASTNode(ASTNodeType_t::AST_INTEGER);
-		//valueASTNode->setId(sp->getId().c_str());
 		valueASTNode->setValue(sp->getInitialAmount());
 		int valueNodeIdx = astEvaluator->Initializes(valueASTNode, &variables_name_idx_map); //nodeIdx is also equal to 2*i+1
 
 		ASTNodeEx* nameASTNodeEx = astEvaluator->getNode(nameNodeIdx);
-		//ASTNodeEx* valueASTNodeEx = astEvaluator->getNode(valueNodeIdx);
-		//astNodeEx->setValueEx(sp->getInitialAmount());
-		//astNodeEx->setNameEx(sp->getId().c_str());
 
 		nameASTNodeEx->setLeftChildEx(valueNodeIdx);
-		//nameASTNodeEx->setNumChildrenEx();
 		
-		//quantities_map[sp->getId()] = &quantities[i];
 		quantities.push_back(nameNodeIdx);//index to "astEvaluator.formulasNodes"
 		variables_name_idx_map[sp->getId()] = nameNodeIdx;
-
-		//astEvaluator->addNode(astNodeExSpNameBase);
-		//astEvaluator->addNode(astNodeExSpValue);
 
 		delete nameASTNode;
 		delete valueASTNode;
 	}
-	//delete astNodeSpValue;
 
-	//Retrieve the parameters' values stored in the sbml file.
-	//If the parameter's is not defined as constant, then look
-	//for an assignement
-	//std::unordered_map<std::string, int> param_name_idx_map;
-	//std::unordered_map<std::string, float*> parameters_map;
 	Parameter* param;
 	for (int i = 0; i < nbParameters; i++)
 	{
 		param = sbmlModel->getParameter(i);
 		//std::cout << "Processing parameter " << param->getId() << "; constant = " << param->getConstant() << std::endl;
 		//parameters[i] = NAN;
-		
-		//parameters_map[param->getId()] = &parameters[i];
-		//astNode = new ASTNode(ASTNodeType_t::AST_NAME);
-		//astNode->setId(param->getId().c_str());
-		//astNode->setName(param->getId().c_str());
-
-		//int nodeIdx = astEvaluator->Initializes(astNode, &variables_name_idx_map);
-		
-
 		nameASTNode = new ASTNode(ASTNodeType_t::AST_NAME);
-		//nameASTNode->setId(param->getId().c_str());
 		nameASTNode->setName(param->getId().c_str());
 		int nameNodeIdx = astEvaluator->Initializes(nameASTNode, &variables_name_idx_map); //nodeIdx is also equal to nbSpecies+2*i
 
-		ASTNodeEx* nameASTNodeEx = astEvaluator->getNode(nameNodeIdx);
-		//ASTNodeEx* valueASTNodeEx = astEvaluator->getNode(valueNodeIdx);
-		//astNodeEx->setValueEx(sp->getInitialAmount());
-		//astNodeEx->setNameEx(sp->getId().c_str());
-		
-
 		variables_name_idx_map[param->getId()] = nameNodeIdx;
-		//ASTNodeEx* astNodeEx = astEvaluator->getNode(nodeIdx);
-
 		if (param->getConstant())
 		{
 			valueASTNode = new ASTNode(ASTNodeType_t::AST_REAL);
-			//valueASTNode->setId(param->getId().c_str());
 			valueASTNode->setValue(param->getValue());
 			int valueNodeIdx = astEvaluator->Initializes(valueASTNode, &variables_name_idx_map); //nodeIdx is also equal to nbSpecies+2*i+1
-
-			//astNodeEx->setTypeEx(ASTNodeType_t::AST_REAL);
-			//astNodeEx->setValueEx(param->getValue());
-			//parameters[i] = (float)param->getValue();
-			//astNode->setValue(param->getValue());
+			ASTNodeEx* nameASTNodeEx = astEvaluator->getNode(nameNodeIdx);
 			nameASTNodeEx->setLeftChildEx(valueNodeIdx);
 			//nameASTNodeEx->setNumChildrenEx();
 			delete valueASTNode;
@@ -272,8 +231,6 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 		rule = sbmlModel->getRule(i);
 		if (rule->isParameter())
 		{
-			
-
 			nameASTNode = rule->getMath()->deepCopy();
 			nameASTNode->setId(rule->getVariable().c_str());
 			int valueNodeIdx = astEvaluator->Initializes(nameASTNode, &variables_name_idx_map);
@@ -287,7 +244,6 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 			paramNameNode->setLeftChildEx(valueNodeIdx);
 			paramNameNode->setNumChildrenEx();
 		}
-		delete nameASTNode;
 	}
 
 	//int nbRulesQ = rulesQ.size();
