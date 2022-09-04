@@ -7,7 +7,13 @@ void CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit
 	if (matchingCommand.get() != nullptr)
 	{
 		//Execute the command
-		matchingCommand->execute();
+		std::cout << "Executing: ";
+		for each (std::string arg in _cmdSplit)
+		{
+			std::cout << arg << " | ";
+		}
+		std::cout << std::endl;
+		matchingCommand->execute(_cmdSplit);
 	}
 	else
 	{

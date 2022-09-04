@@ -17,5 +17,5 @@ protected:
 	}
 
 public:
-	virtual void execute() override = 0;
+	virtual void execute(const std::vector<std::string>& _args) override = 0;
 };

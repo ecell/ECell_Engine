@@ -10,6 +10,9 @@ class FileIOManager;
 #include "CommandWithReceiver.hpp"
 
 #pragma region IO Commands
+/*
+@brief The command to let the user set a path to a target file.
+*/
 class SetFilePathCommand : public CommandWithReceiver<FileIOManager>
 {
 public:
@@ -18,11 +21,16 @@ public:
 	{
 	}
 
-	void execute() override;
+	void execute(const std::vector<std::string>& _args) override;
 };
 #pragma endregion
 
 #pragma region Engine Commands
+/*
+@brief The command to try to load a file as an SBML file.
+@details Uses the @a targetPathFile set with the other
+		 command @a SetFilePathCommand.
+*/
 class AddFileAsSBMLCommand : public CommandWithReceiver<Engine>
 {
 public:
@@ -31,8 +39,9 @@ public:
 	{
 	}
 
-	void execute() override;
+	void execute(const std::vector<std::string>& _args) override;
 };
+
 /*
 @brief The command to quit the application.
 @details Effectively exits from every running thread and then terminates.
@@ -40,12 +49,12 @@ public:
 class QuitCommand : public CommandWithReceiver<Engine>
 {
 public:
-	QuitCommand(Engine* _receiver):
+	QuitCommand(Engine* _receiver) :
 		CommandWithReceiver("quit", _receiver)
 	{
 	}
 
-	void execute() override;
+	void execute(const std::vector<std::string>& _args) override;
 };
 
 #pragma endregion
@@ -63,7 +72,7 @@ public:
 	{
 	}
 
-	virtual void execute() override;
+	virtual void execute(const std::vector<std::string>& _args) override;
 };
 
 /*
@@ -77,7 +86,7 @@ public:
 	{
 	}
 
-	virtual void execute() override;
+	virtual void execute(const std::vector<std::string>& _args) override;
 };
 
 /*
@@ -91,7 +100,7 @@ public:
 	{
 	}
 
-	virtual void execute() override;
+	virtual void execute(const std::vector<std::string>& _args) override;
 };
 
 /*
@@ -105,7 +114,7 @@ public:
 	{
 	}
 
-	virtual void execute();
+	virtual void execute(const std::vector<std::string>& _args);
 };
 
 /*
@@ -119,7 +128,7 @@ public:
 	{
 	}
 
-	virtual void execute() override;
+	virtual void execute(const std::vector<std::string>& _args) override;
 };
 
 /*
@@ -133,7 +142,7 @@ public:
 	{
 	}
 
-	virtual void execute() override;
+	virtual void execute(const std::vector<std::string>& _args) override;
 };
 #pragma endregion
 
