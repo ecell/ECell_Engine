@@ -17,6 +17,16 @@ namespace ECellEngine::Editor
 	{
 	private:
 		SimulationLoop* simulationLoop;//a pointer to the member of the same name in the Engine class.
+		const std::vector<std::string> displayCommandArray = { "display" };
+
+		int nbSpecies;
+		ASTEvaluator* astEvaluator;
+
+		void drawLinePlot();
+
+		void drawRawString();
+
+		void drawTable();
 
 	public:
 		ModelStateVisualizationWidget(CommandsManager* _cmdsManager, SimulationLoop* _simulationLoop) :

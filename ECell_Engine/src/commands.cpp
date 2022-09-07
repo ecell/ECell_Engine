@@ -47,7 +47,7 @@ void DisplayCommand::execute(const std::vector<std::string>& _args)
 
 		"Total elapsed time: " << receiver->simulationTimer.elapsedTime <<
 		", last delta time: " << receiver->simulationTimer.deltaTime << std::endl <<
-		"Simulation Environment: " << receiver->getSimulationEnvironment();
+		"Simulation Environment: " << *receiver->getSimulationEnvironment();
 }
 
 void GoForwardCommand::execute(const std::vector<std::string>& _args)

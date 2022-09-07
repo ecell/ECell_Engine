@@ -42,7 +42,8 @@ void SimulationLoop::update()
 
 		//Compute delta time
 		float endTime = simulationTimer.ReadHighResTimer();
-		simulationTimer.deltaTime = simulationTimer.GetDuration(beginTime, endTime);
+		//simulationTimer.deltaTime = simulationTimer.GetDuration(beginTime, endTime);
+		simulationTimer.deltaTime = 0.016f;
 		simulationTimer.CheckSimulationDeltaTime();
 		simulationTimer.elapsedTime += direction * simulationTimer.deltaTime;
 
