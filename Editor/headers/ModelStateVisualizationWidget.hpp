@@ -21,6 +21,8 @@ namespace ECellEngine::Editor
 
 		int nbSpecies;
 		ASTEvaluator* astEvaluator;
+		int dataIdxToPlotOnX = -1;
+		int dataIdxToPlotOnY = -1;
 
 		void drawLinePlot();
 

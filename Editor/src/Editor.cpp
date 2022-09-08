@@ -118,7 +118,7 @@ void ECellEngine::Editor::Editor::initializeEditorWindow()
         return;
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+Vulkan example", NULL, NULL);
+    window = glfwCreateWindow(1920, 1080, "EcellEngine Editor (GLFW+Vulkan)", NULL, NULL);
 
     // Setup Vulkan
     if (!glfwVulkanSupported())

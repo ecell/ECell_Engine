@@ -1,8 +1,65 @@
 #include "ModelStateVisualizationWidget.hpp"
 
+// utility structure for realtime plot
+struct RollingBuffer
+{
+    float Span;
+    ImVector<ImVec2> Data;
+    RollingBuffer()
+    {
+        Span = 10.0f;
+        Data.reserve(2000);
+    }
+    void AddPoint(float x, float y)
+    {
+        float xmod = fmodf(x, Span);
+        if (!Data.empty() && xmod < Data.back().x)
+            Data.shrink(0);
+        Data.push_back(ImVec2(xmod, y));
+    }
+};
+
+// utility structure for realtime plot
+struct ScrollingBuffer
+{
+    int MaxSize;
+    int Offset;
+    ImVector<ImVec2> Data;
+    ScrollingBuffer(int max_size = 2000)
+    {
+        MaxSize = max_size;
+        Offset = 0;
+        Data.reserve(MaxSize);
+    }
+    void AddPoint(float x, float y)
+    {
+        if (Data.size() < MaxSize)
+            Data.push_back(ImVec2(x, y));
+        else
+        {
+            Data[Offset] = ImVec2(x, y);
+            Offset = (Offset + 1) % MaxSize;
+        }
+    }
+    void Erase()
+    {
+        if (Data.size() > 0)
+        {
+            Data.shrink(0);
+            Offset = 0;
+        }
+    }
+    void Reset()
+    {
+        Data.shrink(0);
+        Offset = 0;
+        Data.reserve(MaxSize);
+    }
+};
+
 void ECellEngine::Editor::ModelStateVisualizationWidget::draw()
 {
-    ImGui::SetNextWindowSize(ImVec2(530, 300), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(600, 300), ImGuiCond_FirstUseEver);
 
     ImGui::Begin("Model State Visualization");
 
@@ -42,46 +99,79 @@ void ECellEngine::Editor::ModelStateVisualizationWidget::draw()
     ImGui::End();
 }
 
-// utility structure for realtime plot
-struct RollingBuffer
-{
-    float Span;
-    ImVector<ImVec2> Data;
-    RollingBuffer()
-    {
-        Span = 10.0f;
-        Data.reserve(2000);
-    }
-    void AddPoint(float x, float y)
-    {
-        float xmod = fmodf(x, Span);
-        if (!Data.empty() && xmod < Data.back().x)
-            Data.shrink(0);
-        Data.push_back(ImVec2(xmod, y));
-    }
-};
-
 void ECellEngine::Editor::ModelStateVisualizationWidget::drawLinePlot()
 {
-    ImGui::BulletText("Move your mouse to change the data!");
-    ImGui::BulletText("This example assumes 60 FPS. Higher FPS requires larger buffer size.");
-    static RollingBuffer   rdata1, rdata2;
+    static ImGuiTableFlags flags =
+         ImGuiTableFlags_Hideable | ImGuiTableFlags_Sortable
+        | ImGuiTableFlags_RowBg | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_ScrollY;
 
-    rdata1.AddPoint(simulationLoop->simulationTimer.elapsedTime, 0);
-    rdata2.AddPoint(simulationLoop->simulationTimer.elapsedTime, 0);
+    static float x, y;
+    static ScrollingBuffer   buffer;
+    static std::string labelX = "time (sec)";
+    static std::string labelY = "time (sec)";
+
+    ImGui::BulletText("This example assumes 60 FPS. Higher FPS requires larger buffer size.");
+    ImGui::Text("dataIdxToPlotOnX: %1d; dataIdxToPlotOnY: %1d;", dataIdxToPlotOnX, dataIdxToPlotOnY);
+    ImGui::Text("elapsedTime: %3f; deltaTime: %f;", simulationLoop->simulationTimer.elapsedTime, simulationLoop->simulationTimer.deltaTime);
+    ImGui::Text("x: %3f; y: %f;", x, y);
+
+    if (ImGui::BeginTable("Choose the data to plot against each other", 2, flags, ImVec2(150,300)))
+    {
+        ImGui::TableSetupColumn("Data to plot on X");
+        ImGui::TableSetupColumn("Data to plot on Y");
+        ImGui::TableHeadersRow();
+        ImGui::TableNextRow();
+        for (int i = 0; i < 2 * nbSpecies; i += 2)
+        {
+            ImGui::TableNextColumn();
+            /*if (ImGui::Button(astEvaluator->getNode(i)->getNameEx().c_str()))
+            {
+                dataIdxToPlotOnX = i;
+            }*/
+            ImGui::Text(astEvaluator->getNode(i)->getNameEx().c_str());
+            ImGui::TableNextColumn();
+            if (ImGui::Button(astEvaluator->getNode(i)->getNameEx().c_str()))
+            {
+                dataIdxToPlotOnY = i;
+                buffer.Reset();
+            }
+            ImGui::TableNextRow();
+        }
+        ImGui::EndTable();
+    }
+
+    ImGui::SameLine();
+
+    
+    x = simulationLoop->simulationTimer.elapsedTime;
+    if (dataIdxToPlotOnX > -1)
+    {
+        labelX = astEvaluator->getNode(dataIdxToPlotOnX)->getNameEx();
+        x = astEvaluator->getNamedNodeValue(dataIdxToPlotOnX);
+    }
+
+    y = simulationLoop->simulationTimer.elapsedTime;
+    if (dataIdxToPlotOnY > -1)
+    {
+        labelY = astEvaluator->getNode(dataIdxToPlotOnY)->getNameEx();
+        y = astEvaluator->getNamedNodeValue(dataIdxToPlotOnY);
+    }
+
+    buffer.AddPoint(x, y);
 
     static float history = 10.0f;
-    rdata1.Span = 10.0f;
-    rdata2.Span = 10.0f;
+    //buffer.Span = 10.0f;
 
-    if (ImPlot::BeginPlot("##Rolling"))
+    if (ImPlot::BeginPlot("Plot", ImVec2(530, 300), ImPlotFlags_NoLegend))
     {
-        ImPlot::SetupAxes("Time", "Quantity");
-        ImPlot::SetupAxisLimits(ImAxis_X1, 0, history, ImGuiCond_Always);
-        ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1);
+        ImPlot::SetupAxes(labelX.c_str(), labelY.c_str());
+        //ImPlot::SetupAxisLimits(ImAxis_X1, 0, history, ImGuiCond_Always);
+        ImPlot::SetupAxisLimits(ImAxis_X1,x - history, x, ImGuiCond_Always);
 
-        ImPlot::PlotLine("Mouse X", &rdata1.Data[0].x, &rdata1.Data[0].y, rdata1.Data.size(), 0, 2 * sizeof(float));
-        ImPlot::PlotLine("Mouse Y", &rdata2.Data[0].x, &rdata2.Data[0].y, rdata2.Data.size(), 0, 2 * sizeof(float));
+        //ImPlot::SetupAxisLimits(ImAxis_Y1, 0, history, ImGuiCond_Always);
+        ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 100000);
+
+        ImPlot::PlotLine("data", &buffer.Data[0].x, &buffer.Data[0].y, buffer.Data.size(), 0, 2 * sizeof(float));
         ImPlot::EndPlot();
     }
 }
