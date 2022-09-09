@@ -42,7 +42,7 @@
  * -------------------------------------------------------------------------->
  */
 
-#include "SBMLParser.hpp"
+#include "SbmlParser.hpp"
 
 bool SbmlParser::ValidateSBML(SBMLDocument* _sbmlDoc)
 {
