@@ -421,28 +421,28 @@ void ASTEvaluator::PrettyPrintTree(ASTNodeEx* _node, int _lvl)
 	switch (_node->getTypeEx())
 	{
 	case ASTNodeType_t::AST_NAME:
-		std::cout << std::string(_lvl, '  ') << "|-AST_NAME (" << _node->getNameEx() << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
+		std::cout << std::string(_lvl, ' ') << "|-AST_NAME (" << _node->getNameEx() << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
 		break;
 	case ASTNodeType_t::AST_REAL:
-		std::cout << std::string(_lvl, '  ') << "|-AST_REAL (" << _node->getValueEx() << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
+		std::cout << std::string(_lvl, ' ') << "|-AST_REAL (" << _node->getValueEx() << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
 		break;
 	case ASTNodeType_t::AST_INTEGER:
-		std::cout << std::string(_lvl, '  ') << "|-AST_INTEGER (" << _node->getValueEx() << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
+		std::cout << std::string(_lvl, ' ') << "|-AST_INTEGER (" << _node->getValueEx() << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
 		break;
 	case ASTNodeType_t::AST_PLUS:
-		std::cout << std::string(_lvl, '  ') << "|-AST_PLUS (+" << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
+		std::cout << std::string(_lvl, ' ') << "|-AST_PLUS (+" << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
 		break;
 	case ASTNodeType_t::AST_MINUS:
-		std::cout << std::string(_lvl, '  ') << "|-AST_MINUS (-" << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
+		std::cout << std::string(_lvl, ' ') << "|-AST_MINUS (-" << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
 		break;
 	case ASTNodeType_t::AST_TIMES:
-		std::cout << std::string(_lvl, '  ') << "|-AST_TIMES (x" << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
+		std::cout << std::string(_lvl, ' ') << "|-AST_TIMES (x" << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
 		break;
 	case ASTNodeType_t::AST_DIVIDE:
-		std::cout << std::string(_lvl, '  ') << "|-AST_DIVIDE (/" << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
+		std::cout << std::string(_lvl, ' ') << "|-AST_DIVIDE (/" << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
 		break;
 	default:
-		std::cout << std::string(_lvl, '  ') << "Child is of type " << _node->getTypeEx() << std::endl;
+		std::cout << std::string(_lvl, ' ') << "Child is of type " << _node->getTypeEx() << std::endl;
 		break;
 	}
 
