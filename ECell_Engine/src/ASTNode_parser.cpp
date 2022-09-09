@@ -239,7 +239,7 @@ int ASTEvaluator::Initializes(const ASTNode* _origin, const std::unordered_map<s
 	//int idx = formulasNodes.size() - 1;
 	//std::cout << idx+1 << " Nodes were registered." << std::endl;
 	//formulasNodes.reserve(1);
-	int idx;
+	size_t idx;
 	std::string name = _origin->getId();	
 
 	if (_origin->getType() == ASTNodeType_t::AST_NAME)

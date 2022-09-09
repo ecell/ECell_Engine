@@ -22,15 +22,17 @@ else()
     endif()
 endif()
 
-target_link_libraries(ECellEngine
-                        ${LIBSBML_LIBRARY}
-                        Threads::Threads
-)
-
 target_include_directories(ECellEngine
 						PUBLIC
+#							"${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include"	# headers of dependencies installed through VCPKG
 							"./headers"
 							"./engine_system_files"
 							"${LIBSBML_ROOT_BINARY_DIR}/src" # include sbml generated headers
 							"${LIBSBML_ROOT_SOURCE_DIR}/src" 
+)
+
+target_link_libraries(ECellEngine
+						PRIVATE
+                            ${LIBSBML_LIBRARY}
+                            "Threads::Threads"
 )

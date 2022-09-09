@@ -177,7 +177,7 @@ void SbmlParser::PrettyPrintSBMLDocument(SBMLDocument* _sbmlDoc)
     std::cout << "Compliant with SBML core level " << level << " version " << version << "." << std::endl;
 
     std::cout << "Species defined:" << std::endl;
-    for (int i = 0; i < sbmlModel->getNumSpecies(); ++i)
+    for (unsigned int i = 0u; i < sbmlModel->getNumSpecies(); ++i)
     {
         Species* sp = sbmlModel->getSpecies(i);
         std::cout <<
@@ -190,7 +190,7 @@ void SbmlParser::PrettyPrintSBMLDocument(SBMLDocument* _sbmlDoc)
     }
 
     std::cout << "Reactions defined:" << std::endl;
-    for (int i = 0; i < sbmlModel->getNumReactions(); ++i)
+    for (unsigned int i = 0u; i < sbmlModel->getNumReactions(); ++i)
     {
         Reaction* r = sbmlModel->getReaction(i);
         int nbReactants = r->getNumReactants();
