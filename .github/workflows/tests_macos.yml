@@ -25,10 +25,7 @@ jobs:
 
       - name: Install CMake and ninja
         uses: lukka/get-cmake@latest
-
-      - name: Uninstall xz
-        run: brew uninstall --ignore-dependencies xz
-
+        
       - name: Setup VCPKG
         uses: lukka/run-vcpkg@v10
         with:

@@ -14,6 +14,10 @@ set( CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin" CACHE STRING "" )
 # Same purpose as above but for the dlls added with vcpkg
 set(X_VCPKG_APPLOCAL_DEPS_INSTALL ON)
 
+#Use Xerces instead of libxml2
+set(WITH_LIBXML OFF)
+set(WITH_XERCES ON)
+
 # Even in Debug, libsbml requires the release version of zlib1.dll
 # (instead of zlibd1.dll). This is a problem because vcpkg only
 # copies the dlls that matches the configuration. So, in debug

@@ -1,5 +1,5 @@
 {
   "name": "ecell-engine",
   "version": "0.1.0",
-  "dependencies": [ "libxml2" ]
+  "dependencies": [ "xerces-c" ]
 }
