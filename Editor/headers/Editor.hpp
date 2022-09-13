@@ -10,8 +10,8 @@
 #include "implot.h"
 
 #include "Engine.hpp"
+#include "EngineDataVisualizationWidget.hpp"
 #include "FileIOWidget.hpp"
-#include "ModelStateVisualizationWidget.hpp"
 #include "OptionsWidget.hpp"
 #include "SimulationFlowControlWidget.hpp"
 
@@ -46,8 +46,8 @@ namespace ECellEngine::Editor
 		int                      minImageCount;
 		bool                     swapChainRebuild;
 
+		EngineDataVisualizationWidget edvWidget;
 		FileIOWidget fileIOWidget;
-		ModelStateVisualizationWidget msvWidget;
 		OptionsWidget optionsWidget;
 		SimulationFlowControlWidget sfcWidget;
 
@@ -68,8 +68,8 @@ namespace ECellEngine::Editor
 
 	public:
 		Editor() :
+			edvWidget(engine.getCommandsManager(), engine.getSimulationLoop()),
 			fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
-			msvWidget(engine.getCommandsManager(), engine.getSimulationLoop()),
 			optionsWidget(engine.getCommandsManager()),
 			sfcWidget(engine.getCommandsManager())
 		{
