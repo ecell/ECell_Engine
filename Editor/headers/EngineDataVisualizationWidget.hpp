@@ -21,7 +21,6 @@ namespace ECellEngine::Editor
 	class EngineDataVisualizationWidget : public Widget
 	{
 	private:
-		CommandsManager* cmdsManager;
 		SimulationLoop* simuLoop;
 
 		short nbMsvWidgets;//stored to pass on the newly instanciated msvWidget as their ID.
@@ -35,7 +34,7 @@ namespace ECellEngine::Editor
 
 	public:
 		EngineDataVisualizationWidget(CommandsManager* _cmdsManager, SimulationLoop* _simuLoop) :
-			Widget(_cmdsManager), cmdsManager(_cmdsManager), simuLoop(_simuLoop)
+			Widget(_cmdsManager), simuLoop(_simuLoop)
 		{
 			nbMsvWidgets = 0;
 		}

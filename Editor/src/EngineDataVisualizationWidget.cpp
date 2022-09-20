@@ -15,7 +15,7 @@ void ECellEngine::Editor::EngineDataVisualizationWidget::draw()
 	if (ImGui::Button("Add Model State Visulizer"))
 	{
 		msvWidgets.push_back(
-			std::unique_ptr<ModelStateVisualizationWidget>(new ModelStateVisualizationWidget(cmdsManager, simuLoop, nbMsvWidgets))
+			std::unique_ptr<ModelStateVisualizationWidget>(new ModelStateVisualizationWidget(engineCmdsManager, simuLoop, nbMsvWidgets))
 		);
 		nbMsvWidgets++;
 	}
