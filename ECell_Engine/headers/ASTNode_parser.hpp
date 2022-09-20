@@ -74,8 +74,6 @@ private:
 public:
 	ASTEvaluator(){}
 
-	ASTEvaluator(const ASTEvaluator& astEvaluator) : formulasNodes(astEvaluator.formulasNodes) {};
-
 	//accessors
 	ASTNodeEx* getNode(int _i);
 

@@ -51,7 +51,7 @@ void ECellEngine::Editor::ModelStateVisualizationWidget::draw()
         if (nbSpecies != simulationLoop->getSimulationEnvironment()->getQuantities()->size())
         {
             nbSpecies = simulationLoop->getSimulationEnvironment()->getQuantities()->size();
-            astEvaluator = simulationLoop->getSimulationEnvironment()->astEvaluator;
+            astEvaluator = simulationLoop->getSimulationEnvironment()->astEvaluator.get();
             
             //Copy the names in the dedicated buffer
             speciesNamesBuffer.clear();

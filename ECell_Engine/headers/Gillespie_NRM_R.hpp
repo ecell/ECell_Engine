@@ -132,24 +132,14 @@ private:
 
 public:
 	float t;//Gillespie simulation time.
-	ASTEvaluator* astEvaluator;
+	std::unique_ptr<ASTEvaluator> astEvaluator;
 
 	friend std::ostream& operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r);
 
 	Gillespie_NRM_R()
 	{
-		astEvaluator = new ASTEvaluator();
-	}
-
-	Gillespie_NRM_R(Gillespie_NRM_R& _g_nrm_r) :
-		astEvaluator(_g_nrm_r.astEvaluator), quantities(_g_nrm_r.quantities)
-	{
-		astEvaluator = new ASTEvaluator(*_g_nrm_r.astEvaluator);
-	};
-
-	~Gillespie_NRM_R()
-	{
-		delete astEvaluator;
+		std::cout << "Gillespie_NRM_R, Default Constructor" << std::endl;
+		astEvaluator = std::make_unique<ASTEvaluator>();
 	}
 
 	/*
