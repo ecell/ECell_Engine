@@ -2,27 +2,52 @@
 
 void ECellEngine::Editor::SimulationFlowControlWidget::drawSimulationControls()
 {
+    //static char* simuState = "stopped";
     static bool isPlaying = false;
-    static char* simuState = "stopped";
     static ImVec4 simuStateColor = ImVec4(0.191f, 0.845f, 0.249f, 1.000f);
 
-    if (!isPlaying)
+    
+    ImGui::PushStyleColor(ImGuiCol_Button, simuStateColor);
+    if (*simuState == SimulationState::isPlaying)
     {
+        ImGui::BeginDisabled();
+        isPlaying = true;//We duplicate the information holded by simuState to be one frame late with isPlaying
+                         //This is necessary to avoid asking to EndDisable() if we have yet to ask for BeginDisable
+                         //because the value of *simuState changes inside the potentially disabled region.
+    }
+
         if (ImGui::Button("Play"))
         {
             engineCmdsManager->interpretCommand(playCommandArray);
-            isPlaying = true;
-            simuState = "playing";
+            //simuState = "playing";
             simuStateColor = ImVec4(0.902f, 0.272f, 0.070f, 1.000f);
         }
-    }
-    else
+
+    if (isPlaying)
     {
+        ImGui::EndDisabled();
+        ImGui::SameLine();
+
+        if (*simuDirection == 1)
+        {
+            if (ImGui::Button("Backward"))
+            {
+                engineCmdsManager->interpretCommand(gobackwardCommandArray);
+            }
+        }
+        else
+        {
+            if (ImGui::Button("Forward"))
+            {
+                engineCmdsManager->interpretCommand(goforwardCommandArray);
+            }
+        }
+
         if (ImGui::Button("Pause"))
         {
             engineCmdsManager->interpretCommand(pauseCommandArray);
+            //simuState = "paused";
             isPlaying = false;
-            simuState = "paused";
             simuStateColor = ImVec4(0.976f, 0.937f, 0.148f, 1.000f);
         }
 
@@ -31,22 +56,19 @@ void ECellEngine::Editor::SimulationFlowControlWidget::drawSimulationControls()
         if (ImGui::Button("Stop"))
         {
             engineCmdsManager->interpretCommand(stopCommandArray);
+            //simuState = "stopped";
             isPlaying = false;
-            simuState = "stopped";
             simuStateColor = ImVec4(0.191f, 0.845f, 0.249f, 1.000f);
         }
     }
 
-    ImGui::Text("Simulation is");
-    ImGui::SameLine();
-    ImGui::TextColored(simuStateColor, simuState);
+    ImGui::PopStyleColor();
+
 }
 
 void ECellEngine::Editor::SimulationFlowControlWidget::draw()
 {
     ImGui::Begin("Simulation Flow Control");
-
-    ImGui::Separator();
     
     drawSimulationControls();
 

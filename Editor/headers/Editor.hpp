@@ -71,7 +71,7 @@ namespace ECellEngine::Editor
 			edvWidget(engine.getCommandsManager(), engine.getSimulationLoop()),
 			fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
 			optionsWidget(engine.getCommandsManager()),
-			sfcWidget(engine.getCommandsManager())
+			sfcWidget(engine.getCommandsManager(), engine.getSimulationLoop())
 		{
 			window = NULL;
 

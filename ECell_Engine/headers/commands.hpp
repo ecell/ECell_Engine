@@ -90,20 +90,6 @@ public:
 };
 
 /*
-@brief The command to instruct the simulation to go forward.
-*/
-class GoForwardCommand : public CommandWithReceiver<SimulationLoop>
-{
-public:
-	GoForwardCommand(SimulationLoop* _receiver) :
-		CommandWithReceiver("goforward", _receiver)
-	{
-	}
-
-	virtual void execute(const std::vector<std::string>& _args) override;
-};
-
-/*
 @brief The command to instruct the simulation to go backward.
 */
 class GoBackwardCommand : public CommandWithReceiver<SimulationLoop>
@@ -111,6 +97,20 @@ class GoBackwardCommand : public CommandWithReceiver<SimulationLoop>
 public:
 	GoBackwardCommand(SimulationLoop* _receiver) :
 		CommandWithReceiver("gobackward", _receiver)
+	{
+	}
+
+	virtual void execute(const std::vector<std::string>& _args) override;
+};
+
+/*
+@brief The command to instruct the simulation to go forward.
+*/
+class GoForwardCommand : public CommandWithReceiver<SimulationLoop>
+{
+public:
+	GoForwardCommand(SimulationLoop* _receiver) :
+		CommandWithReceiver("goforward", _receiver)
 	{
 	}
 

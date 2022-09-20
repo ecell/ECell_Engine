@@ -52,7 +52,7 @@ void DisplayCommand::execute(const std::vector<std::string>& _args)
 
 void GoForwardCommand::execute(const std::vector<std::string>& _args)
 {
-	switch (receiver->getSimulationDirection())
+	switch (*receiver->getSimulationDirection())
 	{
 	case(1):
 		std::cout << "The simulation is already going forward." << std::endl;
@@ -66,7 +66,7 @@ void GoForwardCommand::execute(const std::vector<std::string>& _args)
 
 void GoBackwardCommand::execute(const std::vector<std::string>& _args)
 {
-	switch (receiver->getSimulationDirection())
+	switch (*receiver->getSimulationDirection())
 	{
 	case(-1):
 		std::cout << "The simulation is already going backward." << std::endl;

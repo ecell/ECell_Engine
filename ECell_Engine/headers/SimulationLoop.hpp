@@ -17,7 +17,7 @@ private:
 	SimulationState simulationState = SimulationState::isStopped;
 	Gillespie_NRM_R gillespieSimulationEnv;
 
-	bool isRunning;
+	bool isRunning = false;
 	short direction = 1;
 
 public:
@@ -31,9 +31,9 @@ public:
 	/*
 	@brief Gets the direction private member.
 	*/
-	inline short getSimulationDirection()
+	inline short* getSimulationDirection()
 	{
-		return direction;
+		return &direction;
 	}
 	
 	/*
