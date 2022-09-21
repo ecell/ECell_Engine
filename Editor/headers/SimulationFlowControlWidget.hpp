@@ -20,8 +20,10 @@ namespace ECellEngine::Editor
 		const std::vector<std::string> playCommandArray = { "play" };
 		const std::vector<std::string> stopCommandArray = { "stop" };
 
-		const std::vector<std::string> gobackwardCommandArray = { "gobackward" };
-		const std::vector<std::string> goforwardCommandArray = { "goforward" };
+		const std::vector<std::string> goBackwardCommandArray = { "goBackward" };
+		const std::vector<std::string> goForwardCommandArray = { "goForward" };
+		const std::vector<std::string> stepBackwardCommandArray = { "stepBackward", "0.016"};
+		const std::vector<std::string> stepForwardCommandArray = { "stepForward", "0.016"};
 
 		void drawSimulationControls();
 
@@ -31,7 +33,6 @@ namespace ECellEngine::Editor
 		{
 			simuState = _simuLoop->getSimulationState();
 			simuDirection = _simuLoop->getSimulationDirection();
-
 		}
 
 		void draw() override;

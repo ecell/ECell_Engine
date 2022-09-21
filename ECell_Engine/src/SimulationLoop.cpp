@@ -13,7 +13,24 @@ void SimulationLoop::stop()
 }
 
 
-void SimulationLoop::update()
+
+void SimulationLoop::stepBackward(const float _deltaTime)
+{
+	std::cout << "Trying to step backward. " << std::endl;
+	if (gillespieSimulationEnv.RunBackward(simulationTimer.elapsedTime - _deltaTime) != 1)
+	{
+		simulationTimer.elapsedTime -= _deltaTime;
+	}
+}
+
+void SimulationLoop::stepForward(const float _deltaTime)
+{
+	std::cout << "Steping forward. " << std::endl;
+	simulationTimer.elapsedTime += _deltaTime;
+	gillespieSimulationEnv.RunForward(simulationTimer.elapsedTime);
+}
+
+
 void SimulationLoop::update(const float _deltaTime)
 {
 	if (simulationState == SimulationState::isPlaying && isRunning)

@@ -96,7 +96,7 @@ class GoBackwardCommand : public CommandWithReceiver<SimulationLoop>
 {
 public:
 	GoBackwardCommand(SimulationLoop* _receiver) :
-		CommandWithReceiver("gobackward", _receiver)
+		CommandWithReceiver("goBackward", _receiver)
 	{
 	}
 
@@ -110,7 +110,7 @@ class GoForwardCommand : public CommandWithReceiver<SimulationLoop>
 {
 public:
 	GoForwardCommand(SimulationLoop* _receiver) :
-		CommandWithReceiver("goforward", _receiver)
+		CommandWithReceiver("goForward", _receiver)
 	{
 	}
 
@@ -142,6 +142,50 @@ public:
 	{
 	}
 
+	virtual void execute(const std::vector<std::string>& _args) override;
+};
+
+/*
+@brief The command to step forward once in the simulation.
+*/
+class StepForwardCommand : public CommandWithReceiver<SimulationLoop>
+{
+public:
+	StepForwardCommand(SimulationLoop* _receiver) :
+		CommandWithReceiver("stepForward", _receiver)
+	{
+	}
+
+	/*
+	@brief Public interface to execute the action/code associated to the command
+			and its arguments.
+	@param[in] _args The arguments of the command. By default _args[0] is the
+				name of the command. So the actual arguments are store from index
+				1 onward. In this case, we expect index 1 to be the time we want
+				to simulate forward.
+	*/
+	virtual void execute(const std::vector<std::string>& _args) override;
+};
+
+/*
+@brief The command to step backward once in the simulation.
+*/
+class StepBackwardCommand : public CommandWithReceiver<SimulationLoop>
+{
+public:
+	StepBackwardCommand(SimulationLoop* _receiver) :
+		CommandWithReceiver("stepBackward", _receiver)
+	{
+	}
+
+	/*
+	@brief Public interface to execute the action/code associated to the command
+			and its arguments.
+	@param[in] _args The arguments of the command. By default _args[0] is the
+				name of the command. So the actual arguments are store from index
+				1 onward. In this case, we expect index 1 to be the time we want
+				to simulate backward.
+	*/
 	virtual void execute(const std::vector<std::string>& _args) override;
 };
 

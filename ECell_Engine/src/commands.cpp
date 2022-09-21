@@ -123,6 +123,16 @@ void PlayCommand::execute(const std::vector<std::string>& _args)
 	receiver->SetSimulationState(SimulationState::isPlaying);
 }
 
+void StepBackwardCommand::execute(const std::vector<std::string>& _args)
+{
+	receiver->stepBackward(std::stof(_args[1]));
+}
+
+void StepForwardCommand::execute(const std::vector<std::string>& _args)
+{
+	receiver->stepForward(std::stof(_args[1]));
+}
+
 void StopCommand::execute(const std::vector<std::string>& _args)
 {
 	//std::cout << "The STOP command was called" << std::endl;

@@ -1,4 +1,4 @@
-#include "Engine.hpp"
+﻿#include "Engine.hpp"
 
 void Engine::forwardSimulationTarget(const int& _idx)
 {
@@ -38,6 +38,8 @@ void Engine::start()
 	commandsManager.registerCommand(std::make_shared<GoForwardCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<PauseCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<PlayCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<StepBackwardCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<StepForwardCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<StopCommand>(&simulationLoop));
 
 	simulationLoop.start();

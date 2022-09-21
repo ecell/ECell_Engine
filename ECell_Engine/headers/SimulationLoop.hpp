@@ -103,6 +103,17 @@ public:
 	void stop();
 
 	/*
+	@brief Does everything to compute one step backward the simulation
+	@param _deltaTime The time lenght of the step
+	*/
+	void stepBackward(const float _deltaTime);
+
+	/*
+	@brief Does everything to compute one step forward the simulation
+	*/
+	void stepForward(const float _deltaTime);
+
+	/*
 	@brief	 The core of the simulation loop.
 	@details Calls every simulation's subsystem to be updated.
 			 Typically called in a new thread when the ECellEngine

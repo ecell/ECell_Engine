@@ -19,8 +19,17 @@ void ECellEngine::Editor::SimulationFlowControlWidget::drawSimulationControls()
         if (ImGui::Button("Play"))
         {
             engineCmdsManager->interpretCommand(playCommandArray);
-            //simuState = "playing";
             simuStateColor = ImVec4(0.902f, 0.272f, 0.070f, 1.000f);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Step Backward"))
+        {
+            engineCmdsManager->interpretCommand(stepBackwardCommandArray);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Step Forward"))
+        {
+            engineCmdsManager->interpretCommand(stepForwardCommandArray);
         }
 
     if (isPlaying)
@@ -32,21 +41,20 @@ void ECellEngine::Editor::SimulationFlowControlWidget::drawSimulationControls()
         {
             if (ImGui::Button("Backward"))
             {
-                engineCmdsManager->interpretCommand(gobackwardCommandArray);
+                engineCmdsManager->interpretCommand(goBackwardCommandArray);
             }
         }
         else
         {
             if (ImGui::Button("Forward"))
             {
-                engineCmdsManager->interpretCommand(goforwardCommandArray);
+                engineCmdsManager->interpretCommand(goForwardCommandArray);
             }
         }
 
         if (ImGui::Button("Pause"))
         {
             engineCmdsManager->interpretCommand(pauseCommandArray);
-            //simuState = "paused";
             isPlaying = false;
             simuStateColor = ImVec4(0.976f, 0.937f, 0.148f, 1.000f);
         }
@@ -56,7 +64,6 @@ void ECellEngine::Editor::SimulationFlowControlWidget::drawSimulationControls()
         if (ImGui::Button("Stop"))
         {
             engineCmdsManager->interpretCommand(stopCommandArray);
-            //simuState = "stopped";
             isPlaying = false;
             simuStateColor = ImVec4(0.191f, 0.845f, 0.249f, 1.000f);
         }
