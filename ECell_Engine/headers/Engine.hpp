@@ -104,7 +104,7 @@ public:
 	/*
 	@brief The method to run the engine.
 	*/
-	void update();
+	void update(float _deltaTime);
 #pragma endregion
 
 };

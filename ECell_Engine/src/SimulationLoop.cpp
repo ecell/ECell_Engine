@@ -14,10 +14,11 @@ void SimulationLoop::stop()
 
 
 void SimulationLoop::update()
+void SimulationLoop::update(const float _deltaTime)
 {
 	if (simulationState == SimulationState::isPlaying && isRunning)
 	{
-		float beginTime = simulationTimer.ReadHighResTimer();
+		//float beginTime = simulationTimer.ReadHighResTimer();
 
 		//Update Subsystems
 		//Play catch up on the Gillespie Simulation
@@ -41,12 +42,12 @@ void SimulationLoop::update()
 		//
 
 		//Compute delta time
-		float endTime = simulationTimer.ReadHighResTimer();
+		//float endTime = simulationTimer.ReadHighResTimer();
 		//simulationTimer.deltaTime = simulationTimer.GetDuration(beginTime, endTime);
-		simulationTimer.deltaTime = 0.016f;
-		simulationTimer.CheckSimulationDeltaTime();
+		simulationTimer.deltaTime = _deltaTime;
+		//simulationTimer.CheckSimulationDeltaTime();
 		simulationTimer.elapsedTime += direction * simulationTimer.deltaTime;
 
-		beginTime = endTime;		
+		//beginTime = endTime;		
 	}
 }

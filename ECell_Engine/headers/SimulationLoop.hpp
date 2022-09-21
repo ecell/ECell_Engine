@@ -108,7 +108,7 @@ public:
 			 Typically called in a new thread when the ECellEngine
 			 is starting up.
 	*/
-	void update();
+	void update(const float _deltaTime);
 #pragma endregion
 
 };

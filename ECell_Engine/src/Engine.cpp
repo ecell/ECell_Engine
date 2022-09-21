@@ -1,4 +1,4 @@
-﻿#include "Engine.hpp"
+#include "Engine.hpp"
 
 void Engine::forwardSimulationTarget(const int& _idx)
 {
@@ -54,7 +54,7 @@ void Engine::stop()
 	isRunning = false;
 }
 
-void Engine::update()
+void Engine::update(float _deltaTime)
 {
-	simulationLoop.update();
+	simulationLoop.update(_deltaTime);
 }

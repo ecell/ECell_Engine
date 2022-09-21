@@ -435,7 +435,7 @@ void ECellEngine::Editor::Editor::update()
         // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
 
-        engine.update();
+        engine.update(ImGui::GetIO().DeltaTime);
 
         // Resize swap chain?
         if (swapChainRebuild)
