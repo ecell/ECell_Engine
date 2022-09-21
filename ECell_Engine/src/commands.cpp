@@ -50,20 +50,6 @@ void DisplayCommand::execute(const std::vector<std::string>& _args)
 		"Simulation Environment: " << *receiver->getSimulationEnvironment();
 }
 
-void GoForwardCommand::execute(const std::vector<std::string>& _args)
-{
-	switch (*receiver->getSimulationDirection())
-	{
-	case(1):
-		std::cout << "The simulation is already going forward." << std::endl;
-		break;
-	case(-1):
-		receiver->setSimulationDirectionToForward();
-		std::cout << "The simulation's direction is now set to forward." << std::endl;
-		break;
-	}
-}
-
 void GoBackwardCommand::execute(const std::vector<std::string>& _args)
 {
 	switch (*receiver->getSimulationDirection())
@@ -72,8 +58,24 @@ void GoBackwardCommand::execute(const std::vector<std::string>& _args)
 		std::cout << "The simulation is already going backward." << std::endl;
 		break;
 	case(1):
+		receiver->getSimulationEnvironment()->reverseRNG();
 		receiver->setSimulationDirectionToBackward();
 		std::cout << "The simulation's direction is now set to backward." << std::endl;
+		break;
+	}
+}
+
+void GoForwardCommand::execute(const std::vector<std::string>& _args)
+{
+	switch (*receiver->getSimulationDirection())
+	{
+	case(1):
+		std::cout << "The simulation is already going forward." << std::endl;
+		break;
+	case(-1):
+		receiver->getSimulationEnvironment()->reverseRNG();
+		receiver->setSimulationDirectionToForward();
+		std::cout << "The simulation's direction is now set to forward." << std::endl;
 		break;
 	}
 }
@@ -125,11 +127,21 @@ void PlayCommand::execute(const std::vector<std::string>& _args)
 
 void StepBackwardCommand::execute(const std::vector<std::string>& _args)
 {
+	if (*receiver->getSimulationDirection() == 1)
+	{
+		receiver->getSimulationEnvironment()->reverseRNG();
+		receiver->setSimulationDirectionToBackward();
+	}
 	receiver->stepBackward(std::stof(_args[1]));
 }
 
 void StepForwardCommand::execute(const std::vector<std::string>& _args)
 {
+	if (*receiver->getSimulationDirection() == -1)
+	{
+		receiver->getSimulationEnvironment()->reverseRNG();
+		receiver->setSimulationDirectionToForward();
+	}
 	receiver->stepForward(std::stof(_args[1]));
 }
 

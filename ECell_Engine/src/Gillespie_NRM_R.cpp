@@ -332,6 +332,7 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	itmh.Initialize(&tauTable);
 
 	trace.reserve(1000);
+	traceSize = 0;
 
 	initialized = true;
 }
@@ -371,6 +372,7 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 		ManageTrace();
 		trace.push_back(muTau.first);
 		traceBlockSize++;
+		traceSize++;
 
 		//std::cout << "Quantities After: ";
 		//for (int q : quantities) { std::cout << q << " "; }
@@ -408,7 +410,11 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 
 short Gillespie_NRM_R::RunBackward(float _targetTime)
 {
-	int traceSize = trace.size();
+	if (traceSize <= 0)
+	{
+		std::cout << "We reached the end of the trace." << std::endl;
+		return 1;
+	}
 	while (t > _targetTime && traceSize > 0)
 	{
 		//std::cout << std::endl;
@@ -453,12 +459,7 @@ short Gillespie_NRM_R::RunBackward(float _targetTime)
 			itmh.UpdateFromPointer(*it, tau_n);
 		}
 	}
-
-	if (traceSize == 0)
-	{
-		std::cout << "We reached the end of the trace." << std::endl;
-		return 1;
-	}
+	//std::cout << "After Loop | (target time, t): (" << _targetTime << ", " << t << "). There is still " << traceSize << " reactions to process." << std::endl;
 
 	return 0;
 }

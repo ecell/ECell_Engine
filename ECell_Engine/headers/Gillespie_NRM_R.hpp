@@ -74,6 +74,7 @@ private:
 	
 	std::vector<short int> trace;
 	short int traceBlockSize = 0;
+	long int traceSize = 0;
 
 	bool initialized = false;//true is the Initialize() method completed at least once. False, otherwise.
 	
@@ -167,6 +168,14 @@ public:
 	}
 
 	/*
+	@brief Calls the API of revrand to reverse the RNG.
+	*/
+	inline void reverseRNG()
+	{
+		reverse(&rng);
+	}
+
+	/*
 	@brief Runs the Gillespie algorithm (Next Generation Method) forward.
 	@param[in] _targetTime The max time until which we simulate.
 	*/
@@ -175,6 +184,7 @@ public:
 	/*
 	@brief Runs the Gillespie algorithm (Next Generation Method) backward.
 	@param[in] _targetTime The max time until which we simulate.
+	@returns Value 1 if the simulation reached the end of the trace. 0, therwise.
 	*/
 	short RunBackward(float _targetTime);
 
