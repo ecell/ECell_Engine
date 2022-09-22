@@ -8,6 +8,7 @@ void ECellEngine::Editor::SimulationFlowControlWidget::drawSimulationControls()
 
     
     ImGui::PushStyleColor(ImGuiCol_Button, simuStateColor);
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
     if (*simuState == SimulationState::isPlaying)
     {
         ImGui::BeginDisabled();
@@ -21,14 +22,19 @@ void ECellEngine::Editor::SimulationFlowControlWidget::drawSimulationControls()
             engineCmdsManager->interpretCommand(playCommandArray);
             simuStateColor = ImVec4(0.902f, 0.272f, 0.070f, 1.000f);
         }
-        ImGui::SameLine();
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1));
+        ImGui::InputFloat("Step time", &stepTime, 0.001f, 0.0f, "%e");
+        ImGui::PopStyleColor(1);
+        //ImGui::SameLine();
         if (ImGui::Button("Step Backward"))
         {
+            stepBackwardCommandArray[1] = std::to_string(stepTime);
             engineCmdsManager->interpretCommand(stepBackwardCommandArray);
         }
         ImGui::SameLine();
         if (ImGui::Button("Step Forward"))
         {
+            stepForwardCommandArray[1] = std::to_string(stepTime);
             engineCmdsManager->interpretCommand(stepForwardCommandArray);
         }
 
@@ -56,7 +62,7 @@ void ECellEngine::Editor::SimulationFlowControlWidget::drawSimulationControls()
         {
             engineCmdsManager->interpretCommand(pauseCommandArray);
             isPlaying = false;
-            simuStateColor = ImVec4(0.976f, 0.937f, 0.148f, 1.000f);
+            simuStateColor = ImVec4(1.000f, 0.794f, 0.000f, 1.000f);
         }
 
         ImGui::SameLine();
@@ -69,7 +75,7 @@ void ECellEngine::Editor::SimulationFlowControlWidget::drawSimulationControls()
         }
     }
 
-    ImGui::PopStyleColor();
+    ImGui::PopStyleColor(2);
 
 }
 

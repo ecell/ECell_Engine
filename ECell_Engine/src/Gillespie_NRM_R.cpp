@@ -350,7 +350,7 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 {
 	//step 2 & 3
 	std::pair<int, float> muTau = itmh.GetRoot();
-
+	//std::cout << "Before loop | (target time, t): (" << _targetTime << ", " << t << ")." << std::endl;
 	while (muTau.second < _targetTime)
 	{
 		//std::cout << std::endl;
@@ -360,7 +360,7 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 		//std::cout << "Quantities Before: ";
 		//for (int q : quantities){std::cout << q << " ";}
 		//std::cout << std::endl;
-		//std::cout << "Firing Rule number: " << muTau.first << std::endl;
+		//std::cout << "Firing Rule number: " << muTau.first << " at time: " << muTau.second << std::endl;
 		//step 4
 		//std::cout << "astEvaluator address " << this->astEvaluator << std::endl;
 		//std::cout << "astEvaluator formulaNodes has " << astEvaluator->getNbNodes() << " nodes" << std::endl;
@@ -383,11 +383,10 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 		
 		float a_new = ComputePropensity(muTau.first);
 		float new_tau = Exponential(a_new) + muTau.second;
-		//std::cout << "Tau After:" << new_tau << " a After:" << a_new <<std::endl;
+		//std::cout << "We computed values for step n+1 (Tau, a): (" << new_tau << ", " << a_new << ")" << std::endl;
 		itmh.SetTauInRoot(new_tau);
 		itmh.UpdateRoot();
 
-		
 		//step 5 (*it is alpha in the algorithm)
 		for (auto it = depTable[muTau.first].dep.cbegin(); it != depTable[muTau.first].dep.cend(); ++it)
 		{
@@ -406,6 +405,7 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 		//we actualize step 2 & 3
 		muTau = itmh.GetRoot();
 	}
+
 }
 
 short Gillespie_NRM_R::RunBackward(float _targetTime)
@@ -415,6 +415,9 @@ short Gillespie_NRM_R::RunBackward(float _targetTime)
 		std::cout << "We reached the end of the trace." << std::endl;
 		return 1;
 	}
+
+	//std::cout << std::endl;
+	//std::cout << "Before loop | (target time, t): (" << _targetTime << ", " << t << ")." << std::endl;
 	while (t > _targetTime && traceSize > 0)
 	{
 		//std::cout << std::endl;
@@ -423,6 +426,7 @@ short Gillespie_NRM_R::RunBackward(float _targetTime)
 		float tau_n = itmh.GetTauFromPointer(mu_n);
 		trace.pop_back();
 		traceSize--;
+		//std::cout << "Inside Loop | (target time, t): (" << _targetTime << ", " << t << "). There is still " << traceSize << " reactions to process." << std::endl;
 		float a_n = propensities[mu_n];
 
 		//std::cout << "Tau Before:" << tau_n << " a Before:" << a_n << std::endl;
@@ -430,7 +434,7 @@ short Gillespie_NRM_R::RunBackward(float _targetTime)
 		//for (int q : quantities) { std::cout << q << " "; }
 		//std::cout << std::endl;
 
-		//std::cout << "Firing back Rule number: " << mu_n << std::endl;
+		//std::cout << "Backtracking from rule number: " << mu_n << " at time: " << tau_n << std::endl;
 
 		ApplyInOutBackward(mu_n);
 		//std::cout << "Quantities After: ";
@@ -438,7 +442,7 @@ short Gillespie_NRM_R::RunBackward(float _targetTime)
 		//std::cout << std::endl;
 		float a_nm1 = ComputePropensity(mu_n);
 		float tau_nm1 = tau_n - Exponential(a_n);
-		//std::cout << "Tau After:" << tau_nm1 << " a After:" << a_nm1 << std::endl;
+		//std::cout << "We reconstructed values at step n-1 (Tau, a): (" << tau_nm1 << ", " << a_nm1 << ")" << std::endl;
 
 		t = tau_nm1;
 		itmh.SetTauFromPointer(mu_n, t);

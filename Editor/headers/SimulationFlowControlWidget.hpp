@@ -15,6 +15,7 @@ namespace ECellEngine::Editor
 	private :
 		SimulationState* simuState;
 		short* simuDirection;
+		float stepTime = 0.016;
 
 		const std::vector<std::string> pauseCommandArray = { "pause" };
 		const std::vector<std::string> playCommandArray = { "play" };
@@ -22,8 +23,8 @@ namespace ECellEngine::Editor
 
 		const std::vector<std::string> goBackwardCommandArray = { "goBackward" };
 		const std::vector<std::string> goForwardCommandArray = { "goForward" };
-		const std::vector<std::string> stepBackwardCommandArray = { "stepBackward", "0.0000001"};
-		const std::vector<std::string> stepForwardCommandArray = { "stepForward", "0.0000001" };
+		std::vector<std::string> stepBackwardCommandArray = { "stepBackward", "0.0000001"};
+		std::vector<std::string> stepForwardCommandArray = { "stepForward", "0.0000001" };
 
 		void drawSimulationControls();
 
