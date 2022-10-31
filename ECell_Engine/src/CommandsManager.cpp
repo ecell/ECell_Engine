@@ -8,9 +8,9 @@ void CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit
 	{
 		//Execute the command
 		std::cout << "Executing: ";
-		for each (std::string arg in _cmdSplit)
+		for (int i = 0; i<_cmdSplit.size(); i++)
 		{
-			std::cout << arg << " | ";
+			std::cout << _cmdSplit[i] << " | ";
 		}
 		std::cout << std::endl;
 		matchingCommand->execute(_cmdSplit);
