@@ -11,6 +11,9 @@
 #include "CommandsManager.hpp"
 #include "Widget.hpp"
 
+using namespace ECellEngine::Core;
+using namespace ECellEngine::IO;
+
 namespace ECellEngine::Editor
 {
     // utility structure for realtime plot

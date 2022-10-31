@@ -1,11 +1,11 @@
 ﻿#include "Engine.hpp"
 
-void Engine::forwardSimulationTarget(const int& _idx)
+void ECellEngine::Core::Engine::forwardSimulationTarget(const int& _idx)
 {
 	simulationLoop.SetSimulationEnvironment(loadedSBMLDocuments[_idx]);
 }
 
-void Engine::start()
+void ECellEngine::Core::Engine::start()
 {
 	/*SBMLDocument* sbmlDoc = sbmlParser.OpenSBMLFile("GibsonAndBruckToyModel.xml");
 	sbmlParser.PrettyPrintSBMLDocument(sbmlDoc);*/
@@ -49,14 +49,14 @@ void Engine::start()
 	isRunning = true;
 }
 
-void Engine::stop()
+void ECellEngine::Core::Engine::stop()
 {
 	simulationLoop.stop();
 
 	isRunning = false;
 }
 
-void Engine::update(float _deltaTime)
+void ECellEngine::Core::Engine::update(float _deltaTime)
 {
 	simulationLoop.update(_deltaTime);
 }

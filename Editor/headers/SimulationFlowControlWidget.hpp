@@ -8,6 +8,8 @@
 #include "CommandsManager.hpp"
 #include "Widget.hpp"
 
+using namespace ECellEngine::Core;
+
 namespace ECellEngine::Editor
 {
 	class SimulationFlowControlWidget : public Widget

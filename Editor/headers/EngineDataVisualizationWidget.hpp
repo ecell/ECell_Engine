@@ -11,6 +11,7 @@
 #include "Widget.hpp"
 #include "ModelStateVisualizationWidget.hpp"
 
+using namespace ECellEngine::Core;
 
 namespace ECellEngine::Editor
 {

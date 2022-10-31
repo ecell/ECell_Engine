@@ -4,6 +4,8 @@
 #include "CommandsManager.hpp"
 #include "Widget.hpp"
 
+using namespace ECellEngine::IO;
+
 namespace ECellEngine::Editor
 {
 	class OptionsWidget : public Widget

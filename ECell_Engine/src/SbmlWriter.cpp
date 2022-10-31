@@ -44,8 +44,9 @@
 #include <iostream>
 #include "SbmlWriter.hpp"
 using namespace std;
+using namespace ECellEngine::Maths;
 
-void SbmlWriter::DefineParameter(
+void ECellEngine::IO::SbmlWriter::DefineParameter(
     Parameter* _para_ptr,
     const std::string& _paraID,
     const std::string& _unit)
@@ -55,7 +56,7 @@ void SbmlWriter::DefineParameter(
     _para_ptr->setConstant(false);
 }
 
-void SbmlWriter::DefineParameter(
+void ECellEngine::IO::SbmlWriter::DefineParameter(
     Parameter* _para_ptr,
     const std::string& _paraID,
     const std::string& _unit,
@@ -67,7 +68,7 @@ void SbmlWriter::DefineParameter(
     _para_ptr->setConstant(true);
 }
 
-void SbmlWriter::DefineParameterAssignementRule(
+void ECellEngine::IO::SbmlWriter::DefineParameterAssignementRule(
     AssignmentRule* _ar,
     const std::string& _variableID,
     const std::string& _formula)
@@ -77,7 +78,7 @@ void SbmlWriter::DefineParameterAssignementRule(
     _ar->setMath(math);
 }
 
-void SbmlWriter::DefineReaction(
+void ECellEngine::IO::SbmlWriter::DefineReaction(
     ReactionPointersCapsule* _rpc,
     const std::string& _rID,
     const std::vector<std::string>& _reactantIDs,
@@ -144,7 +145,7 @@ void SbmlWriter::DefineReaction(
     delete astKl_Formula;
 }
 
-void SbmlWriter::DefineSpecies(
+void ECellEngine::IO::SbmlWriter::DefineSpecies(
     Species* _sp_ptr,
     const std::string& _id,
     const std::string& _name,
@@ -183,7 +184,7 @@ void SbmlWriter::DefineSpecies(
 //===============================================================================
 // Functions for creating the Example SBML documents.
 //===============================================================================
-SBMLDocument* SbmlWriter::GibsonAndBruckToyModel()
+SBMLDocument* ECellEngine::IO::SbmlWriter::GibsonAndBruckToyModel()
 {
     const unsigned int level = Level;
     const unsigned int version = Version;
@@ -362,7 +363,7 @@ SBMLDocument* SbmlWriter::GibsonAndBruckToyModel()
     return sbmlDoc;
 }
 
-bool SbmlWriter::WriteSBML(const SBMLDocument* sbmlDoc, const string& filename)
+bool ECellEngine::IO::SbmlWriter::WriteSBML(const SBMLDocument* sbmlDoc, const string& filename)
 {
     SBMLWriter sbmlWriter;
     bool result = sbmlWriter.writeSBML(sbmlDoc, filename);

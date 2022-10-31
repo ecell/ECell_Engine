@@ -1,53 +1,53 @@
 #include "ASTNode_parser.hpp"
 
-std::string ASTNodeEx::getNameEx()
+std::string ECellEngine::Maths::ASTNodeEx::getNameEx()
 {
 	return name;
 }
 
-int ASTNodeEx::getLeftChildEx()
+int ECellEngine::Maths::ASTNodeEx::getLeftChildEx()
 {
 	//return children.first;
 	return left;
 }
 
-int ASTNodeEx::getNumChildrenEx()
+int ECellEngine::Maths::ASTNodeEx::getNumChildrenEx()
 {
 	return numChildren;
 }
 
-int ASTNodeEx::getRightChildEx()
+int ECellEngine::Maths::ASTNodeEx::getRightChildEx()
 {
 	//return children.second;
 	return right;
 }
 
-ASTNodeType_t ASTNodeEx::getTypeEx()
+ASTNodeType_t ECellEngine::Maths::ASTNodeEx::getTypeEx()
 {
 	return type;
 }
 
-float ASTNodeEx::getValueEx()
+float ECellEngine::Maths::ASTNodeEx::getValueEx()
 {
 	return value;
 }
 
-void ASTNodeEx::setLeftChildEx(int _nodeIdx)
+void ECellEngine::Maths::ASTNodeEx::setLeftChildEx(int _nodeIdx)
 {
 	left = _nodeIdx;
 }
 
-void ASTNodeEx::setNameEx(const char* _name)
+void ECellEngine::Maths::ASTNodeEx::setNameEx(const char* _name)
 {
 	name = _name;
 }
 
-//void ASTNodeEx::setNumChildrenEx(int _nbChildren)
+//void ECellEngine::Maths::ASTNodeEx::setNumChildrenEx(int _nbChildren)
 //{
 //	numChildren = _nbChildren;
 //}
 
-void ASTNodeEx::setNumChildrenEx()
+void ECellEngine::Maths::ASTNodeEx::setNumChildrenEx()
 {
 	if (left > -1)
 	{
@@ -59,34 +59,34 @@ void ASTNodeEx::setNumChildrenEx()
 	}
 }
 
-void ASTNodeEx::setRightChildEx(int _nodeIdx)
+void ECellEngine::Maths::ASTNodeEx::setRightChildEx(int _nodeIdx)
 {
 	right = _nodeIdx;
 }
 
-void ASTNodeEx::setTypeEx(ASTNodeType_t _type)
+void ECellEngine::Maths::ASTNodeEx::setTypeEx(ASTNodeType_t _type)
 {
 	type = _type;
 }
 
-void ASTNodeEx::setValueEx(float _value)
+void ECellEngine::Maths::ASTNodeEx::setValueEx(float _value)
 {
 	value = _value;
 }
 
-ASTNodeEx* ASTEvaluator::getNode(int _i)
+ECellEngine::Maths::ASTNodeEx* ECellEngine::Maths::ASTEvaluator::getNode(int _i)
 {
 	return &(formulasNodes)[_i];
 }
 
-//float ASTEvaluator::Evaluate(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap)
+//float ECellEngine::Maths::ASTEvaluator::Evaluate(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap)
 //{
 //	//PrettyPrintTree(_node,0, _namesMap);
 //	std::cout << PrettyPrintFormula(_node, _namesMap) << std::endl;
 //	return EvaluateNode(_node, _namesMap);
 //}
 //
-//float ASTEvaluator::EvaluateNode(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap)
+//float ECellEngine::Maths::ASTEvaluator::EvaluateNode(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap)
 //{
 //	//PrettyPrintTree(_node,0, _namesMap);
 //	//std::cout << PrettyPrintFormula(_node, _namesMap) << std::endl;
@@ -151,14 +151,14 @@ ASTNodeEx* ASTEvaluator::getNode(int _i)
 //	}
 //}
 
-float ASTEvaluator::Evaluate(ASTNodeEx* _node)
+float ECellEngine::Maths::ASTEvaluator::Evaluate(ASTNodeEx* _node)
 {
 	//PrettyPrintTree(_node,0, _namesMap);
 	//std::cout << PrettyPrintFormula(_node, _namesMap) << std::endl;
 	return EvaluateNode(_node);
 }
 
-float ASTEvaluator::EvaluateNode(ASTNodeEx* _node)
+float ECellEngine::Maths::ASTEvaluator::EvaluateNode(ASTNodeEx* _node)
 {
 	//PrettyPrintTree(_node,0, _namesMap);
 	//std::cout << PrettyPrintFormula(_node, _namesMap) << std::endl;
@@ -208,7 +208,7 @@ float ASTEvaluator::EvaluateNode(ASTNodeEx* _node)
 	}
 }
 
-void ASTEvaluator::ExtractVariables(ASTNodeEx* _node, std::unordered_map<std::string, int>* _namesMap, std::vector<int>* _storage)
+void ECellEngine::Maths::ASTEvaluator::ExtractVariables(ASTNodeEx* _node, std::unordered_map<std::string, int>* _namesMap, std::vector<int>* _storage)
 {
 	switch (_node->getTypeEx())
 	{
@@ -237,12 +237,12 @@ void ASTEvaluator::ExtractVariables(ASTNodeEx* _node, std::unordered_map<std::st
 	}
 }
 
-float ASTEvaluator::getNamedNodeValue(int _namedNodeIdx)
+float ECellEngine::Maths::ASTEvaluator::getNamedNodeValue(int _namedNodeIdx)
 {
 	return formulasNodes[formulasNodes[_namedNodeIdx].getLeftChildEx()].getValueEx();
 }
 
-int ASTEvaluator::Initializes(const ASTNode* _origin, const std::unordered_map<std::string, int>* _nodesMap)
+int ECellEngine::Maths::ASTEvaluator::Initializes(const ASTNode* _origin, const std::unordered_map<std::string, int>* _nodesMap)
 {
 	//std::cout << "Processing parent node " << _origin->getId() << std::endl;
 	//std::cout << "FormulasNos has size: " << astEvaluator->getNbNodes();
@@ -289,7 +289,7 @@ int ASTEvaluator::Initializes(const ASTNode* _origin, const std::unordered_map<s
 	return idx;
 }
 //
-//bool ASTEvaluator::isSound(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap)
+//bool ECellEngine::Maths::ASTEvaluator::isSound(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap)
 //{
 //	//std::cout << "Scanning for parameters; Current node of type " << _node->getTypeEx() << " for reduction." << std::endl;
 //	switch (_node->getType())
@@ -322,7 +322,7 @@ int ASTEvaluator::Initializes(const ASTNode* _origin, const std::unordered_map<s
 //	}
 //}
 
-//std::string ASTEvaluator::PrettyPrintFormula(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap)
+//std::string ECellEngine::Maths::ASTEvaluator::PrettyPrintFormula(const ASTNode* _node, std::unordered_map<std::string, float*>* _namesMap)
 //{
 //	switch (_node->getType())
 //	{
@@ -352,7 +352,7 @@ int ASTEvaluator::Initializes(const ASTNode* _origin, const std::unordered_map<s
 //	}
 //}
 
-std::string ASTEvaluator::PrettyPrintFormula(ASTNodeEx* _node)
+std::string ECellEngine::Maths::ASTEvaluator::PrettyPrintFormula(ASTNodeEx* _node)
 {
 	switch (_node->getTypeEx())
 	{
@@ -394,7 +394,7 @@ std::string ASTEvaluator::PrettyPrintFormula(ASTNodeEx* _node)
 }
 
 
-//void ASTEvaluator::PrettyPrintTree(const ASTNode* _node, int _lvl)
+//void ECellEngine::Maths::ASTEvaluator::PrettyPrintTree(const ASTNode* _node, int _lvl)
 //{
 //	switch (_node->getType())
 //	{
@@ -429,7 +429,7 @@ std::string ASTEvaluator::PrettyPrintFormula(ASTNodeEx* _node)
 //	}
 //}
 
-void ASTEvaluator::PrettyPrintTree(ASTNodeEx* _node, int _lvl)
+void ECellEngine::Maths::ASTEvaluator::PrettyPrintTree(ASTNodeEx* _node, int _lvl)
 {
 	switch (_node->getTypeEx())
 	{
@@ -473,17 +473,17 @@ void ASTEvaluator::PrettyPrintTree(ASTNodeEx* _node, int _lvl)
 	}
 }
 
-void ASTEvaluator::setNamedNodeValue(int _namedNodeIdx, float _value)
+void ECellEngine::Maths::ASTEvaluator::setNamedNodeValue(int _namedNodeIdx, float _value)
 {
 	formulasNodes[formulasNodes[_namedNodeIdx].getLeftChildEx()].setValueEx(_value);
 }
 
-int ASTEvaluator::getNbNodes()
+int ECellEngine::Maths::ASTEvaluator::getNbNodes()
 {
 	return formulasNodes.size();
 }
 
-//void ASTEvaluator::ReduceVariables(ASTNodeEx* _node, std::unordered_map<std::string, float*>* _namesMap)
+//void ECellEngine::Maths::ASTEvaluator::ReduceVariables(ASTNodeEx* _node, std::unordered_map<std::string, float*>* _namesMap)
 //{
 //	//std::cout << "Scanning for parameters; Current node of type " << _node->getTypeEx() << " for reduction." << std::endl;
 //	switch (_node->getTypeEx())
@@ -514,7 +514,7 @@ int ASTEvaluator::getNbNodes()
 //	}
 //}
 //
-//void ASTEvaluator::ReduceVariables(ASTNodeEx* _node, std::unordered_map<std::string, int*>* _namesMap)
+//void ECellEngine::Maths::ASTEvaluator::ReduceVariables(ASTNodeEx* _node, std::unordered_map<std::string, int*>* _namesMap)
 //{
 //	//std::cout << "Scanning for quantities; Current node of type " << _node->getTypeEx() << " for reduction." << std::endl;
 //	switch (_node->getTypeEx())

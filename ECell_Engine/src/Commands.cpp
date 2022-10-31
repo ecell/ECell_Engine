@@ -5,7 +5,7 @@
 
 #pragma region IOCommands
 
-void SetFilePathCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::SetFilePathCommand::execute(const std::vector<std::string>& _args)
 {
 	//path = "GibsonAndBruckToyModel.xml";//added during dev time to bypass the time to write the name in the console everytime.
 	//path = "p53_L3V2_mod.xml";//added during dev time to bypass the time to write the name in the console everytime.
@@ -14,7 +14,7 @@ void SetFilePathCommand::execute(const std::vector<std::string>& _args)
 #pragma endregion
 
 #pragma region Engine Commands
-void AddFileAsSBMLCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::AddFileAsSBMLCommand::execute(const std::vector<std::string>& _args)
 {
 	SBMLDocument* out = receiver->getFileIOManager()->tryOpenTargetFileAsSBML();
 	if (out != nullptr)
@@ -28,19 +28,19 @@ void AddFileAsSBMLCommand::execute(const std::vector<std::string>& _args)
 	}
 }
 
-void AddSimulationTargetCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::AddSimulationTargetCommand::execute(const std::vector<std::string>& _args)
 {
 	receiver->forwardSimulationTarget(std::stoi(_args[1]));
 }
 
-void QuitCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::QuitCommand::execute(const std::vector<std::string>& _args)
 {
 	receiver->stop();
 }
 #pragma endregion
 
 #pragma region Simulation Loop Commands
-void DisplayCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::DisplayCommand::execute(const std::vector<std::string>& _args)
 {
 	std::cout <<
 		"Simulation state:" << std::endl <<
@@ -50,7 +50,7 @@ void DisplayCommand::execute(const std::vector<std::string>& _args)
 		"Simulation Environment: " << *receiver->getSimulationEnvironment();
 }
 
-void GoBackwardCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::GoBackwardCommand::execute(const std::vector<std::string>& _args)
 {
 	switch (*receiver->getSimulationDirection())
 	{
@@ -65,7 +65,7 @@ void GoBackwardCommand::execute(const std::vector<std::string>& _args)
 	}
 }
 
-void GoForwardCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::GoForwardCommand::execute(const std::vector<std::string>& _args)
 {
 	switch (*receiver->getSimulationDirection())
 	{
@@ -80,7 +80,7 @@ void GoForwardCommand::execute(const std::vector<std::string>& _args)
 	}
 }
 
-void PauseCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::PauseCommand::execute(const std::vector<std::string>& _args)
 {
 	//std::cout << "The PAUSE command was called" << std::endl;
 
@@ -101,7 +101,7 @@ void PauseCommand::execute(const std::vector<std::string>& _args)
 	}
 }
 
-void PlayCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::PlayCommand::execute(const std::vector<std::string>& _args)
 {
 	//std::cout << "The PLAY command was called" << std::endl;
 
@@ -125,7 +125,7 @@ void PlayCommand::execute(const std::vector<std::string>& _args)
 	receiver->SetSimulationState(SimulationState::isPlaying);
 }
 
-void StepBackwardCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::StepBackwardCommand::execute(const std::vector<std::string>& _args)
 {
 	if (*receiver->getSimulationDirection() == 1)
 	{
@@ -135,7 +135,7 @@ void StepBackwardCommand::execute(const std::vector<std::string>& _args)
 	receiver->stepBackward(std::stof(_args[1]));
 }
 
-void StepForwardCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::StepForwardCommand::execute(const std::vector<std::string>& _args)
 {
 	if (*receiver->getSimulationDirection() == -1)
 	{
@@ -145,7 +145,7 @@ void StepForwardCommand::execute(const std::vector<std::string>& _args)
 	receiver->stepForward(std::stof(_args[1]));
 }
 
-void StopCommand::execute(const std::vector<std::string>& _args)
+void ECellEngine::IO::StopCommand::execute(const std::vector<std::string>& _args)
 {
 	//std::cout << "The STOP command was called" << std::endl;
 

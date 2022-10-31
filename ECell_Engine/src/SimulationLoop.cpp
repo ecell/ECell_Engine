@@ -1,12 +1,12 @@
 #include "SimulationLoop.hpp"
 
-void SimulationLoop::start()
+void ECellEngine::Core::SimulationLoop::start()
 {
 	std::cout << "SimulationLoop start" << std::endl;
 	isRunning = true;
 }
 
-void SimulationLoop::stop()
+void ECellEngine::Core::SimulationLoop::stop()
 {
 	std::cout << "SimulationLoop stop" << std::endl;
 	isRunning = false;
@@ -14,7 +14,7 @@ void SimulationLoop::stop()
 
 
 
-void SimulationLoop::stepBackward(const float _deltaTime)
+void ECellEngine::Core::SimulationLoop::stepBackward(const float _deltaTime)
 {
 	std::cout << "Trying to step backward. " << std::endl;
 	if (gillespieSimulationEnv.RunBackward(simulationTimer.elapsedTime - _deltaTime) != 1)
@@ -23,7 +23,7 @@ void SimulationLoop::stepBackward(const float _deltaTime)
 	}
 }
 
-void SimulationLoop::stepForward(const float _deltaTime)
+void ECellEngine::Core::SimulationLoop::stepForward(const float _deltaTime)
 {
 	std::cout << "Steping forward. " << std::endl;
 	simulationTimer.elapsedTime += _deltaTime;
@@ -31,7 +31,7 @@ void SimulationLoop::stepForward(const float _deltaTime)
 }
 
 
-void SimulationLoop::update(const float _deltaTime)
+void ECellEngine::Core::SimulationLoop::update(const float _deltaTime)
 {
 	if (simulationState == SimulationState::isPlaying && isRunning)
 	{

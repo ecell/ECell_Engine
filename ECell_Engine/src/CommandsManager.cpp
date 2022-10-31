@@ -1,6 +1,6 @@
 #include "CommandsManager.hpp"
 
-void CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit)
+void ECellEngine::IO::CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit)
 {
 	std::shared_ptr<Command> matchingCommand = tryGetRegisteredCommand(_cmdSplit[0]);
 
@@ -21,31 +21,31 @@ void CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit
 	}
 }
 
-bool CommandsManager::registerCommand(std::shared_ptr<Command> _command)
+bool ECellEngine::IO::CommandsManager::registerCommand(std::shared_ptr<Command> _command)
 {
 	return commands.emplace(_command->getName(), _command).second;
 }
 
-void CommandsManager::start()
+void ECellEngine::IO::CommandsManager::start()
 {
 	std::cout << "CommandsManager start" << std::endl;
 	isListening = true;
 }
 
-void CommandsManager::stop()
+void ECellEngine::IO::CommandsManager::stop()
 {
 	std::cout << "CommandsManager stop" << std::endl;
 	isListening = false;
 }
 
-std::shared_ptr<Command> CommandsManager::tryGetRegisteredCommand(std::string const& commandName)
+std::shared_ptr<ECellEngine::IO::Command> ECellEngine::IO::CommandsManager::tryGetRegisteredCommand(std::string const& commandName)
 {
 	auto foundCommandIterator = commands.find(commandName);
 
 	return (foundCommandIterator != commands.cend()) ? foundCommandIterator->second : nullptr;
 }
 
-void CommandsManager::update()
+void ECellEngine::IO::CommandsManager::update()
 {
 	std::string commandInput;
 	std::vector<std::string> commandInputSplit;

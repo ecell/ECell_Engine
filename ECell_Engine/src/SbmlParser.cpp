@@ -44,7 +44,7 @@
 
 #include "SbmlParser.hpp"
 
-bool SbmlParser::ValidateSBML(SBMLDocument* _sbmlDoc)
+bool ECellEngine::IO::SbmlParser::ValidateSBML(SBMLDocument* _sbmlDoc)
 {
     if (!_sbmlDoc || _sbmlDoc->getModel() == NULL)
     {
@@ -148,7 +148,7 @@ bool SbmlParser::ValidateSBML(SBMLDocument* _sbmlDoc)
     }
 }
 
-SBMLDocument* SbmlParser::OpenSBMLFile(const char* _filePath)
+SBMLDocument* ECellEngine::IO::SbmlParser::OpenSBMLFile(const char* _filePath)
 {
     std::cout << "Trying to read SBML file: " << _filePath << std::endl;
 	SBMLDocument* document = readSBMLFromFile(_filePath);
@@ -165,7 +165,7 @@ SBMLDocument* SbmlParser::OpenSBMLFile(const char* _filePath)
     }
 }
 
-void SbmlParser::PrettyPrintSBMLDocument(SBMLDocument* _sbmlDoc)
+void ECellEngine::IO::SbmlParser::PrettyPrintSBMLDocument(SBMLDocument* _sbmlDoc)
 {
     Model* sbmlModel = _sbmlDoc->getModel();
 

@@ -4,6 +4,8 @@
 
 #include "CommandsManager.hpp"
 
+using namespace ECellEngine::IO;
+
 namespace ECellEngine::Editor
 {
 	/*

@@ -22,6 +22,8 @@
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
 
+using namespace ECellEngine::Core;
+
 namespace ECellEngine::Editor
 {
 	class Editor
