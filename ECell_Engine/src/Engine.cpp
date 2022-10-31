@@ -1,14 +1,8 @@
 ﻿#include "Engine.hpp"
 
-void Engine::OpenFile(const std::string* _filePath)
+void Engine::forwardSimulationTarget(const int& _idx)
 {
-	std::cout << "Trying to open file: " << *_filePath << std::endl;
-	SBMLDocument* sbmlDoc = sbmlParser.OpenSBMLFile((*_filePath).c_str());
-
-	sbmlParser.PrettyPrintSBMLDocument(sbmlDoc);
-	SetActiveSBMLDocument(sbmlDoc);
-
-	simulationLoop.SetSimulationEnvironment(sbmlDoc);
+	simulationLoop.SetSimulationEnvironment(loadedSBMLDocuments[_idx]);
 }
 
 void Engine::start()
@@ -31,11 +25,12 @@ void Engine::start()
 	commandsManager.start();
 
 	//Engine Commands
-	commandsManager.registerCommand(std::make_shared<QuitCommand>(this));
+	commandsManager.registerCommand(std::make_shared<AddFileAsSBMLCommand>(this));
+	commandsManager.registerCommand(std::make_shared<AddSimulationTargetCommand>(this));
+	commandsManager.registerCommand(std::make_shared<QuitCommand>(this));	
 
 	//IO Commands
-	commandsManager.registerCommand(std::make_shared<OpenCommand>(this));
-	//commandsManager.registerCommand(std::make_shared<LoadCommand>(this));
+	commandsManager.registerCommand(std::make_shared<SetFilePathCommand>(&fileIOManager));
 
 	//Simulation Loop commands
 	commandsManager.registerCommand(std::make_shared<DisplayCommand>(&simulationLoop));
@@ -43,9 +38,13 @@ void Engine::start()
 	commandsManager.registerCommand(std::make_shared<GoForwardCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<PauseCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<PlayCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<StepBackwardCommand>(&simulationLoop));
+	commandsManager.registerCommand(std::make_shared<StepForwardCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<StopCommand>(&simulationLoop));
 
 	simulationLoop.start();
+
+	//editor.start();
 
 	isRunning = true;
 }
@@ -53,17 +52,11 @@ void Engine::start()
 void Engine::stop()
 {
 	simulationLoop.stop();
-	commandsManager.stop();
 
 	isRunning = false;
 }
 
-void  Engine::update()
+void Engine::update(float _deltaTime)
 {
-	std::thread commandsThread{ &CommandsManager::update, &commandsManager };
-	while (isRunning)
-	{
-		simulationLoop.update();
-	}
-	commandsThread.join();
+	simulationLoop.update(_deltaTime);
 }

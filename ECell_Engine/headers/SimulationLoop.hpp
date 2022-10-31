@@ -17,7 +17,7 @@ private:
 	SimulationState simulationState = SimulationState::isStopped;
 	Gillespie_NRM_R gillespieSimulationEnv;
 
-	std::atomic_bool isRunning;
+	bool isRunning = false;
 	short direction = 1;
 
 public:
@@ -31,25 +31,25 @@ public:
 	/*
 	@brief Gets the direction private member.
 	*/
-	inline short getSimulationDirection()
+	inline short* getSimulationDirection()
 	{
-		return direction;
+		return &direction;
 	}
 	
 	/*
 	@brief Gets the gillespieSimulationEnv private member.
 	*/
-	inline Gillespie_NRM_R GetSimulationEnvironment()
+	inline Gillespie_NRM_R* getSimulationEnvironment()
 	{
-		return gillespieSimulationEnv;
+		return &gillespieSimulationEnv;
 	}
 
 	/*
 	@brief Gets the simulationState private member.
 	*/
-	inline SimulationState GetSimulationState()
+	inline SimulationState* getSimulationState()
 	{
-		return simulationState;
+		return &simulationState;
 	}
 #pragma endregion
 
@@ -103,12 +103,23 @@ public:
 	void stop();
 
 	/*
+	@brief Does everything to compute one step backward the simulation
+	@param _deltaTime The time lenght of the step
+	*/
+	void stepBackward(const float _deltaTime);
+
+	/*
+	@brief Does everything to compute one step forward the simulation
+	*/
+	void stepForward(const float _deltaTime);
+
+	/*
 	@brief	 The core of the simulation loop.
 	@details Calls every simulation's subsystem to be updated.
 			 Typically called in a new thread when the ECellEngine
 			 is starting up.
 	*/
-	void update();
+	void update(const float _deltaTime);
 #pragma endregion
 
 };

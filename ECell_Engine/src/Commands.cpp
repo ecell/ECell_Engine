@@ -4,72 +4,87 @@
 
 
 #pragma region IOCommands
-void OpenCommand::askUser()
-{
-	std::cout << std::endl << "Give file name: ";
-	std::cin >> answer;
-	//answer = "GibsonAndBruckToyModel.xml";//added during dev time to bypass the time to write the name in the console everytime.
-	answer = "p53_L3V2_mod.xml";//added during dev time to bypass the time to write the name in the console everytime.
-}
 
-void OpenCommand::execute()
+void SetFilePathCommand::execute(const std::vector<std::string>& _args)
 {
-	askUser();
-	receiver->OpenFile(&answer);
+	//path = "GibsonAndBruckToyModel.xml";//added during dev time to bypass the time to write the name in the console everytime.
+	//path = "p53_L3V2_mod.xml";//added during dev time to bypass the time to write the name in the console everytime.
+	receiver->setTargetFilePath(_args[1]);
 }
 #pragma endregion
 
 #pragma region Engine Commands
-void QuitCommand::execute()
+void AddFileAsSBMLCommand::execute(const std::vector<std::string>& _args)
+{
+	SBMLDocument* out = receiver->getFileIOManager()->tryOpenTargetFileAsSBML();
+	if (out != nullptr)
+	{
+		receiver->addSBMLDocument(out);
+		std::cout << "Open SBML file - SUCCESS." << std::endl;
+	}
+	else
+	{
+		std::cout << "Open SBML file - FAILED." << std::endl;
+	}
+}
+
+void AddSimulationTargetCommand::execute(const std::vector<std::string>& _args)
+{
+	receiver->forwardSimulationTarget(std::stoi(_args[1]));
+}
+
+void QuitCommand::execute(const std::vector<std::string>& _args)
 {
 	receiver->stop();
 }
 #pragma endregion
 
 #pragma region Simulation Loop Commands
-void DisplayCommand::execute()
+void DisplayCommand::execute(const std::vector<std::string>& _args)
 {
 	std::cout <<
 		"Simulation state:" << std::endl <<
 
-		"Total elapsed time: "<< receiver->simulationTimer.elapsedTime <<
+		"Total elapsed time: " << receiver->simulationTimer.elapsedTime <<
 		", last delta time: " << receiver->simulationTimer.deltaTime << std::endl <<
-		"Simulation Environment: " << receiver->GetSimulationEnvironment();
+		"Simulation Environment: " << *receiver->getSimulationEnvironment();
 }
 
-void GoForwardCommand::execute()
+void GoBackwardCommand::execute(const std::vector<std::string>& _args)
 {
-	switch (receiver->getSimulationDirection())
-	{
-	case(1):
-		std::cout << "The simulation is already going forward." << std::endl;
-		break;
-	case(-1):
-		receiver->setSimulationDirectionToForward();
-		std::cout << "The simulation's direction is now set to forward." << std::endl;
-		break;
-	}
-}
-
-void GoBackwardCommand::execute()
-{
-	switch (receiver->getSimulationDirection())
+	switch (*receiver->getSimulationDirection())
 	{
 	case(-1):
 		std::cout << "The simulation is already going backward." << std::endl;
 		break;
 	case(1):
+		receiver->getSimulationEnvironment()->reverseRNG();
 		receiver->setSimulationDirectionToBackward();
 		std::cout << "The simulation's direction is now set to backward." << std::endl;
 		break;
 	}
 }
 
-void PauseCommand::execute()
+void GoForwardCommand::execute(const std::vector<std::string>& _args)
+{
+	switch (*receiver->getSimulationDirection())
+	{
+	case(1):
+		std::cout << "The simulation is already going forward." << std::endl;
+		break;
+	case(-1):
+		receiver->getSimulationEnvironment()->reverseRNG();
+		receiver->setSimulationDirectionToForward();
+		std::cout << "The simulation's direction is now set to forward." << std::endl;
+		break;
+	}
+}
+
+void PauseCommand::execute(const std::vector<std::string>& _args)
 {
 	//std::cout << "The PAUSE command was called" << std::endl;
 
-	switch (receiver->GetSimulationState())
+	switch (*receiver->getSimulationState())
 	{
 	case(SimulationState::isPlaying):
 		std::cout << "Pausing the simulation." << std::endl;
@@ -86,11 +101,11 @@ void PauseCommand::execute()
 	}
 }
 
-void PlayCommand::execute()
+void PlayCommand::execute(const std::vector<std::string>& _args)
 {
 	//std::cout << "The PLAY command was called" << std::endl;
 
-	switch (receiver->GetSimulationState())
+	switch (*receiver->getSimulationState())
 	{
 	case(SimulationState::isPlaying):
 		std::cout << "The simulation is already playing." << std::endl;
@@ -110,11 +125,31 @@ void PlayCommand::execute()
 	receiver->SetSimulationState(SimulationState::isPlaying);
 }
 
-void StopCommand::execute()
+void StepBackwardCommand::execute(const std::vector<std::string>& _args)
+{
+	if (*receiver->getSimulationDirection() == 1)
+	{
+		receiver->getSimulationEnvironment()->reverseRNG();
+		receiver->setSimulationDirectionToBackward();
+	}
+	receiver->stepBackward(std::stof(_args[1]));
+}
+
+void StepForwardCommand::execute(const std::vector<std::string>& _args)
+{
+	if (*receiver->getSimulationDirection() == -1)
+	{
+		receiver->getSimulationEnvironment()->reverseRNG();
+		receiver->setSimulationDirectionToForward();
+	}
+	receiver->stepForward(std::stof(_args[1]));
+}
+
+void StopCommand::execute(const std::vector<std::string>& _args)
 {
 	//std::cout << "The STOP command was called" << std::endl;
 
-	switch (receiver->GetSimulationState())
+	switch (*receiver->getSimulationState())
 	{
 	case(SimulationState::isPlaying):
 		std::cout << "Stopping the simulation." << std::endl;

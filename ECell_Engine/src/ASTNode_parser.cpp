@@ -188,10 +188,20 @@ float ASTEvaluator::EvaluateNode(ASTNodeEx* _node)
 		return EvaluateNode(getNode(_node->getLeftChildEx())) - EvaluateNode(getNode(_node->getRightChildEx()));
 		break;
 	case ASTNodeType_t::AST_TIMES:
-		return EvaluateNode(getNode(_node->getLeftChildEx())) * EvaluateNode(getNode(_node->getRightChildEx()));
+		if (_node->getRightChildEx() == -1)//to deal with special cases where there are no right hand terms to TIMES node
+		{
+			return EvaluateNode(getNode(_node->getLeftChildEx()));
+		}
+		else
+		{
+			return EvaluateNode(getNode(_node->getLeftChildEx())) * EvaluateNode(getNode(_node->getRightChildEx()));
+		}
 		break;
 	case ASTNodeType_t::AST_DIVIDE:
 		return EvaluateNode(getNode(_node->getLeftChildEx())) / EvaluateNode(getNode(_node->getRightChildEx()));
+		break;
+	case ASTNodeType_t::AST_FUNCTION_POWER:
+		return std::pow(EvaluateNode(getNode(_node->getLeftChildEx())), EvaluateNode(getNode(_node->getRightChildEx())));
 		break;
 	default:
 		return 0;
@@ -375,6 +385,9 @@ std::string ASTEvaluator::PrettyPrintFormula(ASTNodeEx* _node)
 	case ASTNodeType_t::AST_DIVIDE:
 		return PrettyPrintFormula(getNode(_node->getLeftChildEx())) + "/" + PrettyPrintFormula(getNode(_node->getRightChildEx()));
 		break;
+	case ASTNodeType_t::AST_FUNCTION_POWER:
+		return PrettyPrintFormula(getNode(_node->getLeftChildEx())) + "^" + PrettyPrintFormula(getNode(_node->getRightChildEx()));
+		break;
 	default:
 		return "UNKNOWN";
 	}
@@ -440,6 +453,9 @@ void ASTEvaluator::PrettyPrintTree(ASTNodeEx* _node, int _lvl)
 		break;
 	case ASTNodeType_t::AST_DIVIDE:
 		std::cout << std::string(_lvl, ' ') << "|-AST_DIVIDE (/" << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
+		break;
+	case ASTNodeType_t::AST_FUNCTION_POWER:
+		std::cout << std::string(_lvl, '  ') << "|-AST_FUNCTION_POWER (^" << ", " << _node->getNumChildrenEx() << " children)" << std::endl;
 		break;
 	default:
 		std::cout << std::string(_lvl, ' ') << "Child is of type " << _node->getTypeEx() << std::endl;

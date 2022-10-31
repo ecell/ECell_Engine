@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 /*
 @brief		The base command class.
 @details	Adapted from the Command design pattern.
@@ -27,8 +29,11 @@ public:
 	}
 
 	/*
-	@brief Public interface to execute the action/code
-			associated to the command.
+	@brief Public interface to execute the action/code associated to the command
+			and its arguments.
+	@param[in] _args The arguments of the command. By default _args[0] is the
+				name of the command. So the actual arguments are store from index
+				1 onward.
 	*/
-	virtual void execute() = 0;
+	virtual void execute(const std::vector<std::string>& _args) = 0;
 };

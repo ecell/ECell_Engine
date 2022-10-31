@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include <math.h>
@@ -72,6 +74,9 @@ private:
 	
 	std::vector<short int> trace;
 	short int traceBlockSize = 0;
+	long int traceSize = 0;
+
+	bool initialized = false;//true is the Initialize() method completed at least once. False, otherwise.
 	
 	rng_state rng;
 
@@ -128,24 +133,22 @@ private:
 
 public:
 	float t;//Gillespie simulation time.
-	ASTEvaluator* astEvaluator;
+	std::unique_ptr<ASTEvaluator> astEvaluator;
 
 	friend std::ostream& operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r);
 
 	Gillespie_NRM_R()
 	{
-		astEvaluator = new ASTEvaluator();
+		std::cout << "Gillespie_NRM_R, Default Constructor" << std::endl;
+		astEvaluator = std::make_unique<ASTEvaluator>();
 	}
 
-	Gillespie_NRM_R(Gillespie_NRM_R& _g_nrm_r) :
-		astEvaluator(_g_nrm_r.astEvaluator), quantities(_g_nrm_r.quantities)
+	/*
+	@brief Gets a pointer to the @a quantities private memeber.
+	*/
+	inline std::vector<int>* getQuantities()
 	{
-		astEvaluator = new ASTEvaluator(*_g_nrm_r.astEvaluator);
-	};
-
-	~Gillespie_NRM_R()
-	{
-		delete astEvaluator;
+		return &quantities;
 	}
 
 	/*
@@ -154,6 +157,23 @@ public:
 				model we wish to use.
 	*/
 	void Initializes(SBMLDocument* _sbmlDoc);
+
+
+	/*
+	@brief Gets the value of the @a initialized private member.
+	*/
+	inline bool isInitialized()
+	{
+		return initialized;
+	}
+
+	/*
+	@brief Calls the API of revrand to reverse the RNG.
+	*/
+	inline void reverseRNG()
+	{
+		reverse(&rng);
+	}
 
 	/*
 	@brief Runs the Gillespie algorithm (Next Generation Method) forward.
@@ -164,6 +184,7 @@ public:
 	/*
 	@brief Runs the Gillespie algorithm (Next Generation Method) backward.
 	@param[in] _targetTime The max time until which we simulate.
+	@returns Value 1 if the simulation reached the end of the trace. 0, therwise.
 	*/
 	short RunBackward(float _targetTime);
 

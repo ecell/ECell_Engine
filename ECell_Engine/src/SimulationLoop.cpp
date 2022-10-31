@@ -13,11 +13,29 @@ void SimulationLoop::stop()
 }
 
 
-void SimulationLoop::update()
+
+void SimulationLoop::stepBackward(const float _deltaTime)
+{
+	std::cout << "Trying to step backward. " << std::endl;
+	if (gillespieSimulationEnv.RunBackward(simulationTimer.elapsedTime - _deltaTime) != 1)
+	{
+		simulationTimer.elapsedTime -= _deltaTime;
+	}
+}
+
+void SimulationLoop::stepForward(const float _deltaTime)
+{
+	std::cout << "Steping forward. " << std::endl;
+	simulationTimer.elapsedTime += _deltaTime;
+	gillespieSimulationEnv.RunForward(simulationTimer.elapsedTime);
+}
+
+
+void SimulationLoop::update(const float _deltaTime)
 {
 	if (simulationState == SimulationState::isPlaying && isRunning)
 	{
-		float beginTime = simulationTimer.ReadHighResTimer();
+		//float beginTime = simulationTimer.ReadHighResTimer();
 
 		//Update Subsystems
 		//Play catch up on the Gillespie Simulation
@@ -41,11 +59,12 @@ void SimulationLoop::update()
 		//
 
 		//Compute delta time
-		float endTime = simulationTimer.ReadHighResTimer();
-		simulationTimer.deltaTime = simulationTimer.GetDuration(beginTime, endTime);
-		simulationTimer.CheckSimulationDeltaTime();
+		//float endTime = simulationTimer.ReadHighResTimer();
+		//simulationTimer.deltaTime = simulationTimer.GetDuration(beginTime, endTime);
+		simulationTimer.deltaTime = _deltaTime;
+		//simulationTimer.CheckSimulationDeltaTime();
 		simulationTimer.elapsedTime += direction * simulationTimer.deltaTime;
 
-		beginTime = endTime;		
+		//beginTime = endTime;		
 	}
 }

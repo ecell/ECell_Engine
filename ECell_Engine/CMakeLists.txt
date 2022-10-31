@@ -5,7 +5,7 @@ cmake_minimum_required (VERSION 3.12)
 # Add ECell_Engine source file
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/*.c" "src/*.cpp")
 
-add_executable(ECellEngine "Main.cpp" ${SOURCE_FILES})
+add_library(ECellEngine SHARED ${SOURCE_FILES} ${HEADER_FILES})
 target_compile_features(ECellEngine PUBLIC cxx_std_17)
 
 find_package(Threads REQUIRED)

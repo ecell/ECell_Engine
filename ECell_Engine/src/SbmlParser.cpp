@@ -46,9 +46,9 @@
 
 bool SbmlParser::ValidateSBML(SBMLDocument* _sbmlDoc)
 {
-    if (!_sbmlDoc)
+    if (!_sbmlDoc || _sbmlDoc->getModel() == NULL)
     {
-        std::cerr << "ValidateSBML: given a null SBML Document" << std::endl;
+        std::cerr << "ValidateSBML: given a null SBML Document." << std::endl;
         return false;
     }
 
@@ -155,12 +155,12 @@ SBMLDocument* SbmlParser::OpenSBMLFile(const char* _filePath)
     bool SBMLok = ValidateSBML(document);
     if (SBMLok)
     {
-        std::cout << "Overall, " << _filePath << " is ok." << std::endl;
+        std::cout << " The SBML validation process for file at: " << _filePath << " is a SUCCESS." << std::endl;
         return document;
     }
     else
     {
-        std::cout << _filePath << " the validation process (see errors above)." << std::endl;
+        std::cout << " The SBML validation process for file at: " << _filePath <<" has FAILED (see errors above)." << std::endl;
         return nullptr;
     }
 }

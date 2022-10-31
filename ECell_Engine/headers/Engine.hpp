@@ -5,10 +5,9 @@
 #include <thread>
 
 #include "SimulationLoop.hpp"
+#include "FileIOManager.hpp"
 #include "CommandsManager.hpp"
 #include "Commands.hpp"
-#include "SbmlParser.hpp"
-#include "SbmlWriter.hpp"
 
 /*
 @brief The main class of the engine.
@@ -17,13 +16,11 @@
 */
 class Engine
 {
-private:
-	SbmlWriter sbmlWriter;
-	SbmlParser sbmlParser;
-	SBMLDocument* activeDocument;
-
-	SimulationLoop simulationLoop;
+	FileIOManager fileIOManager;
 	CommandsManager commandsManager;
+	SimulationLoop simulationLoop;
+	
+	std::vector<SBMLDocument*> loadedSBMLDocuments;
 
 public:
 	Engine() = default;
@@ -31,30 +28,67 @@ public:
 	bool isRunning;
 
 #pragma region Accessors
+	
 	/*
-	@brief Gets the @a activeDocument private member.
+	@brief Gets the pointer to @a commandsManager private member.
 	*/
-	inline SBMLDocument* GetActiveDocument()
+	inline CommandsManager* getCommandsManager()
 	{
-		return activeDocument;
+		return &commandsManager;
 	}
+
+	/*
+	@brief Gets the pointer to @a fileIOManager private member.
+	*/
+	inline FileIOManager* getFileIOManager()
+	{
+		return &fileIOManager;
+	}
+
+	/*
+	@brief Gets the pointer to @a loadedSBMLDocuments private member.
+	*/
+	inline std::vector<SBMLDocument*>* getLoadedSBMLDocuments()
+	{
+		return &loadedSBMLDocuments;
+	}
+
+	/*
+	@brief Gets the @a sbmlDocument at index @a _idx in
+			the @a loadedSBMLDocuments private member.
+	*/
+	inline SBMLDocument* getSBMLDocument(short _idx)
+	{
+		return loadedSBMLDocuments.at(_idx);
+	}
+	
+	/*
+	@brief Gets the pointer to @a simulationLoop private member.
+	*/
+	inline SimulationLoop* getSimulationLoop()
+	{
+		return &simulationLoop;
+	}
+	
 #pragma endregion
 
 #pragma region Mutators
 	/*
-	@brief Sets the @a activeDocument private member.
+	@brief Adds the @a _sbmlDoc to the @a loadedSBMLDocuments private member.
 	*/
-	inline void SetActiveSBMLDocument(SBMLDocument* _sbmlDoc)
+	inline void addSBMLDocument(SBMLDocument* _sbmlDoc)
 	{
-		activeDocument = _sbmlDoc;
+		loadedSBMLDocuments.push_back(_sbmlDoc);
 	}
 #pragma endregion
 
-#pragma region Logic	
+#pragma region Logic
+
 	/*
-	@brief The main entry to sorting.
+	@brief Sends the SBMLDocument at index @a _idx in @a loadedSBMLDocuments
+			to the simulation loop for simulation.
 	*/
-	void OpenFile(const std::string* _filePath);
+	void forwardSimulationTarget(const int& _idx);
 
 	/*
 	@brief Initializes every sub modules or variable needed for the engine
@@ -70,7 +104,7 @@ public:
 	/*
 	@brief The method to run the engine.
 	*/
-	void update();
+	void update(float _deltaTime);
 #pragma endregion
 
 };

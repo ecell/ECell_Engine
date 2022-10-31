@@ -21,3 +21,4 @@ set(WITH_LIBXML OFF)
 add_subdirectory ("libsbml")
 
 add_subdirectory ("ECell_Engine")
+add_subdirectory ("Editor")

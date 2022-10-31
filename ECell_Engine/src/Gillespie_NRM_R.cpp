@@ -161,7 +161,6 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 
 	//Reserve space for the tables
 	quantities.reserve(nbSpecies);
-	//parameters.reserve(nbParameters);
 	inTable.reserve(nbReactions);
 	outTable.reserve(nbReactions);
 	kineticLaws.reserve(nbReactions);
@@ -172,7 +171,6 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	//Build the map between species' names and index of appearance.
 	//Also fills in the species quantities table.
 	std::unordered_map<std::string, int> variables_name_idx_map = {{"UNKNOWN", -1}};
-	//std::unordered_map<std::string, int*> quantities_map;
 	Species* sp;
 	ASTNode* nameASTNode;
 	ASTNode* valueASTNode;
@@ -181,80 +179,41 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 		sp = sbmlModel->getSpecies(i);
 
 		nameASTNode = new ASTNode(ASTNodeType_t::AST_NAME);
-		//nameASTNode->setId(sp->getId().c_str());
 		nameASTNode->setName(sp->getId().c_str());
 		int nameNodeIdx = astEvaluator->Initializes(nameASTNode, &variables_name_idx_map); //nodeIdx is also equal to 2*i
 
 		valueASTNode = new ASTNode(ASTNodeType_t::AST_INTEGER);
-		//valueASTNode->setId(sp->getId().c_str());
 		valueASTNode->setValue(sp->getInitialAmount());
 		int valueNodeIdx = astEvaluator->Initializes(valueASTNode, &variables_name_idx_map); //nodeIdx is also equal to 2*i+1
 
 		ASTNodeEx* nameASTNodeEx = astEvaluator->getNode(nameNodeIdx);
-		//ASTNodeEx* valueASTNodeEx = astEvaluator->getNode(valueNodeIdx);
-		//astNodeEx->setValueEx(sp->getInitialAmount());
-		//astNodeEx->setNameEx(sp->getId().c_str());
 
 		nameASTNodeEx->setLeftChildEx(valueNodeIdx);
-		//nameASTNodeEx->setNumChildrenEx();
 		
-		//quantities_map[sp->getId()] = &quantities[i];
 		quantities.push_back(nameNodeIdx);//index to "astEvaluator.formulasNodes"
 		variables_name_idx_map[sp->getId()] = nameNodeIdx;
-
-		//astEvaluator->addNode(astNodeExSpNameBase);
-		//astEvaluator->addNode(astNodeExSpValue);
 
 		delete nameASTNode;
 		delete valueASTNode;
 	}
-	//delete astNodeSpValue;
 
-	//Retrieve the parameters' values stored in the sbml file.
-	//If the parameter's is not defined as constant, then look
-	//for an assignement
-	//std::unordered_map<std::string, int> param_name_idx_map;
-	//std::unordered_map<std::string, float*> parameters_map;
 	Parameter* param;
 	for (int i = 0; i < nbParameters; i++)
 	{
 		param = sbmlModel->getParameter(i);
 		//std::cout << "Processing parameter " << param->getId() << "; constant = " << param->getConstant() << std::endl;
 		//parameters[i] = NAN;
-		
-		//parameters_map[param->getId()] = &parameters[i];
-		//astNode = new ASTNode(ASTNodeType_t::AST_NAME);
-		//astNode->setId(param->getId().c_str());
-		//astNode->setName(param->getId().c_str());
-
-		//int nodeIdx = astEvaluator->Initializes(astNode, &variables_name_idx_map);
-		
-
 		nameASTNode = new ASTNode(ASTNodeType_t::AST_NAME);
-		//nameASTNode->setId(param->getId().c_str());
 		nameASTNode->setName(param->getId().c_str());
 		int nameNodeIdx = astEvaluator->Initializes(nameASTNode, &variables_name_idx_map); //nodeIdx is also equal to nbSpecies+2*i
 
-		ASTNodeEx* nameASTNodeEx = astEvaluator->getNode(nameNodeIdx);
-		//ASTNodeEx* valueASTNodeEx = astEvaluator->getNode(valueNodeIdx);
-		//astNodeEx->setValueEx(sp->getInitialAmount());
-		//astNodeEx->setNameEx(sp->getId().c_str());
-		
-
 		variables_name_idx_map[param->getId()] = nameNodeIdx;
-		//ASTNodeEx* astNodeEx = astEvaluator->getNode(nodeIdx);
-
 		if (param->getConstant())
 		{
 			valueASTNode = new ASTNode(ASTNodeType_t::AST_REAL);
-			//valueASTNode->setId(param->getId().c_str());
 			valueASTNode->setValue(param->getValue());
 			int valueNodeIdx = astEvaluator->Initializes(valueASTNode, &variables_name_idx_map); //nodeIdx is also equal to nbSpecies+2*i+1
-
-			//astNodeEx->setTypeEx(ASTNodeType_t::AST_REAL);
-			//astNodeEx->setValueEx(param->getValue());
-			//parameters[i] = (float)param->getValue();
-			//astNode->setValue(param->getValue());
+			ASTNodeEx* nameASTNodeEx = astEvaluator->getNode(nameNodeIdx);
 			nameASTNodeEx->setLeftChildEx(valueNodeIdx);
 			//nameASTNodeEx->setNumChildrenEx();
 			delete valueASTNode;
@@ -272,8 +231,6 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 		rule = sbmlModel->getRule(i);
 		if (rule->isParameter())
 		{
-			
-
 			nameASTNode = rule->getMath()->deepCopy();
 			nameASTNode->setId(rule->getVariable().c_str());
 			int valueNodeIdx = astEvaluator->Initializes(nameASTNode, &variables_name_idx_map);
@@ -287,7 +244,6 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 			paramNameNode->setLeftChildEx(valueNodeIdx);
 			paramNameNode->setNumChildrenEx();
 		}
-		delete nameASTNode;
 	}
 
 	//int nbRulesQ = rulesQ.size();
@@ -376,6 +332,9 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	itmh.Initialize(&tauTable);
 
 	trace.reserve(1000);
+	traceSize = 0;
+
+	initialized = true;
 }
 
 void Gillespie_NRM_R::ManageTrace()
@@ -391,7 +350,7 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 {
 	//step 2 & 3
 	std::pair<int, float> muTau = itmh.GetRoot();
-
+	//std::cout << "Before loop | (target time, t): (" << _targetTime << ", " << t << ")." << std::endl;
 	while (muTau.second < _targetTime)
 	{
 		//std::cout << std::endl;
@@ -401,7 +360,7 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 		//std::cout << "Quantities Before: ";
 		//for (int q : quantities){std::cout << q << " ";}
 		//std::cout << std::endl;
-		//std::cout << "Firing Rule number: " << muTau.first << std::endl;
+		//std::cout << "Firing Rule number: " << muTau.first << " at time: " << muTau.second << std::endl;
 		//step 4
 		//std::cout << "astEvaluator address " << this->astEvaluator << std::endl;
 		//std::cout << "astEvaluator formulaNodes has " << astEvaluator->getNbNodes() << " nodes" << std::endl;
@@ -413,6 +372,7 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 		ManageTrace();
 		trace.push_back(muTau.first);
 		traceBlockSize++;
+		traceSize++;
 
 		//std::cout << "Quantities After: ";
 		//for (int q : quantities) { std::cout << q << " "; }
@@ -423,11 +383,10 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 		
 		float a_new = ComputePropensity(muTau.first);
 		float new_tau = Exponential(a_new) + muTau.second;
-		//std::cout << "Tau After:" << new_tau << " a After:" << a_new <<std::endl;
+		//std::cout << "We computed values for step n+1 (Tau, a): (" << new_tau << ", " << a_new << ")" << std::endl;
 		itmh.SetTauInRoot(new_tau);
 		itmh.UpdateRoot();
 
-		
 		//step 5 (*it is alpha in the algorithm)
 		for (auto it = depTable[muTau.first].dep.cbegin(); it != depTable[muTau.first].dep.cend(); ++it)
 		{
@@ -446,11 +405,19 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 		//we actualize step 2 & 3
 		muTau = itmh.GetRoot();
 	}
+
 }
 
 short Gillespie_NRM_R::RunBackward(float _targetTime)
 {
-	int traceSize = trace.size();
+	if (traceSize <= 0)
+	{
+		std::cout << "We reached the end of the trace." << std::endl;
+		return 1;
+	}
+
+	//std::cout << std::endl;
+	//std::cout << "Before loop | (target time, t): (" << _targetTime << ", " << t << ")." << std::endl;
 	while (t > _targetTime && traceSize > 0)
 	{
 		//std::cout << std::endl;
@@ -459,6 +426,7 @@ short Gillespie_NRM_R::RunBackward(float _targetTime)
 		float tau_n = itmh.GetTauFromPointer(mu_n);
 		trace.pop_back();
 		traceSize--;
+		//std::cout << "Inside Loop | (target time, t): (" << _targetTime << ", " << t << "). There is still " << traceSize << " reactions to process." << std::endl;
 		float a_n = propensities[mu_n];
 
 		//std::cout << "Tau Before:" << tau_n << " a Before:" << a_n << std::endl;
@@ -466,7 +434,7 @@ short Gillespie_NRM_R::RunBackward(float _targetTime)
 		//for (int q : quantities) { std::cout << q << " "; }
 		//std::cout << std::endl;
 
-		//std::cout << "Firing back Rule number: " << mu_n << std::endl;
+		//std::cout << "Backtracking from rule number: " << mu_n << " at time: " << tau_n << std::endl;
 
 		ApplyInOutBackward(mu_n);
 		//std::cout << "Quantities After: ";
@@ -474,7 +442,7 @@ short Gillespie_NRM_R::RunBackward(float _targetTime)
 		//std::cout << std::endl;
 		float a_nm1 = ComputePropensity(mu_n);
 		float tau_nm1 = tau_n - Exponential(a_n);
-		//std::cout << "Tau After:" << tau_nm1 << " a After:" << a_nm1 << std::endl;
+		//std::cout << "We reconstructed values at step n-1 (Tau, a): (" << tau_nm1 << ", " << a_nm1 << ")" << std::endl;
 
 		t = tau_nm1;
 		itmh.SetTauFromPointer(mu_n, t);
@@ -495,12 +463,7 @@ short Gillespie_NRM_R::RunBackward(float _targetTime)
 			itmh.UpdateFromPointer(*it, tau_n);
 		}
 	}
-
-	if (traceSize == 0)
-	{
-		std::cout << "We reached the end of the trace." << std::endl;
-		return 1;
-	}
+	//std::cout << "After Loop | (target time, t): (" << _targetTime << ", " << t << "). There is still " << traceSize << " reactions to process." << std::endl;
 
 	return 0;
 }

@@ -1,3 +1,6 @@
+#pragma once
+
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -73,8 +76,6 @@ private:
 
 public:
 	ASTEvaluator(){}
-
-	ASTEvaluator(const ASTEvaluator& astEvaluator) : formulasNodes(astEvaluator.formulasNodes) {};
 
 	//accessors
 	ASTNodeEx* getNode(int _i);
