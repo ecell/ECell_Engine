@@ -2,10 +2,22 @@
 
 cmake_minimum_required (VERSION 3.12)
 
-# Add ECell_Engine source file
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/*.c" "src/*.cpp")
-
-add_library(ECellEngine SHARED ${SOURCE_FILES} ${HEADER_FILES})
+# Add ECell_Engine source files
+add_library(ECellEngine SHARED
+    "src/ASTNode_parser.cpp"
+    "src/Commands.cpp"
+    "src/CommandsManager.cpp"
+    "src/Engine.cpp"
+    "src/FileIOManager.cpp"
+    "src/Gillespie_NRM_R.cpp"
+    "src/Gillespie_NRM_R_Data.cpp"
+    "src/MathUtility.cpp"
+    "src/revrand.c"
+    "src/sbml_example.cpp"
+    "src/SbmlParser.cpp"
+    "src/SbmlWriter.cpp"
+    "src/SimulationLoop.cpp"
+    "src/Timer.cpp")
 target_compile_features(ECellEngine PUBLIC cxx_std_17)
 
 find_package(Threads REQUIRED)
