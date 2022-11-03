@@ -16,7 +16,7 @@ namespace ECellEngine::Maths
     {
         inline virtual float operator()(DataState const& _datastate, std::vector<Operand*> const& _operands) const noexcept override
         {
-            return _operands[0]->get(_datastate) + _operands[1]->get(_datastate);
+            return _operands[0]->Get(_datastate) + _operands[1]->Get(_datastate);
         }
     };
 
@@ -24,7 +24,7 @@ namespace ECellEngine::Maths
     {
         inline virtual float operator()(DataState const& _datastate, std::vector<Operand*> const& _operands) const noexcept override
         {
-            return _operands[0]->get(_datastate) - _operands[1]->get(_datastate);
+            return _operands[0]->Get(_datastate) - _operands[1]->Get(_datastate);
         }
     };
 
@@ -32,7 +32,7 @@ namespace ECellEngine::Maths
     {
         inline virtual float operator()(DataState const& _datastate, std::vector<Operand*> const& _operands) const noexcept override
         {
-            return _operands[0]->get(_datastate) * _operands[1]->get(_datastate);
+            return _operands[0]->Get(_datastate) * _operands[1]->Get(_datastate);
         }
     };
 
@@ -40,7 +40,7 @@ namespace ECellEngine::Maths
     {
         inline virtual float operator()(DataState const& _datastate, std::vector<Operand*> const& _operands) const noexcept override
         {
-            return _operands[0]->get(_datastate) / _operands[1]->get(_datastate);
+            return _operands[0]->Get(_datastate) / _operands[1]->Get(_datastate);
         }
     };
 
@@ -48,7 +48,7 @@ namespace ECellEngine::Maths
     {
         inline virtual float operator()(DataState const& _datastate, std::vector<Operand*> const& _operands) const noexcept override
         {
-            return std::pow(_operand[0]->get(_datastate), _operand[1]->get(_datastate));
+            return std::pow(_operands[0]->Get(_datastate), _operands[1]->Get(_datastate));
         }
     };
 }

@@ -12,7 +12,7 @@ namespace ECellEngine::Maths
 {
     struct Operand
     {
-        virtual float Get(DataState* _dataState) const noexcept = 0;
+        virtual float Get(const DataState& _dataState) const noexcept = 0;
     };
 
     struct Operation : public Operand
@@ -20,8 +20,7 @@ namespace ECellEngine::Maths
         Function* function;
         std::vector<Operand*> operands;
 
-        Calculation(Function* _function) :
-            function{_function}
+        Operation()
         {
 
         }
@@ -31,9 +30,14 @@ namespace ECellEngine::Maths
             operands.emplace_back(operand);
         }
 
-        inline virtual float Get(DataState* _dataState) const noexcept override
+        inline virtual float Get(const DataState& _dataState) const noexcept override
         {
-            return (*function)(operands);
+            return (*function)(_dataState, operands);
+        }
+
+        inline void Set(Function* _function)
+        {
+            function = _function;
         }
     };
 }
