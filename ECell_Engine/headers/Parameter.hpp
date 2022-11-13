@@ -12,11 +12,6 @@ namespace ECellEngine::Data
     protected:
         std::string name;
 
-        inline std::string GetName() const
-        {
-            return name;
-        }
-
     public:
         Parameter(std::string _name) :
             name{ _name }
@@ -24,9 +19,11 @@ namespace ECellEngine::Data
 
         }
 
-        inline virtual float Get(const DataState& _dataState) const noexcept override
+        inline virtual float Get(const DataState& _dataState) const noexcept = 0;
+
+        inline const std::string GetName() const
         {
-            _dataState.GetParameter(name);
+            return name;
         }
     };
     
@@ -43,19 +40,33 @@ namespace ECellEngine::Data
         {
             _dataState.GetParameter(name);
         }
+
+        inline virtual void Set(DataState& _dataState, const float& _value)
+        {
+            _dataState.SetParameter(name, _value);
+        }
     };
     
     struct ComputedParameter : public Parameter
     {
+    private:
+        Operation operation;
+
     public:
         ComputedParameter(std::string _name) :
             Parameter(_name)
         {
         }
 
+        inline void ComputeOperation(DataState& _dataState)
+        {
+            _dataState.SetParameter(name, operation.Get(_dataState));
+        }
+        
         inline virtual float Get(const DataState& _dataState) const noexcept override
         {
             _dataState.GetParameter(name);
         }
+
     };
 }
