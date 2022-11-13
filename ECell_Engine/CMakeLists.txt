@@ -16,6 +16,7 @@ add_library(ECellEngine SHARED
     "src/Reaction.cpp"
     "src/revrand.c"
     "src/sbml_example.cpp"
+    "src/SBMLModule.cpp"
     "src/SbmlParser.cpp"
     "src/SbmlWriter.cpp"
     "src/SimulationLoop.cpp"
