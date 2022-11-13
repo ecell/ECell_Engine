@@ -29,19 +29,18 @@ namespace ECellEngine::Data
             return name;
         }
 
-
-        inline void Set(DataState& _dataState, float _val)
+        inline void Set(DataState& _dataState, const float& _val)
         {
             _dataState.SetSpecies(name, _val);
         }
 
-        inline void Increment(DataState& _dataState, float _inc)
+        inline void Increment(DataState& _dataState, const float& _inc)
         {
             float val = _dataState.GetSpecies(name);
             _dataState.SetSpecies(name, val + _inc);
         }
 
-        inline void Decrement(DataState& _dataState, float _dec)
+        inline void Decrement(DataState& _dataState, const float& _dec)
         {
             float val = _dataState.GetSpecies(name);
             _dataState.SetSpecies(name, val - _dec);
