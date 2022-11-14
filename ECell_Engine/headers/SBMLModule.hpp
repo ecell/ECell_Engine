@@ -14,7 +14,7 @@ namespace ECellEngine::Data
 	{
 	private:
 		std::vector<ComputedParameter> computedParameters;
-		std::unordered_map<std::string, std::vector<int>> parameterDependancies;
+		std::unordered_map<std::string, std::vector<std::size_t>> parameterDependancies;
 
 	public:
 		SBMLModule(DataState* _dataState) :
@@ -23,22 +23,22 @@ namespace ECellEngine::Data
 			
 		}
 
-		inline const ComputedParameter* GetComputedParameter(const int& _idx) const noexcept
+		inline const ComputedParameter* GetComputedParameter(const std::size_t& _idx) const noexcept
 		{
 			return &computedParameters[_idx];
 		}
 
-		inline virtual const Reaction* GetReaction(const int& _idx) const noexcept override
+		inline virtual const Reaction* GetReaction(const std::size_t& _idx) const noexcept override
 		{
 			return &reactions[_idx];
 		}
 
-		inline virtual const SimpleParameter* GetSimpleParameter(const int& _idx) const noexcept override
+		inline virtual const SimpleParameter* GetSimpleParameter(const std::size_t& _idx) const noexcept override
 		{
 			return &simpleParameters[_idx];
 		}
 
-		inline virtual const Species* GetSpecies(const int& _idx) const noexcept override
+		inline virtual const Species* GetSpecies(const std::size_t& _idx) const noexcept override
 		{
 			return &species[_idx];
 		}
