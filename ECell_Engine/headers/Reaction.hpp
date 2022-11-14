@@ -36,10 +36,6 @@ namespace ECellEngine::Data
 			products.emplace_back(_reactant);
 		}
 
-		void ApplyBackward(DataState& _dataState);
-
-		void ApplyForward(DataState& _dataState);
-
 		inline float ComputeKineticLaw(const DataState& _dataState)
 		{
 			return kineticLaw.Get(_dataState);
