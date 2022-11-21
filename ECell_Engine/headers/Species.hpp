@@ -10,12 +10,11 @@ namespace ECellEngine::Data
     struct Species : public Operand
     {
     private:
-        std::string id;
         std::string name;
 
     public:
-        Species(std::string _id, std::string _name) :
-            id{ _id }, name{ _name }
+        Species(std::string _name) :
+            name{ _name }
         {
 
         }
@@ -25,12 +24,7 @@ namespace ECellEngine::Data
             _dataState.GetSpecies(name);
         }
 
-        inline const std::string& GetId() const
-        {
-            return id;
-        }
-
-        inline const std::string& GetName() const
+        inline std::string GetName() const
         {
             return name;
         }
