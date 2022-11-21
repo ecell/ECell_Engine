@@ -23,6 +23,7 @@ add_library(ECellEngine SHARED
     "src/SBMLModuleImporter.cpp"
     "src/SbmlParser.cpp"
     "src/SbmlWriter.cpp"
+    "src/Simulation.cpp"
     "src/SimulationLoop.cpp"
     "src/Timer.cpp")
 target_compile_features(ECellEngine PUBLIC cxx_std_17)

@@ -24,12 +24,16 @@ namespace ECellEngine::Data
 
 		}
 
-		virtual void Initialize() override = 0;
-
 		virtual const Reaction* GetReaction(const std::size_t& _idx) const noexcept = 0;
 
 		virtual const SimpleParameter* GetSimpleParameter(const std::size_t& _idx) const noexcept = 0;
 
 		virtual const Species* GetSpecies(const std::size_t& _idx) const noexcept = 0;
+
+		inline virtual const bool& CheckSolverType(const ECellEngine::Solvers::SolverTypes& _solverType) noexcept override
+		{
+			return _solverType == ECellEngine::Solvers::SolverTypes::Biochemical;
+		}
+
 	};
 }

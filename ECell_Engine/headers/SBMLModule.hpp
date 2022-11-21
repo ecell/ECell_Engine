@@ -44,8 +44,6 @@ namespace ECellEngine::Data
 		}
 
 		void ComputeDependantParameters(const std::string& _parentParemeterName);
-
-		virtual void Initialize() override;
 		
 	};
 }

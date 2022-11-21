@@ -11,7 +11,7 @@ using namespace ECellEngine::Data;
 
 namespace ECellEngine::Solvers
 {
-	class GillespieNRMRSolver : BiochemicalSolver
+	class GillespieNRMRSolver : public BiochemicalSolver
 	{
 	private:
 		
@@ -20,12 +20,11 @@ namespace ECellEngine::Solvers
 		std::vector<std::vector<std::size_t>> reactionsDependanceGraph;
 		std::vector<unsigned short int> trace;
 
+		void ApplyBackward(const ECellEngine::Data::Reaction& _reaction);
 
-		void ApplyBackward(const Reaction& _reaction);
+		void ApplyForward(const ECellEngine::Data::Reaction& _reaction);
 
-		void ApplyForward(const Reaction& _reaction);
-
-		void BuildDependancyGraph(const std::vector<Reaction>& _reactions);
+		void BuildDependancyGraph(const std::vector<ECellEngine::Data::Reaction>& _reactions);
 
 		const float ComputeReactionPropensity(const unsigned int& _reactionIndex);
 

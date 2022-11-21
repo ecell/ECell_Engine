@@ -6,7 +6,7 @@ using namespace ECellEngine::Data;
 
 namespace ECellEngine::Solvers
 {
-	class BiochemicalSolver : Solver
+	class BiochemicalSolver : public Solver
 	{
 	public:
 		BiochemicalSolver(DataState* _dataState) :
