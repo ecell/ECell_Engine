@@ -2,7 +2,7 @@
 
 void ECellEngine::Core::Simulation::AddModule(const std::string& _filePath)
 {
-	std::shared_ptr<Module> module = moduleImporterManager.TryImportModule(std::filesystem::path(_filePath));
+	std::shared_ptr<Module> module = moduleImporterManager.TryImportModule(std::filesystem::path(_filePath), &dataState);
 	if (module != nullptr)
 	{
 		modules.push_back(module);

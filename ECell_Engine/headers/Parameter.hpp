@@ -53,8 +53,8 @@ namespace ECellEngine::Data
         Operation operation;
 
     public:
-        ComputedParameter(std::string _name) :
-            Parameter(_name)
+        ComputedParameter(std::string _name, Operation _operation) :
+            Parameter(_name), operation{ _operation }
         {
         }
 

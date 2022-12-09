@@ -5,6 +5,7 @@
 #include <memory> //for shared_ptr
 #include <unordered_map> //for unordered_multimap
 
+#include "DataState.hpp"
 #include "Module.hpp"
 #include "ModuleImporter.hpp"
 #include "SBMLModuleImporter.hpp"
@@ -24,6 +25,6 @@ namespace ECellEngine::IO
 	public:
 		ModuleImporterManager() = default;
 
-		const std::shared_ptr<Module> TryImportModule(const std::filesystem::path& _filePath) noexcept;
+		const std::shared_ptr<Module> TryImportModule(const std::filesystem::path& _filePath, const DataState* _dataState) noexcept;
 	};
 }

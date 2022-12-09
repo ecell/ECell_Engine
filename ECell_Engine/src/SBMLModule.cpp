@@ -12,8 +12,3 @@ void ECellEngine::Data::SBMLModule::ComputeDependantParameters(const std::string
 		}
 	}
 }
-
-void ECellEngine::Data::SBMLModule::Initialize()
-{
-
-}

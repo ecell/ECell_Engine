@@ -43,7 +43,13 @@ namespace ECellEngine::Data
 			return &species[_idx];
 		}
 
-		void ComputeDependantParameters(const std::string& _parentParemeterName);
-		
+		inline void AddComputedParameters(const std::string& _name, const Operation& _paramOp)
+		{
+			dataState->AddParameter(_name, _paramOp.Get(*dataState));
+			computedParameters.emplace_back(ComputedParameter(_name, _paramOp));
+		}
+
+		void ComputeDependantParameters(const std::string& _parentParameterName);
+
 	};
 }

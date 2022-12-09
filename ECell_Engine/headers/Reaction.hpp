@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -15,31 +16,28 @@ namespace ECellEngine::Data
 	{
 	private:
 		std::string name;
-		std::vector<Species*> products;
-		std::vector<Species*> reactants;
+		std::vector<std::shared_ptr<Species>> products;
+		std::vector<std::shared_ptr<Species>> reactants;
 		Operation kineticLaw;
 
 	public:
-		Reaction(std::string _name):
-			name{_name}
+		Reaction(std::string _name,
+				std::vector<std::shared_ptr<Species>> _products,
+				std::vector<std::shared_ptr<Species>> _reactants,
+				Operation _kineticLaw):
+			name{_name}, products{_products}, reactants{_reactants}, kineticLaw{_kineticLaw}
 		{
 
 		}
 
-		inline void AddProduct(const Species* _product)
+		inline void ComputeKineticLaw(DataState& _dataState)
 		{
-			products.emplace_back(_product);
+			_dataState.SetKineticLaw(name, kineticLaw.Get(_dataState));
 		}
 
-		inline void AddReactant(const Species* _reactant)
+		inline const float& GetKineticLaw(const DataState& _dataState) const noexcept
 		{
-			products.emplace_back(_reactant);
+			_dataState.GetKineticLaw(name);
 		}
-
-		inline float ComputeKineticLaw(const DataState& _dataState)
-		{
-			return kineticLaw.Get(_dataState);
-		}
-
 	};
 }

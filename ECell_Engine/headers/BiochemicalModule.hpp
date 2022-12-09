@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <vector>
 
+#include "BiochemicalSolver.hpp"
 #include "Module.hpp"
 #include "Parameter.hpp"
 #include "Reaction.hpp"
@@ -30,9 +31,26 @@ namespace ECellEngine::Data
 
 		virtual const Species* GetSpecies(const std::size_t& _idx) const noexcept = 0;
 
-		inline virtual const bool& CheckSolverType(const ECellEngine::Solvers::SolverTypes& _solverType) noexcept override
+
+		inline void AddReaction(const std::string& _name,
+								const std::vector<std::shared_ptr<Species>>& _products,
+								const std::vector<std::shared_ptr<Species>>& _reactants,
+								const Operation& _kineticLaw)
 		{
-			return _solverType == ECellEngine::Solvers::SolverTypes::Biochemical;
+			dataState->AddKineticLaw(_name, _kineticLaw.Get(*dataState));
+			reactions.emplace_back(Reaction(_name, _products, _reactants, _kineticLaw));
+		}
+
+		inline void AddSimpleParameter(const std::string& _name, const float& _value)
+		{
+			dataState->AddParameter(_name, _value);
+			simpleParameters.emplace_back(SimpleParameter(_name));
+		}
+
+		inline void AddSpecies(const std::string& _name, const float& _value)
+		{
+			dataState->AddSpecies(_name, _value);
+			species.emplace_back(Species(_name));
 		}
 
 		inline virtual bool IsValidSolverType(const ECellEngine::Solvers::Solver* _solver) noexcept override

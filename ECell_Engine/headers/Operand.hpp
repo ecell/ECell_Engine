@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -15,17 +16,33 @@ namespace ECellEngine::Maths
         virtual float Get(const DataState& _dataState) const noexcept = 0;
     };
 
-    struct Operation : public Operand
+    struct Constant : public Operand
     {
-        Function* function;
-        std::vector<Operand*> operands;
+    private:
+        float value;
 
-        Operation()
+    public:
+        Constant(float _value) :
+            value{ _value }
         {
-
         }
 
-        inline void AddOperand(Operand* operand)
+        virtual float Get(const DataState& _dataState) const noexcept override
+        {
+            return value;
+        }
+    };
+
+    struct Operation : public Operand
+    {
+    private:
+        Function* function;
+        std::vector <std::shared_ptr<Operand>> operands;
+
+    public:
+        Operation() = default;
+
+        inline void AddOperand(const std::shared_ptr<Operand> operand)
         {
             operands.emplace_back(operand);
         }
@@ -35,7 +52,7 @@ namespace ECellEngine::Maths
             return (*function)(_dataState, operands);
         }
 
-        inline void Set(Function* _function)
+        inline void Set(Function* _function) noexcept
         {
             function = _function;
         }
