@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cmath>
+#include <memory>
+
 #include "DataState.hpp"
 
 using namespace ECellEngine::Data;
@@ -9,46 +11,57 @@ namespace ECellEngine::Maths
 {
 	struct Function
 	{
-		virtual float operator()(DataState const& _datastate, std::vector<Operand*> const& _operands) const noexcept = 0;
+		virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept = 0;
 	};
 
     struct Add : public Function
     {
-        inline virtual float operator()(DataState const& _datastate, std::vector<Operand*> const& _operands) const noexcept override
+        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
         {
-            return _operands[0]->Get(_datastate) + _operands[1]->Get(_datastate);
+            return _operands[0].get()->Get(_datastate) + _operands[1].get()->Get(_datastate);
         }
     };
 
-    struct Sub : public Function
+    struct Minus : public Function
     {
-        inline virtual float operator()(DataState const& _datastate, std::vector<Operand*> const& _operands) const noexcept override
+        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
         {
-            return _operands[0]->Get(_datastate) - _operands[1]->Get(_datastate);
+            return _operands[0].get()->Get(_datastate) - _operands[1].get()->Get(_datastate);
         }
     };
 
-    struct Mul : public Function
+    struct Times : public Function
     {
-        inline virtual float operator()(DataState const& _datastate, std::vector<Operand*> const& _operands) const noexcept override
+        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
         {
-            return _operands[0]->Get(_datastate) * _operands[1]->Get(_datastate);
+            return _operands[0].get()->Get(_datastate) * _operands[1].get()->Get(_datastate);
         }
     };
 
-    struct Div : public Function
+    struct Divide : public Function
     {
-        inline virtual float operator()(DataState const& _datastate, std::vector<Operand*> const& _operands) const noexcept override
+        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
         {
-            return _operands[0]->Get(_datastate) / _operands[1]->Get(_datastate);
+            return _operands[0].get()->Get(_datastate) / _operands[1].get()->Get(_datastate);
         }
     };
 
-    struct Pow : public Function
+    struct Power : public Function
     {
-        inline virtual float operator()(DataState const& _datastate, std::vector<Operand*> const& _operands) const noexcept override
+        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
         {
-            return std::pow(_operands[0]->Get(_datastate), _operands[1]->Get(_datastate));
+            return std::pow(_operands[0].get()->Get(_datastate), _operands[1].get()->Get(_datastate));
         }
     };
+
+    struct Functions
+    {
+        static Add add;
+        static Minus minus;
+        static Times times;
+        static Divide divide;
+        static Power power;
+    };
+
+    static Functions functions;
 }

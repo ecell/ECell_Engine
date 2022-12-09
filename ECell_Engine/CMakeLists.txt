@@ -10,6 +10,7 @@ add_library(ECellEngine SHARED
     "src/DataState.cpp"
     "src/Engine.cpp"
     "src/FileIOManager.cpp"
+    "src/Function.cpp"
     "src/GillespieNRMRSolver.cpp"
     "src/Gillespie_NRM_R.cpp"
     "src/Gillespie_NRM_R_Data.cpp"
