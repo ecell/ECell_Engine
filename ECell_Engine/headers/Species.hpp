@@ -24,7 +24,7 @@ namespace ECellEngine::Data
             _dataState.GetSpecies(name);
         }
 
-        inline std::string GetName() const
+        inline const std::string& GetName() const
         {
             return name;
         }
