@@ -35,5 +35,9 @@ namespace ECellEngine::Data
 			return _solverType == ECellEngine::Solvers::SolverTypes::Biochemical;
 		}
 
+		inline virtual bool IsValidSolverType(const ECellEngine::Solvers::Solver* _solver) noexcept override
+		{
+			return dynamic_cast<const ECellEngine::Solvers::BiochemicalSolver*>(_solver) != nullptr;
+		}
 	};
 }

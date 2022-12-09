@@ -56,7 +56,7 @@ void ECellEngine::Core::Simulation::RemoveSolver(const std::size_t& _idx)
 void ECellEngine::Core::Simulation::TryAttachSolverToModule(const std::size_t& _solverIdx, const std::size_t& _moduleIdx)
 {
 	//If the type of the solver is adapted for the module
-	if (modules[_moduleIdx].get()->CheckSolverType(solvers[_solverIdx].get()->GetType()))
+	if (modules[_moduleIdx].get()->IsValidSolverType(solvers[_solverIdx].get()))
 	{
 		auto search = ScanModuleToSolverTable(_moduleIdx, _solverIdx);
 

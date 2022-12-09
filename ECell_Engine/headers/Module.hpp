@@ -1,7 +1,7 @@
 #pragma once
 
 #include "DataState.hpp"
-#include "SolverTypes.hpp"
+#include "Solver.hpp"
 
 namespace ECellEngine::Data
 {
@@ -17,7 +17,7 @@ namespace ECellEngine::Data
 
 		}
 
-		virtual const bool& CheckSolverType(const ECellEngine::Solvers::SolverTypes& _solverType) noexcept = 0;
+		virtual bool IsValidSolverType(const ECellEngine::Solvers::Solver* _solver) noexcept = 0;
 
 	};
 }
