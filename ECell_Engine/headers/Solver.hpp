@@ -2,7 +2,6 @@
 
 #include "DataState.hpp"
 #include "Module.hpp"
-#include "SolverTypes.hpp"
 
 using namespace ECellEngine::Data;
 
@@ -12,18 +11,12 @@ namespace ECellEngine::Solvers
 	{
 	protected:
 		DataState* datastate;
-		SolverTypes solverType;
 
 	public:
 		Solver(DataState* _dataState) :
 			datastate{ _dataState }
 		{
 
-		}
-
-		inline const SolverTypes& GetType() const noexcept
-		{
-			return solverType;
 		}
 
 		virtual void Initialize(const Module&) = 0;
