@@ -56,7 +56,7 @@ namespace ECellEngine::IO
 
         struct ReactionPointersCapsule
         {
-            Reaction* r;
+            LIBSBML_CPP_NAMESPACE::Reaction* r;
             SpeciesReference* spr;
             KineticLaw* kl;
         };
@@ -70,7 +70,7 @@ namespace ECellEngine::IO
         /// <param name="_paraID">Id.</param>
         /// <param name="_unit">The name of a unit defined in SBML.</param>
         void DefineParameter(
-            Parameter* _para_ptr,
+            LIBSBML_CPP_NAMESPACE::Parameter* _para_ptr,
             const std::string& _paraID,
             const std::string& _unit);
 
@@ -84,7 +84,7 @@ namespace ECellEngine::IO
         /// <param name="_unit">The name of a unit defined in SBML.</param>
         /// <param name="_value">Numerical value of the parameter.</param>
         void DefineParameter(
-            Parameter* _para_ptr,
+            LIBSBML_CPP_NAMESPACE::Parameter* _para_ptr,
             const std::string& _paraID,
             const std::string& _unit,
             const double _value);
@@ -113,7 +113,7 @@ namespace ECellEngine::IO
             const std::string& _kParamID);
 
         void DefineSpecies(
-            Species* _sp_ptr,
+            LIBSBML_CPP_NAMESPACE::Species* _sp_ptr,
             const std::string& _id,
             const std::string& _name,
             const std::string& _compartmentID,
