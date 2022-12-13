@@ -1,27 +1,30 @@
-pragma once
+#pragma once
 
 #include "Parameter.hpp"
 #include "Operation.hpp"
 
-struct ComputedParameter : public Parameter
+namespace ECellEngine::Data
 {
-private:
-    Operation operation;
-
-public:
-    ComputedParameter(std::string _name, Operation _operation) :
-        Parameter(_name), operation{ _operation }
+    struct ComputedParameter : public Parameter
     {
-    }
+    private:
+        Operation operation;
 
-    inline void ComputeOperation(DataState& _dataState)
-    {
-        _dataState.SetParameter(name, operation.Get(_dataState));
-    }
+    public:
+        ComputedParameter(std::string _name, Operation _operation) :
+            Parameter(_name), operation{ _operation }
+        {
+        }
 
-    inline virtual float Get(const DataState& _dataState) const noexcept override
-    {
-        _dataState.GetParameter(name);
-    }
+        inline void ComputeOperation(DataState& _dataState)
+        {
+            _dataState.SetParameter(name, operation.Get(_dataState));
+        }
 
-};
+        inline virtual float Get(const DataState& _dataState) const noexcept override
+        {
+            _dataState.GetParameter(name);
+        }
+
+    };
+}
