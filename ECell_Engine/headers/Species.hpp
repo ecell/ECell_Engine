@@ -7,7 +7,7 @@
 
 namespace ECellEngine::Data
 {
-    struct Species : public Operand
+    struct Species : public ECellEngine::Maths::Operand
     {
     private:
         std::string name;

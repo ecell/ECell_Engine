@@ -7,7 +7,7 @@
 
 namespace ECellEngine::Data
 {
-    struct Parameter : public Operand
+    struct Parameter : public ECellEngine::Maths::Operand
     {
     protected:
         std::string name;
