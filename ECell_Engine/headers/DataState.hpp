@@ -10,9 +10,9 @@ namespace ECellEngine::Data
 	{
 	private:
 		float elapsedTime;
-		std::unordered_map<const std::string, float> kineticLaws;
-		std::unordered_map<const std::string, float> parameters;
-		std::unordered_map<const std::string, float> species;
+		std::unordered_map<std::string, float> kineticLaws;
+		std::unordered_map<std::string, float> parameters;
+		std::unordered_map<std::string, float> species;
 
 	public:
 		DataState()
