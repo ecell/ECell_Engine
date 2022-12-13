@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "DataState.hpp"
-#include "Operand.hpp"
+#include "Operation.hpp"
 #include "Species.hpp"
 
 using namespace ECellEngine::Maths;
