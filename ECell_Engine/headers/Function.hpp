@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "DataState.hpp"
+#include "Operand.hpp"
 
 using namespace ECellEngine::Data;
 
