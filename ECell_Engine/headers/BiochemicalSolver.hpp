@@ -12,7 +12,7 @@ namespace ECellEngine::Solvers
 		BiochemicalSolver(DataState* _dataState) :
 			Solver(_dataState)
 		{
-			solverType = Biochemical;
+
 		}
 
 		virtual void Initialize(const Module&) override = 0;
