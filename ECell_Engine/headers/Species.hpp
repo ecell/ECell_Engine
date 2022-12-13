@@ -21,7 +21,7 @@ namespace ECellEngine::Data
 
         inline virtual float Get(const DataState& _dataState) const noexcept override
         {
-            _dataState.GetSpecies(name);
+            return _dataState.GetSpecies(name);
         }
 
         inline const std::string& GetName() const

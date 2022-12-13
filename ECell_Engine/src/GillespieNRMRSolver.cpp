@@ -17,7 +17,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::BuildDependancyGraph(const std::
 
 const float ECellEngine::Solvers::GillespieNRMRSolver::ComputeReactionPropensity(const unsigned int& _reactionIndex)
 {
-
+	return 0;
 }
 
 void ECellEngine::Solvers::GillespieNRMRSolver::SolveBackward(const float& targetTime)

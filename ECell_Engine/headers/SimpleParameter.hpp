@@ -15,7 +15,7 @@ namespace ECellEngine::Data
 
         inline virtual float Get(const DataState& _dataState) const noexcept override
         {
-            _dataState.GetParameter(name);
+            return _dataState.GetParameter(name);
         }
 
         inline virtual void Set(DataState& _dataState, const float& _value)
