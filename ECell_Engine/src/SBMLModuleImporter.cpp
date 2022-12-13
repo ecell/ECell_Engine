@@ -284,7 +284,7 @@ const bool& ECellEngine::IO::SBMLModuleImporter::ValidateSBML(SBMLDocument* _sbm
     }
 }
 
-const std::shared_ptr<Module> ECellEngine::IO::SBMLModuleImporter::TryImport(const std::filesystem::path& _filePath, const DataState* _dataState)
+const std::shared_ptr<Module> ECellEngine::IO::SBMLModuleImporter::TryImport(const std::filesystem::path& _filePath, DataState* _dataState) noexcept
 {
 	// Checks whether the file is okay
     std::cout << "Trying to read SBML file: " << _filePath << std::endl;

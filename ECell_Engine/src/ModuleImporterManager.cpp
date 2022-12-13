@@ -1,6 +1,6 @@
 #include "ModuleImporterManager.hpp"
 
-const std::shared_ptr<Module> ECellEngine::IO::ModuleImporterManager::TryImportModule(const std::filesystem::path& _filePath, const DataState* _dataState)
+const std::shared_ptr<Module> ECellEngine::IO::ModuleImporterManager::TryImportModule(const std::filesystem::path& _filePath, DataState* _dataState) noexcept
 {
     auto importersIt = moduleImporters.equal_range(_filePath.extension().string());
 

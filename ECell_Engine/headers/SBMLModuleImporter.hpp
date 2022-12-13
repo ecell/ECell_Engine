@@ -31,6 +31,6 @@ namespace ECellEngine::IO
 		std::shared_ptr<Operand> ASTNodeToOperand(const ASTNode* _node, const std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands);
 
 	public:
-		virtual const std::shared_ptr<Module> TryImport(const std::filesystem::path& _filePath, const DataState* _dataState) noexcept override;
+		virtual const std::shared_ptr<Module> TryImport(const std::filesystem::path& _filePath, DataState* _dataState) noexcept override;
 	};
 }

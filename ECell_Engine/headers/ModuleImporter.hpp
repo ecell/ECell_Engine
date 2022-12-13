@@ -15,6 +15,6 @@ namespace ECellEngine::IO
 	public:
 		~ModuleImporter() = default;
 
-		virtual const std::shared_ptr<Module> TryImport(const std::filesystem::path& _filePath, const DataState* _dataState) noexcept = 0;
+		virtual const std::shared_ptr<Module> TryImport(const std::filesystem::path& _filePath, DataState* _dataState) noexcept = 0;
 	};
 }
