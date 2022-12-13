@@ -2,13 +2,11 @@
 
 #include "DataState.hpp"
 
-using namespace ECellEngine::Data;
-
 namespace ECellEngine::Maths
 {
     struct Operand
     {
-        virtual float Get(const DataState& _dataState) const noexcept = 0;
+        virtual float Get(const ECellEngine::Data::DataState& _dataState) const noexcept = 0;
     };
 
     struct Constant : public Operand
@@ -22,7 +20,7 @@ namespace ECellEngine::Maths
         {
         }
 
-        virtual float Get(const DataState& _dataState) const noexcept override
+        virtual float Get(const ECellEngine::Data::DataState& _dataState) const noexcept override
         {
             return value;
         }
