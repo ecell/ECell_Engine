@@ -75,11 +75,11 @@ namespace ECellEngine::Data
 			species[_speciesName] = _speciesValue;
 		}
 
-		void ClearKineticLaws(const std::vector<std::string> _kineticLawNames);
+		void ClearKineticLaws(const std::vector<std::string>& _kineticLawNames);
 		
-		void ClearParameters(const std::vector<std::string> _parameterNames);
+		void ClearParameters(const std::vector<std::string>& _parameterNames);
 		
-		void ClearSpecies(const std::vector<std::string> _speciesNames);
+		void ClearSpecies(const std::vector<std::string>& _speciesNames);
 
 	};
 }
