@@ -5,7 +5,7 @@
 
 #include "BiochemicalSolver.hpp"
 #include "Module.hpp"
-#include "Parameter.hpp"
+#include "SimpleParameter.hpp"
 #include "Reaction.hpp"
 #include "Species.hpp"
 
