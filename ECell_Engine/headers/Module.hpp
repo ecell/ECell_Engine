@@ -1,5 +1,10 @@
 #pragma once
 
+namespace ECellEngine::Solvers
+{
+	class Solver;
+}
+
 #include "DataState.hpp"
 #include "Solver.hpp"
 

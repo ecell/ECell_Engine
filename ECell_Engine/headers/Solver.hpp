@@ -1,5 +1,11 @@
 #pragma once
 
+
+namespace ECellEngine::Data
+{
+	class Module;
+}
+
 #include "DataState.hpp"
 #include "Module.hpp"
 
