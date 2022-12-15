@@ -18,7 +18,7 @@ void ECellEngine::Core::Simulation::AddSolver(const std::string& _solverClassNam
 	}
 }
 
-const std::pair<std::pair<bool, std::size_t>, std::pair<bool, std::size_t>>&
+const std::pair<std::pair<bool, std::size_t>, std::pair<bool, std::size_t>>
 	ECellEngine::Core::Simulation::ScanModuleToSolverTable(const std::size_t& _moduleIdx, const std::size_t& _solverIdx)
 {
 	std::pair<bool, std::size_t> moduleScan = std::pair(false, 0);

@@ -27,7 +27,7 @@ namespace ECellEngine::Core
 		std::vector<std::shared_ptr<Solver>> solvers;
 		std::vector<std::pair<std::size_t, std::size_t>> modulesToSolversTable;
 
-		const std::pair<std::pair<bool, std::size_t>, std::pair<bool, std::size_t>>& ScanModuleToSolverTable(const std::size_t& _solverIdx, const std::size_t& _modIdx);
+		const std::pair<std::pair<bool, std::size_t>, std::pair<bool, std::size_t>> ScanModuleToSolverTable(const std::size_t& _solverIdx, const std::size_t& _modIdx);
 
 	public:
 		Simulation() = default;

@@ -49,7 +49,7 @@ namespace ECellEngine::Data
 		*/
 		inline const std::size_t Parent(const std::size_t& _childNodeIndex) const
 		{
-			return std::floor(0.5f * (_childNodeIndex - 1));
+			return (const std::size_t) std::floor(0.5f * (_childNodeIndex - 1));
 		}
 
 		/*

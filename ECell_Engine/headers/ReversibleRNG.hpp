@@ -24,7 +24,7 @@ namespace ECellEngine::Maths
 		*/
 		inline const float Exponential(const float& _lambda)
 		{
-			return -log(random_uniform(&rng)) / _lambda;
+			return (const float) - log(random_uniform(&rng)) / _lambda;
 		}
 
 		/*

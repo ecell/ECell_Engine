@@ -28,7 +28,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(SBMLModule* _sbml
         param = _model->getParameter(i);
         if (param->getConstant())
         {
-            _sbmlModule->AddSimpleParameter(param->getId(), param->getValue());
+            _sbmlModule->AddSimpleParameter(param->getId(), (const float)param->getValue());
         }
     }
 
