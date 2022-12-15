@@ -7,8 +7,8 @@ void ECellEngine::Data::SBMLModule::ComputeDependantParameters(const std::string
 	{
 		for (auto it = search->second.begin(); it != search->second.end(); it++)
 		{
-			computedParameters[*it].ComputeOperation(*dataState);
-			ComputeDependantParameters(computedParameters[*it].GetName());
+			computedParameters[*it].get()->ComputeOperation(*dataState);
+			ComputeDependantParameters(computedParameters[*it].get()->GetName());
 		}
 	}
 }

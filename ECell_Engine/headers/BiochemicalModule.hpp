@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <memory>
 #include <vector>
 
 #include "BiochemicalSolver.hpp"
@@ -14,9 +15,9 @@ namespace ECellEngine::Data
 	class BiochemicalModule : public Module
 	{
 	protected:
-		std::vector<Reaction> reactions;
-		std::vector<SimpleParameter> simpleParameters;
-		std::vector<Species> species;
+		std::vector<std::shared_ptr<Reaction>> reactions;
+		std::vector<std::shared_ptr<SimpleParameter>> simpleParameters;
+		std::vector<std::shared_ptr<Species>> species;
 
 	public:
 		BiochemicalModule(DataState* _dataState) :
@@ -25,11 +26,11 @@ namespace ECellEngine::Data
 
 		}
 
-		virtual const Reaction* GetReaction(const std::size_t& _idx) const noexcept = 0;
+		virtual const std::shared_ptr<Reaction> GetReaction(const std::size_t& _idx) const noexcept = 0;
 
-		virtual const SimpleParameter* GetSimpleParameter(const std::size_t& _idx) const noexcept = 0;
+		virtual const std::shared_ptr<SimpleParameter> GetSimpleParameter(const std::size_t& _idx) const noexcept = 0;
 
-		virtual const Species* GetSpecies(const std::size_t& _idx) const noexcept = 0;
+		virtual const std::shared_ptr<Species> GetSpecies(const std::size_t& _idx) const noexcept = 0;
 
 
 		inline void AddReaction(const std::string& _name,
@@ -38,19 +39,19 @@ namespace ECellEngine::Data
 								const Operation& _kineticLaw)
 		{
 			dataState->AddKineticLaw(_name, _kineticLaw.Get(*dataState));
-			reactions.emplace_back(Reaction(_name, _products, _reactants, _kineticLaw));
+			reactions.emplace_back(std::make_shared<Reaction>(_name, _products, _reactants, _kineticLaw));
 		}
 
 		inline void AddSimpleParameter(const std::string& _name, const float& _value)
 		{
 			dataState->AddParameter(_name, _value);
-			simpleParameters.emplace_back(SimpleParameter(_name));
+			simpleParameters.emplace_back(std::make_shared<SimpleParameter>(_name));
 		}
 
 		inline void AddSpecies(const std::string& _name, const float& _value)
 		{
 			dataState->AddSpecies(_name, _value);
-			species.emplace_back(Species(_name));
+			species.emplace_back(std::make_shared<Species>(_name));
 		}
 
 		inline virtual bool IsValidSolverType(const ECellEngine::Solvers::Solver* _solver) noexcept override
