@@ -49,6 +49,11 @@ namespace ECellEngine::Data
 			computedParameters.emplace_back(std::make_shared<ComputedParameter>(_name, _paramOp));
 		}
 
+		inline void ResizeComputedParameters(std::size_t _size)
+		{
+			computedParameters.resize(_size);
+		}
+
 		void ComputeDependantParameters(const std::string& _parentParameterName);
 
 	};

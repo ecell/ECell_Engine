@@ -4,6 +4,25 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(SBMLModule* _sbml
 {
     unsigned int nbParameters = _model->getNumParameters();
     const LIBSBML_CPP_NAMESPACE::Parameter* param;
+
+    unsigned int nbSimpleParameters = 0;
+    unsigned int nbComputedParameters = 0;
+    for (unsigned int i = 0; i < nbParameters; i++)
+    {
+        param = _model->getParameter(i);
+        if (param->getConstant())
+        {
+            nbSimpleParameters++;
+        }
+        else
+        {
+            nbComputedParameters++;
+        }
+    }
+
+    _sbmlModule->ResizeSimpleParameters(nbSimpleParameters);
+    _sbmlModule->ResizeComputedParameters(nbComputedParameters);
+
     for (unsigned int i = 0; i < nbParameters; i++)
     {
         param = _model->getParameter(i);
@@ -34,6 +53,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(SBMLModule* _sbml
 void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(SBMLModule* _sbmlModule, const Model* _model, std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands)
 {
     unsigned int nbReactions = _model->getNumReactions();
+    _sbmlModule->ResizeReactions(nbReactions);
     const LIBSBML_CPP_NAMESPACE::Reaction* reaction;
 
     unsigned int nbReactants;
@@ -72,7 +92,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(SBMLModule* _sbmlM
 void ECellEngine::IO::SBMLModuleImporter::InitializeSpecies(SBMLModule* _sbmlModule, const Model* _model, std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands)
 {
     unsigned int nbSpecies = _model->getNumSpecies();
-
+    _sbmlModule->ResizeSpecies(nbSpecies);
     const LIBSBML_CPP_NAMESPACE::Species* sp;
     for (unsigned int i = 0; i < nbSpecies; ++i)
     {
@@ -123,6 +143,7 @@ std::shared_ptr<Operand> ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperand(c
     case ASTNodeType_t::AST_NAME:
         return _idsToOperands.find(_node->getId())->second;
         break;
+
     case ASTNodeType_t::AST_REAL:
         return std::make_shared<Constant>(_node->getValue());
         break;
