@@ -1,6 +1,6 @@
 #include "OptionsWidget.hpp"
 
-void ECellEngine::Editor::OptionsWidget::draw()
+void ECellEngine::Editor::OptionsWidget::Draw()
 {
     static float f = 0.0f;
 

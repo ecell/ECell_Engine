@@ -26,7 +26,7 @@ namespace ECellEngine::Editor
 		/*
 		@brief The method to call each frame to draw the content of the widget.
 		*/
-		virtual void draw() = 0;
+		virtual void Draw() = 0;
 
 	};
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "imgui.h"
-#include "CommandsManager.hpp"
 #include "Widget.hpp"
 
 using namespace ECellEngine::IO;
@@ -28,6 +26,6 @@ namespace ECellEngine::Editor
 			return &showDemoWindow;
 		}
 
-		void draw() override;
+		void Draw() override;
 	};
 }
