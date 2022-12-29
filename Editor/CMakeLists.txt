@@ -14,12 +14,14 @@ add_executable( ECellEngineEditor
 "src/imgui_impl_glfw.cpp"
 "src/imgui_impl_vulkan.cpp"
 "src/Editor.cpp"
-"src/EngineDataVisualizationWidget.cpp"
-"src/FileIOWidget.cpp"
-"src/ModelStateVisualizationWidget.cpp"
+"src/EditorLog.cpp"
+#"src/EngineDataVisualizationWidget.cpp"
+#"src/FileIOWidget.cpp"
+#"src/ModelStateVisualizationWidget.cpp"
+"src/LogWidget.cpp"
 "src/OptionsWidget.cpp"
-"src/SimulationFlowControlWidget.cpp"
-)
+#"src/SimulationFlowControlWidget.cpp"
+  )
 
 target_link_libraries(ECellEngineEditor PRIVATE ECellEngine)
 target_link_libraries(ECellEngineEditor PRIVATE imgui::imgui)

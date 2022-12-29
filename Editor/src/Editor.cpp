@@ -397,7 +397,11 @@ void ECellEngine::Editor::Editor::start()
 
     // Our state
     bool show_demo_window = true;
-
+    //Link the Log console with the Editor logger
+    ECellEngine::Editor::Debug::EditorLog::GetSingleton()->SetLogWidget(&logWidget);
+    //Link the Editor logger with the Engine logger
+    ECellEngine::Debug::EngineLog::GetSingleton()->SetListener(ECellEngine::Editor::Debug::EditorLog::GetSingleton().get());
+    
     //Start the engine
     engine.start();
 }
@@ -458,10 +462,10 @@ void ECellEngine::Editor::Editor::update()
 
         // -- CUSTOM WINDOWS SPACE START --
         
-        edvWidget.draw();
-        fileIOWidget.draw();
-        optionsWidget.draw();
-        sfcWidget.draw();
+        //edvWidget.draw();
+        //fileIOWidget.draw();
+        optionsWidget.Draw();
+        //sfcWidget.draw();
 
         // Show the big demo window
         // Most of the sample code is in ImGui::ShowDemoWindow()!

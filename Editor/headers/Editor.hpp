@@ -10,10 +10,12 @@
 #include "implot.h"
 
 #include "Engine.hpp"
-#include "EngineDataVisualizationWidget.hpp"
-#include "FileIOWidget.hpp"
+#include "EditorLog.hpp"
+//#include "EngineDataVisualizationWidget.hpp"
+//#include "FileIOWidget.hpp"
+#include "LogWidget.hpp"
 #include "OptionsWidget.hpp"
-#include "SimulationFlowControlWidget.hpp"
+//#include "SimulationFlowControlWidget.hpp"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -48,10 +50,11 @@ namespace ECellEngine::Editor
 		int                      minImageCount;
 		bool                     swapChainRebuild;
 
-		EngineDataVisualizationWidget edvWidget;
-		FileIOWidget fileIOWidget;
+		//EngineDataVisualizationWidget edvWidget;
+		//FileIOWidget fileIOWidget;
+		LogWidget logWidget;
 		OptionsWidget optionsWidget;
-		SimulationFlowControlWidget sfcWidget;
+		//SimulationFlowControlWidget sfcWidget;
 
 
 		void cleanupVulkan();
@@ -70,10 +73,11 @@ namespace ECellEngine::Editor
 
 	public:
 		Editor() :
-			edvWidget(engine.getCommandsManager(), engine.getSimulationLoop()),
-			fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
-			optionsWidget(engine.getCommandsManager()),
-			sfcWidget(engine.getCommandsManager(), engine.getSimulationLoop())
+			//edvWidget(engine.getCommandsManager(), engine.getSimulationLoop()),
+			//fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
+			logWidget(engine.GetCommandsManager()),
+			optionsWidget(engine.GetCommandsManager())//,
+			//sfcWidget(engine.getCommandsManager(), engine.getSimulationLoop())
 		{
 			window = NULL;
 

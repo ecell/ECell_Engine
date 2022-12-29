@@ -1,4 +1,4 @@
-﻿#include "Engine.hpp"
+#include "Engine.hpp"
 
 void ECellEngine::Core::Engine::forwardSimulationTarget(const int& _idx)
 {
@@ -20,7 +20,8 @@ void ECellEngine::Core::Engine::start()
 	delete sbmlDoc;
 	*/
 
-	std::cout << "Engine start" << std::endl;
+	//std::cout << "Engine start" << std::endl;
+	ECellEngine::Debug::EngineLog::GetSingleton()->Log("Engine Start");
 
 	commandsManager.start();
 
