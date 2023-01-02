@@ -6,6 +6,6 @@ namespace ECellEngine::Debug
 	class Logger
 	{
 	public:
-		virtual void Log(const std::string& _msg) const noexcept = 0;
+		virtual void Log(const char* _msg) const noexcept = 0;
 	};
 }

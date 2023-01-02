@@ -11,7 +11,7 @@ std::unique_ptr<ECellEngine::Editor::Debug::EditorLog>& ECellEngine::Editor::Deb
 	return singleton;
 }
 
-void ECellEngine::Editor::Debug::EditorLog::Log(const std::string& _msg) const noexcept
+void ECellEngine::Editor::Debug::EditorLog::Log(const char* _msg) const noexcept
 {
 	logWidget->Log(_msg);
 }

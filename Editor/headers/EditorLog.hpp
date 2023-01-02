@@ -19,7 +19,7 @@ namespace ECellEngine::Editor::Debug
 			logWidget = _logWidget;
 		}
 
-		void Log(const std::string& _msg) const noexcept override;
+		void Log(const char* _msg) const noexcept override;
 
 	};
 }
