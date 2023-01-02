@@ -464,6 +464,7 @@ void ECellEngine::Editor::Editor::update()
         
         //edvWidget.draw();
         //fileIOWidget.draw();
+        logWidget.Draw();
         optionsWidget.Draw();
         //sfcWidget.draw();
 
