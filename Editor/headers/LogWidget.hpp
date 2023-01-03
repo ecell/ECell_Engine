@@ -4,8 +4,7 @@
 #include <string>
 
 #include "Widget.hpp"
-
-//using namespace ECellEngine::IO;
+#include "WidgetsVisibility.hpp"
 
 namespace ECellEngine::Editor
 {

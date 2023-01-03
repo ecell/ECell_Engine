@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Widget.hpp"
+#include "WidgetsVisibility.hpp"
 
 using namespace ECellEngine::IO;
 
