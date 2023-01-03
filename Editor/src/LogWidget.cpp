@@ -33,6 +33,5 @@ void ECellEngine::Editor::LogWidget::Draw()
 
 void ECellEngine::Editor::LogWidget::Log(const char* _msg)
 {
-	std::cout << "Inside the Log method of LogWidget" << std::endl;
 	log.push_back(LogMessage(LogLevel::trace, _msg));
 }

@@ -2,13 +2,13 @@
 
 std::unique_ptr<ECellEngine::Editor::Debug::EditorLog> ECellEngine::Editor::Debug::EditorLog::singleton = nullptr;
 
-std::unique_ptr<ECellEngine::Editor::Debug::EditorLog>& ECellEngine::Editor::Debug::EditorLog::GetSingleton() noexcept
+ECellEngine::Editor::Debug::EditorLog& ECellEngine::Editor::Debug::EditorLog::GetSingleton() noexcept
 {
 	if (singleton == nullptr)
 	{
 		singleton = std::make_unique<ECellEngine::Editor::Debug::EditorLog>();
 	}
-	return singleton;
+	return *singleton.get();
 }
 
 void ECellEngine::Editor::Debug::EditorLog::Log(const char* _msg) const noexcept

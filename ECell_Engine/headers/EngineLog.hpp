@@ -13,7 +13,7 @@ namespace ECellEngine::Debug
 		static std::unique_ptr<EngineLog> singleton;
 
 	public:
-		static std::unique_ptr<EngineLog>& GetSingleton() noexcept;
+		static EngineLog& GetSingleton() noexcept;
 
 		inline void SetListener(const Logger* _listener)
 		{

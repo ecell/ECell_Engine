@@ -12,7 +12,7 @@ namespace ECellEngine::Editor::Debug
 		static std::unique_ptr<EditorLog> singleton;
 
 	public:
-		static std::unique_ptr<EditorLog>& GetSingleton() noexcept;
+		static EditorLog& GetSingleton() noexcept;
 
 		inline void SetLogWidget(ECellEngine::Editor::LogWidget* _logWidget)
 		{

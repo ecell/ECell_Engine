@@ -398,9 +398,9 @@ void ECellEngine::Editor::Editor::start()
     // Our state
     bool show_demo_window = true;
     //Link the Log console with the Editor logger
-    ECellEngine::Editor::Debug::EditorLog::GetSingleton()->SetLogWidget(&logWidget);
+    ECellEngine::Editor::Debug::EditorLog::GetSingleton().SetLogWidget(&logWidget);
     //Link the Editor logger with the Engine logger
-    ECellEngine::Debug::EngineLog::GetSingleton()->SetListener(ECellEngine::Editor::Debug::EditorLog::GetSingleton().get());
+    ECellEngine::Debug::EngineLog::GetSingleton().SetListener(&ECellEngine::Editor::Debug::EditorLog::GetSingleton());
     
     //Start the engine
     engine.start();

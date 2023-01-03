@@ -21,7 +21,7 @@ void ECellEngine::Core::Engine::start()
 	*/
 
 	//std::cout << "Engine start" << std::endl;
-	ECellEngine::Debug::EngineLog::GetSingleton()->Log("Engine Start");
+	ECellEngine::Debug::EngineLog::GetSingleton().Log("Engine Start");
 
 	commandsManager.start();
 
