@@ -6,13 +6,13 @@
 namespace ECellEngine::Core
 {
 	class Engine;
-	class SimulationLoop;
+	class Simulation;
 }
 
-namespace ECellEngine::IO
-{
-	class FileIOManager;
-}
+//namespace ECellEngine::IO
+//{
+//	class FileIOManager;
+//}
 
 #include "CommandWithReceiver.hpp"
 
@@ -24,7 +24,7 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user set a path to a target file.
 	*/
-	class SetFilePathCommand : public CommandWithReceiver<FileIOManager>
+	/*class SetFilePathCommand : public CommandWithReceiver<FileIOManager>
 	{
 	public:
 		SetFilePathCommand(FileIOManager* _receiver) :
@@ -33,7 +33,7 @@ namespace ECellEngine::IO
 		}
 
 		void execute(const std::vector<std::string>& _args) override;
-	};
+	};*/
 #pragma endregion
 
 #pragma region Engine Commands
@@ -42,7 +42,7 @@ namespace ECellEngine::IO
 	@details Uses the @a targetPathFile set with the other
 			 command @a SetFilePathCommand.
 	*/
-	class AddFileAsSBMLCommand : public CommandWithReceiver<Engine>
+	/*class AddFileAsSBMLCommand : public CommandWithReceiver<Engine>
 	{
 	public:
 		AddFileAsSBMLCommand(Engine* _receiver) :
@@ -51,12 +51,12 @@ namespace ECellEngine::IO
 		}
 
 		void execute(const std::vector<std::string>& _args) override;
-	};
+	};*/
 
 	/*
 	@brief The command to add a loaded SBML file to the targets to simulate.
 	*/
-	class AddSimulationTargetCommand : public CommandWithReceiver<Engine>
+	/*class AddSimulationTargetCommand : public CommandWithReceiver<Engine>
 	{
 	public:
 		AddSimulationTargetCommand(Engine* _receiver) :
@@ -65,13 +65,13 @@ namespace ECellEngine::IO
 		}
 
 		void execute(const std::vector<std::string>& _args) override;
-	};
+	};*/
 
 	/*
 	@brief The command to quit the application.
 	@details Effectively exits from every running thread and then terminates.
 	*/
-	class QuitCommand : public CommandWithReceiver<Engine>
+	/*class QuitCommand : public CommandWithReceiver<Engine>
 	{
 	public:
 		QuitCommand(Engine* _receiver) :
@@ -80,138 +80,157 @@ namespace ECellEngine::IO
 		}
 
 		void execute(const std::vector<std::string>& _args) override;
-	};
+	};*/
 
 #pragma endregion
 
 
 #pragma region Simulation Loop Commands
-	/*
-	@brief The command to display the current state of the simulation.
-	*/
-	class DisplayCommand : public CommandWithReceiver<SimulationLoop>
-	{
-	public:
-		DisplayCommand(SimulationLoop* _receiver) :
-			CommandWithReceiver("display", _receiver)
-		{
-		}
+	///*
+	//@brief The command to display the current state of the simulation.
+	//*/
+	//class DisplayCommand : public CommandWithReceiver<SimulationLoop>
+	//{
+	//public:
+	//	DisplayCommand(SimulationLoop* _receiver) :
+	//		CommandWithReceiver("display", _receiver)
+	//	{
+	//	}
 
-		virtual void execute(const std::vector<std::string>& _args) override;
-	};
+	//	virtual void execute(const std::vector<std::string>& _args) override;
+	//};
 
-	/*
-	@brief The command to instruct the simulation to go backward.
-	*/
-	class GoBackwardCommand : public CommandWithReceiver<SimulationLoop>
-	{
-	public:
-		GoBackwardCommand(SimulationLoop* _receiver) :
-			CommandWithReceiver("goBackward", _receiver)
-		{
-		}
+	///*
+	//@brief The command to instruct the simulation to go backward.
+	//*/
+	//class GoBackwardCommand : public CommandWithReceiver<SimulationLoop>
+	//{
+	//public:
+	//	GoBackwardCommand(SimulationLoop* _receiver) :
+	//		CommandWithReceiver("goBackward", _receiver)
+	//	{
+	//	}
 
-		virtual void execute(const std::vector<std::string>& _args) override;
-	};
+	//	virtual void execute(const std::vector<std::string>& _args) override;
+	//};
 
-	/*
-	@brief The command to instruct the simulation to go forward.
-	*/
-	class GoForwardCommand : public CommandWithReceiver<SimulationLoop>
-	{
-	public:
-		GoForwardCommand(SimulationLoop* _receiver) :
-			CommandWithReceiver("goForward", _receiver)
-		{
-		}
+	///*
+	//@brief The command to instruct the simulation to go forward.
+	//*/
+	//class GoForwardCommand : public CommandWithReceiver<SimulationLoop>
+	//{
+	//public:
+	//	GoForwardCommand(SimulationLoop* _receiver) :
+	//		CommandWithReceiver("goForward", _receiver)
+	//	{
+	//	}
 
-		virtual void execute(const std::vector<std::string>& _args) override;
-	};
+	//	virtual void execute(const std::vector<std::string>& _args) override;
+	//};
 
-	/*
-	@brief The command to pause the simulation.
-	*/
-	class PauseCommand : public CommandWithReceiver<SimulationLoop>
-	{
-	public:
-		PauseCommand(SimulationLoop* _receiver) :
-			CommandWithReceiver("pause", _receiver)
-		{
-		}
+	///*
+	//@brief The command to pause the simulation.
+	//*/
+	//class PauseCommand : public CommandWithReceiver<SimulationLoop>
+	//{
+	//public:
+	//	PauseCommand(SimulationLoop* _receiver) :
+	//		CommandWithReceiver("pause", _receiver)
+	//	{
+	//	}
 
-		virtual void execute(const std::vector<std::string>& _args);
-	};
+	//	virtual void execute(const std::vector<std::string>& _args);
+	//};
 
-	/*
-	@brief The command to start or resume the simulation.
-	*/
-	class PlayCommand : public CommandWithReceiver<SimulationLoop>
-	{
-	public:
-		PlayCommand(SimulationLoop* _receiver) :
-			CommandWithReceiver("play", _receiver)
-		{
-		}
+	///*
+	//@brief The command to start or resume the simulation.
+	//*/
+	//class PlayCommand : public CommandWithReceiver<SimulationLoop>
+	//{
+	//public:
+	//	PlayCommand(SimulationLoop* _receiver) :
+	//		CommandWithReceiver("play", _receiver)
+	//	{
+	//	}
 
-		virtual void execute(const std::vector<std::string>& _args) override;
-	};
+	//	virtual void execute(const std::vector<std::string>& _args) override;
+	//};
 
-	/*
-	@brief The command to step forward once in the simulation.
-	*/
-	class StepForwardCommand : public CommandWithReceiver<SimulationLoop>
-	{
-	public:
-		StepForwardCommand(SimulationLoop* _receiver) :
-			CommandWithReceiver("stepForward", _receiver)
-		{
-		}
+	///*
+	//@brief The command to step forward once in the simulation.
+	//*/
+	//class StepForwardCommand : public CommandWithReceiver<SimulationLoop>
+	//{
+	//public:
+	//	StepForwardCommand(SimulationLoop* _receiver) :
+	//		CommandWithReceiver("stepForward", _receiver)
+	//	{
+	//	}
 
-		/*
-		@brief Public interface to execute the action/code associated to the command
-				and its arguments.
-		@param[in] _args The arguments of the command. By default _args[0] is the
-					name of the command. So the actual arguments are store from index
-					1 onward. In this case, we expect index 1 to be the time we want
-					to simulate forward.
-		*/
-		virtual void execute(const std::vector<std::string>& _args) override;
-	};
+	//	/*
+	//	@brief Public interface to execute the action/code associated to the command
+	//			and its arguments.
+	//	@param[in] _args The arguments of the command. By default _args[0] is the
+	//				name of the command. So the actual arguments are store from index
+	//				1 onward. In this case, we expect index 1 to be the time we want
+	//				to simulate forward.
+	//	*/
+	//	virtual void execute(const std::vector<std::string>& _args) override;
+	//};
 
-	/*
-	@brief The command to step backward once in the simulation.
-	*/
-	class StepBackwardCommand : public CommandWithReceiver<SimulationLoop>
-	{
-	public:
-		StepBackwardCommand(SimulationLoop* _receiver) :
-			CommandWithReceiver("stepBackward", _receiver)
-		{
-		}
+	///*
+	//@brief The command to step backward once in the simulation.
+	//*/
+	//class StepBackwardCommand : public CommandWithReceiver<SimulationLoop>
+	//{
+	//public:
+	//	StepBackwardCommand(SimulationLoop* _receiver) :
+	//		CommandWithReceiver("stepBackward", _receiver)
+	//	{
+	//	}
 
-		/*
-		@brief Public interface to execute the action/code associated to the command
-				and its arguments.
-		@param[in] _args The arguments of the command. By default _args[0] is the
-					name of the command. So the actual arguments are store from index
-					1 onward. In this case, we expect index 1 to be the time we want
-					to simulate backward.
-		*/
-		virtual void execute(const std::vector<std::string>& _args) override;
-	};
+	//	/*
+	//	@brief Public interface to execute the action/code associated to the command
+	//			and its arguments.
+	//	@param[in] _args The arguments of the command. By default _args[0] is the
+	//				name of the command. So the actual arguments are store from index
+	//				1 onward. In this case, we expect index 1 to be the time we want
+	//				to simulate backward.
+	//	*/
+	//	virtual void execute(const std::vector<std::string>& _args) override;
+	//};
 
-	/*
-	@brief The command to stop the simulation.
-	*/
-	class StopCommand : public CommandWithReceiver<SimulationLoop>
-	{
-	public:
-		StopCommand(SimulationLoop* _receiver) :
-			CommandWithReceiver("stop", _receiver)
-		{
-		}
+	///*
+	//@brief The command to stop the simulation.
+	//*/
+	//class StopCommand : public CommandWithReceiver<SimulationLoop>
+	//{
+	//public:
+	//	StopCommand(SimulationLoop* _receiver) :
+	//		CommandWithReceiver("stop", _receiver)
+	//	{
+	//	}
 
-		virtual void execute(const std::vector<std::string>& _args) override;
-	};
+	//	virtual void execute(const std::vector<std::string>& _args) override;
+	//};
 #pragma endregion
+
+#pragma region Simulation Commands
+
+/*
+	@brief The command to let the user add a module to the simulation space.
+	*/
+	class AddModuleCommand : public CommandWithReceiver<Simulation>
+	{
+	public:
+		AddModuleCommand(Simulation* _receiver) :
+			CommandWithReceiver("addModule", _receiver)
+		{
+		}
+
+		void execute(const std::vector<std::string>& _args) override;
+	};
+
+#pragma endregion
+
 }

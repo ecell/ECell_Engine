@@ -4,10 +4,10 @@
 #include <string>
 #include <thread>
 
-#include "SimulationLoop.hpp"
-#include "FileIOManager.hpp"
-#include "CommandsManager.hpp"
 #include "Commands.hpp"
+#include "CommandsManager.hpp"
+#include "EngineLog.hpp"
+#include "Simulation.hpp"
 
 using namespace ECellEngine::IO;
 
@@ -20,11 +20,8 @@ namespace ECellEngine::Core
 */
 	class Engine
 	{
-		FileIOManager fileIOManager;
 		CommandsManager commandsManager;
-		SimulationLoop simulationLoop;
-
-		std::vector<SBMLDocument*> loadedSBMLDocuments;
+		Simulation simulation;
 
 	public:
 		Engine() = default;
@@ -36,64 +33,25 @@ namespace ECellEngine::Core
 		/*
 		@brief Gets the pointer to @a commandsManager private member.
 		*/
-		inline CommandsManager* getCommandsManager()
+		inline CommandsManager* GetCommandsManager()
 		{
 			return &commandsManager;
 		}
 
 		/*
-		@brief Gets the pointer to @a fileIOManager private member.
-		*/
-		inline FileIOManager* getFileIOManager()
-		{
-			return &fileIOManager;
-		}
-
-		/*
-		@brief Gets the pointer to @a loadedSBMLDocuments private member.
-		*/
-		inline std::vector<SBMLDocument*>* getLoadedSBMLDocuments()
-		{
-			return &loadedSBMLDocuments;
-		}
-
-		/*
-		@brief Gets the @a sbmlDocument at index @a _idx in
-				the @a loadedSBMLDocuments private member.
-		*/
-		inline SBMLDocument* getSBMLDocument(short _idx)
-		{
-			return loadedSBMLDocuments.at(_idx);
-		}
-
-		/*
 		@brief Gets the pointer to @a simulationLoop private member.
 		*/
-		inline SimulationLoop* getSimulationLoop()
+		inline Simulation& GetSimulationLoop()
 		{
-			return &simulationLoop;
+			return simulation;
 		}
 
 #pragma endregion
 
 #pragma region Mutators
-		/*
-		@brief Adds the @a _sbmlDoc to the @a loadedSBMLDocuments private member.
-		*/
-		inline void addSBMLDocument(SBMLDocument* _sbmlDoc)
-		{
-			loadedSBMLDocuments.push_back(_sbmlDoc);
-		}
 #pragma endregion
 
 #pragma region Logic
-
-		/*
-		@brief Sends the SBMLDocument at index @a _idx in @a loadedSBMLDocuments
-				to the simulation loop for simulation.
-		*/
-		void forwardSimulationTarget(const int& _idx);
-
 		/*
 		@brief Initializes every sub modules or variable needed for the engine
 				to be able to start running.

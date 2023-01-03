@@ -45,7 +45,7 @@ namespace ECellEngine::Core
 			return modules;
 		}
 
-		inline const std::shared_ptr<Solver>& GetModules(const std::size_t& _idx) const
+		inline const std::shared_ptr<Solver>& GetSolver(const std::size_t& _idx) const
 		{
 			return solvers[_idx];
 		}

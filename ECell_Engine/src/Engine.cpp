@@ -1,9 +1,4 @@
-#include "Engine.hpp"
-
-void ECellEngine::Core::Engine::forwardSimulationTarget(const int& _idx)
-{
-	simulationLoop.SetSimulationEnvironment(loadedSBMLDocuments[_idx]);
-}
+﻿#include "Engine.hpp"
 
 void ECellEngine::Core::Engine::start()
 {
@@ -26,14 +21,15 @@ void ECellEngine::Core::Engine::start()
 	commandsManager.start();
 
 	//Engine Commands
-	commandsManager.registerCommand(std::make_shared<AddFileAsSBMLCommand>(this));
-	commandsManager.registerCommand(std::make_shared<AddSimulationTargetCommand>(this));
-	commandsManager.registerCommand(std::make_shared<QuitCommand>(this));	
+	//commandsManager.registerCommand(std::make_shared<AddFileAsSBMLCommand>(this));
+	//commandsManager.registerCommand(std::make_shared<AddSimulationTargetCommand>(this));
+	//commandsManager.registerCommand(std::make_shared<QuitCommand>(this));	
 
 	//IO Commands
-	commandsManager.registerCommand(std::make_shared<SetFilePathCommand>(&fileIOManager));
+	//commandsManager.registerCommand(std::make_shared<SetFilePathCommand>(&fileIOManager));
 
 	//Simulation Loop commands
+	/*
 	commandsManager.registerCommand(std::make_shared<DisplayCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<GoBackwardCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<GoForwardCommand>(&simulationLoop));
@@ -42,8 +38,12 @@ void ECellEngine::Core::Engine::start()
 	commandsManager.registerCommand(std::make_shared<StepBackwardCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<StepForwardCommand>(&simulationLoop));
 	commandsManager.registerCommand(std::make_shared<StopCommand>(&simulationLoop));
+	*/
 
-	simulationLoop.start();
+	//Simulation Commands
+	commandsManager.registerCommand(std::make_shared<AddModuleCommand>(&simulation));
+
+	//simulationLoop.start();
 
 	//editor.start();
 
@@ -52,12 +52,12 @@ void ECellEngine::Core::Engine::start()
 
 void ECellEngine::Core::Engine::stop()
 {
-	simulationLoop.stop();
+	//simulation.stop();
 
 	isRunning = false;
 }
 
 void ECellEngine::Core::Engine::update(float _deltaTime)
 {
-	simulationLoop.update(_deltaTime);
+	//simulation.update(_deltaTime);
 }
