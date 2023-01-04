@@ -15,6 +15,7 @@
 //#include "FileIOWidget.hpp"
 #include "LogWidget.hpp"
 #include "OptionsWidget.hpp"
+#include "SimulationWidget.hpp"
 //#include "SimulationFlowControlWidget.hpp"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
@@ -54,6 +55,7 @@ namespace ECellEngine::Editor
 		//FileIOWidget fileIOWidget;
 		LogWidget logWidget;
 		OptionsWidget optionsWidget;
+		SimulationWidget simulationWidget;
 		//SimulationFlowControlWidget sfcWidget;
 
 
@@ -76,7 +78,8 @@ namespace ECellEngine::Editor
 			//edvWidget(engine.getCommandsManager(), engine.getSimulationLoop()),
 			//fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
 			logWidget(engine.GetCommandsManager()),
-			optionsWidget(engine.GetCommandsManager())//,
+			optionsWidget(engine.GetCommandsManager()),
+			simulationWidget(engine.GetCommandsManager())
 			//sfcWidget(engine.getCommandsManager(), engine.getSimulationLoop())
 		{
 			window = NULL;

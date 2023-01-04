@@ -10,19 +10,20 @@ namespace ECellEngine::Editor
 		static std::unique_ptr<WidgetsVisibility> singleton;
 
 		bool logWidget;
+		bool simulationWidget;
 
 	public:
-
-		WidgetsVisibility()
-		{
-			logWidget = false;
-		}
 		
 		static WidgetsVisibility& GetSingleton() noexcept;
 
 		inline bool* GetLogWidgetVisibility() noexcept
 		{
 			return &logWidget;
+		};
+		
+		inline bool* GetSimulationWidgetVisibility() noexcept
+		{
+			return &simulationWidget;
 		};
 
 

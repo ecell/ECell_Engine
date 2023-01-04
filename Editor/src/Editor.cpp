@@ -466,6 +466,7 @@ void ECellEngine::Editor::Editor::update()
         //fileIOWidget.draw();
         logWidget.Draw();
         optionsWidget.Draw();
+        simulationWidget.Draw();
         //sfcWidget.draw();
 
         // Show the big demo window

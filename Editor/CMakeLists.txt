@@ -21,6 +21,7 @@ add_executable( ECellEngineEditor
 "src/LogWidget.cpp"
 "src/OptionsWidget.cpp"
 #"src/SimulationFlowControlWidget.cpp"
+"src/SimulationWidget.cpp"
 "src/WidgetsVisibility.cpp")
 
 target_link_libraries(ECellEngineEditor PRIVATE ECellEngine)
