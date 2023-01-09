@@ -15,7 +15,8 @@ void ECellEngine::Editor::SimulationWidget::Draw()
 
         if (ImGui::Button("Add Module"))
         {
-            ECellEngine::Editor::Debug::EditorLog::GetSingleton().Log("Button Add Module Clicked!");
+            addModuleCommandArray[1] = "C:/Users/eliot/Documents/Source/External/Papers/Hat-et-al_p53_BNG/S2_Code_BioNetGen/export/p53_L3V2_mod.xml";
+            engineCmdsManager->interpretCommand(addModuleCommandArray);
         }
 
         ImGui::End();
