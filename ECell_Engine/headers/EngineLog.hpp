@@ -20,7 +20,7 @@ namespace ECellEngine::Debug
 			listener = _listener;
 		}
 
-		inline void Log(const char* _msg) const noexcept override
+		inline void Log(const std::string& _msg) const noexcept override
 		{
 			listener->Log(_msg);
 		}

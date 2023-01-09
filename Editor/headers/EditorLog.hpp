@@ -19,7 +19,9 @@ namespace ECellEngine::Editor::Debug
 			logWidget = _logWidget;
 		}
 
-		void Log(const char* _msg) const noexcept override;
-
+		inline void Log(const std::string& _msg) const noexcept override
+		{
+			logWidget->Log(_msg);
+		}
 	};
 }

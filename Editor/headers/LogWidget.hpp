@@ -12,10 +12,10 @@ namespace ECellEngine::Editor
 
 	struct LogMessage
 	{
-		const char* msg;
+		std::string msg;
 		ImVec4 color;
 
-		LogMessage(const LogLevel _lvl, const char* _msg) :
+		LogMessage(const LogLevel _lvl, const std::string& _msg) :
 			msg{_msg}
 		{
 			ProcessLevel(_lvl);
@@ -45,7 +45,7 @@ namespace ECellEngine::Editor
 	{
 	
 	private:
-		ImVector<LogMessage> log;
+		std::vector<LogMessage> log;
 
 
 	public:
@@ -60,6 +60,9 @@ namespace ECellEngine::Editor
 
 		void Draw() override;
 
-		void Log(const char* _msg);
+		void Log(const std::string& _msg)
+		{
+			log.push_back(LogMessage(LogLevel::trace, _msg));
+		}
 	};
 }

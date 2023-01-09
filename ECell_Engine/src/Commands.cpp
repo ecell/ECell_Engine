@@ -173,8 +173,7 @@
 
 void ECellEngine::IO::AddModuleCommand::execute(const std::vector<std::string>& _args)
 {
-	std::string msg = "Executing the command AddModule: " + _args[1];
-	ECellEngine::Debug::EngineLog::GetSingleton().Log(msg.c_str());
+	ECellEngine::Debug::EngineLog::GetSingleton().Log("Executing the command AddModule: " + _args[1]);
 	receiver->AddModule(_args[1]);
 }
 

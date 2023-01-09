@@ -10,8 +10,3 @@ ECellEngine::Editor::Debug::EditorLog& ECellEngine::Editor::Debug::EditorLog::Ge
 	}
 	return *singleton.get();
 }
-
-void ECellEngine::Editor::Debug::EditorLog::Log(const char* _msg) const noexcept
-{
-	logWidget->Log(_msg);
-}

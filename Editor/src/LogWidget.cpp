@@ -17,10 +17,10 @@ void ECellEngine::Editor::LogWidget::Draw()
 
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 
-        for (int i = 0; i < LogWidget::log.Size; i++)
+        for (int i = 0; i < LogWidget::log.size(); i++)
         {
             ImGui::PushStyleColor(ImGuiCol_Text, LogWidget::log[i].color);
-            ImGui::TextUnformatted(LogWidget::log[i].msg);
+            ImGui::TextUnformatted(LogWidget::log[i].msg.c_str());
             ImGui::PopStyleColor();
         }
 
@@ -29,9 +29,4 @@ void ECellEngine::Editor::LogWidget::Draw()
 
         ImGui::End();
     }
-}
-
-void ECellEngine::Editor::LogWidget::Log(const char* _msg)
-{
-	log.push_back(LogMessage(LogLevel::trace, _msg));
 }
