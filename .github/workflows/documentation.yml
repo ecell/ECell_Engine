@@ -1,0 +1,52 @@
+name: Documentation
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    # tags:
+    # - '*.*.*'
+  workflow_dispatch:
+
+jobs:
+  docs-gen:
+    name: Doxygen
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # - name: Clone Doxygen Awesome CSS
+      #   uses: actions/checkout@v3
+      #   with:
+      #     repository: jothepro/doxygen-awesome-css
+      #     ref: v1.6.0
+      #     path: "doxygen-awesome-css"
+
+      # - name: Compute version
+      #   id: version
+      #   run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      
+      # - name: Update Refureku Version in Doxyfile
+      #   if: startsWith(github.event.ref, 'refs/tags/v')
+      #   uses: jacobtomlinson/gha-find-replace@v2
+      #   with:
+      #     find: "PROJECT_NUMBER += v[0-9]+.[0-9]+.[0-9]+.?"
+      #     replace: "PROJECT_NUMBER = ${{ steps.version.outputs.VERSION }}"
+      #     include: "Docs/Doxyfile"
+      #     regex: true
+
+      - name: Run Doxygen
+        uses: mattnotmitt/doxygen-action@v1.9.5
+        with:
+          doxyfile-path: "./Docs/Doxyfile"
+
+      - name: Deploy Documentation
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./html
+          allow_empty_commit: true
+          full_commit_message: "Deploy ${{ steps.version.outputs.VERSION }} Documentation"
