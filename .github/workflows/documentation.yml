@@ -2,11 +2,8 @@ name: Documentation
 
 on:
   push:
-    branches:
-      - main
-      - dev
-    # tags:
-    # - '*.*.*'
+    tags:
+    - '*.*.*'
   workflow_dispatch:
 
 jobs:
@@ -25,18 +22,18 @@ jobs:
       #     ref: v1.6.0
       #     path: "doxygen-awesome-css"
 
-      # - name: Compute version
-      #   id: version
-      #   run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - name: Compute version
+        id: version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       
-      # - name: Update Refureku Version in Doxyfile
-      #   if: startsWith(github.event.ref, 'refs/tags/v')
-      #   uses: jacobtomlinson/gha-find-replace@v2
-      #   with:
-      #     find: "PROJECT_NUMBER += v[0-9]+.[0-9]+.[0-9]+.?"
-      #     replace: "PROJECT_NUMBER = ${{ steps.version.outputs.VERSION }}"
-      #     include: "Docs/Doxyfile"
-      #     regex: true
+      - name: Update ECellEngine Version in Doxyfile
+        if: startsWith(github.event.ref, 'refs/tags/')
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "PROJECT_NUMBER += [0-9]+.[0-9]+.[0-9]+.?"
+          replace: "PROJECT_NUMBER = ${{ steps.version.outputs.VERSION }}"
+          include: "Docs/Doxyfile"
+          regex: true
 
       - name: Run Doxygen
         uses: mattnotmitt/doxygen-action@v1.9.5
