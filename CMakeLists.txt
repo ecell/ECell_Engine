@@ -1,4 +1,4 @@
-﻿# ~/CMakeLists.txt
+# ~/CMakeLists.txt
 
 cmake_minimum_required (VERSION 3.12)
 
@@ -20,8 +20,9 @@ set(BUILD_SHARED_LIBS True)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS True)
 
 #Use Expat instead of libxml2
-set(WITH_EXPAT ON)
-set(WITH_LIBXML OFF)
+#set(WITH_EXPAT ON)
+#set(WITH_XERCES ON)
+#set(WITH_LIBXML OFF)
 
 # Include sub-directories
 add_subdirectory ("libsbml")
