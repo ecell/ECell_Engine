@@ -6,7 +6,6 @@
 #include "EditorConsoleLoggerSink.hpp"
 #include "Logger.hpp"
 #include "Widget.hpp"
-#include "WidgetsVisibility.hpp"
 
 using namespace ECellEngine::Editor::Logging;
 
@@ -53,8 +52,8 @@ namespace ECellEngine::Editor
 		std::vector<LogMessage> log;
 
 	public:
-		ConsoleWidget(CommandsManager* _cmdManager) :
-			Widget(_cmdManager), ecLoggerSink(*this)
+		ConsoleWidget(Editor& _editor) :
+			Widget(_editor), ecLoggerSink(*this)
 		{
 			ecLoggerSink.sinkIdx = ECellEngine::Logging::Logger::GetSingleton().AddSink(&ecLoggerSink);
 		}

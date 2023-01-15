@@ -2,9 +2,11 @@
 
 #include "imgui.h"
 
-#include "CommandsManager.hpp"
-
-using namespace ECellEngine::IO;
+//forward declaration
+namespace ECellEngine::Editor
+{
+	class Editor;
+}
 
 namespace ECellEngine::Editor
 {
@@ -14,11 +16,11 @@ namespace ECellEngine::Editor
 	class Widget
 	{
 	protected:
-		CommandsManager* engineCmdsManager;
+		Editor& editor;
 
 	public:
 
-		Widget(CommandsManager* _cmdsManager) : engineCmdsManager(_cmdsManager)
+		Widget(Editor& _editor) : editor(_editor)
 		{
 
 		}

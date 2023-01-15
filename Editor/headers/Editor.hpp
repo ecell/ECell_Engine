@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -11,12 +12,9 @@
 
 #include "Engine.hpp"
 #include "Logger.hpp"
-//#include "EngineDataVisualizationWidget.hpp"
-//#include "FileIOWidget.hpp"
 #include "ConsoleWidget.hpp"
 #include "OptionsWidget.hpp"
 #include "SimulationWidget.hpp"
-//#include "SimulationFlowControlWidget.hpp"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -32,8 +30,6 @@ namespace ECellEngine::Editor
 	class Editor
 	{
 	private:
-		Engine engine;
-
 		GLFWwindow* window;
 
 		VkResult				 err;
@@ -51,13 +47,7 @@ namespace ECellEngine::Editor
 		int                      minImageCount;
 		bool                     swapChainRebuild;
 
-		//EngineDataVisualizationWidget edvWidget;
-		//FileIOWidget fileIOWidget;
-		ConsoleWidget consoleWidget;
-		OptionsWidget optionsWidget;
-		SimulationWidget simulationWidget;
-		//SimulationFlowControlWidget sfcWidget;
-
+		std::vector<Widget*> widgets;
 
 		void cleanupVulkan();
 
@@ -74,13 +64,9 @@ namespace ECellEngine::Editor
 		void initializeVulkanWindow(ImGui_ImplVulkanH_Window* _wd, VkSurfaceKHR _surface, int _width, int _height);
 
 	public:
-		Editor() :
-			//edvWidget(engine.getCommandsManager(), engine.getSimulationLoop()),
-			//fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
-			consoleWidget(engine.GetCommandsManager()),
-			optionsWidget(engine.GetCommandsManager()),
-			simulationWidget(engine.GetCommandsManager())
-			//sfcWidget(engine.getCommandsManager(), engine.getSimulationLoop())
+		Engine engine;
+
+		Editor()
 		{
 			window = NULL;
 
@@ -98,7 +84,19 @@ namespace ECellEngine::Editor
 			mainWindowData;
 			minImageCount = 2;
 			swapChainRebuild = false;
-		}		
+
+			AddWidget<ConsoleWidget>();
+			AddWidget<OptionsWidget>();
+			AddWidget<SimulationWidget>();
+		}
+
+		template <typename WidgetType, typename = std::enable_if_t<std::is_base_of_v<Widget, WidgetType>>>
+		WidgetType*	AddWidget()
+		{
+			widgets.push_back(new WidgetType(*this));
+
+			return static_cast<WidgetType*>(widgets.back());
+		}
 
 		void start();
 

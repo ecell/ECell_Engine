@@ -5,7 +5,6 @@
 
 #include "Logger.hpp"
 #include "Widget.hpp"
-#include "WidgetsVisibility.hpp"
 
 namespace ECellEngine::Editor
 {
@@ -14,8 +13,8 @@ namespace ECellEngine::Editor
 	private:
 		std::vector<std::string> addModuleCommandArray = {"addModule", "path"};
 	public:
-		SimulationWidget(CommandsManager* _cmdsManager) :
-			Widget(_cmdsManager)
+		SimulationWidget(Editor& _editor) :
+			Widget(_editor)
 		{
 
 		}
