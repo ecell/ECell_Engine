@@ -460,7 +460,7 @@ void ECellEngine::Editor::Editor::update()
         
         //edvWidget.draw();
         //fileIOWidget.draw();
-        logWidget.Draw();
+        consoleWidget.Draw();
         optionsWidget.Draw();
         simulationWidget.Draw();
         //sfcWidget.draw();

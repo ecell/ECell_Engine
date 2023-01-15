@@ -45,7 +45,7 @@ namespace ECellEngine::Editor
 		}
 	};
 
-	class LogWidget : public Widget
+	class ConsoleWidget : public Widget
 	{
 	
 	private:
@@ -53,13 +53,13 @@ namespace ECellEngine::Editor
 		std::vector<LogMessage> log;
 
 	public:
-		LogWidget(CommandsManager* _cmdManager) :
+		ConsoleWidget(CommandsManager* _cmdManager) :
 			Widget(_cmdManager), ecLoggerSink(*this)
 		{
 			ecLoggerSink.sinkIdx = ECellEngine::Logging::Logger::GetSingleton().AddSink(&ecLoggerSink);
 		}
 
-		~LogWidget()
+		~ConsoleWidget()
 		{
 			ECellEngine::Logging::Logger::GetSingleton().RemoveSink(ecLoggerSink.sinkIdx);
 		}

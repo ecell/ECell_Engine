@@ -13,7 +13,7 @@
 #include "Logger.hpp"
 //#include "EngineDataVisualizationWidget.hpp"
 //#include "FileIOWidget.hpp"
-#include "LogWidget.hpp"
+#include "ConsoleWidget.hpp"
 #include "OptionsWidget.hpp"
 #include "SimulationWidget.hpp"
 //#include "SimulationFlowControlWidget.hpp"
@@ -53,7 +53,7 @@ namespace ECellEngine::Editor
 
 		//EngineDataVisualizationWidget edvWidget;
 		//FileIOWidget fileIOWidget;
-		LogWidget logWidget;
+		ConsoleWidget consoleWidget;
 		OptionsWidget optionsWidget;
 		SimulationWidget simulationWidget;
 		//SimulationFlowControlWidget sfcWidget;
@@ -77,7 +77,7 @@ namespace ECellEngine::Editor
 		Editor() :
 			//edvWidget(engine.getCommandsManager(), engine.getSimulationLoop()),
 			//fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
-			logWidget(engine.GetCommandsManager()),
+			consoleWidget(engine.GetCommandsManager()),
 			optionsWidget(engine.GetCommandsManager()),
 			simulationWidget(engine.GetCommandsManager())
 			//sfcWidget(engine.getCommandsManager(), engine.getSimulationLoop())

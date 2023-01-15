@@ -10,15 +10,17 @@ find_package(implot CONFIG REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
 
 add_executable( ECellEngineEditor
-"src/Main.cpp"	
 "src/imgui_impl_glfw.cpp"
 "src/imgui_impl_vulkan.cpp"
+
+"src/Main.cpp"
+
+"src/ConsoleWidget.cpp"
 "src/Editor.cpp"
 "src/EditorConsoleLoggerSink.cpp"
 #"src/EngineDataVisualizationWidget.cpp"
 #"src/FileIOWidget.cpp"
 #"src/ModelStateVisualizationWidget.cpp"
-"src/LogWidget.cpp"
 "src/OptionsWidget.cpp"
 #"src/SimulationFlowControlWidget.cpp"
 "src/SimulationWidget.cpp"
