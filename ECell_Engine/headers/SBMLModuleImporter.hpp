@@ -18,7 +18,7 @@ namespace ECellEngine::IO
 	class SBMLModuleImporter : public ModuleImporter
 	{
 	private:
-		const bool& ValidateSBML(SBMLDocument* _sbmlDocument);
+		const bool ValidateSBML(SBMLDocument* _sbmlDocument);
 
 		void InitializeParameters(SBMLModule* _sbmlModule, const Model* _model, std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands);
 

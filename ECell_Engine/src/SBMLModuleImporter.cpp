@@ -201,11 +201,11 @@ std::shared_ptr<Operand> ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperand(c
  * written permission.
  * -------------------------------------------------------------------------->
  */
-const bool& ECellEngine::IO::SBMLModuleImporter::ValidateSBML(SBMLDocument* _sbmlDoc)
+const bool ECellEngine::IO::SBMLModuleImporter::ValidateSBML(SBMLDocument* _sbmlDoc)
 {
     if (!_sbmlDoc || _sbmlDoc->getModel() == NULL)
     {
-        std::cerr << "ValidateSBML: given a null SBML Document." << std::endl;
+        ECellEngine::Logging::Logger::GetSingleton().LogError("The SBML Document given for validation is null.");
         return false;
     }
 
@@ -308,7 +308,7 @@ const bool& ECellEngine::IO::SBMLModuleImporter::ValidateSBML(SBMLDocument* _sbm
 const std::shared_ptr<Module> ECellEngine::IO::SBMLModuleImporter::TryImport(const std::filesystem::path& _filePath, DataState* _dataState) noexcept
 {
 	// Checks whether the file is okay
-    std::cout << "Trying to read SBML file: " << _filePath << std::endl;
+    ECellEngine::Logging::Logger::GetSingleton().LogTrace("Trying to read SBML file: " + _filePath.string());
     SBMLDocument* sbmlDoc = readSBMLFromFile(_filePath.string().c_str());
 
     std::unordered_map<std::string, std::shared_ptr<Operand>> idsToOperand;
@@ -325,17 +325,19 @@ const std::shared_ptr<Module> ECellEngine::IO::SBMLModuleImporter::TryImport(con
         InitializeSpecies(sbmlModule.get(), sbmlModel, idsToOperand);
 
         //Build parameters ; simple (constants) and computed
-        InitializeParameters(sbmlModule.get(), sbmlModel, idsToOperand);
+        //InitializeParameters(sbmlModule.get(), sbmlModel, idsToOperand);
 
         //Build reactions
-        InitializeReactions(sbmlModule.get(), sbmlModel, idsToOperand);
+        //InitializeReactions(sbmlModule.get(), sbmlModel, idsToOperand);
         
         return sbmlModule;
     }
     // if not return a null_ptr
     else
     {
-        //std::cout << " The SBML validation process for file at: " << _filePath << " has FAILED (see errors above)." << std::endl;
+        //std::cout << "  << std::endl;
+        ECellEngine::Logging::Logger::GetSingleton().LogError("The SBML validation process for file at : "
+            + _filePath.filename().string() + " has FAILED(see errors above).");
         return nullptr;
     }
 }

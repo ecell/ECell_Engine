@@ -9,14 +9,14 @@ add_library(ECellEngine SHARED
     "src/CommandsManager.cpp"
     "src/DataState.cpp"
     "src/Engine.cpp"
-    "src/EngineLog.cpp"
+    
     #"src/FileIOManager.cpp"
     "src/Function.cpp"
     "src/GillespieNRMRSolver.cpp"
     #"src/Gillespie_NRM_R.cpp"
     #"src/Gillespie_NRM_R_Data.cpp"
     "src/IndexedMinHeap.cpp"
-    
+    "src/Logger.cpp"
     "src/MathUtility.cpp"
     "src/ModuleImporterManager.cpp"
     "src/Reaction.cpp"

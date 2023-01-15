@@ -6,6 +6,7 @@ namespace ECellEngine::Solvers
 }
 
 #include "DataState.hpp"
+#include "Logger.hpp"
 #include "Solver.hpp"
 
 namespace ECellEngine::Data

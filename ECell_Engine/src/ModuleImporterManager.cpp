@@ -8,6 +8,7 @@ const std::shared_ptr<Module> ECellEngine::IO::ModuleImporterManager::TryImportM
     {
         //Maybe log something like ("the file extension {_filePath.extension().string()} is not supported by the engine." in the engine console)
         std::cout << "The extension \"" + _filePath.extension().string() + "\" is not supported to load modules." << std::endl;
+        ECellEngine::Logging::Logger::GetSingleton().LogError("The extension \"" + _filePath.extension().string() + "\" is not supported to load modules.");
         return nullptr;
     }
 
@@ -16,11 +17,13 @@ const std::shared_ptr<Module> ECellEngine::IO::ModuleImporterManager::TryImportM
         std::shared_ptr<Module> loadedModule = it->second->TryImport(_filePath, _dataState);
 
         if (loadedModule != nullptr)
+            ECellEngine::Logging::Logger::GetSingleton().LogTrace("An Importer managed to parse the module.");
             return loadedModule;
     }
 
     //If we reach this section, the import failed for some reason, log something or throw an error or something
     std::cout << "All importers supporting this extension failed to load the module." << std::endl;
+    ECellEngine::Logging::Logger::GetSingleton().LogError("All importers supporting this extension failed to load the module.");
     return nullptr;
 }
 

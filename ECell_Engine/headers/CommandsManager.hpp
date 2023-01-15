@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "Commands.hpp"
+#include "Logger.hpp"
 
 namespace ECellEngine::IO
 {
