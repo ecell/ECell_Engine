@@ -1,10 +1,14 @@
 #pragma once
 
-#include <iostream>//for debug
 #include <string>
+#include <memory>
 
+#include "EditorConsoleLoggerSink.hpp"
+#include "Logger.hpp"
 #include "Widget.hpp"
 #include "WidgetsVisibility.hpp"
+
+using namespace ECellEngine::Editor::Logging;
 
 namespace ECellEngine::Editor
 {
@@ -45,24 +49,41 @@ namespace ECellEngine::Editor
 	{
 	
 	private:
+		EditorConsoleLoggerSink ecLoggerSink;
 		std::vector<LogMessage> log;
-
 
 	public:
 		LogWidget(CommandsManager* _cmdManager) :
-			Widget(_cmdManager)
+			Widget(_cmdManager), ecLoggerSink(*this)
 		{
-			log.push_back(LogMessage(LogLevel::debug, "This is a debug message"));
-			log.push_back(LogMessage(LogLevel::error, "This is an error message"));
-			log.push_back(LogMessage(LogLevel::trace, "This is a trace message"));
-			log.push_back(LogMessage(LogLevel::warning, "This is a warning message"));
+			ecLoggerSink.sinkIdx = ECellEngine::Logging::Logger::GetSingleton().AddSink(&ecLoggerSink);
+		}
+
+		~LogWidget()
+		{
+			ECellEngine::Logging::Logger::GetSingleton().RemoveSink(ecLoggerSink.sinkIdx);
 		}
 
 		void Draw() override;
 
-		void Log(const std::string& _msg)
+		void LogTrace(const std::string& _msg)
 		{
 			log.push_back(LogMessage(LogLevel::trace, _msg));
+		}
+		
+		void LogDebug(const std::string& _msg)
+		{
+			log.push_back(LogMessage(LogLevel::debug, _msg));
+		}
+		
+		void LogError(const std::string& _msg)
+		{
+			log.push_back(LogMessage(LogLevel::error, _msg));
+		}
+		
+		void LogWarning(const std::string& _msg)
+		{
+			log.push_back(LogMessage(LogLevel::warning, _msg));
 		}
 	};
 }

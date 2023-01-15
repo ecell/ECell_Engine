@@ -14,7 +14,7 @@ add_executable( ECellEngineEditor
 "src/imgui_impl_glfw.cpp"
 "src/imgui_impl_vulkan.cpp"
 "src/Editor.cpp"
-"src/EditorLog.cpp"
+"src/EditorConsoleLoggerSink.cpp"
 #"src/EngineDataVisualizationWidget.cpp"
 #"src/FileIOWidget.cpp"
 #"src/ModelStateVisualizationWidget.cpp"

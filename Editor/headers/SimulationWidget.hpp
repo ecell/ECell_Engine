@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "EditorLog.hpp"
+#include "Logger.hpp"
 #include "Widget.hpp"
 #include "WidgetsVisibility.hpp"
 

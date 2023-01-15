@@ -10,7 +10,7 @@
 #include "implot.h"
 
 #include "Engine.hpp"
-#include "EditorLog.hpp"
+#include "Logger.hpp"
 //#include "EngineDataVisualizationWidget.hpp"
 //#include "FileIOWidget.hpp"
 #include "LogWidget.hpp"
