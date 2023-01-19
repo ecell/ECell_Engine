@@ -21,7 +21,7 @@ namespace ECellEngine::Maths
 
         inline void AddOperand(const std::shared_ptr<Operand> operand)
         {
-            operands.emplace_back(operand);
+            operands.push_back(operand);
         }
 
         inline virtual float Get(const DataState& _dataState) const noexcept override
