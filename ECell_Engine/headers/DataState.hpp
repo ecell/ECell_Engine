@@ -27,7 +27,7 @@ namespace ECellEngine::Data
 
 		inline float GetKineticLaw(const std::string _kineticLawName) const
 		{
-			return parameters.at(_kineticLawName);
+			return kineticLaws.at(_kineticLawName);
 		}
 
 		inline float GetParameter(const std::string _parameterName) const
@@ -37,7 +37,7 @@ namespace ECellEngine::Data
 
 		inline float GetSpecies(const std::string _speciesName) const
 		{
-			return parameters.at(_speciesName);
+			return species.at(_speciesName);
 		}
 
 		inline void AddKineticLaw(const std::string _kineticLawName, const float _kineticLawValue)
