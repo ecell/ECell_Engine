@@ -43,10 +43,11 @@ namespace ECellEngine::Data
 			return species[_idx];
 		}
 
-		inline void AddComputedParameters(const std::string& _name, const Operation& _paramOp)
+		inline std::shared_ptr<ComputedParameter> AddComputedParameters(const std::string& _name, const Operation& _paramOp)
 		{
 			dataState->AddParameter(_name, _paramOp.Get(*dataState));
-			computedParameters.emplace_back(std::make_shared<ComputedParameter>(_name, _paramOp));
+			computedParameters.push_back(std::make_shared<ComputedParameter>(_name, _paramOp));
+			return computedParameters.back();
 		}
 
 		inline void ResizeComputedParameters(std::size_t _size)

@@ -28,7 +28,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(SBMLModule* _sbml
         param = _model->getParameter(i);
         if (param->getConstant())
         {
-            _sbmlModule->AddSimpleParameter(param->getId(), (const float)param->getValue());
+            _idsToOperands[param->getId()] = _sbmlModule->AddSimpleParameter(param->getId(), (const float)param->getValue());
         }
     }
 
@@ -45,7 +45,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(SBMLModule* _sbml
             astNode = rule->getMath();
             Operation root = ASTNodeToOperation(astNode, _idsToOperands);
 
-            _sbmlModule->AddComputedParameters(rule->getVariable(), root);
+            _idsToOperands[rule->getVariable()] = _sbmlModule->AddComputedParameters(rule->getVariable(), root);
         }
     }
 }
@@ -97,7 +97,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeSpecies(SBMLModule* _sbmlMod
     for (unsigned int i = 0; i < nbSpecies; ++i)
     {
         sp = _model->getSpecies(i);
-        _sbmlModule->AddSpecies(sp->getName(), sp->getInitialAmount());
+        _idsToOperands[sp->getId()] = _sbmlModule->AddSpecies(sp->getName(), sp->getInitialAmount());
     }
 }
 
@@ -131,6 +131,10 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(const ASTNode*
         op.AddOperand(ASTNodeToOperand(_node->getLeftChild(), _idsToOperands));
         op.AddOperand(ASTNodeToOperand(_node->getRightChild(), _idsToOperands));
         break;
+    default:
+        op.Set(&functions.identity);
+        op.AddOperand(ASTNodeToOperand(_node, _idsToOperands));
+        break;
     }
 
     return op;
@@ -141,7 +145,7 @@ std::shared_ptr<Operand> ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperand(c
     switch (_node->getType())
     {
     case ASTNodeType_t::AST_NAME:
-        return _idsToOperands.find(_node->getId())->second;
+        return _idsToOperands.find(_node->getName())->second;
         break;
 
     case ASTNodeType_t::AST_REAL:
@@ -325,7 +329,7 @@ const std::shared_ptr<Module> ECellEngine::IO::SBMLModuleImporter::TryImport(con
         InitializeSpecies(sbmlModule.get(), sbmlModel, idsToOperand);
 
         //Build parameters ; simple (constants) and computed
-        //InitializeParameters(sbmlModule.get(), sbmlModel, idsToOperand);
+        InitializeParameters(sbmlModule.get(), sbmlModel, idsToOperand);
 
         //Build reactions
         //InitializeReactions(sbmlModule.get(), sbmlModel, idsToOperand);

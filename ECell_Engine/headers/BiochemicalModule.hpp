@@ -33,25 +33,28 @@ namespace ECellEngine::Data
 		virtual const std::shared_ptr<Species> GetSpecies(const std::size_t& _idx) const noexcept = 0;
 
 
-		inline void AddReaction(const std::string& _name,
-								const std::vector<std::shared_ptr<Species>>& _products,
-								const std::vector<std::shared_ptr<Species>>& _reactants,
-								const Operation& _kineticLaw)
+		inline std::shared_ptr<Reaction> AddReaction(const std::string& _name,
+													const std::vector<std::shared_ptr<Species>>& _products,
+													const std::vector<std::shared_ptr<Species>>& _reactants,
+													const Operation& _kineticLaw)
 		{
 			dataState->AddKineticLaw(_name, _kineticLaw.Get(*dataState));
-			reactions.emplace_back(std::make_shared<Reaction>(_name, _products, _reactants, _kineticLaw));
+			reactions.push_back(std::make_shared<Reaction>(_name, _products, _reactants, _kineticLaw));
+			return reactions.back();
 		}
 
-		inline void AddSimpleParameter(const std::string& _name, const float& _value)
+		inline std::shared_ptr<SimpleParameter> AddSimpleParameter(const std::string& _name, const float& _value)
 		{
 			dataState->AddParameter(_name, _value);
-			simpleParameters.emplace_back(std::make_shared<SimpleParameter>(_name));
+			simpleParameters.push_back(std::make_shared<SimpleParameter>(_name));
+			return simpleParameters.back();
 		}
 
-		inline void AddSpecies(const std::string& _name, const float& _value)
+		inline std::shared_ptr<Species> AddSpecies(const std::string& _name, const float& _value)
 		{
 			dataState->AddSpecies(_name, _value);
-			species.emplace_back(std::make_shared<Species>(_name));
+			species.push_back(std::make_shared<Species>(_name));
+			return species.back();
 		}
 
 		inline virtual bool IsValidSolverType(const ECellEngine::Solvers::Solver* _solver) noexcept override
