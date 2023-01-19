@@ -55,6 +55,14 @@ namespace ECellEngine::Maths
         }
     };
 
+    struct Identity : public Function
+    {
+        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
+        {
+            return _operands[0].get()->Get(_datastate);
+        }
+    };
+
     struct Functions
     {
         static Add add;
@@ -62,6 +70,7 @@ namespace ECellEngine::Maths
         static Times times;
         static Divide divide;
         static Power power;
+        static Identity identity;
     };
 
     static Functions functions;
