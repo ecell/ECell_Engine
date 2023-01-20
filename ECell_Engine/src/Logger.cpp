@@ -11,7 +11,6 @@ void ECellEngine::Logging::Logger::LogTrace(const std::string& _msg) noexcept
 {
 	for (std::vector<LoggerSink*>::iterator it = loggerSinks.begin(); it != loggerSinks.end(); it++)
 	{
-		std::cout << _msg << std::endl;
 		(*it)->LogTrace(_msg);
 	}
 }

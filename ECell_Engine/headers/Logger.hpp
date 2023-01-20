@@ -14,21 +14,17 @@ namespace ECellEngine::Logging
 
 	public:
 		static Logger& GetSingleton();
-		/*{
-			static Logger singleton;
-			return singleton;
-		}*/
 
 		inline std::size_t AddSink(LoggerSink* _loggerSink)
 		{
 			GetSingleton().loggerSinks.push_back(_loggerSink);
-			LogTrace("Logger sink added");
+			LogDebug("Logger sink added");
 			return loggerSinks.size() - 1;
 		}
 
 		inline void RemoveSink(std::size_t& _idx)
 		{
-			LogTrace("Removing Sink");
+			LogDebug("Removing Sink at index: " + std::to_string(_idx));
 			GetSingleton().loggerSinks.erase(loggerSinks.begin()+_idx);
 		}
 

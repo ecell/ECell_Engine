@@ -80,6 +80,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(SBMLModule* _sbmlM
         }
 
         astNode = reaction->getKineticLaw()->getMath();
+        ECellEngine::Logging::Logger::GetSingleton().LogDebug("Prcessing Kinetic Law of reaction: " + reaction->getId());
         Operation root = ASTNodeToOperation(astNode, _idsToOperands);
 
         _sbmlModule->AddReaction(reaction->getId(), products, reactants, root);
@@ -107,6 +108,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(const ASTNode*
     switch (_node->getType())
     {
     case ASTNodeType_t::AST_PLUS:
+        ECellEngine::Logging::Logger::GetSingleton().LogDebug("AST_PLUS with " + std::to_string(_node->getNumChildren()) + " children");
         op.Set(&functions.add);
         op.AddOperand(ASTNodeToOperand(_node->getLeftChild(), _idsToOperands));
         op.AddOperand(ASTNodeToOperand(_node->getRightChild(), _idsToOperands));
@@ -117,6 +119,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(const ASTNode*
         op.AddOperand(ASTNodeToOperand(_node->getRightChild(), _idsToOperands));
         break;
     case ASTNodeType_t::AST_TIMES:
+        ECellEngine::Logging::Logger::GetSingleton().LogDebug("AST_PLUS with " + std::to_string(_node->getNumChildren()) + " children");
         op.Set(&functions.times);
         op.AddOperand(ASTNodeToOperand(_node->getLeftChild(), _idsToOperands));
         op.AddOperand(ASTNodeToOperand(_node->getRightChild(), _idsToOperands));
@@ -332,7 +335,7 @@ const std::shared_ptr<Module> ECellEngine::IO::SBMLModuleImporter::TryImport(con
         InitializeParameters(sbmlModule.get(), sbmlModel, idsToOperand);
 
         //Build reactions
-        //InitializeReactions(sbmlModule.get(), sbmlModel, idsToOperand);
+        InitializeReactions(sbmlModule.get(), sbmlModel, idsToOperand);
         
         return sbmlModule;
     }

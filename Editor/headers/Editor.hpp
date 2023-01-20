@@ -12,6 +12,7 @@
 
 #include "Engine.hpp"
 #include "Logger.hpp"
+#include "ExeConsoleLoggerSink.hpp"
 #include "ConsoleWidget.hpp"
 #include "OptionsWidget.hpp"
 #include "SimulationWidget.hpp"
@@ -47,6 +48,7 @@ namespace ECellEngine::Editor
 		int                      minImageCount;
 		bool                     swapChainRebuild;
 
+		ECellEngine::Editor::Logging::ExeConsoleLoggerSink excLoggerSink;
 		std::vector<Widget*> widgets;
 
 		void cleanupVulkan();
@@ -84,6 +86,8 @@ namespace ECellEngine::Editor
 			mainWindowData;
 			minImageCount = 2;
 			swapChainRebuild = false;
+
+			ECellEngine::Logging::Logger::GetSingleton().AddSink(&excLoggerSink);
 
 			AddWidget<ConsoleWidget>();
 			AddWidget<OptionsWidget>();
