@@ -17,7 +17,11 @@ namespace ECellEngine::Maths
         std::vector <std::shared_ptr<Operand>> operands;
 
     public:
-        Operation() = default;
+        Operation(const std::string _name) : 
+            Operand (_name)
+        {
+
+        }
 
         inline void AddOperand(const std::shared_ptr<Operand> operand)
         {

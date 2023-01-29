@@ -5,7 +5,6 @@
 
 #include "BiochemicalModule.hpp"
 #include "DataState.hpp"
-#include "SimpleParameter.hpp"
 #include "ComputedParameter.hpp"
 
 namespace ECellEngine::Data

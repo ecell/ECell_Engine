@@ -6,23 +6,15 @@ namespace ECellEngine::Maths
 {
     struct Operand
     {
-        virtual float Get(const ECellEngine::Data::DataState& _dataState) const noexcept = 0;
-    };
-
-    struct Constant : public Operand
-    {
-    private:
-        float value;
+        const std::string name;
 
     public:
-        Constant(float _value) :
-            value{ _value }
+        Operand(const std::string _name) :
+            name{_name}
         {
+
         }
 
-        virtual float Get(const ECellEngine::Data::DataState& _dataState) const noexcept override
-        {
-            return value;
-        }
+        virtual float Get(const ECellEngine::Data::DataState& _dataState) const noexcept = 0;
     };
 }

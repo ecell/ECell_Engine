@@ -9,12 +9,9 @@ namespace ECellEngine::Data
 {
     struct Species : public ECellEngine::Maths::Operand
     {
-    private:
-        std::string name;
-
     public:
-        Species(std::string _name) :
-            name{ _name }
+        Species(const std::string _name) :
+            ECellEngine::Maths::Operand{ _name }
         {
 
         }
@@ -22,11 +19,6 @@ namespace ECellEngine::Data
         inline virtual float Get(const DataState& _dataState) const noexcept override
         {
             return _dataState.GetSpecies(name);
-        }
-
-        inline const std::string& GetName() const
-        {
-            return name;
         }
 
         inline void Set(DataState& _dataState, const float& _val)
