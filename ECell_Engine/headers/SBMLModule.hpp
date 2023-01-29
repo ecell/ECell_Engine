@@ -23,24 +23,14 @@ namespace ECellEngine::Data
 			
 		}
 
-		inline const std::shared_ptr<ComputedParameter> GetComputedParameter(const std::size_t& _idx) const noexcept
+		inline const std::vector<std::shared_ptr<ComputedParameter>>& GetAllComputedParameter() const noexcept
+		{
+			return computedParameters;
+		}
+
+		inline const std::shared_ptr<ComputedParameter>& GetComputedParameter(const std::size_t& _idx) const noexcept
 		{
 			return computedParameters[_idx];
-		}
-
-		inline virtual const std::shared_ptr<Reaction> GetReaction(const std::size_t& _idx) const noexcept override
-		{
-			return reactions[_idx];
-		}
-
-		inline virtual const std::shared_ptr<SimpleParameter> GetSimpleParameter(const std::size_t& _idx) const noexcept override
-		{
-			return simpleParameters[_idx];
-		}
-
-		inline virtual const std::shared_ptr<Species> GetSpecies(const std::size_t& _idx) const noexcept override
-		{
-			return species[_idx];
 		}
 
 		inline std::shared_ptr<ComputedParameter> AddComputedParameters(const std::string& _name, const Operation& _paramOp)

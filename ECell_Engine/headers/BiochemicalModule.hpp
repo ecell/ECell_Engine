@@ -26,12 +26,35 @@ namespace ECellEngine::Data
 
 		}
 
-		virtual const std::shared_ptr<Reaction> GetReaction(const std::size_t& _idx) const noexcept = 0;
+		inline const std::vector<std::shared_ptr<Reaction>>& GetAllReaction() const noexcept
+		{
+			return reactions;
+		}
 
-		virtual const std::shared_ptr<SimpleParameter> GetSimpleParameter(const std::size_t& _idx) const noexcept = 0;
+		inline const std::vector<std::shared_ptr<SimpleParameter>>& GetAllSimpleParameter () const noexcept
+		{
+			return simpleParameters;
+		}
 
-		virtual const std::shared_ptr<Species> GetSpecies(const std::size_t& _idx) const noexcept = 0;
+		inline const std::vector<std::shared_ptr<Species>>& GetAllSpecies() const noexcept
+		{
+			return species;
+		}
 
+		inline const std::shared_ptr<Reaction>& GetReaction(const std::size_t& _idx) const noexcept
+		{
+			return reactions[_idx];
+		}
+
+		inline const std::shared_ptr<SimpleParameter>& GetSimpleParameter(const std::size_t& _idx) const noexcept
+		{
+			return simpleParameters[_idx];
+		}
+
+		inline const std::shared_ptr<Species>& GetSpecies(const std::size_t& _idx) const noexcept
+		{
+			return species[_idx];
+		}
 
 		inline std::shared_ptr<Reaction> AddReaction(const std::string& _name,
 													const std::vector<std::shared_ptr<Species>>& _products,
