@@ -10,8 +10,6 @@
 #include "ModuleImporter.hpp"
 #include "SBMLModuleImporter.hpp"
 
-using namespace ECellEngine::Data;
-
 namespace ECellEngine::IO
 {
 	class ModuleImporterManager
@@ -25,6 +23,6 @@ namespace ECellEngine::IO
 	public:
 		ModuleImporterManager() = default;
 
-		const std::shared_ptr<Module> TryImportModule(const std::filesystem::path& _filePath, DataState* _dataState) noexcept;
+		const std::shared_ptr<ECellEngine::Data::Module> TryImportModule(const std::filesystem::path& _filePath, ECellEngine::Data::DataState& _dataState) noexcept;
 	};
 }

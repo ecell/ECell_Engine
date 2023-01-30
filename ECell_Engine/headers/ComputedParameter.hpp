@@ -8,22 +8,25 @@ namespace ECellEngine::Data
     struct ComputedParameter : public Parameter
     {
     private:
-        Operation operation;
+        float valueCache;
+        ECellEngine::Maths::Operation operation;
 
     public:
-        ComputedParameter(std::string _name, Operation _operation) :
+        ComputedParameter(const std::string _name, ECellEngine::Maths::Operation _operation) :
             Parameter(_name), operation{ _operation }
         {
+
         }
 
-        inline void ComputeOperation(DataState& _dataState)
+        inline float ComputeOperation()
         {
-            _dataState.SetParameter(name, operation.Get(_dataState));
+            valueCache = operation.Get();
+            return valueCache;
         }
 
-        inline virtual float Get(const DataState& _dataState) const noexcept override
+        inline virtual float Get() const noexcept override
         {
-            return _dataState.GetParameter(name);
+            return valueCache;
         }
 
     };

@@ -4,9 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "DataState.hpp"
 #include "Operation.hpp"
-#include "Species.hpp"
 
 using namespace ECellEngine::Maths;
 
@@ -15,29 +13,41 @@ namespace ECellEngine::Data
 	struct Reaction
 	{
 	private:
-		std::string name;
-		std::vector<std::shared_ptr<Species>> products;
-		std::vector<std::shared_ptr<Species>> reactants;
+		const std::string name;
+		const std::vector<std::string> products;
+		const std::vector<std::string> reactants;
+		float kineticLawValueCache;
 		Operation kineticLaw;
 
 	public:
-		Reaction(std::string _name,
-				std::vector<std::shared_ptr<Species>> _products,
-				std::vector<std::shared_ptr<Species>> _reactants,
-				Operation _kineticLaw):
+		Reaction(const std::string _name,
+				 const std::vector<std::string> _products,
+				 const std::vector<std::string> _reactants,
+				 const Operation _kineticLaw):
 			name{_name}, products{_products}, reactants{_reactants}, kineticLaw{_kineticLaw}
 		{
 
 		}
 
-		inline void ComputeKineticLaw(DataState& _dataState)
+		inline const float ComputeKineticLaw() noexcept
 		{
-			_dataState.SetKineticLaw(name, kineticLaw.Get(_dataState));
+			kineticLawValueCache = kineticLaw.Get();
+			return kineticLawValueCache;
 		}
 
-		inline const float& GetKineticLaw(const DataState& _dataState) const noexcept
+		inline const float GetKineticLaw() const noexcept
 		{
-			_dataState.GetKineticLaw(name);
+			return kineticLawValueCache;
+		}
+
+		inline const std::vector<std::string>& GetProducts() const noexcept
+		{
+			return products;
+		}
+		
+		inline const std::vector<std::string>& GetReactants() const noexcept
+		{
+			return reactants;
 		}
 	};
 }

@@ -3,10 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "Operand.hpp"
 #include "Function.hpp"
-
-using namespace ECellEngine::Data;
 
 namespace ECellEngine::Maths
 {
@@ -14,23 +11,25 @@ namespace ECellEngine::Maths
     {
     private:
         Function* function;
-        std::vector <std::shared_ptr<Operand>> operands;
+        std::vector<Operand*> operands;
 
     public:
+        Operation() = default;
+
         Operation(const std::string _name) : 
             Operand (_name)
         {
 
         }
 
-        inline void AddOperand(const std::shared_ptr<Operand> operand)
+        inline void AddOperand(Operand& _operand)
         {
-            operands.push_back(operand);
+            operands.push_back(&_operand);
         }
 
-        inline virtual float Get(const DataState& _dataState) const noexcept override
+        inline virtual float Get() const noexcept override
         {
-            return (*function)(_dataState, operands);
+            return (*function)(operands);
         }
 
         inline void Set(Function* _function) noexcept
