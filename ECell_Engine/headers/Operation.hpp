@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <vector>
 
 #include "Function.hpp"
@@ -25,6 +24,24 @@ namespace ECellEngine::Maths
         inline void AddOperand(Operand& _operand)
         {
             operands.push_back(&_operand);
+        }
+
+        template<typename OperandType>//, typename = std::enable_if_t<std::is_base_of_v<Operand, OperandType>>>
+        void GetOperandsNames(std::vector<std::string>& _operandsNames) const noexcept
+        {
+            for (std::vector<Operand*>::const_iterator it = operands.begin(); it != operands.end(); it++)
+            {
+                if (dynamic_cast<OperandType*>(*it) != nullptr)
+                {
+                    _operandsNames.push_back((*it)->name);
+                }
+
+                Operation* op = dynamic_cast<Operation*>(*it);
+                if (op != nullptr)
+                {
+                    op->GetOperandsNames<OperandType>(_operandsNames);
+                }
+            }
         }
 
         inline virtual float Get() const noexcept override

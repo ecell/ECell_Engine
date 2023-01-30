@@ -2,6 +2,7 @@
 
 #include <cstddef>
 
+#include "BiochemicalModule.hpp"
 #include "BiochemicalSolver.hpp"
 #include "IndexedMinHeap.hpp"
 #include "Reaction.hpp"
@@ -15,16 +16,16 @@ namespace ECellEngine::Solvers
 		
 		ECellEngine::Data::IndexedMinHeap tauIMH;
 		ReversibleRNG rng;
-		std::vector<std::vector<std::size_t>> reactionsDependanceGraph;
+		std::unordered_multimap<std::string, std::string> reactionsDependanceGraph;//one reaction name maps to multiple reaction names
 		std::vector<unsigned short int> trace;
 
 		void ApplyBackward(const ECellEngine::Data::Reaction& _reaction);
 
 		void ApplyForward(const ECellEngine::Data::Reaction& _reaction);
 
-		void BuildDependancyGraph(const std::vector<ECellEngine::Data::Reaction>& _reactions);
+		void BuildDependancyGraph(const std::vector<std::string>& _reactions);
 
-		const float ComputeReactionPropensity(const unsigned int& _reactionIndex);
+		const float ComputeReactionPropensity(std::string& _reactionName);
 
 		void SolveBackward(const float& targetTime);
 

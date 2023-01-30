@@ -20,6 +20,8 @@ namespace ECellEngine::Data
 		std::unordered_map<std::string, SimpleParameter> simpleParameters;
 		std::unordered_map<std::string, Species> species;
 
+		std::unordered_multimap<std::string, std::string> operandsToOperations;
+
 	public:
 		DataState()
 		{
@@ -31,7 +33,13 @@ namespace ECellEngine::Data
 			return elapsedTime;
 		}
 
-		inline float GetKineticLaw(const std::string _kineticLawName) const
+		Operand& GetOperand(const std::string& _name);
+
+		inline std::unordered_multimap<std::string, std::string>& GetOperandsToOperations()
+		{
+			return operandsToOperations;
+		}
+
 		inline Reaction& GetReaction(const std::string _reactionName)
 		{
 			return reactions.at(_reactionName);
@@ -102,6 +110,9 @@ namespace ECellEngine::Data
 		void ClearSimpleParameters(const std::vector<std::string>& _parameterNames);
 		
 		void ClearSpecies(const std::vector<std::string>& _speciesNames);
+
+		void LinkSpeciesWithKineticLaw(const std::string& _reactionName);
+
 
 	};
 }

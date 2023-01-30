@@ -35,7 +35,12 @@ namespace ECellEngine::Data
 			return kineticLawValueCache;
 		}
 
-		inline const float GetKineticLaw() const noexcept
+		inline const Operation& GetKineticLaw() noexcept
+		{
+			return kineticLaw;
+		}
+
+		inline const float GetKineticLawValue() const noexcept
 		{
 			return kineticLawValueCache;
 		}
