@@ -44,16 +44,16 @@ void ECellEngine::Solvers::GillespieNRMRSolver::BuildDependancyGraph(const std::
 				reactionsDependanceGraph.emplace(*itReactions, (*itDependantReaction).second);
 			}
 		}
-		/*
+		
 		species = dataState.GetReaction(*itReactions).GetReactants();
 		for (std::vector<std::string>::iterator itSpecies = species.begin(); itSpecies != species.end(); itSpecies++)
 		{
 			auto reactionLinks = dataState.GetOperandsToOperations().equal_range(*itSpecies);
 			for (auto itDependantReaction = reactionLinks.first; itDependantReaction != reactionLinks.second; itDependantReaction++)
 			{
-				reactionsDependanceGraph.emplace(*itReactions, *itDependantReaction);
+				reactionsDependanceGraph.emplace(*itReactions, (*itDependantReaction).second);
 			}
-		}*/
+		}
 	}
 }
 
