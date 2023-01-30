@@ -111,6 +111,8 @@ namespace ECellEngine::Data
 		
 		void ClearSpecies(const std::vector<std::string>& _speciesNames);
 
+		void LinkParametersWithComputedParameters(const std::string& _computedParameterName);
+
 		void LinkSpeciesWithKineticLaw(const std::string& _reactionName);
 
 

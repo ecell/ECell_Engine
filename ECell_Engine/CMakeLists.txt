@@ -9,7 +9,6 @@ add_library(ECellEngine SHARED
     "src/CommandsManager.cpp"
     "src/DataState.cpp"
     "src/Engine.cpp"
-    
     #"src/FileIOManager.cpp"
     "src/Function.cpp"
     "src/GillespieNRMRSolver.cpp"
@@ -22,7 +21,6 @@ add_library(ECellEngine SHARED
     "src/Reaction.cpp"
     "src/revrand.c"
     "src/sbml_example.cpp"
-    "src/SBMLModule.cpp"
     "src/SBMLModuleImporter.cpp"
     "src/SbmlParser.cpp"
     "src/SbmlWriter.cpp"

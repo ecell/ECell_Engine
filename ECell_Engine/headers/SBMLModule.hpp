@@ -35,6 +35,7 @@ namespace ECellEngine::Data
 			if (dataState.AddComputedParameter(_parameterName, _parameterOp))
 			{
 				computedParameters.push_back(_parameterName);
+				dataState.LinkParametersWithComputedParameters(_parameterName);
 			}
 		}
 
@@ -42,8 +43,6 @@ namespace ECellEngine::Data
 		{
 			computedParameters.resize(_size);
 		}
-
-		void ComputeDependantParameters(const std::string& _parentParameterName);
 
 	};
 }
