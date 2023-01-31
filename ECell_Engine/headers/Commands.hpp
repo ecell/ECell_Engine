@@ -1,18 +1,11 @@
 #pragma once
 
-#include <iostream>
-
 //partial definitions:
 namespace ECellEngine::Core
 {
 	class Engine;
 	class Simulation;
 }
-
-//namespace ECellEngine::IO
-//{
-//	class FileIOManager;
-//}
 
 #include "CommandWithReceiver.hpp"
 

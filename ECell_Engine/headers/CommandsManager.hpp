@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#include <iterator>
 #include <memory>
 #include <string>
 #include <sstream>
