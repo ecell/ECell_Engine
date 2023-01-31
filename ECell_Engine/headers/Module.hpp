@@ -14,10 +14,10 @@ namespace ECellEngine::Data
 	class Module
 	{
 	protected:
-		DataState* dataState;
+		DataState& dataState;
 
 	public:
-		Module(DataState* _dataState) :
+		Module(DataState& _dataState) :
 			dataState{_dataState}
 		{
 

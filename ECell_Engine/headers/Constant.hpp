@@ -15,7 +15,7 @@ namespace ECellEngine::Maths
         {
         }
 
-        virtual float Get(const ECellEngine::Data::DataState& _dataState) const noexcept override
+        virtual float Get() const noexcept override
         {
             return value;
         }

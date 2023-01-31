@@ -2,7 +2,7 @@
 
 void ECellEngine::Core::Simulation::AddModule(const std::string& _filePath)
 {
-	std::shared_ptr<Module> module = moduleImporterManager.TryImportModule(std::filesystem::path(_filePath), &dataState);
+	std::shared_ptr<ECellEngine::Data::Module> module = moduleImporterManager.TryImportModule(std::filesystem::path(_filePath), dataState);
 	if (module != nullptr)
 	{
 		modules.push_back(module);
@@ -13,7 +13,7 @@ void ECellEngine::Core::Simulation::AddSolver(const std::string& _solverClassNam
 {
 	if (_solverClassName == "GillespieNRMRSolver")
 	{
-		std::shared_ptr<Solver> solver = std::make_shared<GillespieNRMRSolver>(&dataState);
+		std::shared_ptr<Solver> solver = std::make_shared<GillespieNRMRSolver>(dataState);
 		solvers.push_back(solver);
 	}
 }
@@ -77,7 +77,7 @@ void ECellEngine::Core::Simulation::TryAttachSolverToModule(const std::size_t& _
 		//We create the pair in the table to have the binding information
 		modulesToSolversTable.push_back(std::pair(_moduleIdx, _solverIdx));
 		//We initialize the solver according to the data stored in the module.
-		solvers[_solverIdx].get()->Initialize(*modules[_moduleIdx].get());
+		solvers[_solverIdx].get()->Initialize(modules[_moduleIdx].get());
 	}
 }
 

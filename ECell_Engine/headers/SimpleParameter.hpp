@@ -6,21 +6,24 @@ namespace ECellEngine::Data
 {
     struct SimpleParameter : public Parameter
     {
+    private:
+        float value;
+
     public:
-        SimpleParameter(std::string _name) :
-            Parameter(_name)
+        SimpleParameter(const std::string _name, const float _value) :
+            Parameter(_name), value{_value}
         {
 
         }
 
-        inline virtual float Get(const DataState& _dataState) const noexcept override
+        inline virtual float Get() const noexcept override
         {
-            return _dataState.GetParameter(name);
+            return value;
         }
 
-        inline virtual void Set(DataState& _dataState, const float& _value)
+        inline void Set(const float& _value) noexcept
         {
-            _dataState.SetParameter(name, _value);
+            value = _value;
         }
     };
 }

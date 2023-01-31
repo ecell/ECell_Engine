@@ -4,15 +4,23 @@
 #include <unordered_map>
 #include <vector>
 
+#include "ComputedParameter.hpp"
+#include "Reaction.hpp"
+#include "SimpleParameter.hpp"
+#include "Species.hpp"
+
 namespace ECellEngine::Data
 {
 	struct DataState
 	{
 	private:
 		float elapsedTime;
-		std::unordered_map<std::string, float> kineticLaws;
-		std::unordered_map<std::string, float> parameters;
-		std::unordered_map<std::string, float> species;
+		std::unordered_map<std::string, Reaction> reactions;
+		std::unordered_map<std::string, ComputedParameter> computedParameters;
+		std::unordered_map<std::string, SimpleParameter> simpleParameters;
+		std::unordered_map<std::string, Species> species;
+
+		std::unordered_multimap<std::string, std::string> operandsToOperations;
 
 	public:
 		DataState()
@@ -25,34 +33,54 @@ namespace ECellEngine::Data
 			return elapsedTime;
 		}
 
-		inline float GetKineticLaw(const std::string _kineticLawName) const
+		Operand& GetOperand(const std::string& _name);
+
+		inline std::unordered_multimap<std::string, std::string>& GetOperandsToOperations()
 		{
-			return kineticLaws.at(_kineticLawName);
+			return operandsToOperations;
 		}
 
-		inline float GetParameter(const std::string _parameterName) const
+		inline Reaction& GetReaction(const std::string _reactionName)
 		{
-			return parameters.at(_parameterName);
+			return reactions.at(_reactionName);
 		}
 
-		inline float GetSpecies(const std::string _speciesName) const
+		inline ComputedParameter& GetComputedParameter(const std::string _parameterName)
+		{
+			return computedParameters.at(_parameterName);
+		}
+
+		inline SimpleParameter& GetSimpleParameter(const std::string _parameterName)
+		{
+			return simpleParameters.at(_parameterName);
+		}
+
+		inline Species& GetSpecies(const std::string _speciesName)
 		{
 			return species.at(_speciesName);
 		}
 
-		inline void AddKineticLaw(const std::string _kineticLawName, const float _kineticLawValue)
+		inline bool AddReaction(const std::string _reactionName,
+								const std::vector<std::string> _products,
+								const std::vector<std::string> _reactants,
+								const Operation _kineticLaw)
 		{
-			kineticLaws.try_emplace(_kineticLawName, _kineticLawValue);
+			return reactions.emplace(_reactionName, Reaction(_reactionName, _products, _reactants, _kineticLaw)).second;
 		}
 		
-		inline void AddParameter(const std::string _parameterName, const float _parameterValue)
+		inline bool AddComputedParameter(const std::string _parameterName, const Operation _parameterOp)
 		{
-			parameters.try_emplace(_parameterName, _parameterValue);
+			return computedParameters.emplace(_parameterName, ComputedParameter(_parameterName, _parameterOp)).second;
+		}
+
+		inline bool AddSimpleParameter(const std::string _parameterName, const float _value)
+		{
+			return simpleParameters.emplace(_parameterName, SimpleParameter(_parameterName, _value)).second;
 		}
 		
-		inline void AddSpecies(const std::string _speciesName, const float _speciesValue)
+		inline bool AddSpecies(const std::string _speciesName, const float _quantity)
 		{
-			species.try_emplace(_speciesName, _speciesValue);
+			return species.emplace(_speciesName, Species(_speciesName, _quantity)).second;
 		}
 
 		inline void SetElapsedTime(const float _elapsedTime)
@@ -60,9 +88,9 @@ namespace ECellEngine::Data
 			elapsedTime = _elapsedTime;
 		}
 
-		inline void SetKineticLaw(const std::string _kineticLawName, const float _kineticLawValue)
+		/*inline void SetReaction(const std::string _reactionName, const float _kineticLawValue)
 		{
-			kineticLaws[_kineticLawName] = _kineticLawValue;
+			reactions[_reactionName] = _kineticLawValue;
 		}
 
 		inline void SetParameter(const std::string _parameterName, const float _parameterValue)
@@ -73,13 +101,20 @@ namespace ECellEngine::Data
 		inline void SetSpecies(const std::string _speciesName, const float _speciesValue)
 		{
 			species[_speciesName] = _speciesValue;
-		}
+		}*/
 
-		void ClearKineticLaws(const std::vector<std::string>& _kineticLawNames);
+		void ClearReactions(const std::vector<std::string>& _reactionNames);
 		
-		void ClearParameters(const std::vector<std::string>& _parameterNames);
+		void ClearComputedParameters(const std::vector<std::string>& _parameterNames);
+		
+		void ClearSimpleParameters(const std::vector<std::string>& _parameterNames);
 		
 		void ClearSpecies(const std::vector<std::string>& _speciesNames);
+
+		void LinkParametersWithComputedParameters(const std::string& _computedParameterName);
+
+		void LinkSpeciesWithKineticLaw(const std::string& _reactionName);
+
 
 	};
 }

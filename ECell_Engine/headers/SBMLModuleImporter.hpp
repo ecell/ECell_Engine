@@ -1,17 +1,14 @@
 #pragma once 
 
 #include <filesystem>
-#include <memory> //for shared_ptr
 #include <unordered_map> //for unordered_multimap
 
 #include <sbml/SBMLTypes.h>
 
+#include "Constant.hpp"
 #include "Function.hpp"
-#include "Module.hpp"
 #include "ModuleImporter.hpp"
 #include "SBMLModule.hpp"
-
-using namespace ECellEngine::Data;
 
 namespace ECellEngine::IO
 {
@@ -20,17 +17,15 @@ namespace ECellEngine::IO
 	private:
 		const bool ValidateSBML(SBMLDocument* _sbmlDocument);
 
-		void InitializeParameters(SBMLModule* _sbmlModule, const Model* _model, std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands);
+		void InitializeParameters(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
 
-		void InitializeReactions(SBMLModule* _sbmlModule, const Model* _model, std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands);
+		void InitializeReactions(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
 
-		void InitializeSpecies(SBMLModule* _sbmlModule, const Model* _model, std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands);
+		void InitializeSpecies(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
 
-		Operation ASTNodeToOperation(const ASTNode* _node, const std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands);
-
-		std::shared_ptr<Operand> ASTNodeToOperand(const ASTNode* _node, const std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands);
+		Operation ASTNodeToOperation(ECellEngine::Data::DataState& _dataState, const std::string& _rootName, const ASTNode* _node, const std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
 
 	public:
-		virtual const std::shared_ptr<Module> TryImport(const std::filesystem::path& _filePath, DataState* _dataState) noexcept override;
+		virtual const std::shared_ptr<ECellEngine::Data::Module> TryImport(const std::filesystem::path& _filePath, ECellEngine::Data::DataState& _dataState) noexcept override;
 	};
 }

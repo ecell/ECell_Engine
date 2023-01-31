@@ -1,6 +1,7 @@
 #include "SBMLModuleImporter.hpp"
 
-void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(SBMLModule* _sbmlModule, const Model* _model, std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands)
+void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule,
+    const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
     unsigned int nbParameters = _model->getNumParameters();
     const LIBSBML_CPP_NAMESPACE::Parameter* param;
@@ -20,15 +21,16 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(SBMLModule* _sbml
         }
     }
 
-    _sbmlModule->ResizeSimpleParameters(nbSimpleParameters);
-    _sbmlModule->ResizeComputedParameters(nbComputedParameters);
+    _sbmlModule.ResizeSimpleParameters(nbSimpleParameters);
+    _sbmlModule.ResizeComputedParameters(nbComputedParameters);
 
     for (unsigned int i = 0; i < nbParameters; i++)
     {
         param = _model->getParameter(i);
         if (param->getConstant())
         {
-            _idsToOperands[param->getId()] = _sbmlModule->AddSimpleParameter(param->getId(), (const float)param->getValue());
+            _sbmlModule.AddSimpleParameter(param->getId(), (const float)param->getValue());
+            _docIdsToDataStateNames[param->getId()] = param->getId();
         }
     }
 
@@ -43,23 +45,27 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(SBMLModule* _sbml
         if (rule->isParameter())
         {
             astNode = rule->getMath();
-            Operation root = ASTNodeToOperation(astNode, _idsToOperands);
+            Operation root = ASTNodeToOperation(_dataState, rule->getVariable(), astNode, _docIdsToDataStateNames);
 
-            _idsToOperands[rule->getVariable()] = _sbmlModule->AddComputedParameters(rule->getVariable(), root);
+            _sbmlModule.AddComputedParameters(rule->getVariable(), root);
+            _docIdsToDataStateNames[rule->getVariable()] = rule->getVariable();
         }
     }
+
+    //TODO: make the dependency graph of the parameters
 }
 
-void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(SBMLModule* _sbmlModule, const Model* _model, std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands)
+void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model,
+    std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
     unsigned int nbReactions = _model->getNumReactions();
-    _sbmlModule->ResizeReactions(nbReactions);
+    _sbmlModule.ResizeReactions(nbReactions);
     const LIBSBML_CPP_NAMESPACE::Reaction* reaction;
 
     unsigned int nbReactants;
     unsigned int nbProducts;
-    std::vector<std::shared_ptr<ECellEngine::Data::Species>> reactants;
-    std::vector<std::shared_ptr<ECellEngine::Data::Species>> products;
+    std::vector<std::string> reactants;
+    std::vector<std::string> products;
     const LIBSBML_CPP_NAMESPACE::ASTNode* astNode;
     for (unsigned int i = 0; i < nbReactions; i++)
     {
@@ -70,98 +76,91 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(SBMLModule* _sbmlM
         reactants.resize(nbReactants);
         for (unsigned int j = 0; j < nbReactants; j++)
         {
-            reactants.push_back(std::dynamic_pointer_cast<ECellEngine::Data::Species>(_idsToOperands[reaction->getReactant(j)->getId()]));
+            reactants.push_back(reaction->getReactant(j)->getId());
         }
-        
+
         products.resize(nbProducts);
         for (unsigned int j = 0; j < nbProducts; j++)
         {
-            products.push_back(std::dynamic_pointer_cast<ECellEngine::Data::Species>(_idsToOperands[reaction->getProduct(j)->getId()]));
+            products.push_back(reaction->getProduct(j)->getId());
         }
 
         astNode = reaction->getKineticLaw()->getMath();
-        ECellEngine::Logging::Logger::GetSingleton().LogDebug("Prcessing Kinetic Law of reaction: " + reaction->getId());
-        Operation root = ASTNodeToOperation(astNode, _idsToOperands);
+        ECellEngine::Logging::Logger::GetSingleton().LogDebug("Processing Kinetic Law of reaction: " + reaction->getId());
+        Operation root = ASTNodeToOperation(_dataState, reaction->getId(), astNode, _docIdsToDataStateNames);
 
-        _sbmlModule->AddReaction(reaction->getId(), products, reactants, root);
+        _sbmlModule.AddReaction(reaction->getId(), products, reactants, root);
 
         reactants.clear();
         products.clear();
     }
 }
 
-void ECellEngine::IO::SBMLModuleImporter::InitializeSpecies(SBMLModule* _sbmlModule, const Model* _model, std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands)
+void ECellEngine::IO::SBMLModuleImporter::InitializeSpecies(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model,
+    std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
     unsigned int nbSpecies = _model->getNumSpecies();
-    _sbmlModule->ResizeSpecies(nbSpecies);
+    _sbmlModule.ResizeSpecies(nbSpecies);
     const LIBSBML_CPP_NAMESPACE::Species* sp;
     for (unsigned int i = 0; i < nbSpecies; ++i)
     {
         sp = _model->getSpecies(i);
-        _idsToOperands[sp->getId()] = _sbmlModule->AddSpecies(sp->getName(), sp->getInitialAmount());
+        _sbmlModule.AddSpecies(sp->getName(), (float)sp->getInitialAmount());
+        _docIdsToDataStateNames[sp->getId()] = sp->getName();
     }
 }
 
-Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(const ASTNode* _node, const std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands)
+Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(ECellEngine::Data::DataState& _dataState, const std::string& _rootName, const ASTNode* _node,
+    const std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
-    Operation op;
+    Operation op(_rootName);
     switch (_node->getType())
     {
     case ASTNodeType_t::AST_PLUS:
         ECellEngine::Logging::Logger::GetSingleton().LogDebug("AST_PLUS with " + std::to_string(_node->getNumChildren()) + " children");
         op.Set(&functions.add);
-        op.AddOperand(ASTNodeToOperand(_node->getLeftChild(), _idsToOperands));
-        op.AddOperand(ASTNodeToOperand(_node->getRightChild(), _idsToOperands));
+        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
+        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
         break;
     case ASTNodeType_t::AST_MINUS:
         op.Set(&functions.minus);
-        op.AddOperand(ASTNodeToOperand(_node->getLeftChild(), _idsToOperands));
-        op.AddOperand(ASTNodeToOperand(_node->getRightChild(), _idsToOperands));
+        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
+        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
         break;
     case ASTNodeType_t::AST_TIMES:
         ECellEngine::Logging::Logger::GetSingleton().LogDebug("AST_PLUS with " + std::to_string(_node->getNumChildren()) + " children");
         op.Set(&functions.times);
-        op.AddOperand(ASTNodeToOperand(_node->getLeftChild(), _idsToOperands));
-        op.AddOperand(ASTNodeToOperand(_node->getRightChild(), _idsToOperands));
+        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
+        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
         break;
     case ASTNodeType_t::AST_DIVIDE:
         op.Set(&functions.divide);
-        op.AddOperand(ASTNodeToOperand(_node->getLeftChild(), _idsToOperands));
-        op.AddOperand(ASTNodeToOperand(_node->getRightChild(), _idsToOperands));
+        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
+        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
         break;
     case ASTNodeType_t::AST_FUNCTION_POWER:
         op.Set(&functions.power);
-        op.AddOperand(ASTNodeToOperand(_node->getLeftChild(), _idsToOperands));
-        op.AddOperand(ASTNodeToOperand(_node->getRightChild(), _idsToOperands));
+        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
+        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
         break;
-    default:
+
+    case ASTNodeType_t::AST_NAME:
         op.Set(&functions.identity);
-        op.AddOperand(ASTNodeToOperand(_node, _idsToOperands));
+        op.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(_node->getName())->second));
+        break;
+
+    case ASTNodeType_t::AST_REAL:
+        op.Set(&functions.identity);
+        op.AddOperand(Constant((float)_node->getValue()));
+        break;
+
+    case ASTNodeType_t::AST_INTEGER:
+        op.Set(&functions.identity);
+        op.AddOperand(Constant((float)_node->getValue()));
         break;
     }
 
     return op;
-}
-
-std::shared_ptr<Operand> ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperand(const ASTNode* _node, const std::unordered_map<std::string, std::shared_ptr<Operand>>& _idsToOperands)
-{
-    switch (_node->getType())
-    {
-    case ASTNodeType_t::AST_NAME:
-        return _idsToOperands.find(_node->getName())->second;
-        break;
-
-    case ASTNodeType_t::AST_REAL:
-        return std::make_shared<Constant>(_node->getValue());
-        break;
-
-    case ASTNodeType_t::AST_INTEGER:
-        return std::make_shared<Constant>(_node->getValue());
-        break;
-
-    default:
-        return std::make_shared<Operation>(ASTNodeToOperation(_node, _idsToOperands));
-    }
 }
 
 
@@ -312,30 +311,30 @@ const bool ECellEngine::IO::SBMLModuleImporter::ValidateSBML(SBMLDocument* _sbml
     }
 }
 
-const std::shared_ptr<Module> ECellEngine::IO::SBMLModuleImporter::TryImport(const std::filesystem::path& _filePath, DataState* _dataState) noexcept
+const std::shared_ptr<ECellEngine::Data::Module> ECellEngine::IO::SBMLModuleImporter::TryImport(const std::filesystem::path& _filePath, ECellEngine::Data::DataState& _dataState) noexcept
 {
 	// Checks whether the file is okay
     ECellEngine::Logging::Logger::GetSingleton().LogTrace("Trying to read SBML file: " + _filePath.string());
     SBMLDocument* sbmlDoc = readSBMLFromFile(_filePath.string().c_str());
 
-    std::unordered_map<std::string, std::shared_ptr<Operand>> idsToOperand;
+    std::unordered_map<std::string, std::string> docIdsToDataStateNames;
 
     // if so, then parse the file, build an SBMLModule and return it as a shared pointer
     if (ValidateSBML(sbmlDoc))
     {
         //std::cout << " The SBML validation process for file at: " << _filePath << " is a SUCCESS." << std::endl;
-        
-        std::shared_ptr<SBMLModule> sbmlModule = std::make_shared<SBMLModule>(_dataState);
+
+        std::shared_ptr<ECellEngine::Data::SBMLModule> sbmlModule = std::make_shared<ECellEngine::Data::SBMLModule>(_dataState);
         Model* sbmlModel = sbmlDoc->getModel();
 
         //Build species
-        InitializeSpecies(sbmlModule.get(), sbmlModel, idsToOperand);
+        InitializeSpecies(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
 
         //Build parameters ; simple (constants) and computed
-        InitializeParameters(sbmlModule.get(), sbmlModel, idsToOperand);
+        InitializeParameters(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
 
         //Build reactions
-        InitializeReactions(sbmlModule.get(), sbmlModel, idsToOperand);
+        InitializeReactions(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
         
         return sbmlModule;
     }

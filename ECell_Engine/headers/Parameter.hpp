@@ -2,7 +2,6 @@
 
 #include <string>
 
-#include "DataState.hpp"
 #include "Operand.hpp"
 
 namespace ECellEngine::Data
@@ -11,11 +10,10 @@ namespace ECellEngine::Data
     {
     public:
         Parameter(const std::string _name) :
-            Operand(_name)
+            ECellEngine::Maths::Operand(_name)
         {
 
         }
-
-        inline virtual float Get(const DataState& _dataState) const noexcept = 0;
+        virtual float Get() const noexcept override = 0;
     };
 }

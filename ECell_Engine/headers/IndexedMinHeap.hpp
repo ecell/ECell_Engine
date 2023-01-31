@@ -69,7 +69,7 @@ namespace ECellEngine::Data
 		void Swap(const std::size_t& _nodeIdx1, const std::size_t& _nodeIdx2);
 
 	public:
-		IndexedMinHeap(){}
+		IndexedMinHeap() = default;
 
 		/*
 		@brief Gets the root node.

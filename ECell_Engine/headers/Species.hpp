@@ -2,40 +2,40 @@
 
 #include <string>
 
-#include "DataState.hpp"
 #include "Operand.hpp"
 
 namespace ECellEngine::Data
 {
     struct Species : public ECellEngine::Maths::Operand
     {
+    private:
+        float quantity;
+
     public:
-        Species(const std::string _name) :
-            ECellEngine::Maths::Operand{ _name }
+        Species(const std::string _name, const float _quantity) :
+            ECellEngine::Maths::Operand{ _name }, quantity{_quantity}
         {
 
         }
 
-        inline virtual float Get(const DataState& _dataState) const noexcept override
+        inline virtual float Get() const noexcept override
         {
-            return _dataState.GetSpecies(name);
+            return quantity;
         }
 
-        inline void Set(DataState& _dataState, const float& _val)
+        inline void Set(const float& _val)
         {
-            _dataState.SetSpecies(name, _val);
+            quantity = _val;
         }
 
-        inline void Increment(DataState& _dataState, const float& _inc)
+        inline void Increment(const float& _inc)
         {
-            float val = _dataState.GetSpecies(name);
-            _dataState.SetSpecies(name, val + _inc);
+            quantity += _inc;
         }
 
-        inline void Decrement(DataState& _dataState, const float& _dec)
+        inline void Decrement(const float& _dec)
         {
-            float val = _dataState.GetSpecies(name);
-            _dataState.SetSpecies(name, val - _dec);
+            quantity -= _dec;
         }
     };
 }

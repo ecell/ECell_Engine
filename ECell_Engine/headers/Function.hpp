@@ -1,65 +1,62 @@
 #pragma once
 
 #include <cmath>
-#include <memory>
+#include <vector>
 
-#include "DataState.hpp"
 #include "Operand.hpp"
-
-using namespace ECellEngine::Data;
 
 namespace ECellEngine::Maths
 {
 	struct Function
 	{
-		virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept = 0;
-	};
+		virtual float operator()(const std::vector<Operand*>& _operands) const noexcept = 0;
+    };
 
     struct Add : public Function
     {
-        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
+        inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
-            return _operands[0].get()->Get(_datastate) + _operands[1].get()->Get(_datastate);
+            return _operands[0]->Get() + _operands[1]->Get();
         }
     };
 
     struct Minus : public Function
     {
-        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
+        inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
-            return _operands[0].get()->Get(_datastate) - _operands[1].get()->Get(_datastate);
+            return _operands[0]->Get() - _operands[1]->Get();
         }
     };
 
     struct Times : public Function
     {
-        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
+        inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
-            return _operands[0].get()->Get(_datastate) * _operands[1].get()->Get(_datastate);
+            return _operands[0]->Get() * _operands[1]->Get();
         }
     };
 
     struct Divide : public Function
     {
-        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
+        inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
-            return _operands[0].get()->Get(_datastate) / _operands[1].get()->Get(_datastate);
+            return _operands[0]->Get() / _operands[1]->Get();
         }
     };
 
     struct Power : public Function
     {
-        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
+        inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
-            return std::pow(_operands[0].get()->Get(_datastate), _operands[1].get()->Get(_datastate));
+            return std::pow(_operands[0]->Get(), _operands[1]->Get());
         }
     };
 
     struct Identity : public Function
     {
-        inline virtual float operator()(DataState const& _datastate, std::vector<std::shared_ptr<Operand>> const& _operands) const noexcept override
+        inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
-            return _operands[0].get()->Get(_datastate);
+            return _operands[0]->Get();
         }
     };
 

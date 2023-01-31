@@ -2,7 +2,6 @@
 
 #include <filesystem> //for std::filesystem::path
 #include <memory> //for std::shared_ptr
-#include <iterator>
 #include <vector> //for std::vector<>
 
 #include "Module.hpp"
@@ -11,7 +10,6 @@
 #include "Solver.hpp"
 #include "GillespieNRMRSolver.hpp"
 
-using namespace ECellEngine::Data;
 using namespace ECellEngine::IO;
 using namespace ECellEngine::Solvers;
 
@@ -20,10 +18,10 @@ namespace ECellEngine::Core
 	class Simulation
 	{
 	private:
-		DataState dataState;
+		ECellEngine::Data::DataState dataState;
 		ModuleImporterManager moduleImporterManager;
 
-		std::vector<std::shared_ptr<Module>> modules;
+		std::vector<std::shared_ptr<ECellEngine::Data::Module>> modules;
 		std::vector<std::shared_ptr<Solver>> solvers;
 		std::vector<std::pair<std::size_t, std::size_t>> modulesToSolversTable;
 
@@ -35,12 +33,12 @@ namespace ECellEngine::Core
 		void AddModule(const std::string& _filePath);
 		void AddSolver(const std::string& _solverClassName);
 
-		inline const std::shared_ptr<Module>& GetModule(const std::size_t& _idx) const
+		inline const std::shared_ptr<ECellEngine::Data::Module>& GetModule(const std::size_t& _idx) const
 		{
 			return modules[_idx];
 		}
 
-		inline const std::vector<std::shared_ptr<Module>>& GetModules() const noexcept
+		inline const std::vector<std::shared_ptr<ECellEngine::Data::Module>>& GetModules() const noexcept
 		{
 			return modules;
 		}

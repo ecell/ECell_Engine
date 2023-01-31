@@ -1,12 +1,8 @@
 #pragma once
 
-#include <memory>
 #include <vector>
 
-#include "Operand.hpp"
 #include "Function.hpp"
-
-using namespace ECellEngine::Data;
 
 namespace ECellEngine::Maths
 {
@@ -14,23 +10,43 @@ namespace ECellEngine::Maths
     {
     private:
         Function* function;
-        std::vector <std::shared_ptr<Operand>> operands;
+        std::vector<Operand*> operands;
 
     public:
+        Operation() = default;
+
         Operation(const std::string _name) : 
             Operand (_name)
         {
 
         }
 
-        inline void AddOperand(const std::shared_ptr<Operand> operand)
+        inline void AddOperand(Operand& _operand)
         {
-            operands.push_back(operand);
+            operands.push_back(&_operand);
         }
 
-        inline virtual float Get(const DataState& _dataState) const noexcept override
+        template<typename OperandType>//, typename = std::enable_if_t<std::is_base_of_v<Operand, OperandType>>>
+        void GetOperandsNames(std::vector<std::string>& _operandsNames) const noexcept
         {
-            return (*function)(_dataState, operands);
+            for (std::vector<Operand*>::const_iterator it = operands.begin(); it != operands.end(); it++)
+            {
+                if (dynamic_cast<OperandType*>(*it) != nullptr)
+                {
+                    _operandsNames.push_back((*it)->name);
+                }
+
+                Operation* op = dynamic_cast<Operation*>(*it);
+                if (op != nullptr)
+                {
+                    op->GetOperandsNames<OperandType>(_operandsNames);
+                }
+            }
+        }
+
+        inline virtual float Get() const noexcept override
+        {
+            return (*function)(operands);
         }
 
         inline void Set(Function* _function) noexcept

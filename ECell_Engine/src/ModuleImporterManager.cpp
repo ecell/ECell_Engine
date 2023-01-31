@@ -1,6 +1,6 @@
 #include "ModuleImporterManager.hpp"
 
-const std::shared_ptr<Module> ECellEngine::IO::ModuleImporterManager::TryImportModule(const std::filesystem::path& _filePath, DataState* _dataState) noexcept
+const std::shared_ptr<ECellEngine::Data::Module> ECellEngine::IO::ModuleImporterManager::TryImportModule(const std::filesystem::path& _filePath, ECellEngine::Data::DataState& _dataState) noexcept
 {
     auto importersIt = moduleImporters.equal_range(_filePath.extension().string());
 
@@ -13,7 +13,7 @@ const std::shared_ptr<Module> ECellEngine::IO::ModuleImporterManager::TryImportM
 
     for (auto it = importersIt.first; it != importersIt.second; it++)
     {
-        std::shared_ptr<Module> loadedModule = it->second->TryImport(_filePath, _dataState);
+        std::shared_ptr<ECellEngine::Data::Module> loadedModule = it->second->TryImport(_filePath, _dataState);
 
         if (loadedModule != nullptr)
             ECellEngine::Logging::Logger::GetSingleton().LogTrace("An Importer managed to parse the module.");

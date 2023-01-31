@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DataState.hpp"
+#include <string>
 
 namespace ECellEngine::Maths
 {
@@ -9,12 +9,12 @@ namespace ECellEngine::Maths
         const std::string name;
 
     public:
-        Operand(const std::string _name) :
+        Operand(std::string _name) :
             name{_name}
         {
 
         }
 
-        virtual float Get(const ECellEngine::Data::DataState& _dataState) const noexcept = 0;
+        virtual float Get() const noexcept = 0;
     };
 }

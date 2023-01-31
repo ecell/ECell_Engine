@@ -9,24 +9,35 @@ namespace ECellEngine::Data
 #include "DataState.hpp"
 #include "Module.hpp"
 
-using namespace ECellEngine::Data;
-
 namespace ECellEngine::Solvers
 {
 	class Solver
 	{
+	private:
+		float time;
+
 	protected:
-		DataState* datastate;
+		ECellEngine::Data::DataState& dataState;
 
-	public:
-		Solver(DataState* _dataState) :
-			datastate{ _dataState }
+		inline void SetTime(const float _newTime) noexcept
 		{
-
+			time = _newTime;
 		}
 
-		virtual void Initialize(const Module&) = 0;
+	public:
+		Solver(ECellEngine::Data::DataState& _dataState) :
+			dataState{ _dataState }
+		{
+			time = 0;
+		}
 
-		virtual void Update(const Module& _module, const float& _deltaTime) = 0;
+		inline const float& GetTime() noexcept
+		{
+			return time;
+		}
+
+		virtual void Initialize(const ECellEngine::Data::Module*) = 0;
+
+		virtual void Update(const float& _deltaTime) = 0;
 	};
 }

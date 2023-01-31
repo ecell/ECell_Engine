@@ -2,45 +2,44 @@
 
 #include <cstddef>
 
+#include "BiochemicalModule.hpp"
 #include "BiochemicalSolver.hpp"
 #include "IndexedMinHeap.hpp"
 #include "Reaction.hpp"
 #include "ReversibleRNG.hpp"
-
-using namespace ECellEngine::Data;
 
 namespace ECellEngine::Solvers
 {
 	class GillespieNRMRSolver : public BiochemicalSolver
 	{
 	private:
-		
-		IndexedMinHeap tauIMH;
+		const ECellEngine::Data::BiochemicalModule* module;
+		ECellEngine::Data::IndexedMinHeap tauIMH;
 		ReversibleRNG rng;
-		std::vector<std::vector<std::size_t>> reactionsDependanceGraph;
+		std::unordered_multimap<std::size_t, std::size_t> reactionsDependanceGraph;//one reaction idx maps to multiple reaction idx
 		std::vector<unsigned short int> trace;
 
-		void ApplyBackward(const ECellEngine::Data::Reaction& _reaction);
+		void ApplyBackward(const std::string& _reactionName);
 
-		void ApplyForward(const ECellEngine::Data::Reaction& _reaction);
+		void ApplyForward(const std::string& _reactionName);
 
-		void BuildDependancyGraph(const std::vector<ECellEngine::Data::Reaction>& _reactions);
+		void BuildDependancyGraph(const std::vector<std::string>& _reactions);
 
-		const float ComputeReactionPropensity(const unsigned int& _reactionIndex);
+		const float ComputeReactionPropensity(const std::string& _reactionName);
 
 		void SolveBackward(const float& targetTime);
 
 		void SolveForward(const float& targetTime);
 	
 	public:
-		GillespieNRMRSolver(DataState* _dataState) :
+		GillespieNRMRSolver(ECellEngine::Data::DataState& _dataState) :
 			BiochemicalSolver(_dataState)
 		{
-
+			
 		}
 
-		virtual void Initialize(const Module&) override;
+		virtual void Initialize(const ECellEngine::Data::Module*) override;
 
-		virtual void Update(const Module& _module, const float& _deltaTime) override;
+		virtual void Update(const float& _deltaTime) override;
 	};
 }
