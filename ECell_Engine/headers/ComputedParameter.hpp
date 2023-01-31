@@ -29,5 +29,10 @@ namespace ECellEngine::Data
             return valueCache;
         }
 
+        inline const ECellEngine::Maths::Operation& GetOperation() noexcept
+        {
+            return operation;
+        }
+
     };
 }
