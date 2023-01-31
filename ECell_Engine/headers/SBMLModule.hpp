@@ -11,8 +11,6 @@ namespace ECellEngine::Data
 	{
 	private:
 		std::vector<std::string> computedParameters;
-		std::unordered_map<std::string, std::vector<std::size_t>> parameterDependancies;
-
 	public:
 		SBMLModule(DataState& _dataState) :
 			BiochemicalModule(_dataState)

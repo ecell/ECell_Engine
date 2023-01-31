@@ -9,7 +9,7 @@ namespace ECellEngine::Maths
     struct Operation : public Operand
     {
     private:
-        Function* function;
+        const Function* function;
         std::vector<Operand*> operands;
 
     public:
@@ -49,7 +49,7 @@ namespace ECellEngine::Maths
             return (*function)(operands);
         }
 
-        inline void Set(Function* _function) noexcept
+        inline void Set(const Function* _function) noexcept
         {
             function = _function;
         }

@@ -31,7 +31,7 @@ namespace ECellEngine::Solvers
 			time = 0;
 		}
 
-		inline const float& GetTime() noexcept
+		inline const float GetTime() noexcept
 		{
 			return time;
 		}

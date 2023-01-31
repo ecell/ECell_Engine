@@ -12,7 +12,7 @@ namespace ECellEngine::Data
         ECellEngine::Maths::Operation operation;
 
     public:
-        ComputedParameter(const std::string _name, ECellEngine::Maths::Operation _operation) :
+        ComputedParameter(const std::string _name, const ECellEngine::Maths::Operation _operation) :
             Parameter(_name), operation{ _operation }
         {
 
