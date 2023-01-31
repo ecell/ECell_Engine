@@ -13,8 +13,8 @@ namespace ECellEngine::Solvers
 
 		}
 
-		virtual void Initialize(const ECellEngine::Data::Module&) override = 0;
+		virtual void Initialize(const ECellEngine::Data::Module*) override = 0;
 
-		virtual void Update(const ECellEngine::Data::Module& _module, const float& _deltaTime) override = 0;
+		virtual void Update(const float& _deltaTime) override = 0;
 	};
 }

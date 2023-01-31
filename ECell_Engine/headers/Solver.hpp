@@ -13,18 +13,31 @@ namespace ECellEngine::Solvers
 {
 	class Solver
 	{
+	private:
+		float time;
+
 	protected:
 		ECellEngine::Data::DataState& dataState;
+
+		inline void SetTime(const float _newTime) noexcept
+		{
+			time = _newTime;
+		}
 
 	public:
 		Solver(ECellEngine::Data::DataState& _dataState) :
 			dataState{ _dataState }
 		{
-
+			time = 0;
 		}
 
-		virtual void Initialize(const ECellEngine::Data::Module&) = 0;
+		inline const float& GetTime() noexcept
+		{
+			return time;
+		}
 
-		virtual void Update(const ECellEngine::Data::Module& _module, const float& _deltaTime) = 0;
+		virtual void Initialize(const ECellEngine::Data::Module*) = 0;
+
+		virtual void Update(const float& _deltaTime) = 0;
 	};
 }

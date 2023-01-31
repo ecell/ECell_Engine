@@ -77,7 +77,7 @@ void ECellEngine::Core::Simulation::TryAttachSolverToModule(const std::size_t& _
 		//We create the pair in the table to have the binding information
 		modulesToSolversTable.push_back(std::pair(_moduleIdx, _solverIdx));
 		//We initialize the solver according to the data stored in the module.
-		solvers[_solverIdx].get()->Initialize(*modules[_moduleIdx].get());
+		solvers[_solverIdx].get()->Initialize(modules[_moduleIdx].get());
 	}
 }
 
