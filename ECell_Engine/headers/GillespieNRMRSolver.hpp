@@ -2,7 +2,6 @@
 
 #include <cstddef>
 
-#include "BiochemicalModule.hpp"
 #include "BiochemicalSolver.hpp"
 #include "IndexedMinHeap.hpp"
 #include "Reaction.hpp"
@@ -13,7 +12,6 @@ namespace ECellEngine::Solvers
 	class GillespieNRMRSolver : public BiochemicalSolver
 	{
 	private:
-		const ECellEngine::Data::BiochemicalModule* module;
 		ECellEngine::Data::IndexedMinHeap tauIMH;
 		ReversibleRNG rng;
 		std::unordered_multimap<std::size_t, std::size_t> reactionsDependanceGraph;//one reaction idx maps to multiple reaction idx

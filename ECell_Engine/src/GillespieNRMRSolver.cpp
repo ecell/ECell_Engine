@@ -1,3 +1,4 @@
+#include "BiochemicalModule.hpp"
 #include "GillespieNRMRSolver.hpp"
 
 void ECellEngine::Solvers::GillespieNRMRSolver::ApplyBackward(const std::string& _reactionName)
@@ -146,8 +147,8 @@ void ECellEngine::Solvers::GillespieNRMRSolver::SolveForward(const float& _targe
 
 void ECellEngine::Solvers::GillespieNRMRSolver::Initialize(const ECellEngine::Data::Module* _module)
 {
-	module = dynamic_cast<const ECellEngine::Data::BiochemicalModule*>(_module);
-
+	ECellEngine::Solvers::BiochemicalSolver::Initialize(_module);
+	
 	//Build the data structure representing the dependency graph.
 	BuildDependancyGraph(module->GetAllReaction());
 

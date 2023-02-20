@@ -5,6 +5,7 @@ cmake_minimum_required (VERSION 3.12)
 # Add ECell_Engine source files
 add_library(ECellEngine SHARED
     #"src/ASTNode_parser.cpp"
+    "src/BiochemicalSolver.cpp"
     "src/Commands.cpp"
     "src/CommandsManager.cpp"
     "src/DataState.cpp"

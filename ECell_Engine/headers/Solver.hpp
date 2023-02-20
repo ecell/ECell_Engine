@@ -1,6 +1,5 @@
 #pragma once
 
-
 namespace ECellEngine::Data
 {
 	class Module;
