@@ -1,7 +1,9 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
+#include "Constant.hpp"
 #include "Function.hpp"
 
 namespace ECellEngine::Maths
@@ -10,6 +12,7 @@ namespace ECellEngine::Maths
     {
     private:
         const Function* function;
+        std::vector<std::shared_ptr<Constant>> constants;
         std::vector<Operand*> operands;
 
     public:
@@ -19,6 +22,12 @@ namespace ECellEngine::Maths
             Operand (_name)
         {
 
+        }
+
+        inline void AddConstant(float _value)
+        {
+            constants.push_back(std::make_shared<Constant>(_value));
+            operands.push_back(constants.back().get());
         }
 
         inline void AddOperand(Operand& _operand)

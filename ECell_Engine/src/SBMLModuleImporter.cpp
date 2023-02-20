@@ -151,12 +151,12 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(ECellEngine::D
 
     case ASTNodeType_t::AST_REAL:
         op.Set(&functions.identity);
-        op.AddOperand(Constant((float)_node->getValue()));
+        op.AddConstant((float)_node->getValue());
         break;
 
     case ASTNodeType_t::AST_INTEGER:
         op.Set(&functions.identity);
-        op.AddOperand(Constant((float)_node->getValue()));
+        op.AddConstant((float)_node->getValue());
         break;
     }
 
