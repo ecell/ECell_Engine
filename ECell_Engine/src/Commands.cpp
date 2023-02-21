@@ -176,4 +176,14 @@ void ECellEngine::IO::AddModuleCommand::execute(const std::vector<std::string>& 
 	receiver->AddModule(_args[1]);
 }
 
+void ECellEngine::IO::AddSolverCommand::execute(const std::vector<std::string>& _args)
+{
+	receiver->AddSolver(_args[1]);
+}
+
+void ECellEngine::IO::TryAttachSolverToModuleCommand::execute(const std::vector<std::string>& _args)
+{
+	receiver->TryAttachSolverToModule(std::stoi(_args[1]), std::stoi(_args[2]));
+}
+
 #pragma endregion

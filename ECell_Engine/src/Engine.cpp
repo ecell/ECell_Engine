@@ -1,4 +1,4 @@
-﻿#include "Engine.hpp"
+#include "Engine.hpp"
 
 void ECellEngine::Core::Engine::start()
 {
@@ -42,8 +42,8 @@ void ECellEngine::Core::Engine::start()
 
 	//Simulation Commands
 	commandsManager.registerCommand(std::make_shared<AddModuleCommand>(&simulation));
-
-	//simulationLoop.start();
+	commandsManager.registerCommand(std::make_shared<AddSolverCommand>(&simulation));
+	commandsManager.registerCommand(std::make_shared<TryAttachSolverToModuleCommand>(&simulation));
 
 	//editor.start();
 

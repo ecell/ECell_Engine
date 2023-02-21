@@ -6,7 +6,6 @@ namespace ECellEngine::Core
 	class Engine;
 	class Simulation;
 }
-
 #include "CommandWithReceiver.hpp"
 
 using namespace ECellEngine::Core;
@@ -210,14 +209,42 @@ namespace ECellEngine::IO
 
 #pragma region Simulation Commands
 
-/*
-	@brief The command to let the user add a module to the simulation space.
+	/*
+	@brief The command to let the user add a module in a simulation.
 	*/
 	class AddModuleCommand : public CommandWithReceiver<Simulation>
 	{
 	public:
 		AddModuleCommand(Simulation* _receiver) :
 			CommandWithReceiver("addModule", _receiver)
+		{
+		}
+
+		void execute(const std::vector<std::string>& _args) override;
+	};
+
+	/*
+	@brief The command to let the user add a solver in a simulation.
+	*/
+	class AddSolverCommand : public CommandWithReceiver<Simulation>
+	{
+	public:
+		AddSolverCommand(Simulation* _receiver) :
+			CommandWithReceiver("addSolver", _receiver)
+		{
+		}
+
+		void execute(const std::vector<std::string>& _args) override;
+	};
+
+	/*
+	@brief The command to let the user bind a solver to a module in a simulation.
+	*/
+	class TryAttachSolverToModuleCommand : public CommandWithReceiver<Simulation>
+	{
+	public:
+		TryAttachSolverToModuleCommand(Simulation* _receiver) :
+			CommandWithReceiver("tryAttachSolver", _receiver)
 		{
 		}
 
