@@ -40,10 +40,10 @@ void ECellEngine::Core::Engine::start()
 	commandsManager.registerCommand(std::make_shared<StopCommand>(&simulationLoop));
 	*/
 
-	//Simulation Commands
-	commandsManager.registerCommand(std::make_shared<AddModuleCommand>(&simulation));
-	commandsManager.registerCommand(std::make_shared<AddSolverCommand>(&simulation));
-	commandsManager.registerCommand(std::make_shared<TryAttachSolverToModuleCommand>(&simulation));
+	//SimulationManager Commands
+	commandsManager.registerCommand(std::make_shared<AddModuleCommand>(&simulationManager));
+	commandsManager.registerCommand(std::make_shared<AddSolverCommand>(&simulationManager));
+	commandsManager.registerCommand(std::make_shared<TryAttachSolverToModuleCommand>(&simulationManager));
 
 	//editor.start();
 

@@ -25,6 +25,7 @@ add_library(ECellEngine SHARED
     "src/SbmlParser.cpp"
     "src/SbmlWriter.cpp"
     "src/Simulation.cpp"
+    "src/SimulationsManager.cpp"
     #"src/SimulationLoop.cpp"
     "src/Timer.cpp")
 

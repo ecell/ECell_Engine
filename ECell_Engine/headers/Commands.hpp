@@ -4,11 +4,10 @@
 namespace ECellEngine::Core
 {
 	class Engine;
-	class Simulation;
 }
-#include "CommandWithReceiver.hpp"
 
-using namespace ECellEngine::Core;
+#include "CommandWithReceiver.hpp"
+#include "SimulationsManager.hpp"
 
 namespace ECellEngine::IO
 {
@@ -207,15 +206,15 @@ namespace ECellEngine::IO
 	//};
 #pragma endregion
 
-#pragma region Simulation Commands
+#pragma region Simulation Manager Commands
 
 	/*
 	@brief The command to let the user add a module in a simulation.
 	*/
-	class AddModuleCommand : public CommandWithReceiver<Simulation>
+	class AddModuleCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
 	{
 	public:
-		AddModuleCommand(Simulation* _receiver) :
+		AddModuleCommand(ECellEngine::Core::SimulationsManager* _receiver) :
 			CommandWithReceiver("addModule", _receiver)
 		{
 		}
@@ -226,10 +225,10 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user add a solver in a simulation.
 	*/
-	class AddSolverCommand : public CommandWithReceiver<Simulation>
+	class AddSolverCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
 	{
 	public:
-		AddSolverCommand(Simulation* _receiver) :
+		AddSolverCommand(ECellEngine::Core::SimulationsManager* _receiver) :
 			CommandWithReceiver("addSolver", _receiver)
 		{
 		}
@@ -240,10 +239,10 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user bind a solver to a module in a simulation.
 	*/
-	class TryAttachSolverToModuleCommand : public CommandWithReceiver<Simulation>
+	class TryAttachSolverToModuleCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
 	{
 	public:
-		TryAttachSolverToModuleCommand(Simulation* _receiver) :
+		TryAttachSolverToModuleCommand(ECellEngine::Core::SimulationsManager* _receiver) :
 			CommandWithReceiver("tryAttachSolver", _receiver)
 		{
 		}

@@ -7,7 +7,7 @@
 #include "Commands.hpp"
 #include "CommandsManager.hpp"
 #include "Logger.hpp"
-#include "Simulation.hpp"
+#include "SimulationsManager.hpp"
 
 using namespace ECellEngine::IO;
 
@@ -21,7 +21,7 @@ namespace ECellEngine::Core
 	class Engine
 	{
 		CommandsManager commandsManager;
-		Simulation simulation;
+		SimulationsManager simulationManager;
 
 	public:
 		Engine() = default;
@@ -36,14 +36,6 @@ namespace ECellEngine::Core
 		inline CommandsManager* GetCommandsManager()
 		{
 			return &commandsManager;
-		}
-
-		/*
-		@brief Gets the pointer to @a simulationLoop private member.
-		*/
-		inline Simulation& GetSimulationLoop()
-		{
-			return simulation;
 		}
 
 #pragma endregion

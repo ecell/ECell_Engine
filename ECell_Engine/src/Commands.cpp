@@ -1,7 +1,4 @@
-#include "Commands.hpp"
 #include "Engine.hpp"
-#include "SimulationLoop.hpp"
-
 
 #pragma region IOCommands
 
@@ -173,17 +170,17 @@
 
 void ECellEngine::IO::AddModuleCommand::execute(const std::vector<std::string>& _args)
 {
-	receiver->AddModule(_args[1]);
+	receiver->GetSimulation(std::stoi(_args[1]))->AddModule(_args[2]);
 }
 
 void ECellEngine::IO::AddSolverCommand::execute(const std::vector<std::string>& _args)
 {
-	receiver->AddSolver(_args[1]);
+	receiver->GetSimulation(std::stoi(_args[1]))->AddSolver(_args[2]);
 }
 
 void ECellEngine::IO::TryAttachSolverToModuleCommand::execute(const std::vector<std::string>& _args)
 {
-	receiver->TryAttachSolverToModule(std::stoi(_args[1]), std::stoi(_args[2]));
+	receiver->GetSimulation(std::stoi(_args[1]))->TryAttachSolverToModule(std::stoi(_args[2]), std::stoi(_args[3]));
 }
 
 #pragma endregion
