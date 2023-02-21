@@ -19,7 +19,6 @@ add_library(ECellEngine SHARED
     "src/Logger.cpp"
     "src/MathUtility.cpp"
     "src/ModuleImporterManager.cpp"
-    "src/Reaction.cpp"
     "src/revrand.c"
     "src/sbml_example.cpp"
     "src/SBMLModuleImporter.cpp"
