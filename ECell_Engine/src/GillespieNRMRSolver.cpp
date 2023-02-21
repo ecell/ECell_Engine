@@ -3,33 +3,33 @@
 
 void ECellEngine::Solvers::GillespieNRMRSolver::ApplyBackward(const std::string& _reactionName)
 {
-	ECellEngine::Data::Reaction reaction = dataState.GetReaction(_reactionName);
+	ECellEngine::Data::Reaction reaction = *dataState.GetReaction(_reactionName);
 	//Decrementing quantities of all Products by 1
 	for (std::vector<std::string>::const_iterator it = reaction.GetProducts().begin(); it != reaction.GetProducts().end(); it++)
 	{
-		dataState.GetSpecies(*it).Decrement(1.f);
+		dataState.GetSpecies(*it)->Decrement(1.f);
 	}
 
 	//Incrementing quantities of all reactans by 1
 	for (std::vector<std::string>::const_iterator it = reaction.GetReactants().begin(); it != reaction.GetReactants().end(); it++)
 	{
-		dataState.GetSpecies(*it).Increment(1.f);
+		dataState.GetSpecies(*it)->Increment(1.f);
 	}
 }
 
 void ECellEngine::Solvers::GillespieNRMRSolver::ApplyForward(const std::string& _reactionName)
 {
-	ECellEngine::Data::Reaction reaction = dataState.GetReaction(_reactionName);
+	ECellEngine::Data::Reaction reaction = *dataState.GetReaction(_reactionName);
 	//Decrementing quantities of all reactans by 1
 	for (std::vector<std::string>::const_iterator it = reaction.GetReactants().begin(); it != reaction.GetReactants().end(); it++)
 	{
-		dataState.GetSpecies(*it).Decrement(1.f);
+		dataState.GetSpecies(*it)->Decrement(1.f);
 	}
 
 	//Incrementing quantities of all products by 1
 	for (std::vector<std::string>::const_iterator it = reaction.GetProducts().begin(); it != reaction.GetProducts().end(); it++)
 	{
-		dataState.GetSpecies(*it).Increment(1.f);
+		dataState.GetSpecies(*it)->Increment(1.f);
 	}
 }
 
@@ -48,7 +48,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::BuildDependancyGraph(const std::
 	std::vector<std::string> species;
 	for (std::vector<std::string>::const_iterator itReactions = _reactions.begin(); itReactions != _reactions.end(); itReactions++)
 	{
-		species = dataState.GetReaction(*itReactions).GetProducts();
+		species = dataState.GetReaction(*itReactions)->GetProducts();
 		for (std::vector<std::string>::iterator itSpecies = species.begin(); itSpecies != species.end(); itSpecies++)
 		{
 			auto reactionLinks = dataState.GetOperandsToOperations().equal_range(*itSpecies);
@@ -58,7 +58,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::BuildDependancyGraph(const std::
 			}
 		}
 		
-		species = dataState.GetReaction(*itReactions).GetReactants();
+		species = dataState.GetReaction(*itReactions)->GetReactants();
 		for (std::vector<std::string>::iterator itSpecies = species.begin(); itSpecies != species.end(); itSpecies++)
 		{
 			auto reactionLinks = dataState.GetOperandsToOperations().equal_range(*itSpecies);
@@ -74,7 +74,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::BuildDependancyGraph(const std::
 
 const float ECellEngine::Solvers::GillespieNRMRSolver::ComputeReactionPropensity(const std::string& _reactionName)
 {
-	return dataState.GetReaction(_reactionName).ComputeKineticLaw();
+	return dataState.GetReaction(_reactionName)->ComputeKineticLaw();
 }
 
 void ECellEngine::Solvers::GillespieNRMRSolver::SolveBackward(const float& _targetTime)
@@ -129,7 +129,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::SolveForward(const float& _targe
 		for (auto it = reactionsDependanceGraph.begin(); it != reactionsDependanceGraph.end(); ++it)
 		{
 			//std::cout << "Updating dependency: " << *it << std::endl;
-			float a_old = dataState.GetReaction(module->GetReaction((*it).second)).GetKineticLawValue();
+			float a_old = dataState.GetReaction(module->GetReaction((*it).second))->GetKineticLawValue();
 			float tau_old = tauIMH.GetValueAtIndex((*it).second);
 
 			//Step 5.a
@@ -160,7 +160,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::Initialize(const ECellEngine::Da
 	size_t idx = 0;
 	for (std::vector<std::string>::const_iterator it = module->GetAllReaction().begin(); it != module->GetAllReaction().end(); it++)
 	{
-		taus.push_back(std::pair<std::size_t, float>(idx, rng.Exponential(dataState.GetReaction(*it).ComputeKineticLaw())));
+		taus.push_back(std::pair<std::size_t, float>(idx, rng.Exponential(dataState.GetReaction(*it)->ComputeKineticLaw())));
 		idx++;
 	}
 

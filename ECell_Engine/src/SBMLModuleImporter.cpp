@@ -146,7 +146,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(ECellEngine::D
 
     case ASTNodeType_t::AST_NAME:
         op.Set(&functions.identity);
-        op.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(_node->getName())->second));
+        op.AddOperand(*_dataState.GetOperand(_docIdsToDataStateNames.find(_node->getName())->second));
         break;
 
     case ASTNodeType_t::AST_REAL:
