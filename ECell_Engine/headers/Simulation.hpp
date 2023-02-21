@@ -10,6 +10,8 @@
 #include "Solver.hpp"
 #include "GillespieNRMRSolver.hpp"
 
+#include "Timer.hpp"
+
 using namespace ECellEngine::IO;
 using namespace ECellEngine::Solvers;
 
@@ -26,6 +28,8 @@ namespace ECellEngine::Core
 		std::vector<std::pair<std::size_t, std::size_t>> modulesToSolversTable;
 
 		const std::pair<std::pair<bool, std::size_t>, std::pair<bool, std::size_t>> ScanModuleToSolverTable(const std::size_t& _solverIdx, const std::size_t& _modIdx);
+
+		Timer timer;
 
 	public:
 		Simulation() = default;

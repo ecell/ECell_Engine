@@ -38,6 +38,6 @@ namespace ECellEngine::Solvers
 
 		virtual void Initialize(const ECellEngine::Data::Module*) override;
 
-		virtual void Update(const float& _deltaTime) override;
+		virtual void Update(const ECellEngine::Core::Timer& _timer) override;
 	};
 }

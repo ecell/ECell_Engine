@@ -7,6 +7,7 @@ namespace ECellEngine::Data
 
 #include "DataState.hpp"
 #include "Module.hpp"
+#include "Timer.hpp"
 
 namespace ECellEngine::Solvers
 {
@@ -37,6 +38,6 @@ namespace ECellEngine::Solvers
 
 		virtual void Initialize(const ECellEngine::Data::Module*) = 0;
 
-		virtual void Update(const float& _deltaTime) = 0;
+		virtual void Update(const ECellEngine::Core::Timer& _timer) = 0;
 	};
 }
