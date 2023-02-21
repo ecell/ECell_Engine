@@ -25,6 +25,11 @@ namespace ECellEngine::Core
 
 		std::vector<std::shared_ptr<ECellEngine::Data::Module>> modules;
 		std::vector<std::shared_ptr<Solver>> solvers;
+
+		/*
+		First item is the index to find the module in the vector "modules".
+		Second item is the index to find the module in the vector "solvers.
+		*/
 		std::vector<std::pair<std::size_t, std::size_t>> modulesToSolversTable;
 
 		const std::pair<std::pair<bool, std::size_t>, std::pair<bool, std::size_t>> ScanModuleToSolverTable(const std::size_t& _solverIdx, const std::size_t& _modIdx);
