@@ -219,6 +219,13 @@ namespace ECellEngine::IO
 		{
 		}
 
+		/*
+		@brief Executes the code to add a module to a simulation.
+		@param _args The arguments of the command. At position [0] is always the
+				name of the command ("addModule"). Then, for this command, come
+				[1] the index of the target simulation in the SimulationsManager's
+				simulation list; [2] the path as a string pointing to the module's file.
+		*/
 		void execute(const std::vector<std::string>& _args) override;
 	};
 
@@ -233,6 +240,13 @@ namespace ECellEngine::IO
 		{
 		}
 
+		/*
+		@brief Executes the code to add a solver to a simulation.
+		@param _args The arguments of the command. At position [0] is always the
+				name of the command ("addSolver"). Then, for this command, come
+				[1] the index of the target simulation in the SimulationsManager's
+				simulation list; [2] the name of the kind of solver we wish to add.
+		*/
 		void execute(const std::vector<std::string>& _args) override;
 	};
 	
@@ -247,6 +261,13 @@ namespace ECellEngine::IO
 		{
 		}
 
+		/*
+		@brief Executes the code to pause a simulation.
+		@param _args The arguments of the command. At position [0] is always the
+				name of the command ("pauseSimulation"). Then, for this command, come
+				[1] the index of the target simulation in the SimulationsManager's
+				playing simulation list.
+		*/
 		void execute(const std::vector<std::string>& _args) override;
 	};
 	
@@ -261,11 +282,18 @@ namespace ECellEngine::IO
 		{
 		}
 
+		/*
+		@brief Executes the code to play a simulation.
+		@param _args The arguments of the command. At position [0] is always the
+				name of the command ("playSimulation"). Then, for this command, come
+				[1] the index of the target simulation in the SimulationsManager's
+				simulation list.
+		*/
 		void execute(const std::vector<std::string>& _args) override;
 	};
 
 	/*
-	@brief The command to let the user stop a simulation.
+	@brief The command to let the user run one step of a simulation backward.
 	*/
 	class StepSimulationBackwardCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
 	{
@@ -275,11 +303,18 @@ namespace ECellEngine::IO
 		{
 		}
 
+		/*
+		@brief Executes the code to run one step of a simulation backward.
+		@param _args The arguments of the command. At position [0] is always the
+				name of the command ("stepSimulationBackward"). Then, for this command,
+				come [1] the index of the target simulation in the SimulationsManager's
+				simulation list; [2] the delta time as a float of the step we wish to take.
+		*/
 		void execute(const std::vector<std::string>& _args) override;
 	};
 
 	/*
-	@brief The command to let the user stop a simulation.
+	@brief The command to let the user run one step of a simulation forward.
 	*/
 	class StepSimulationForwardCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
 	{
@@ -289,6 +324,13 @@ namespace ECellEngine::IO
 		{
 		}
 
+		/*
+		@brief Executes the code to run one step of a simulation forward.
+		@param _args The arguments of the command. At position [0] is always the
+				name of the command ("stepSimulationForward"). Then, for this command,
+				come [1] the index of the target simulation in the SimulationsManager's
+				simulation list; [2] the delta time as a float of the step we wish to take.
+		*/
 		void execute(const std::vector<std::string>& _args) override;
 	};
 
@@ -303,6 +345,13 @@ namespace ECellEngine::IO
 		{
 		}
 
+		/*
+		@brief Executes the code to play a simulation.
+		@param _args The arguments of the command. At position [0] is always the
+				name of the command ("playSimulation"). Then, for this command, come
+				[1] the index of the target simulation in the SimulationsManager's
+				playing simulation list.
+		*/
 		void execute(const std::vector<std::string>& _args) override;
 	};
 
@@ -317,6 +366,16 @@ namespace ECellEngine::IO
 		{
 		}
 
+		/*
+		@brief Executes the code to play a simulation.
+		@param _args The arguments of the command. At position [0] is always the
+				name of the command ("playSimulation"). Then, for this command, come
+				[1] the index of the target simulation in the SimulationsManager's
+				simulation list; [2] is the index of the solver in the Simulation's
+				solvers list; [3] is the index of the module in the Simulation's
+				modules list.
+
+		*/
 		void execute(const std::vector<std::string>& _args) override;
 	};
 
