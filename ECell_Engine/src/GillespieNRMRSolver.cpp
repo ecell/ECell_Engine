@@ -170,7 +170,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::Initialize(const ECellEngine::Da
 	trace.reserve(1024);
 }
 
-void ECellEngine::Solvers::GillespieNRMRSolver::Update(const float& _deltaTime)
+void ECellEngine::Solvers::GillespieNRMRSolver::Update(const ECellEngine::Core::Timer& _timer)
 {
-
+	SolveForward(_timer.elapsedTime);
 }

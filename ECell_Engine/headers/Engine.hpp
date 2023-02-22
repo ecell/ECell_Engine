@@ -48,17 +48,17 @@ namespace ECellEngine::Core
 		@brief Initializes every sub modules or variable needed for the engine
 				to be able to start running.
 		*/
-		void start();
+		void Start();
 
 		/*
 		@brief Does everything needed to stop the engine.
 		*/
-		void stop();
+		void Stop();
 
 		/*
 		@brief The method to run the engine.
 		*/
-		void update(float _deltaTime);
+		void Update(float _deltaTime);
 #pragma endregion
 
 	};

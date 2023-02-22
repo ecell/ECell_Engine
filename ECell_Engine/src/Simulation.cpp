@@ -83,5 +83,9 @@ void ECellEngine::Core::Simulation::TryAttachSolverToModule(const std::size_t& _
 
 void ECellEngine::Core::Simulation::Update(const float& _deltaTime)
 {
-
+	timer.Increment(_deltaTime);
+	for (std::vector<std::pair<std::size_t, std::size_t>>::iterator it = modulesToSolversTable.begin(); it != modulesToSolversTable.end(); it++)
+	{
+		solvers[(*it).second].get()->Update(timer);
+	}
 }

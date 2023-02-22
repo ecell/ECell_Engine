@@ -178,6 +178,31 @@ void ECellEngine::IO::AddSolverCommand::execute(const std::vector<std::string>& 
 	receiver->GetSimulation(std::stoi(_args[1]))->AddSolver(_args[2]);
 }
 
+void ECellEngine::IO::PauseSimulationCommand::execute(const std::vector<std::string>& _args)
+{
+	receiver->PauseSimulation(std::stoi(_args[1]));
+}
+
+void ECellEngine::IO::PlaySimulationCommand::execute(const std::vector<std::string>& _args)
+{
+	receiver->PlaySimulation(std::stoi(_args[1]));
+}
+
+void ECellEngine::IO::StepSimulationBackwardCommand::execute(const std::vector<std::string>& _args)
+{
+	//TODO
+}
+
+void ECellEngine::IO::StepSimulationForwardCommand::execute(const std::vector<std::string>& _args)
+{
+	receiver->GetSimulation(std::stoi(_args[1]))->Update(std::stof(_args[2]));
+}
+
+void ECellEngine::IO::StopSimulationCommand::execute(const std::vector<std::string>& _args)
+{
+	receiver->StopSimulation(std::stoi(_args[1]));
+}
+
 void ECellEngine::IO::TryAttachSolverToModuleCommand::execute(const std::vector<std::string>& _args)
 {
 	receiver->GetSimulation(std::stoi(_args[1]))->TryAttachSolverToModule(std::stoi(_args[2]), std::stoi(_args[3]));

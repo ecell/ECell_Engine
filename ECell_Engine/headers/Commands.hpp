@@ -235,6 +235,76 @@ namespace ECellEngine::IO
 
 		void execute(const std::vector<std::string>& _args) override;
 	};
+	
+	/*
+	@brief The command to let the user pause a simulation.
+	*/
+	class PauseSimulationCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	{
+	public:
+		PauseSimulationCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+			CommandWithReceiver("pauseSimulation", _receiver)
+		{
+		}
+
+		void execute(const std::vector<std::string>& _args) override;
+	};
+	
+	/*
+	@brief The command to let the user start (play) a simulation.
+	*/
+	class PlaySimulationCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	{
+	public:
+		PlaySimulationCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+			CommandWithReceiver("playSimulation", _receiver)
+		{
+		}
+
+		void execute(const std::vector<std::string>& _args) override;
+	};
+
+	/*
+	@brief The command to let the user stop a simulation.
+	*/
+	class StepSimulationBackwardCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	{
+	public:
+		StepSimulationBackwardCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+			CommandWithReceiver("stepSimulationBackward", _receiver)
+		{
+		}
+
+		void execute(const std::vector<std::string>& _args) override;
+	};
+
+	/*
+	@brief The command to let the user stop a simulation.
+	*/
+	class StepSimulationForwardCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	{
+	public:
+		StepSimulationForwardCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+			CommandWithReceiver("stepSimulationForward", _receiver)
+		{
+		}
+
+		void execute(const std::vector<std::string>& _args) override;
+	};
+
+	/*
+	@brief The command to let the user stop a simulation.
+	*/
+	class StopSimulationCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	{
+	public:
+		StopSimulationCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+			CommandWithReceiver("stopSimulation", _receiver)
+		{
+		}
+
+		void execute(const std::vector<std::string>& _args) override;
+	};
 
 	/*
 	@brief The command to let the user bind a solver to a module in a simulation.
