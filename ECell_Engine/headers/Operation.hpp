@@ -12,7 +12,7 @@ namespace ECellEngine::Maths
     {
     private:
         const Function* function;
-        std::vector<std::shared_ptr<Constant>> constants;
+        std::vector<Constant> constants;
         std::vector<Operand*> operands;
 
     public:
@@ -26,13 +26,13 @@ namespace ECellEngine::Maths
 
         inline void AddConstant(float _value)
         {
-            constants.push_back(std::make_shared<Constant>(_value));
-            operands.push_back(constants.back().get());
+            constants.push_back(Constant(_value));
+            operands.push_back(&constants.back());
         }
 
-        inline void AddOperand(Operand& _operand)
+        inline void AddOperand(Operand* _operand)
         {
-            operands.push_back(&_operand);
+            operands.push_back(_operand);
         }
 
         template<typename OperandType>//, typename = std::enable_if_t<std::is_base_of_v<Operand, OperandType>>>

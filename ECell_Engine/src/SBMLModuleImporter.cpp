@@ -45,7 +45,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(ECellEngine::Data
         if (rule->isParameter())
         {
             astNode = rule->getMath();
-            Operation root = ASTNodeToOperation(_dataState, rule->getVariable(), astNode, _docIdsToDataStateNames);
+            Operation root = *ASTNodeToOperation(_dataState, rule->getVariable(), astNode, _docIdsToDataStateNames);
 
             _sbmlModule.AddComputedParameters(rule->getVariable(), root);
             _docIdsToDataStateNames[rule->getVariable()] = rule->getVariable();
@@ -87,7 +87,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
 
         astNode = reaction->getKineticLaw()->getMath();
         ECellEngine::Logging::Logger::GetSingleton().LogDebug("Processing Kinetic Law of reaction: " + reaction->getId());
-        Operation root = ASTNodeToOperation(_dataState, reaction->getId(), astNode, _docIdsToDataStateNames);
+        Operation root = *ASTNodeToOperation(_dataState, reaction->getId(), astNode, _docIdsToDataStateNames);
 
         _sbmlModule.AddReaction(reaction->getId(), products, reactants, root);
 
@@ -110,57 +110,55 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeSpecies(ECellEngine::Data::D
     }
 }
 
-Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(ECellEngine::Data::DataState& _dataState, const std::string& _rootName, const ASTNode* _node,
+Operation* ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(ECellEngine::Data::DataState& _dataState, const std::string& _rootName, const ASTNode* _node,
     const std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
-    Operation op(_rootName);
+    std::shared_ptr<Operation> op = std::make_shared<Operation>(_rootName);
     switch (_node->getType())
     {
     case ASTNodeType_t::AST_PLUS:
-        ECellEngine::Logging::Logger::GetSingleton().LogDebug("AST_PLUS with " + std::to_string(_node->getNumChildren()) + " children");
-        op.Set(&functions.add);
-        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
-        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
+        op.get()->Set(&functions.add);
+        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
+        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
         break;
     case ASTNodeType_t::AST_MINUS:
-        op.Set(&functions.minus);
-        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
-        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
+        op.get()->Set(&functions.minus);
+        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
+        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
         break;
     case ASTNodeType_t::AST_TIMES:
-        ECellEngine::Logging::Logger::GetSingleton().LogDebug("AST_PLUS with " + std::to_string(_node->getNumChildren()) + " children");
-        op.Set(&functions.times);
-        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
-        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
+        op.get()->Set(&functions.times);
+        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
+        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
         break;
     case ASTNodeType_t::AST_DIVIDE:
-        op.Set(&functions.divide);
-        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
-        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
+        op.get()->Set(&functions.divide);
+        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
+        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
         break;
     case ASTNodeType_t::AST_FUNCTION_POWER:
-        op.Set(&functions.power);
-        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
-        op.AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
+        op.get()->Set(&functions.power);
+        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
+        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
         break;
 
     case ASTNodeType_t::AST_NAME:
-        op.Set(&functions.identity);
-        op.AddOperand(*_dataState.GetOperand(_docIdsToDataStateNames.find(_node->getName())->second));
+        op.get()->Set(&functions.identity);
+        op.get()->AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(_node->getName())->second));
         break;
 
     case ASTNodeType_t::AST_REAL:
-        op.Set(&functions.identity);
-        op.AddConstant((float)_node->getValue());
+        op.get()->Set(&functions.identity);
+        op.get()->AddConstant((float)_node->getValue());
         break;
 
     case ASTNodeType_t::AST_INTEGER:
-        op.Set(&functions.identity);
-        op.AddConstant((float)_node->getValue());
+        op.get()->Set(&functions.identity);
+        op.get()->AddConstant((float)_node->getValue());
         break;
     }
 
-    return op;
+    return op.get();
 }
 
 

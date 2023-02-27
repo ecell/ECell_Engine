@@ -23,7 +23,7 @@ namespace ECellEngine::IO
 
 		void InitializeSpecies(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
 
-		Operation ASTNodeToOperation(ECellEngine::Data::DataState& _dataState, const std::string& _rootName, const ASTNode* _node, const std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
+		Operation* ASTNodeToOperation(ECellEngine::Data::DataState& _dataState, const std::string& _rootName, const ASTNode* _node, const std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
 
 	public:
 		virtual const std::shared_ptr<ECellEngine::Data::Module> TryImport(const std::filesystem::path& _filePath, ECellEngine::Data::DataState& _dataState) noexcept override;
