@@ -399,12 +399,12 @@ void ECellEngine::Editor::Editor::start()
     bool show_demo_window = true;
 
     //Start the engine
-    engine.start();
+    engine.Start();
 }
 
 void ECellEngine::Editor::Editor::stop()
 {
-    engine.stop();
+    engine.Stop();
 
     // Cleanup
     err = vkDeviceWaitIdle(device);
@@ -435,7 +435,7 @@ void ECellEngine::Editor::Editor::update()
         // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
 
-        engine.update(ImGui::GetIO().DeltaTime);
+        engine.Update(ImGui::GetIO().DeltaTime);
 
         // Resize swap chain?
         if (swapChainRebuild)
