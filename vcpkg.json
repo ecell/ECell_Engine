@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "dependencies": [
     "libxml2",
-    "imgui",
+    {
+      "name": "imgui",
+      "features": [ "docking-experimental" ]
+    },
     "glfw3",
     "vulkan",
     "implot"
