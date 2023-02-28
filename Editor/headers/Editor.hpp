@@ -107,10 +107,10 @@ namespace ECellEngine::Editor
 			return static_cast<WidgetType*>(widgets.back());
 		}
 
-		void start();
+		void Start();
 
-		void stop();
+		void Stop();
 
-		void update();
+		void Update();
 	};
 }

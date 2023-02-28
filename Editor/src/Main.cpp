@@ -7,10 +7,10 @@ int main()
 {
 	ECellEngine::Editor::Editor editor;
 
-	editor.start();
-	editor.update();
+	editor.Start();
+	editor.Update();
 	
-	editor.stop();
+	editor.Stop();
 
 	return 0;
 }

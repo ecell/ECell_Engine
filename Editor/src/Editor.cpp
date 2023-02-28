@@ -398,7 +398,7 @@ void ECellEngine::Editor::Editor::initializeVulkanWindow(ImGui_ImplVulkanH_Windo
 }
 
 
-void ECellEngine::Editor::Editor::start()
+void ECellEngine::Editor::Editor::Start()
 {
     //Start glfw & Vulkan
     initializeEditorWindow();
@@ -407,7 +407,7 @@ void ECellEngine::Editor::Editor::start()
     engine.Start();
 }
 
-void ECellEngine::Editor::Editor::stop()
+void ECellEngine::Editor::Editor::Stop()
 {
     engine.Stop();
 
@@ -426,7 +426,7 @@ void ECellEngine::Editor::Editor::stop()
     glfwTerminate();
 }
 
-void ECellEngine::Editor::Editor::update()
+void ECellEngine::Editor::Editor::Update()
 {
     // Main loop
     while (!glfwWindowShouldClose(window))
