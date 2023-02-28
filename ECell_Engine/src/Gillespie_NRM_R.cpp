@@ -5,7 +5,7 @@
 #include "Gillespie_NRM_R.hpp"
 
 
-std::ostream& operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r)
+std::ostream& ECellEngine::Solvers::operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r)
 {
 	os << "(";
 	for (auto it = _g_nrm_r.quantities.cbegin(); it != _g_nrm_r.quantities.cend(); ++it)
@@ -18,7 +18,7 @@ std::ostream& operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r)
 	return os;
 }
 
-void Gillespie_NRM_R::ApplyInOutBackward(int _i)
+void ECellEngine::Solvers::Gillespie_NRM_R::ApplyInOutBackward(int _i)
 {
 	short reaction_mol_idx = 0;
 	int value;
@@ -39,7 +39,7 @@ void Gillespie_NRM_R::ApplyInOutBackward(int _i)
 	}
 }
 
-void Gillespie_NRM_R::ApplyInOutForward(int _i)
+void ECellEngine::Solvers::Gillespie_NRM_R::ApplyInOutForward(int _i)
 {
 	short reaction_mol_idx = 0;
 	int value;
@@ -62,7 +62,7 @@ void Gillespie_NRM_R::ApplyInOutForward(int _i)
 	}
 }
 
-void Gillespie_NRM_R::BuildDep(int _nbReactions, std::unordered_map<std::string, int>* _nameMap)
+void ECellEngine::Solvers::Gillespie_NRM_R::BuildDep(int _nbReactions, std::unordered_map<std::string, int>* _nameMap)
 {
 	for (int i = 0; i < _nbReactions; i++)
 	{
@@ -125,7 +125,7 @@ void Gillespie_NRM_R::BuildDep(int _nbReactions, std::unordered_map<std::string,
 	}
 }
 
-float Gillespie_NRM_R::ComputePropensity(int _i)
+float ECellEngine::Solvers::Gillespie_NRM_R::ComputePropensity(int _i)
 {
 	float a = astEvaluator->Evaluate(astEvaluator->getNode(kineticLaws[_i]));
 	propensities[_i] = a;
@@ -133,14 +133,14 @@ float Gillespie_NRM_R::ComputePropensity(int _i)
 	return a;
 }
 
-float Gillespie_NRM_R::Exponential(float _lambda)
+float ECellEngine::Solvers::Gillespie_NRM_R::Exponential(float _lambda)
 {
 	//float sample = random_uniform(&rng);
 	//std::cout << sample << std::endl;
 	return -log(random_uniform(&rng)) / _lambda;
 }
 
-void Gillespie_NRM_R::GenerateTAUs(int _nbReactions)
+void ECellEngine::Solvers::Gillespie_NRM_R::GenerateTAUs(int _nbReactions)
 {
 	for (int i = 0; i < _nbReactions; i++)
 	{
@@ -151,7 +151,7 @@ void Gillespie_NRM_R::GenerateTAUs(int _nbReactions)
 	//std::cout << std::endl;
 }
 
-void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
+void ECellEngine::Solvers::Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 {
 	Model* sbmlModel = _sbmlDoc->getModel();
 	int nbSpecies = sbmlModel->getNumSpecies();
@@ -337,7 +337,7 @@ void Gillespie_NRM_R::Initializes(SBMLDocument* _sbmlDoc)
 	initialized = true;
 }
 
-void Gillespie_NRM_R::ManageTrace()
+void ECellEngine::Solvers::Gillespie_NRM_R::ManageTrace()
 {
 	if (traceBlockSize >= 1000)
 	{
@@ -346,7 +346,7 @@ void Gillespie_NRM_R::ManageTrace()
 	}
 }
 
-void Gillespie_NRM_R::RunForward(float _targetTime)
+void ECellEngine::Solvers::Gillespie_NRM_R::RunForward(float _targetTime)
 {
 	//step 2 & 3
 	std::pair<int, float> muTau = itmh.GetRoot();
@@ -408,7 +408,7 @@ void Gillespie_NRM_R::RunForward(float _targetTime)
 
 }
 
-short Gillespie_NRM_R::RunBackward(float _targetTime)
+short ECellEngine::Solvers::Gillespie_NRM_R::RunBackward(float _targetTime)
 {
 	if (traceSize <= 0)
 	{

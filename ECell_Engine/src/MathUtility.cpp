@@ -1,6 +1,6 @@
 #include "MathUtility.hpp"
 
-int fact(int _n)
+int ECellEngine::Maths::fact(int _n)
 {
 	int res = 1;
 	for (int i = 2; i <= _n; i++)
@@ -10,12 +10,12 @@ int fact(int _n)
 	return res;
 }
 
-int nCr(int _n, int _r)
+int ECellEngine::Maths::nCr(int _n, int _r)
 {
 	return revFact(_n, _r) / fact(_r);
 }
 
-int revFact(int _n, int _i)
+int ECellEngine::Maths::revFact(int _n, int _i)
 {
 	int res = _n;
 	for (int i = _n - 1; i >= _i; i--)
@@ -25,7 +25,7 @@ int revFact(int _n, int _i)
 	return res;
 }
 
-std::string str_fact(int _n)
+std::string ECellEngine::Maths::str_fact(int _n)
 {
 	int res = 1;
 	std::string str_res = "    <cn type=\"integer\" sbml:units=\"dimensionless\"> ";
@@ -41,7 +41,7 @@ std::string str_fact(int _n)
 	return str_res;
 }
 
-std::string str_nCR(std::string _n, int _r)
+std::string ECellEngine::Maths::str_nCR(std::string _n, int _r)
 {
 	std::string str_res = "<apply>";
 	str_res += "<times/>";
@@ -69,7 +69,7 @@ std::string str_nCR(std::string _n, int _r)
 	return str_res;
 }
 
-std::string str_revFact(std::string _n, int _i)
+std::string ECellEngine::Maths::str_revFact(std::string _n, int _i)
 {
 	std::string str_res = "<apply>";
 	str_res += "<times/>";

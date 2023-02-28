@@ -3,26 +3,29 @@
 #include "SbmlParser.hpp"
 #include "SbmlWriter.hpp"
 
-class FileIOManager
+namespace ECellEngine::IO
 {
-private:
-	SbmlWriter sbmlWriter;
-	SbmlParser sbmlParser;
-
-	std::string targetFilePath;
-
-public:
-	/*
-	@brief Sets the @a activeDocument private member.
-	*/
-	inline void setTargetFilePath(std::string _filePath)
+	class FileIOManager
 	{
-		targetFilePath = _filePath;
-	}
+	private:
+		SbmlWriter sbmlWriter;
+		SbmlParser sbmlParser;
 
-	/*
-	@brief Opens & Process the file accessible at the directory
-			/a targetFilePath.
-	*/
-	SBMLDocument* tryOpenTargetFileAsSBML();
-};
+		std::string targetFilePath;
+
+	public:
+		/*
+		@brief Sets the @a activeDocument private member.
+		*/
+		inline void setTargetFilePath(std::string _filePath)
+		{
+			targetFilePath = _filePath;
+		}
+
+		/*
+		@brief Opens & Process the file accessible at the directory
+				/a targetFilePath.
+		*/
+		SBMLDocument* tryOpenTargetFileAsSBML();
+	};
+}

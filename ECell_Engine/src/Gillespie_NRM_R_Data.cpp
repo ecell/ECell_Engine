@@ -2,7 +2,7 @@
 #include "Gillespie_NRM_R_Data.hpp"
 
 
-std::ostream& operator<<(std::ostream& os, const IndexedTauMinHeap& _itmh)
+std::ostream& ECellEngine::Data::operator<<(std::ostream& os, const IndexedTauMinHeap& _itmh)
 {
 	for (auto it = _itmh.heap->cbegin(); it != _itmh.heap->cend(); ++it)
 	{
@@ -13,17 +13,17 @@ std::ostream& operator<<(std::ostream& os, const IndexedTauMinHeap& _itmh)
 	return os;
 }
 
-std::pair<int, float> IndexedTauMinHeap::GetRoot()
+std::pair<int, float> ECellEngine::Data::IndexedTauMinHeap::GetRoot()
 {
 	return heap->at(0);
 }
 
-float IndexedTauMinHeap::GetTauFromPointer(int _ptrID)
+float ECellEngine::Data::IndexedTauMinHeap::GetTauFromPointer(int _ptrID)
 {
 	return heap->at(pointers[_ptrID]).second;
 }
 
-void IndexedTauMinHeap::BuildMinHeap()
+void ECellEngine::Data::IndexedTauMinHeap::BuildMinHeap()
 {
 	for (int i = Parent(heapSize) - 1; i > -1; i--)
 	{
@@ -31,7 +31,7 @@ void IndexedTauMinHeap::BuildMinHeap()
 	}
 }
 
-void IndexedTauMinHeap::BubbleUp(int _i)
+void ECellEngine::Data::IndexedTauMinHeap::BubbleUp(int _i)
 {
 	int parent = Parent(_i);
 	if (heap->at(_i).second < heap->at(parent).second)
@@ -41,7 +41,7 @@ void IndexedTauMinHeap::BubbleUp(int _i)
 	}
 }
 
-void IndexedTauMinHeap::Initialize(std::vector<std::pair<int, float>>* _heap)
+void ECellEngine::Data::IndexedTauMinHeap::Initialize(std::vector<std::pair<int, float>>* _heap)
 {
 	heap = _heap;
 	heapSize = heap->size();
@@ -54,12 +54,12 @@ void IndexedTauMinHeap::Initialize(std::vector<std::pair<int, float>>* _heap)
 	BuildMinHeap();
 }
 
-int IndexedTauMinHeap::Left(int _i)
+int ECellEngine::Data::IndexedTauMinHeap::Left(int _i)
 {
 	return 2*_i+1;
 }
 
-void IndexedTauMinHeap::MinHeapify(int _i)
+void ECellEngine::Data::IndexedTauMinHeap::MinHeapify(int _i)
 {
 	int r = Right(_i);
 	int l = Left(_i);
@@ -82,27 +82,27 @@ void IndexedTauMinHeap::MinHeapify(int _i)
 	}
 }
 
-int IndexedTauMinHeap::Parent(int _i)
+int ECellEngine::Data::IndexedTauMinHeap::Parent(int _i)
 {
 	return static_cast<int>(0.5f * (_i - 1));
 }
 
-int IndexedTauMinHeap::Right(int _i)
+int ECellEngine::Data::IndexedTauMinHeap::Right(int _i)
 {
 	return 2 * _i + 2;
 }
 
-void IndexedTauMinHeap::SetTauInRoot(float _tau)
+void ECellEngine::Data::IndexedTauMinHeap::SetTauInRoot(float _tau)
 {
 	heap->at(0).second = _tau;
 }
 
-void IndexedTauMinHeap::SetTauFromPointer(int _ptrID, float _tau)
+void ECellEngine::Data::IndexedTauMinHeap::SetTauFromPointer(int _ptrID, float _tau)
 {
 	heap->at(pointers[_ptrID]).second = _tau;
 }
 
-void IndexedTauMinHeap::Swap(int _i, int _j)
+void ECellEngine::Data::IndexedTauMinHeap::Swap(int _i, int _j)
 {
 	pointers[heap->at(_i).first] = _j;
 	pointers[heap->at(_j).first] = _i;
@@ -112,12 +112,12 @@ void IndexedTauMinHeap::Swap(int _i, int _j)
 	heap->at(_j) = temp;
 }
 
-void IndexedTauMinHeap::UpdateRoot()
+void ECellEngine::Data::IndexedTauMinHeap::UpdateRoot()
 {
 	MinHeapify(0);
 }
 
-void IndexedTauMinHeap::UpdateFromPointer(int _ptrID, float old_tau)
+void ECellEngine::Data::IndexedTauMinHeap::UpdateFromPointer(int _ptrID, float old_tau)
 {
 	if (heap->at(pointers[_ptrID]).second < old_tau)
 	{

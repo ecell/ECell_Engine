@@ -1,4 +1,5 @@
 #pragma once
+#include <type_traits>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -10,10 +11,11 @@
 #include "implot.h"
 
 #include "Engine.hpp"
-#include "EngineDataVisualizationWidget.hpp"
-#include "FileIOWidget.hpp"
+#include "Logger.hpp"
+#include "ExeConsoleLoggerSink.hpp"
+#include "ConsoleWidget.hpp"
 #include "OptionsWidget.hpp"
-#include "SimulationFlowControlWidget.hpp"
+#include "SimulationWidget.hpp"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -22,13 +24,16 @@
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
 
+using namespace ECellEngine::Core;
+
 namespace ECellEngine::Editor
 {
 	class Editor
 	{
-	private:
-		Engine engine;
+	public:
+		bool showDemoWindow;
 
+	private:
 		GLFWwindow* window;
 
 		VkResult				 err;
@@ -46,11 +51,8 @@ namespace ECellEngine::Editor
 		int                      minImageCount;
 		bool                     swapChainRebuild;
 
-		EngineDataVisualizationWidget edvWidget;
-		FileIOWidget fileIOWidget;
-		OptionsWidget optionsWidget;
-		SimulationFlowControlWidget sfcWidget;
-
+		ECellEngine::Editor::Logging::ExeConsoleLoggerSink excLoggerSink;
+		std::vector<Widget*> widgets;
 
 		void cleanupVulkan();
 
@@ -67,11 +69,9 @@ namespace ECellEngine::Editor
 		void initializeVulkanWindow(ImGui_ImplVulkanH_Window* _wd, VkSurfaceKHR _surface, int _width, int _height);
 
 	public:
-		Editor() :
-			edvWidget(engine.getCommandsManager(), engine.getSimulationLoop()),
-			fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
-			optionsWidget(engine.getCommandsManager()),
-			sfcWidget(engine.getCommandsManager(), engine.getSimulationLoop())
+		Engine engine;
+
+		Editor()
 		{
 			window = NULL;
 
@@ -89,7 +89,23 @@ namespace ECellEngine::Editor
 			mainWindowData;
 			minImageCount = 2;
 			swapChainRebuild = false;
-		}		
+
+			ECellEngine::Logging::Logger::GetSingleton().AddSink(&excLoggerSink);
+
+			AddWidget<ConsoleWidget>();
+			AddWidget<OptionsWidget>();
+			AddWidget<SimulationWidget>();
+
+			showDemoWindow = false;
+		}
+
+		template <typename WidgetType, typename = std::enable_if_t<std::is_base_of_v<Widget, WidgetType>>>
+		WidgetType*	AddWidget()
+		{
+			widgets.push_back(new WidgetType(*this));
+
+			return static_cast<WidgetType*>(widgets.back());
+		}
 
 		void start();
 

@@ -1,11 +1,6 @@
 ﻿#include "Engine.hpp"
 
-void Engine::forwardSimulationTarget(const int& _idx)
-{
-	simulationLoop.SetSimulationEnvironment(loadedSBMLDocuments[_idx]);
-}
-
-void Engine::start()
+void ECellEngine::Core::Engine::Start()
 {
 	/*SBMLDocument* sbmlDoc = sbmlParser.OpenSBMLFile("GibsonAndBruckToyModel.xml");
 	sbmlParser.PrettyPrintSBMLDocument(sbmlDoc);*/
@@ -20,43 +15,37 @@ void Engine::start()
 	delete sbmlDoc;
 	*/
 
-	std::cout << "Engine start" << std::endl;
+	//std::cout << "Engine start" << std::endl;
+	ECellEngine::Logging::Logger::GetSingleton().LogTrace("Engine Start");
 
 	commandsManager.start();
 
 	//Engine Commands
-	commandsManager.registerCommand(std::make_shared<AddFileAsSBMLCommand>(this));
-	commandsManager.registerCommand(std::make_shared<AddSimulationTargetCommand>(this));
-	commandsManager.registerCommand(std::make_shared<QuitCommand>(this));	
+	//commandsManager.registerCommand(std::make_shared<QuitCommand>(this));
 
-	//IO Commands
-	commandsManager.registerCommand(std::make_shared<SetFilePathCommand>(&fileIOManager));
-
-	//Simulation Loop commands
-	commandsManager.registerCommand(std::make_shared<DisplayCommand>(&simulationLoop));
-	commandsManager.registerCommand(std::make_shared<GoBackwardCommand>(&simulationLoop));
-	commandsManager.registerCommand(std::make_shared<GoForwardCommand>(&simulationLoop));
-	commandsManager.registerCommand(std::make_shared<PauseCommand>(&simulationLoop));
-	commandsManager.registerCommand(std::make_shared<PlayCommand>(&simulationLoop));
-	commandsManager.registerCommand(std::make_shared<StepBackwardCommand>(&simulationLoop));
-	commandsManager.registerCommand(std::make_shared<StepForwardCommand>(&simulationLoop));
-	commandsManager.registerCommand(std::make_shared<StopCommand>(&simulationLoop));
-
-	simulationLoop.start();
+	//SimulationManager Commands
+	commandsManager.registerCommand(std::make_shared<AddModuleCommand>(&simulationManager));
+	commandsManager.registerCommand(std::make_shared<AddSolverCommand>(&simulationManager));
+	commandsManager.registerCommand(std::make_shared<PauseSimulationCommand>(&simulationManager));
+	commandsManager.registerCommand(std::make_shared<PlaySimulationCommand>(&simulationManager));
+	commandsManager.registerCommand(std::make_shared<StepSimulationBackwardCommand>(&simulationManager));
+	commandsManager.registerCommand(std::make_shared<StepSimulationForwardCommand>(&simulationManager));
+	commandsManager.registerCommand(std::make_shared<StopSimulationCommand>(&simulationManager));
+	commandsManager.registerCommand(std::make_shared<TryAttachSolverToModuleCommand>(&simulationManager));
 
 	//editor.start();
 
 	isRunning = true;
 }
 
-void Engine::stop()
+void ECellEngine::Core::Engine::Stop()
 {
-	simulationLoop.stop();
+	//simulation.stop();
 
 	isRunning = false;
 }
 
-void Engine::update(float _deltaTime)
+void ECellEngine::Core::Engine::Update(float _deltaTime)
 {
-	simulationLoop.update(_deltaTime);
+	simulationManager.UpdatePlayingSimulations(_deltaTime);
 }

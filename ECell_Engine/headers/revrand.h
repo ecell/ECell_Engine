@@ -71,6 +71,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#pragma once
+
  /* Mersenne-Twister (MT-19937) key/state length */
  #define KEY_LENGTH 624
 

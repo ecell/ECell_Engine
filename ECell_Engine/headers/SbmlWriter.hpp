@@ -45,92 +45,95 @@
 #include <sbml/SBMLTypes.h>
 #include "MathUtility.hpp"
 
-class SbmlWriter
+namespace ECellEngine::IO
 {
-private:
-    // The SBML Level and Version of the example SBML models.
-    const static unsigned int Level = 3;
-    const static unsigned int Version = 2;
-
-    struct ReactionPointersCapsule
+    class SbmlWriter
     {
-        Reaction* r;
-        SpeciesReference* spr;
-        KineticLaw* kl;
+    private:
+        // The SBML Level and Version of the example SBML models.
+        const static unsigned int Level = 3;
+        const static unsigned int Version = 2;
+
+        struct ReactionPointersCapsule
+        {
+            LIBSBML_CPP_NAMESPACE::Reaction* r;
+            SpeciesReference* spr;
+            KineticLaw* kl;
+        };
+
+        /// <summary>
+        ///  Defines a parameter object according to the input parameters
+        /// of the function. Since a no value is provided in this function,
+        /// the parameter's SBML "constant" attribute is set to "false".
+        /// </summary>
+        /// <param name="_para_ptr">Pointer to the object.</param>
+        /// <param name="_paraID">Id.</param>
+        /// <param name="_unit">The name of a unit defined in SBML.</param>
+        void DefineParameter(
+            LIBSBML_CPP_NAMESPACE::Parameter* _para_ptr,
+            const std::string& _paraID,
+            const std::string& _unit);
+
+        /// <summary>
+        /// Defines a parameter object according to the input parameters
+        /// of the function. Since a value is provided in this function,
+        /// the parameter's SBML "constant" attribute is set to "true".
+        /// </summary>
+        /// <param name="_para_ptr">Pointer to the object.</param>
+        /// <param name="_paraID">Id.</param>
+        /// <param name="_unit">The name of a unit defined in SBML.</param>
+        /// <param name="_value">Numerical value of the parameter.</param>
+        void DefineParameter(
+            LIBSBML_CPP_NAMESPACE::Parameter* _para_ptr,
+            const std::string& _paraID,
+            const std::string& _unit,
+            const double _value);
+
+        /// <summary>
+        /// Defines an assignment rule to compute the value of a parameter
+        /// such that _variableID=_formula.
+        /// </summary>
+        /// <param name="_ar">Pointer to the object</param>
+        /// <param name="_variableID">ID of the parameter we are defining.
+        /// It must be identical to a parameter ID in the listOfParameters
+        /// of the SBMLDocument being build.</param>
+        /// <param name="_formula">The string based mathematical formula.</param>
+        void DefineParameterAssignementRule(
+            AssignmentRule* _ar,
+            const std::string& _variableID,
+            const std::string& _formula);
+
+        void DefineReaction(
+            ReactionPointersCapsule* _rpc,
+            const std::string& _rID,
+            const std::vector<std::string>& _reactantIDs,
+            const std::vector<int>& _reactantStoichs,
+            const std::vector<std::string>& _productIDs,
+            const std::vector<int>& _productStoichs,
+            const std::string& _kParamID);
+
+        void DefineSpecies(
+            LIBSBML_CPP_NAMESPACE::Species* _sp_ptr,
+            const std::string& _id,
+            const std::string& _name,
+            const std::string& _compartmentID,
+            const std::string& _unit,
+            const double _initialQuantity);
+
+    public:
+        /// <summary>
+        /// Creates an SBML Document corresponding to the toy model in the paper of
+        /// Gibson and Brick (2000,  DOI: 10.1021/jp993732q).
+        /// </summary>
+        /// <returns></returns>
+        SBMLDocument* GibsonAndBruckToyModel();
+
+        /// <summary>
+        ///  Writes the given SBMLDocument to the given file.
+        /// </summary>
+        /// <param name="sbmlDoc">The SBMLDocument object to write.</param>
+        /// <param name="filename">The name of the file to write.</param>
+        /// <returns>True if it managed to write the document, false otherwise.</returns>
+        bool WriteSBML(const SBMLDocument* sbmlDoc, const std::string& filename);
     };
-
-    /// <summary>
-    ///  Defines a parameter object according to the input parameters
-    /// of the function. Since a no value is provided in this function,
-    /// the parameter's SBML "constant" attribute is set to "false".
-    /// </summary>
-    /// <param name="_para_ptr">Pointer to the object.</param>
-    /// <param name="_paraID">Id.</param>
-    /// <param name="_unit">The name of a unit defined in SBML.</param>
-    void DefineParameter(
-        Parameter* _para_ptr,
-        const std::string& _paraID,
-        const std::string& _unit);
-
-    /// <summary>
-    /// Defines a parameter object according to the input parameters
-    /// of the function. Since a value is provided in this function,
-    /// the parameter's SBML "constant" attribute is set to "true".
-    /// </summary>
-    /// <param name="_para_ptr">Pointer to the object.</param>
-    /// <param name="_paraID">Id.</param>
-    /// <param name="_unit">The name of a unit defined in SBML.</param>
-    /// <param name="_value">Numerical value of the parameter.</param>
-    void DefineParameter(
-        Parameter* _para_ptr,
-        const std::string& _paraID,
-        const std::string& _unit,
-        const double _value);
-
-    /// <summary>
-    /// Defines an assignment rule to compute the value of a parameter
-    /// such that _variableID=_formula.
-    /// </summary>
-    /// <param name="_ar">Pointer to the object</param>
-    /// <param name="_variableID">ID of the parameter we are defining.
-    /// It must be identical to a parameter ID in the listOfParameters
-    /// of the SBMLDocument being build.</param>
-    /// <param name="_formula">The string based mathematical formula.</param>
-    void DefineParameterAssignementRule(
-        AssignmentRule* _ar,
-        const std::string& _variableID,
-        const std::string& _formula);
-
-    void DefineReaction(
-        ReactionPointersCapsule* _rpc,
-        const std::string& _rID,
-        const std::vector<std::string>& _reactantIDs,
-        const std::vector<int>& _reactantStoichs,
-        const std::vector<std::string>& _productIDs,
-        const std::vector<int>& _productStoichs,
-        const std::string& _kParamID);
-
-    void DefineSpecies(
-        Species* _sp_ptr,
-        const std::string& _id,
-        const std::string& _name,
-        const std::string& _compartmentID,
-        const std::string& _unit,
-        const double _initialQuantity);
-
-public:
-    /// <summary>
-    /// Creates an SBML Document corresponding to the toy model in the paper of
-    /// Gibson and Brick (2000,  DOI: 10.1021/jp993732q).
-    /// </summary>
-    /// <returns></returns>
-    SBMLDocument* GibsonAndBruckToyModel();
-
-    /// <summary>
-    ///  Writes the given SBMLDocument to the given file.
-    /// </summary>
-    /// <param name="sbmlDoc">The SBMLDocument object to write.</param>
-    /// <param name="filename">The name of the file to write.</param>
-    /// <returns>True if it managed to write the document, false otherwise.</returns>
-    bool WriteSBML(const SBMLDocument* sbmlDoc, const std::string& filename);
-};
+}

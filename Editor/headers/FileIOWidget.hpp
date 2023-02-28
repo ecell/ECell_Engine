@@ -5,6 +5,8 @@
 #include "FileIOManager.hpp"
 #include "Widget.hpp"
 
+using namespace ECellEngine::IO;
+
 namespace ECellEngine::Editor
 {
 	class FileIOWidget : public Widget

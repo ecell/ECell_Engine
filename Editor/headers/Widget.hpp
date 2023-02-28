@@ -2,7 +2,11 @@
 
 #include "imgui.h"
 
-#include "CommandsManager.hpp"
+//forward declaration
+namespace ECellEngine::Editor
+{
+	class Editor;
+}
 
 namespace ECellEngine::Editor
 {
@@ -12,11 +16,11 @@ namespace ECellEngine::Editor
 	class Widget
 	{
 	protected:
-		CommandsManager* engineCmdsManager;
+		Editor& editor;
 
 	public:
 
-		Widget(CommandsManager* _cmdsManager) : engineCmdsManager(_cmdsManager)
+		Widget(Editor& _editor) : editor(_editor)
 		{
 
 		}
@@ -24,7 +28,7 @@ namespace ECellEngine::Editor
 		/*
 		@brief The method to call each frame to draw the content of the widget.
 		*/
-		virtual void draw() = 0;
+		virtual void Draw() = 0;
 
 	};
 }

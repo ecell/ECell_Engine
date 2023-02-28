@@ -1,61 +1,60 @@
 #include "CommandsManager.hpp"
 
-void CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit)
+void ECellEngine::IO::CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit)
 {
 	std::shared_ptr<Command> matchingCommand = tryGetRegisteredCommand(_cmdSplit[0]);
-
+	std::string msg = "Command: ";
 	if (matchingCommand.get() != nullptr)
 	{
 		//Execute the command
-		std::cout << "Executing: ";
 		for (int i = 0; i<_cmdSplit.size(); i++)
 		{
-			std::cout << _cmdSplit[i] << " | ";
+			msg += " " + _cmdSplit[i];
 		}
-		std::cout << std::endl;
+		ECellEngine::Logging::Logger::GetSingleton().LogTrace(msg);
 		matchingCommand->execute(_cmdSplit);
 	}
 	else
 	{
-		std::cout << "The command \"" << _cmdSplit[0] << "\" doesn't exist!" << std::endl;
+		msg += _cmdSplit[0] +  " doesn't exist!";
+		ECellEngine::Logging::Logger::GetSingleton().LogError(msg);
 	}
 }
 
-bool CommandsManager::registerCommand(std::shared_ptr<Command> _command)
+bool ECellEngine::IO::CommandsManager::registerCommand(std::shared_ptr<Command> _command)
 {
 	return commands.emplace(_command->getName(), _command).second;
 }
 
-void CommandsManager::start()
+void ECellEngine::IO::CommandsManager::start()
 {
-	std::cout << "CommandsManager start" << std::endl;
 	isListening = true;
+	ECellEngine::Logging::Logger::GetSingleton().LogTrace("CommandsManager started");
 }
 
-void CommandsManager::stop()
+void ECellEngine::IO::CommandsManager::stop()
 {
-	std::cout << "CommandsManager stop" << std::endl;
 	isListening = false;
+	ECellEngine::Logging::Logger::GetSingleton().LogWarning("CommandsManager stopped");
 }
 
-std::shared_ptr<Command> CommandsManager::tryGetRegisteredCommand(std::string const& commandName)
+std::shared_ptr<ECellEngine::IO::Command> ECellEngine::IO::CommandsManager::tryGetRegisteredCommand(std::string const& commandName)
 {
 	auto foundCommandIterator = commands.find(commandName);
 
 	return (foundCommandIterator != commands.cend()) ? foundCommandIterator->second : nullptr;
 }
 
-void CommandsManager::update()
+void ECellEngine::IO::CommandsManager::update()
 {
 	std::string commandInput;
 	std::vector<std::string> commandInputSplit;
 
-	std::cout << "CommandsManager update" << std::endl;
 	while (isListening)
 	{
 		commandInput = waitForConsoleInput();
 		commandInputSplit = splitStr(commandInput);
 		interpretCommand(commandInputSplit);
 	};
-	std::cout << "Exiting keyboard input polling loop" << std::endl;
+	ECellEngine::Logging::Logger::GetSingleton().LogWarning("Exiting keyboard input polling loop.");
 }
