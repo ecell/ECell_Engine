@@ -30,6 +30,9 @@ namespace ECellEngine::Editor
 {
 	class Editor
 	{
+	public:
+		bool showDemoWindow;
+
 	private:
 		GLFWwindow* window;
 
@@ -92,6 +95,8 @@ namespace ECellEngine::Editor
 			AddWidget<ConsoleWidget>();
 			AddWidget<OptionsWidget>();
 			AddWidget<SimulationWidget>();
+
+			showDemoWindow = false;
 		}
 
 		template <typename WidgetType, typename = std::enable_if_t<std::is_base_of_v<Widget, WidgetType>>>

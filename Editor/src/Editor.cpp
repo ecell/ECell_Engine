@@ -403,9 +403,6 @@ void ECellEngine::Editor::Editor::start()
     //Start glfw & Vulkan
     initializeEditorWindow();
 
-    // Our state
-    bool show_demo_window = true;
-
     //Start the engine
     engine.Start();
 }
@@ -431,8 +428,6 @@ void ECellEngine::Editor::Editor::stop()
 
 void ECellEngine::Editor::Editor::update()
 {
-    static bool showDemoWindow = false;
-
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
