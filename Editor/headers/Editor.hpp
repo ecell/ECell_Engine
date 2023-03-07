@@ -1,15 +1,8 @@
 #pragma once
-#include <type_traits>
-
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_vulkan.h"
-#define GLFW_INCLUDE_NONE
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#include <vulkan/vulkan.h>
 #include "implot.h"
 
+#include "BackendUtility.hpp"
 #include "Engine.hpp"
 #include "Logger.hpp"
 #include "ExeConsoleLoggerSink.hpp"
@@ -34,61 +27,26 @@ namespace ECellEngine::Editor
 		bool showDemoWindow;
 
 	private:
-		GLFWwindow* window;
-
-		VkResult				 err;
-		VkAllocationCallbacks* allocator;
-		VkInstance               instance;
-		VkPhysicalDevice         physicalDevice;
-		VkDevice                 device;
-		uint32_t                 queueFamily;
-		VkQueue                  queue;
-		VkDebugReportCallbackEXT debugReport;
-		VkPipelineCache          pipelineCache;
-		VkDescriptorPool         descriptorPool;
-
-		ImGui_ImplVulkanH_Window mainWindowData;
-		int                      minImageCount;
-		bool                     swapChainRebuild;
+		
+		Utility::BackendUtility backend;
 
 		ECellEngine::Editor::Logging::ExeConsoleLoggerSink excLoggerSink;
 		std::vector<Widget*> widgets;
 
-		void cleanupVulkan();
+		void InitializeImGui();
 
-		void cleanupVulkanWindow();
-
-		void frameRender(ImGui_ImplVulkanH_Window* _wd, ImDrawData* _draw_data);
-
-		void framePresent(ImGui_ImplVulkanH_Window* _wd);
-
-		void initializeEditorWindow();
-
-		void initializeVulkan(const char** _extensions, uint32_t _extensions_count);
-
-		void initializeVulkanWindow(ImGui_ImplVulkanH_Window* _wd, VkSurfaceKHR _surface, int _width, int _height);
+		/*
+		@brief Reprocess the font Atlas. Mainly to have clearer glyphs in the node editor (but applied everywhere).
+		@author thedmd at https://github.com/thedmd/imgui-node-editor/blob/2f99b2d613a400f6579762bd7e7c343a0d844158/examples/application/source/application.cpp#L88
+		*/
+		void RecreateFontAtlas();
 
 	public:
 		Engine engine;
 
 		Editor()
 		{
-			window = NULL;
-
-			err = VK_ERROR_UNKNOWN;
-			allocator = NULL;
-			instance = VK_NULL_HANDLE;
-			physicalDevice = VK_NULL_HANDLE;
-			device = VK_NULL_HANDLE;
-			queueFamily = (uint32_t)-1;
-			queue = VK_NULL_HANDLE;
-			debugReport = VK_NULL_HANDLE;
-			pipelineCache = VK_NULL_HANDLE;
-			descriptorPool = VK_NULL_HANDLE;
-
-			mainWindowData;
-			minImageCount = 2;
-			swapChainRebuild = false;
+			
 
 			ECellEngine::Logging::Logger::GetSingleton().AddSink(&excLoggerSink);
 
