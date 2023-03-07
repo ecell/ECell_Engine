@@ -23,9 +23,6 @@ namespace ECellEngine::Editor
 {
 	class Editor
 	{
-	public:
-		bool showDemoWindow;
-
 	private:
 		
 		Utility::BackendUtility backend;
@@ -43,11 +40,11 @@ namespace ECellEngine::Editor
 
 	public:
 		Engine engine;
+		
+		bool showDemoWindow; //for debug puproses
 
 		Editor()
 		{
-			
-
 			ECellEngine::Logging::Logger::GetSingleton().AddSink(&excLoggerSink);
 
 			AddWidget<ConsoleWidget>();
@@ -58,10 +55,9 @@ namespace ECellEngine::Editor
 		}
 
 		template <typename WidgetType, typename = std::enable_if_t<std::is_base_of_v<Widget, WidgetType>>>
-		WidgetType*	AddWidget()
+		inline WidgetType*	AddWidget()
 		{
 			widgets.push_back(new WidgetType(*this));
-
 			return static_cast<WidgetType*>(widgets.back());
 		}
 
