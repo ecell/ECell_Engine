@@ -26,9 +26,10 @@ add_executable( ECellEngineEditor
 #"src/EngineDataVisualizationWidget.cpp"
 #"src/FileIOWidget.cpp"
 #"src/ModelStateVisualizationWidget.cpp"
+"src/MainWindow.cpp"
+"src/ModelExplorerWidget.cpp"
 "src/OptionsWidget.cpp"
-#"src/SimulationFlowControlWidget.cpp"
-"src/SimulationWidget.cpp"
+"src/SimulationFlowControlWidget.cpp"
 )
 
 target_link_libraries(ECellEngineEditor PRIVATE ECellEngine)
