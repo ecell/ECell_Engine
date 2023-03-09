@@ -26,6 +26,11 @@ namespace ECellEngine::Editor
 		}
 
 		/*
+		@brief To be executed once on its first frame.
+		*/
+		virtual void Awake() = 0;
+
+		/*
 		@brief The method to call each frame to draw the content of the widget.
 		*/
 		virtual void Draw() = 0;

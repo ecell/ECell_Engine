@@ -64,6 +64,8 @@ namespace ECellEngine::Editor
 			ax::NodeEditor::DestroyEditor(m_Context);
 		}
 
+		inline void Awake() override {};
+
 		void Draw() override;
 	};
 }

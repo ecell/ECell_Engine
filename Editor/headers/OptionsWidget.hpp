@@ -15,6 +15,8 @@ namespace ECellEngine::Editor
 
 		}
 
+		inline void Awake() override {};
+
 		void Draw() override;
 	};
 }

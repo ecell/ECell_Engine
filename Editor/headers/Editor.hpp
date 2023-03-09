@@ -30,8 +30,13 @@ namespace ECellEngine::Editor
 		Utility::BackendUtility backend;
 
 		ECellEngine::Editor::Logging::ExeConsoleLoggerSink excLoggerSink;
+		
+		std::vector<Widget*> newWidgets;
 		std::vector<Widget*> widgets;
 
+		/*
+		@brief Creates ImGui contexts, sets the style, the main flags and generates the fonts.
+		*/
 		void InitializeImGui();
 
 		/*
@@ -62,6 +67,7 @@ namespace ECellEngine::Editor
 		inline WidgetType*	AddWidget()
 		{
 			widgets.push_back(new WidgetType(*this));
+			newWidgets.push_back(widgets.back());
 			return static_cast<WidgetType*>(widgets.back());
 		}
 

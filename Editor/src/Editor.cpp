@@ -93,12 +93,14 @@ void ECellEngine::Editor::Editor::Update()
 
         // -- CUSTOM WINDOWS SPACE START --
         
-        //edvWidget.draw();
-        //fileIOWidget.draw();
-        //consoleWidget.Draw();
-        //optionsWidget.Draw();
-        //simulationWidget.Draw();
-        //sfcWidget.draw();
+        //Awakes the newly created widgets if any.
+        for (std::vector<Widget*>::iterator it = newWidgets.begin(); it != newWidgets.end(); it++)
+        {
+            (*it)->Awake();
+        }
+        newWidgets.clear();
+
+        //Draw the Widgets
         for (std::vector<Widget*>::iterator it = widgets.begin(); it != widgets.end(); it++)
         {
             (*it)->Draw();

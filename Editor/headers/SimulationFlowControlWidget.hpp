@@ -33,6 +33,8 @@ namespace ECellEngine::Editor
 			simuDirection = _simuLoop->getSimulationDirection();*/
 		}
 
+		inline void Awake() override {};
+
 		void Draw() override;
 	};
 }

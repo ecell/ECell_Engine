@@ -63,24 +63,26 @@ namespace ECellEngine::Editor
 			ECellEngine::Logging::Logger::GetSingleton().RemoveSink(ecLoggerSink.sinkIdx);
 		}
 
+		inline void Awake() override {};
+
 		void Draw() override;
 
-		void LogTrace(const std::string& _msg)
+		inline void LogTrace(const std::string& _msg)
 		{
 			log.push_back(LogMessage(LogLevel::trace, _msg));
 		}
 		
-		void LogDebug(const std::string& _msg)
+		inline void LogDebug(const std::string& _msg)
 		{
 			log.push_back(LogMessage(LogLevel::debug, _msg));
 		}
 		
-		void LogError(const std::string& _msg)
+		inline void LogError(const std::string& _msg)
 		{
 			log.push_back(LogMessage(LogLevel::error, _msg));
 		}
 		
-		void LogWarning(const std::string& _msg)
+		inline void LogWarning(const std::string& _msg)
 		{
 			log.push_back(LogMessage(LogLevel::warning, _msg));
 		}
