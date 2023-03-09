@@ -6,21 +6,11 @@
 #include "imgui_node_editor.h"
 
 #include "Logger.hpp"
+#include "NodeEditorUtility.hpp"
 #include "Widget.hpp"
 
 namespace ECellEngine::Editor
 {
-	// Struct to hold basic information about connection between
-	// pins. Note that connection (aka. link) has its own ID.
-	// This is useful later with dealing with selections, deletion
-	// or other operations.
-	struct LinkInfo
-	{
-		ax::NodeEditor::LinkId Id;
-		ax::NodeEditor::PinId  InputId;
-		ax::NodeEditor::PinId  OutputId;
-	};
-
 	class ModelExplorerWidget : public Widget
 	{
 	private:
@@ -29,25 +19,8 @@ namespace ECellEngine::Editor
 		std::vector<std::string> addModuleCommandArray = {"addModule", "path"};
 
 		ax::NodeEditor::EditorContext * m_Context = nullptr;
-		ImVector<LinkInfo>   m_Links;                // List of live links. It is dynamic unless you want to create read-only view over nodes.
-		int                  m_NextLinkId = 100;
-
-		inline void ImGuiEx_BeginColumn()
-		{
-			ImGui::BeginGroup();
-		}
-
-		inline void ImGuiEx_NextColumn()
-		{
-			ImGui::EndGroup();
-			ImGui::SameLine();
-			ImGui::BeginGroup();
-		}
-
-		inline void ImGuiEx_EndColumn()
-		{
-			ImGui::EndGroup();
-		}
+		ImVector<ECellEngine::Editor::Utility::LinkInfo>   links;                // List of live links. It is dynamic unless you want to create read-only view over nodes.
+		std::size_t nextLinkId = 100;
 
 		void DrawModelExplorer();
 

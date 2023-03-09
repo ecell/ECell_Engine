@@ -2,7 +2,6 @@
 
 void ECellEngine::Editor::ModelExplorerWidget::Draw()
 {
-    //ImGui::SetNextWindowSize(ImVec2(900, 600), ImGuiCond_Once);
     static bool wasdocked = false;
     ImGui::Begin("Model Explorer");
     if (ImGui::IsWindowDocked())
@@ -60,10 +59,8 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawModelExplorer()
     ax::NodeEditor::PinId  nodeB_InputPinId2 = uniqueId++;
     ax::NodeEditor::PinId  nodeB_OutputPinId = uniqueId++;
 
-    //ECellEngine::Logging::Logger::GetSingleton().LogDebug("Before if: " + std::to_string(firstUse));
     if (firstUse)
     {
-        ECellEngine::Logging::Logger::GetSingleton().LogDebug("After if: " + std::to_string(firstUse));
         ax::NodeEditor::SetNodePosition(nodeA_Id, ImVec2(10, 10));
         ax::NodeEditor::SetNodePosition(nodeB_Id, ImVec2(210, 60));
         ax::NodeEditor::NavigateToContent(0.0f);
@@ -80,25 +77,26 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawModelExplorer()
     ImGui::Text("Out ->");
     ax::NodeEditor::EndPin();
     ax::NodeEditor::EndNode();
+    
 
     ax::NodeEditor::BeginNode(nodeB_Id);
     ImGui::Text("Node B");
-    ImGuiEx_BeginColumn();
+    ECellEngine::Editor::Utility::NodeEditorUtility::BeginColumn();
     ax::NodeEditor::BeginPin(nodeB_InputPinId1, ax::NodeEditor::PinKind::Input);
     ImGui::Text("-> In1");
     ax::NodeEditor::EndPin();
     ax::NodeEditor::BeginPin(nodeB_InputPinId2, ax::NodeEditor::PinKind::Input);
     ImGui::Text("-> In2");
     ax::NodeEditor::EndPin();
-    ImGuiEx_NextColumn();
+    ECellEngine::Editor::Utility::NodeEditorUtility::NextColumn();
     ax::NodeEditor::BeginPin(nodeB_OutputPinId, ax::NodeEditor::PinKind::Output);
     ImGui::Text("Out ->");
     ax::NodeEditor::EndPin();
-    ImGuiEx_EndColumn();
+    ECellEngine::Editor::Utility::NodeEditorUtility::EndColumn();
     ax::NodeEditor::EndNode();
 
     // Submit Links
-    for (auto& linkInfo : m_Links)
+    for (auto& linkInfo : links)
         ax::NodeEditor::Link(linkInfo.Id, linkInfo.InputId, linkInfo.OutputId);
 
     //
@@ -129,10 +127,10 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawModelExplorer()
                 if (ax::NodeEditor::AcceptNewItem())
                 {
                     // Since we accepted new link, lets add one to our list of links.
-                    m_Links.push_back({ ax::NodeEditor::LinkId(m_NextLinkId++), inputPinId, outputPinId });
+                    links.push_back({ ax::NodeEditor::LinkId(nextLinkId++), inputPinId, outputPinId });
 
                     // Draw new link.
-                    ax::NodeEditor::Link(m_Links.back().Id, m_Links.back().InputId, m_Links.back().OutputId);
+                    ax::NodeEditor::Link(links.back().Id, links.back().InputId, links.back().OutputId);
                 }
 
                 // You may choose to reject connection between these nodes
@@ -155,11 +153,11 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawModelExplorer()
             if (ax::NodeEditor::AcceptDeletedItem())
             {
                 // Then remove link from your data.
-                for (auto& link : m_Links)
+                for (auto& link : links)
                 {
                     if (link.Id == deletedLinkId)
                     {
-                        m_Links.erase(&link);
+                        links.erase(&link);
                         break;
                     }
                 }
@@ -175,9 +173,3 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawModelExplorer()
     ax::NodeEditor::End();
     ax::NodeEditor::SetCurrentEditor(nullptr);
 }
-
-//
-//void ECellEngine::Editor::ModelExplorerWidget::DrawSimulationFlowControls()
-//{
-//    ImGui::Text("This is Simulation Workflow Control.");
-//}
