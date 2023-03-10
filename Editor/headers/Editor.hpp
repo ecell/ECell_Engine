@@ -30,6 +30,7 @@ namespace ECellEngine::Editor
 		Utility::BackendUtility backend;
 
 		ECellEngine::Editor::Logging::ExeConsoleLoggerSink excLoggerSink;
+		ECellEngine::Editor::Logging::ExeConsoleLoggerSink exeLoggerSink;
 		
 		std::vector<Widget*> newWidgets;
 		std::vector<Widget*> widgets;
@@ -52,7 +53,7 @@ namespace ECellEngine::Editor
 
 		Editor()
 		{
-			ECellEngine::Logging::Logger::GetSingleton().AddSink(&excLoggerSink);
+			ECellEngine::Logging::Logger::GetSingleton().AddSink(&exeLoggerSink);
 
 			AddWidget<MainWindow>();
 			AddWidget<ConsoleWidget>();
