@@ -18,7 +18,7 @@ namespace ECellEngine::Editor
 		//bool firstUse;
 		std::vector<std::string> addModuleCommandArray = {"addModule", "path"};
 
-		ax::NodeEditor::EditorContext * m_Context = nullptr;
+		ax::NodeEditor::EditorContext * nodeEditorCtxt = nullptr;
 		ImVector<ECellEngine::Editor::Utility::LinkInfo>   links;                // List of live links. It is dynamic unless you want to create read-only view over nodes.
 		std::size_t nextLinkId = 100;
 
@@ -29,12 +29,12 @@ namespace ECellEngine::Editor
 			Widget(_editor)
 		{
 			ax::NodeEditor::Config nodeConfig;
-			m_Context = ax::NodeEditor::CreateEditor(&nodeConfig);
+			nodeEditorCtxt = ax::NodeEditor::CreateEditor(&nodeConfig);
 		}
 
 		~ModelExplorerWidget()
 		{
-			ax::NodeEditor::DestroyEditor(m_Context);
+			ax::NodeEditor::DestroyEditor(nodeEditorCtxt);
 		}
 
 		inline void Awake() override {};

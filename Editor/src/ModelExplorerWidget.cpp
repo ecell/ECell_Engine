@@ -37,7 +37,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawModelExplorer()
 
     ImGui::Separator();
 
-    ax::NodeEditor::SetCurrentEditor(m_Context);
+    ax::NodeEditor::SetCurrentEditor(nodeEditorCtxt);
 
     // Start interaction with editor.
     ax::NodeEditor::Begin("Model Exploration Space", ImVec2(0.0, 0.0f));
