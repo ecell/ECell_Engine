@@ -39,6 +39,11 @@ namespace ECellEngine::Editor::Utility
 		fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 	}
 
+	/**
+	* @brief Utility to initialize glfw + Vulkan backends for ImGui.
+	* @remarks Most of the code here comes from ImGui demo. See: 
+	*			https://github.com/ocornut/imgui/blob/master/examples/example_glfw_vulkan/main.cpp
+	*/
 	struct BackendUtility
 	{
 		GLFWwindow* window;
@@ -78,6 +83,9 @@ namespace ECellEngine::Editor::Utility
 			swapChainRebuild = false;
 		}
 
+		/**
+		* @brief To call on window closing to clean everything.
+		*/
 		inline void CleanUp()
 		{
 			err = vkDeviceWaitIdle(device);

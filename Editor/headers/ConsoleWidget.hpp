@@ -11,8 +11,23 @@ using namespace ECellEngine::Editor::Logging;
 
 namespace ECellEngine::Editor
 {
-	enum LogLevel {debug, error, trace, warning};
+	
+	/*! \file ConsoleWidget.hpp */
 
+	/**
+	* @brief An enum to handle different types of log messages.
+	*/
+	enum LogLevel {
+		debug, /*!< Intended to be used to print messages during development.*/
+		error, /*!< Reports errors to the user of the engine.*/
+		trace, /*!< Reports operation performed by the engine to the user.*/
+		warning /*!< Reports warnings to the user.*/
+	};
+
+	/**
+	* @brief The struct containing the data used to correctly 
+	*		display a message in the console of the editor.
+	*/
 	struct LogMessage
 	{
 		std::string msg;
@@ -67,21 +82,37 @@ namespace ECellEngine::Editor
 
 		void Draw() override;
 
+		/**
+		* @brief Display a message of type #ECellEngine::Editor::LogLevel::trace
+		*		 in this ConsoleWidget of the Editor.
+		*/
 		inline void LogTrace(const std::string& _msg)
 		{
 			log.push_back(LogMessage(LogLevel::trace, _msg));
 		}
 		
+		/**
+		* @brief Display a message of type #ECellEngine::Editor::LogLevel::debug
+		*		 in this ConsoleWidget of the Editor.
+		*/
 		inline void LogDebug(const std::string& _msg)
 		{
 			log.push_back(LogMessage(LogLevel::debug, _msg));
 		}
 		
+		/**
+		* @brief Display a message of type #ECellEngine::Editor::LogLevel::error
+		*		 in this ConsoleWidget of the Editor.
+		*/
 		inline void LogError(const std::string& _msg)
 		{
 			log.push_back(LogMessage(LogLevel::error, _msg));
 		}
 		
+		/**
+		* @brief Display a message of type #ECellEngine::Editor::LogLevel::warning
+		*		 in this ConsoleWidget of the Editor.
+		*/
 		inline void LogWarning(const std::string& _msg)
 		{
 			log.push_back(LogMessage(LogLevel::warning, _msg));
