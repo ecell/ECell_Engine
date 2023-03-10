@@ -14,8 +14,8 @@ namespace ECellEngine::Editor
 	
 	/*! \file ConsoleWidget.hpp */
 
-	/**
-	* @brief An enum to handle different types of log messages.
+	/*!
+	@brief An enum to handle different types of log messages.
 	*/
 	enum LogLevel {
 		debug, /*!< Intended to be used to print messages during development.*/
@@ -24,9 +24,9 @@ namespace ECellEngine::Editor
 		warning /*!< Reports warnings to the user.*/
 	};
 
-	/**
-	* @brief The struct containing the data used to correctly 
-	*		display a message in the console of the editor.
+	/*!
+	@brief The struct containing the data used to correctly 
+		display a message in the console of the editor.
 	*/
 	struct LogMessage
 	{
@@ -39,6 +39,9 @@ namespace ECellEngine::Editor
 			ProcessLevel(_lvl);
 		}
 
+		/*!
+		@brief Formats the message depending on its #ECellEngine::Editor::LogLevel
+		*/
 		void ProcessLevel(const LogLevel _lvl)
 		{
 			switch (_lvl)
@@ -59,12 +62,16 @@ namespace ECellEngine::Editor
 		}
 	};
 
+	/*!
+	@brief The window displaying a console where messages about the state of
+			the simulation are printed.
+	*/
 	class ConsoleWidget : public Widget
 	{
 	
 	private:
-		EditorConsoleLoggerSink ecLoggerSink;
-		std::vector<LogMessage> log;
+		EditorConsoleLoggerSink ecLoggerSink; /*!< The logger sink used to collect the messages.*/
+		std::vector<LogMessage> log; /*< The collection of log messages received.*/
 
 	public:
 		ConsoleWidget(Editor& _editor) :
