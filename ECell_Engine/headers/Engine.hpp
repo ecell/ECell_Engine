@@ -13,25 +13,35 @@ using namespace ECellEngine::IO;
 
 namespace ECellEngine::Core
 {
-/*
-@brief The main class of the engine.
-@details Controls everything related to initializing, starting up,
+	/*!
+	@brief The heart of ECellEngine.
+	@details Controls everything related to initializing, starting up,
 		 updating and ending the modules of the engine.
-*/
+	*/
 	class Engine
 	{
+		/*!
+		@brief The manager to call specific tasks from outside the engine's code.
+		*/
 		CommandsManager commandsManager;
+		
+		/*!
+		@brief The manager to control the execution and integrity of simulations.
+		*/
 		SimulationsManager simulationManager;
 
 	public:
 		Engine() = default;
 
+		/*
+		@brief True is ::Start() was called and ::Stop() has no yet been called.
+		*/
 		bool isRunning;
 
 #pragma region Accessors
 
-		/*
-		@brief Gets the pointer to @a commandsManager private member.
+		/*!
+		@brief Gets the pointer to ::commandsManager private member.
 		*/
 		inline CommandsManager* GetCommandsManager()
 		{
@@ -44,19 +54,19 @@ namespace ECellEngine::Core
 #pragma endregion
 
 #pragma region Logic
-		/*
-		@brief Initializes every sub modules or variable needed for the engine
-				to be able to start running.
+		/*!
+		@brief Initializes everything needed for the engine to start running.
+		@details Registers commands.
 		*/
 		void Start();
 
-		/*
-		@brief Does everything needed to stop the engine.
+		/*!
+		@brief Stops any running simulation and cleans up everything.
 		*/
 		void Stop();
 
-		/*
-		@brief The method to run the engine.
+		/*!
+		@brief Update the simulations via the ::simulationManager.
 		*/
 		void Update(float _deltaTime);
 #pragma endregion
