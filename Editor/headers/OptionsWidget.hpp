@@ -4,10 +4,12 @@
 
 namespace ECellEngine::Editor
 {
+	/*!
+	  @brief The window with a variety of options for the editor.
+	  @remarks May be completely refactored or deleted if not needed anymore.
+	*/
 	class OptionsWidget : public Widget
 	{
-	private:
-
 	public:
 		OptionsWidget(Editor& _editor) :
 			Widget(_editor)

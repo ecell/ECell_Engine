@@ -82,13 +82,6 @@ void ECellEngine::Editor::SimulationFlowControlWidget::DrawSimulationControls()
 
 void ECellEngine::Editor::SimulationFlowControlWidget::Draw()
 {
-    static const ImGuiWindowFlags windowFlags =
-        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-
-    static const ImGuiDockNodeFlags dockFlags = ImGuiDockNodeFlags_NoDockingOverMe | ImGuiDockNodeFlags_NoDockingSplitMe;
-
     ImGui::Begin("Simulation Flow Control", NULL, windowFlags);
 
     ImGui::GetWindowDockNode()->LocalFlags |= dockFlags;

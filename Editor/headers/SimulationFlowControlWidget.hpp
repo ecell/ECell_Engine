@@ -7,9 +7,36 @@
 
 namespace ECellEngine::Editor
 {
+	/*!
+	@brief The window containing the buttons to control the flow of time of
+			a simulation.
+	@details This window cannot be undocked nor destroyed from the editor. If
+			 every other window have been closed, this one will always be here.
+			 We do this because these controls are the core of the engine.
+	*/
 	class SimulationFlowControlWidget : public Widget
 	{
 	private :
+
+		/*!
+		  @brief Flags for the window containing the buttons controlling simulations.
+		  @details This window cannot be resized nor collapsed. It also cannot be moved
+					nor focused.
+		*/
+		const ImGuiWindowFlags windowFlags =
+			ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+		/*!
+		  @brief Flags for the docking conditions to this window.
+		  @details Nothing can be docked on this window. We do this to preserve
+					theintegratity and visibility of these important controls.
+		*/
+		const ImGuiDockNodeFlags dockFlags =
+			ImGuiDockNodeFlags_NoDockingOverMe | ImGuiDockNodeFlags_NoDockingSplitMe;
+
+
 		/*SimulationState* simuState;
 		short* simuDirection;
 		float stepTime = 0.016;
