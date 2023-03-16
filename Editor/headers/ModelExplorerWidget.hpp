@@ -32,8 +32,8 @@ namespace ECellEngine::Editor
 		@brief The node editor context.
 		*/
 		ax::NodeEditor::EditorContext * nodeEditorCtxt = nullptr;
-		ImVector<ECellEngine::Editor::Utility::LinkInfo>   links;                // List of live links. It is dynamic unless you want to create read-only view over nodes.
-		std::size_t nextLinkId = 100;
+		std::vector<ECellEngine::Editor::Utility::LinkInfo>   links;                // List of live links. It is dynamic unless you want to create read-only view over nodes.
+		int nextLinkId = 100;
 
 		void DrawModelExplorer();
 

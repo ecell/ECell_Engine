@@ -28,6 +28,7 @@ add_executable( ECellEngineEditor
 #"src/ModelStateVisualizationWidget.cpp"
 "src/MainWindow.cpp"
 "src/ModelExplorerWidget.cpp"
+"src/NodeEditorUtility.cpp"
 "src/OptionsWidget.cpp"
 "src/SimulationFlowControlWidget.cpp"
 )
