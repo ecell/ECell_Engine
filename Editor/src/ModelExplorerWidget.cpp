@@ -3,7 +3,7 @@
 void ECellEngine::Editor::ModelExplorerWidget::Draw()
 {
     static bool wasdocked = false;
-    ImGui::Begin("Model Explorer");
+    ImGui::Begin("Model Explorer", NULL, windowFlags);
     if (ImGui::IsWindowDocked())
     {
         if (!wasdocked)
@@ -17,19 +17,34 @@ void ECellEngine::Editor::ModelExplorerWidget::Draw()
         wasdocked = false;
     }
 
+    
+    DrawMenuBar();
     DrawModelExplorer();
+
     ImGui::End();
 }
 
+void ECellEngine::Editor::ModelExplorerWidget::DrawMenuBar()
+{
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("Assets"))
+        {
+            if (ImGui::MenuItem("Add"))
+            {
+                ECellEngine::Logging::Logger::GetSingleton().LogDebug("Assets Menu Clicked");
+                addModuleCommandArray[2] = "C:/Users/eliot/Documents/Source/External/Papers/Hat-et-al_p53_BNG/S2_Code_BioNetGen/export/p53_L3V2_mod2.xml";
+                editor.engine.GetCommandsManager()->interpretCommand(addModuleCommandArray);
+            }
+
+            ImGui::EndMenu();
+        }
+        ImGui::EndMenuBar();
+    }
+}
 
 void ECellEngine::Editor::ModelExplorerWidget::DrawModelExplorer()
-{
-    /*if (ImGui::Button("Add Module"))
-    {
-        addModuleCommandArray[1] = "C:/Users/eliot/Documents/Source/External/Papers/Hat-et-al_p53_BNG/S2_Code_BioNetGen/export/p53_L3V2_mod2.xml";
-        editor.engine.GetCommandsManager()->interpretCommand(addModuleCommandArray);
-    }*/
-    
+{    
     ImGuiIO& io = ImGui::GetIO();
 
     ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);

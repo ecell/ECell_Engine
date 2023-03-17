@@ -23,10 +23,17 @@ namespace ECellEngine::Editor
 	private:
 		
 		/*!
+		  @brief Flags for the model explorer window.
+		  @details Enable the MenuBar.
+		*/
+		const ImGuiWindowFlags windowFlags =
+			ImGuiWindowFlags_MenuBar;
+
+		/*!
 		@brief The vector that contains the arguments for the 
 				ECellEngine::IO::AddModuleCommand
 		*/
-		std::vector<std::string> addModuleCommandArray = {"addModule", "path"};
+		std::vector<std::string> addModuleCommandArray = {"addModule", "0", "path"};
 
 		/*!
 		@brief The node editor context.
@@ -35,7 +42,15 @@ namespace ECellEngine::Editor
 		std::vector<ECellEngine::Editor::Utility::LinkInfo>   links;                // List of live links. It is dynamic unless you want to create read-only view over nodes.
 		int nextLinkId = 100;
 
+		/*!
+		@brief Draws the node display space to explore the simulation.
+		*/
 		void DrawModelExplorer();
+
+		/*!
+		@brief Draw every options of the Model Explorer's menu bar.
+		*/
+		void DrawMenuBar();
 
 	public:
 		ModelExplorerWidget(Editor& _editor) :
