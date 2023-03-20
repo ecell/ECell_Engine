@@ -33,7 +33,8 @@ void ECellEngine::Core::Engine::Start()
 	commandsManager.registerCommand(std::make_shared<StopSimulationCommand>(&simulationManager));
 	commandsManager.registerCommand(std::make_shared<TryAttachSolverToModuleCommand>(&simulationManager));
 
-	//editor.start();
+	//Creates a new simulation by default.
+	simulationManager.NewSimulation();
 
 	isRunning = true;
 }

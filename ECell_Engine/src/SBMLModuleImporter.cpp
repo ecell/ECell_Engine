@@ -45,14 +45,25 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(ECellEngine::Data
         if (rule->isParameter())
         {
             astNode = rule->getMath();
-            Operation root = *ASTNodeToOperation(_dataState, rule->getVariable(), astNode, _docIdsToDataStateNames);
+            ECellEngine::Logging::Logger::GetSingleton().LogDebug(std::to_string(i) + ": Processing The computed parameter: " + rule->getVariable());
+            //covers the case when we have a rule of the form 'a = b'
+            //In this situation we do not do the tree parsing but we create the operation directly.
+            if (astNode->getType() == ASTNodeType_t::AST_NAME)
+            {
+                Operation root = Operation(rule->getVariable());
+                root.Set(&functions.identity);
+                root.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(astNode->getName())->second));
+                _sbmlModule.AddComputedParameters(rule->getVariable(), root);
+            }
+            else
+            {
+                Operation root = ASTNodeToOperation(astNode, rule->getVariable(), _dataState, _docIdsToDataStateNames);
+                _sbmlModule.AddComputedParameters(rule->getVariable(), root);
+            }
 
-            _sbmlModule.AddComputedParameters(rule->getVariable(), root);
             _docIdsToDataStateNames[rule->getVariable()] = rule->getVariable();
         }
     }
-
-    //TODO: make the dependency graph of the parameters
 }
 
 void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model,
@@ -87,9 +98,21 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
 
         astNode = reaction->getKineticLaw()->getMath();
         ECellEngine::Logging::Logger::GetSingleton().LogDebug("Processing Kinetic Law of reaction: " + reaction->getId());
-        Operation root = *ASTNodeToOperation(_dataState, reaction->getId(), astNode, _docIdsToDataStateNames);
 
-        _sbmlModule.AddReaction(reaction->getId(), products, reactants, root);
+        //covers the case when we have a rule of the form 'a = b'
+        //In this situation we do not do the tree parsing but we create the operation directly.
+        if (astNode->getType() == ASTNodeType_t::AST_NAME)
+        {
+            Operation root = Operation(reaction->getId());
+            root.Set(&functions.identity);
+            root.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(astNode->getName())->second));
+            _sbmlModule.AddReaction(reaction->getId(), products, reactants, root);
+        }
+        else
+        {
+            Operation root = ASTNodeToOperation(astNode, reaction->getId(), _dataState, _docIdsToDataStateNames);
+            _sbmlModule.AddReaction(reaction->getId(), products, reactants, root);
+        }
 
         reactants.clear();
         products.clear();
@@ -110,101 +133,104 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeSpecies(ECellEngine::Data::D
     }
 }
 
-Operation* ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(ECellEngine::Data::DataState& _dataState, const std::string& _rootName, const ASTNode* _node,
-    const std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
+Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
+                                        const ASTNode* _rootAstNode,const std::string _rootName,
+                                        ECellEngine::Data::DataState& _dataState,
+                                        std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
-    std::shared_ptr<Operation> op = std::make_shared<Operation>(_rootName);
+    Operation op = Operation(_rootName);
+    AssignOperationFunction(op, _rootAstNode);
+
+    std::vector<Operation*> opsStack = { &op };
+    std::vector<ASTNode*> nodesStack = { _rootAstNode->getRightChild(), _rootAstNode->getLeftChild()};
+
+    //The while loop to build the tree of operations
+    while (opsStack.size() != 0)
+    {
+        Operation* pOP = opsStack.back(); //pOP stands for parent Operation
+
+        if (pOP->IsFull())
+        {
+            opsStack.pop_back();
+        }
+        else
+        {
+            ASTNode* cNode = nodesStack.back(); //cNode stands for child Node
+            if (IsASTNodeOperation(cNode))
+            {
+                Operation* cOP = &pOP->AddOperation(_rootName);//cOP stands for child Operation
+                AssignOperationFunction(*cOP, cNode);
+                opsStack.push_back(cOP);
+
+                nodesStack.pop_back();
+                nodesStack.push_back(cNode->getRightChild());
+                nodesStack.push_back(cNode->getLeftChild());
+            }
+
+            if (cNode->getType() == ASTNodeType_t::AST_INTEGER ||
+                cNode->getType() == ASTNodeType_t::AST_REAL)
+            {
+                pOP->AddConstant(cNode->getValue());
+                nodesStack.pop_back();
+            }
+
+            if (cNode->getType() == ASTNodeType_t::AST_NAME)
+            {
+                //Here the cNode corresponds to a variable (species or parameter)
+                //that has already been added to the data state. So we add an Operand
+                //directly in the pOP and we find the reference in the data state.
+                pOP->AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(cNode->getName())->second));
+                nodesStack.pop_back();
+            }            
+        }
+        
+    }
+
+    // Go through the operation tree and shrink local vectors (constants & operations) before
+    // pushing the their content inside the operands vector. Indeed since operands is a
+    // vector<Operand*> we cannot push pointers into it until the tree is finished building 
+    // and before we shrink. If we did, pointers would be broken every time the contants or
+    // operation vectors are changed.
+    op.LinkLocalOperands();
+
+    return op;
+}
+
+bool ECellEngine::IO::SBMLModuleImporter::IsASTNodeOperation(const ASTNode* _node)
+{
+    return (_node->getType() == ASTNodeType_t::AST_PLUS ||
+           _node->getType() == ASTNodeType_t::AST_MINUS ||
+           _node->getType() == ASTNodeType_t::AST_TIMES ||
+           _node->getType() == ASTNodeType_t::AST_DIVIDE ||
+           _node->getType() == ASTNodeType_t::AST_FUNCTION_POWER);
+}
+
+void ECellEngine::IO::SBMLModuleImporter::AssignOperationFunction(Operation& _op, const ASTNode* _node)
+{
     switch (_node->getType())
     {
     case ASTNodeType_t::AST_PLUS:
-        op.get()->Set(&functions.add);
-        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
-        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
+        _op.Set(&functions.add);
         break;
+
     case ASTNodeType_t::AST_MINUS:
-        op.get()->Set(&functions.minus);
-        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
-        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
+        _op.Set(&functions.minus);
         break;
+
     case ASTNodeType_t::AST_TIMES:
-        op.get()->Set(&functions.times);
-        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
-        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
+        _op.Set(&functions.times);
         break;
+
     case ASTNodeType_t::AST_DIVIDE:
-        op.get()->Set(&functions.divide);
-        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
-        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
+        _op.Set(&functions.divide);
         break;
+
     case ASTNodeType_t::AST_FUNCTION_POWER:
-        op.get()->Set(&functions.power);
-        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getLeftChild(), _docIdsToDataStateNames));
-        op.get()->AddOperand(ASTNodeToOperation(_dataState, _rootName, _node->getRightChild(), _docIdsToDataStateNames));
-        break;
-
-    case ASTNodeType_t::AST_NAME:
-        op.get()->Set(&functions.identity);
-        op.get()->AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(_node->getName())->second));
-        break;
-
-    case ASTNodeType_t::AST_REAL:
-        op.get()->Set(&functions.identity);
-        op.get()->AddConstant((float)_node->getValue());
-        break;
-
-    case ASTNodeType_t::AST_INTEGER:
-        op.get()->Set(&functions.identity);
-        op.get()->AddConstant((float)_node->getValue());
+        _op.Set(&functions.power);
         break;
     }
-
-    return op.get();
 }
 
-
-/**
- *
- * Adapted from:
- *
- * File: example.cpp (https://sbml.org/software/libsbml/5.18.0/docs/formatted/cpp-api/libsbml-example.html)
- * Function : validateExampleSBML(SBMLDocument* sbmlDoc) -> renamed ValidateSBML(SBMLDocument* sbmlDoc)
- * Description: Validates and pretty-prints the warnings or errors if any.
- * @author  Akiya Jouraku
- *
- * <!--------------------------------------------------------------------------
- * This sample program is distributed under a different license than the rest
- * of libSBML.  This program uses the open-source MIT license, as follows:
- *
- * Copyright (c) 2013-2018 by the California Institute of Technology
- * (California, USA), the European Bioinformatics Institute (EMBL-EBI, UK)
- * and the University of Heidelberg (Germany), with support from the National
- * Institutes of Health (USA) under grant R01GM070923.  All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- *
- * Neither the name of the California Institute of Technology (Caltech), nor
- * of the European Bioinformatics Institute (EMBL-EBI), nor of the University
- * of Heidelberg, nor the names of any contributors, may be used to endorse
- * or promote products derived from this software without specific prior
- * written permission.
- * -------------------------------------------------------------------------->
- */
 const bool ECellEngine::IO::SBMLModuleImporter::ValidateSBML(SBMLDocument* _sbmlDoc)
 {
     if (!_sbmlDoc || _sbmlDoc->getModel() == NULL)
