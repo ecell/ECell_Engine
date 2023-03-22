@@ -45,9 +45,9 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(ECellEngine::Data
         if (rule->isParameter())
         {
             astNode = rule->getMath();
-            ECellEngine::Logging::Logger::GetSingleton().LogDebug(std::to_string(i) + ": Processing The computed parameter: " + rule->getVariable());
             //covers the case when we have a rule of the form 'a = b'
-            //In this situation we do not do the tree parsing but we create the operation directly.
+            //In this situation we do not do the tree parsing but we create the
+            //operation directly with the root node.
             if (astNode->getType() == ASTNodeType_t::AST_NAME)
             {
                 Operation root = Operation(rule->getVariable());
@@ -97,10 +97,9 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
         }
 
         astNode = reaction->getKineticLaw()->getMath();
-        ECellEngine::Logging::Logger::GetSingleton().LogDebug("Processing Kinetic Law of reaction: " + reaction->getId());
-
         //covers the case when we have a rule of the form 'a = b'
-        //In this situation we do not do the tree parsing but we create the operation directly.
+        //In this situation we do not do the tree parsing but we create the
+        //operation directly with the root node.
         if (astNode->getType() == ASTNodeType_t::AST_NAME)
         {
             Operation root = Operation(reaction->getId());
