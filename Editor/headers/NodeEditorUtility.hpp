@@ -12,9 +12,31 @@ namespace ECellEngine::Editor::Utility
 	*/
 	struct LinkInfo
 	{
-		ax::NodeEditor::LinkId Id;
-		ax::NodeEditor::PinId  InputId;
-		ax::NodeEditor::PinId  OutputId;
+		ax::NodeEditor::LinkId id;
+		ax::NodeEditor::PinId  inputId;
+		ax::NodeEditor::PinId  outputId;
+	};
+
+	struct NodePinsInfo
+	{
+		unsigned short nbPins;
+		std::vector<char*> pinNames;
+	};
+
+	struct AssetNodeInfo
+	{
+		ax::NodeEditor::NodeId id;
+		const char* name;
+		
+		NodePinsInfo inputPins;
+		NodePinsInfo outputPins;
+
+		AssetNodeInfo( std::size_t& _nodeId, const char* _name) :
+			id {_nodeId++}, name{_name}
+		{
+
+		}
+
 	};
 
 	/*!

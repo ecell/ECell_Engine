@@ -76,7 +76,7 @@ void ECellEngine::Editor::Utility::NodeEditorUtility::LinkCreation(int& _id, std
                     _links.push_back({ ax::NodeEditor::LinkId(_id++), inputPinId, outputPinId });
 
                     // Draw new link.
-                    ax::NodeEditor::Link(_links.back().Id, _links.back().InputId, _links.back().OutputId);
+                    ax::NodeEditor::Link(_links.back().id, _links.back().inputId, _links.back().outputId);
                 }
 
                 // You may choose to reject connection between these nodes
@@ -102,7 +102,7 @@ void ECellEngine::Editor::Utility::NodeEditorUtility::LinkDestruction(std::vecto
                 // Then remove link from your data.
                 for (std::vector<ECellEngine::Editor::Utility::LinkInfo>::iterator it = _links.begin(); it != _links.end(); it++)
                 {
-                    if ((*it).Id == deletedLinkId)
+                    if ((*it).id == deletedLinkId)
                     {
                         _links.erase(it);
                         break;
