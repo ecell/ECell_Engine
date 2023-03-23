@@ -3,10 +3,9 @@
 #include <string>
 #include <vector>
 
-#include "imgui_node_editor.h"
-
 #include "Logger.hpp"
-#include "NodeEditorUtility.hpp"
+#include "ModelHierarchyWidget.hpp"
+#include "ModelNodeBasedViewerWidget.hpp"
 #include "Widget.hpp"
 
 namespace ECellEngine::Editor
@@ -14,9 +13,6 @@ namespace ECellEngine::Editor
 	/*!
 	@brief The window that contains the GUI to explore the assembled model of a
 			simulation.
-	@details This window displays the model as a network of connected nodes.
-			 Nodes may represent model assets, solvers and the data state.
-	@see It relies on a third party node editor: https://github.com/thedmd/imgui-node-editor by thedmd
 	*/
 	class ModelExplorerWidget : public Widget
 	{
@@ -68,24 +64,21 @@ namespace ECellEngine::Editor
 		std::vector<std::string> addSolverCommandArray = {"addSolver", "0", "solverName"};
 
 		/*!
-		@brief The node editor context.
+		@brief The widget to display the data added to the current simulation
+				space as a tree.
 		*/
-		ax::NodeEditor::EditorContext * nodeEditorCtxt = nullptr;
-		std::size_t uniqueIdx;
+		ModelHierarchyWidget modelHierarchy;
 
 		/*!
-		@brief The list of asset nodes.
-		@details It contains the information used to draw the nodes corresponding
-				 to each asset imported in the current simulation space.
+		@brief The list of model viewers opened to explore the data added
+				in the current simulation.
 		*/
-		std::vector<ECellEngine::Editor::Utility::AssetNodeInfo> assetNodes;
+		std::vector<ModelNodeBasedViewerWidget> mnbViewers;
 
-		std::vector<ECellEngine::Editor::Utility::LinkInfo> links;// List of live links. It is dynamic unless you want to create read-only view over nodes.
-		
 		/*!
-		@brief Adds an ECellEngine::Editor::Utility::AssetNodeInfo in ::assetNodes.
+		@brief Adds an Asset to the current simulation environment.
 		*/
-		void AddAssetNode(const char* _name);
+		void AddAsset();
 
 		/*!
 		@brief Draws the popup window used to select which solver to add in the
@@ -100,39 +93,19 @@ namespace ECellEngine::Editor
 		void DrawImportAssetPopup();
 
 		/*!
-		@brief Draws the node display space to explore the simulation.
-		*/
-		void DrawModelExplorer();
-
-		/*!
 		@brief Draw every options of the Model Explorer's menu bar.
 		*/
 		void DrawMenuBar();
-
-		/*!
-		@brief Removes as asset node from ::assetNodes
-		@param _idx The idex of the node to erase from ::assetNodes.
-		*/
-		inline void RemoveAssetNode(const std::size_t _idx)
-		{
-			assetNodes.erase(assetNodes.begin() + _idx);
-		}
+		
 
 	public:
 		ModelExplorerWidget(Editor& _editor) :
-			Widget(_editor)
+			Widget(_editor), modelHierarchy(_editor, this)
 		{
-			uniqueIdx = 0;
-			ax::NodeEditor::Config nodeConfig;
-			nodeEditorCtxt = ax::NodeEditor::CreateEditor(&nodeConfig);
+			mnbViewers.push_back(ModelNodeBasedViewerWidget(editor, this));
 		}
 
-		~ModelExplorerWidget()
-		{
-			ax::NodeEditor::DestroyEditor(nodeEditorCtxt);
-		}
-
-		inline void Awake() override {};
+		void Awake() override;
 
 		void Draw() override;
 	};

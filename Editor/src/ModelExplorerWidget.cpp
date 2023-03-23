@@ -1,9 +1,36 @@
 #include "Editor.hpp"//forward declaration initiated in the  base class "Widget"
 
-void ECellEngine::Editor::ModelExplorerWidget::AddAssetNode(const char* _name)
+void ECellEngine::Editor::ModelExplorerWidget::AddAsset()
 {
-    assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeInfo(uniqueIdx, _name));
+    //AddAsset Visualization in Hierarchy
+    //Add AssetNode to the ModelNodeBasedViewer
 
+}
+
+void ECellEngine::Editor::ModelExplorerWidget::Awake()
+{
+    ImGui::Begin("Model Explorer");
+    
+    ImGuiID rootNode = ImGui::DockBuilderAddNode(ImGui::GetID("Model Explorer"));
+    ImGui::DockBuilderSetNodeSize(rootNode, ImGui::GetCurrentWindow()->Size);
+    
+    ImGuiID dock_id_DRL = ImGui::DockBuilderSplitNode(rootNode, ImGuiDir_Left, 0.2f, nullptr, &rootNode);
+    ImGuiID dock_id_DRR = ImGui::DockBuilderSplitNode(rootNode, ImGuiDir_Right, 0.8f, nullptr, &rootNode);
+
+
+    ImGui::DockBuilderDockWindow("Model Hierarchy", dock_id_DRL);
+    ImGui::DockBuilderDockWindow("Model Viewer", dock_id_DRR);
+
+    ImGui::DockBuilderFinish(ImGui::GetID("MainWindow"));
+
+
+    ImGui::End();
+
+    modelHierarchy.Awake();
+    for (std::vector<ModelNodeBasedViewerWidget>::iterator it = mnbViewers.begin(); it != mnbViewers.end(); it++)
+    {
+        it->Awake();
+    }
 }
 
 void ECellEngine::Editor::ModelExplorerWidget::Draw()
@@ -23,6 +50,8 @@ void ECellEngine::Editor::ModelExplorerWidget::Draw()
         wasdocked = false;
     }
 
+    ImGuiID dockspaceID = ImGui::GetID("Model Explorer");
+    ImGui::DockSpace(dockspaceID);
     
     DrawMenuBar();
 
@@ -36,7 +65,12 @@ void ECellEngine::Editor::ModelExplorerWidget::Draw()
         DrawAddSolverPopup();
     }
 
-    DrawModelExplorer();
+    modelHierarchy.Draw();
+
+    for (std::vector<ModelNodeBasedViewerWidget>::iterator it = mnbViewers.begin(); it != mnbViewers.end(); it++)
+    {
+        it->Draw();
+    }
 
     ImGui::End();
 }
@@ -45,26 +79,22 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawAddSolverPopup()
 {
     if (ImGui::Begin("Add Solver", NULL, popupWindowFlags))
     {
-        if (ImGui::BeginMenu("Solvers"))
+        if (ImGui::BeginMenu("Biochemical"))
         {
-            if (ImGui::BeginMenu("Biochemical"))
+            if (ImGui::MenuItem("Gillespie Next Reaction Method"))
             {
-                if (ImGui::MenuItem("Gillespie Next Reaction Method"))
-                {
-                    addSolverCommandArray[2] = "GillespieNRMRSolver";
-                    editor.engine.GetCommandsManager()->interpretCommand(addSolverCommandArray);
-                    utilityState &= 0 << 1;
-                }
+                addSolverCommandArray[2] = "GillespieNRMRSolver";
+                editor.engine.GetCommandsManager()->interpretCommand(addSolverCommandArray);
+                utilityState &= 0 << 1;
+            }
                 
-                if (ImGui::MenuItem("Ordinary Differential Equations (TODO)"))
-                {
-                    ECellEngine::Logging::Logger::GetSingleton().LogWarning("ODE Solver is not yet available");
-                    utilityState &= 0 << 1;
-                }
-                ImGui::EndMenu();// Solvers/Biochemical
+            if (ImGui::MenuItem("Ordinary Differential Equations (TODO)"))
+            {
+                ECellEngine::Logging::Logger::GetSingleton().LogWarning("ODE Solver is not yet available");
+                utilityState &= 0 << 1;
             }
 
-            ImGui::EndMenu();// Solvers
+            ImGui::EndMenu();// Biochemical
         }
 
         if (ImGui::Button("Close"))
@@ -78,7 +108,6 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawAddSolverPopup()
 
 void ECellEngine::Editor::ModelExplorerWidget::DrawImportAssetPopup()
 {
-    ImGui::SetNextWindowSize(ImVec2(400, 120), ImGuiCond_Once);
     if (ImGui::Begin("Import Asset From File", NULL, popupWindowFlags))
     {
         ImGui::InputText("File Path", assetPathBuffer, 256);
@@ -90,7 +119,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawImportAssetPopup()
             editor.engine.GetCommandsManager()->interpretCommand(addModuleCommandArray);
 
             /*TODO: Check that the module was correctly imported before drawing.*/
-            AddAssetNode(assetNameBuffer);
+            AddAsset();
 
             utilityState &= 0 << 0;
         }
@@ -116,40 +145,18 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawMenuBar()
             {
                 utilityState |= 1 << 0;
                 ImGui::SetNextWindowPos(ImGui::GetIO().MousePos);
+                ImGui::SetNextWindowSize(ImVec2(400, 120));
             }
 
             if (ImGui::MenuItem("Asset Solver"))
             {
                 utilityState |= 1 << 1;
                 ImGui::SetNextWindowPos(ImGui::GetIO().MousePos);
+                ImGui::SetNextWindowSize(ImVec2(150, 90));
             }
 
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
     }
-}
-
-void ECellEngine::Editor::ModelExplorerWidget::DrawModelExplorer()
-{    
-    ImGuiIO& io = ImGui::GetIO();
-
-    ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
-
-    ImGui::Separator();
-
-    ax::NodeEditor::SetCurrentEditor(nodeEditorCtxt);
-
-    // Start interaction with editor.
-    ax::NodeEditor::Begin("Model Exploration Space", ImVec2(0.0, 0.0f));
-
-    // Submit Links
-    for (ECellEngine::Editor::Utility::LinkInfo& linkInfo : links)
-    {
-        ax::NodeEditor::Link(linkInfo.id, linkInfo.inputId, linkInfo.outputId);
-    }
-
-    // End of interaction with editor.
-    ax::NodeEditor::End();
-    ax::NodeEditor::SetCurrentEditor(nullptr);
 }
