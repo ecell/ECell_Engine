@@ -48,6 +48,14 @@ namespace ECellEngine::Core
 			return &commandsManager;
 		}
 
+		/*!
+		@brief Gets the pointer to ::simulationManager private member.
+		*/
+		inline SimulationsManager* GetSimulationsManager()
+		{
+			return &simulationManager;
+		}
+
 #pragma endregion
 
 #pragma region Mutators
