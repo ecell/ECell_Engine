@@ -76,11 +76,6 @@ namespace ECellEngine::Editor
 		std::vector<ModelNodeBasedViewerWidget> mnbViewers;
 
 		/*!
-		@brief Adds an Asset to the current simulation environment.
-		*/
-		void AddAsset();
-
-		/*!
 		@brief Draws the popup window used to select which solver to add in the
 				current simulation space.
 		*/
@@ -103,6 +98,24 @@ namespace ECellEngine::Editor
 			Widget(_editor), modelHierarchy(_editor, this)
 		{
 			mnbViewers.push_back(ModelNodeBasedViewerWidget(editor, this));
+		}
+
+		/*!
+		@brief Retrieves the pointer to ::modelHierarchy
+		*/
+		inline ModelHierarchyWidget* GetModelHierarchy() noexcept 
+		{
+			return &modelHierarchy;
+		}
+
+		/*!
+		@brief Retrieves the pointer to the model node-based viewer at index
+				@p _idx in ::mnbViewers.
+		@param _idx The index of the viewer to retrieve in ::mnbViewers.
+		*/
+		inline ModelNodeBasedViewerWidget* GetMNBViewer(const std::size_t _idx) noexcept
+		{
+			return &mnbViewers[_idx];
 		}
 
 		void Awake() override;

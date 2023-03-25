@@ -1,12 +1,5 @@
 #include "Editor.hpp"//forward declaration initiated in the  base class "Widget"
 
-void ECellEngine::Editor::ModelExplorerWidget::AddAsset()
-{
-    //AddAsset Visualization in Hierarchy
-    //Add AssetNode to the ModelNodeBasedViewer
-
-}
-
 void ECellEngine::Editor::ModelExplorerWidget::Awake()
 {
     ImGui::Begin("Model Explorer");
@@ -85,6 +78,9 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawAddSolverPopup()
             {
                 addSolverCommandArray[2] = "GillespieNRMRSolver";
                 editor.engine.GetCommandsManager()->interpretCommand(addSolverCommandArray);
+
+                modelHierarchy.AddSolverName("Gillespie Next Reaction Method");
+
                 utilityState &= 0 << 1;
             }
                 
@@ -119,7 +115,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawImportAssetPopup()
             editor.engine.GetCommandsManager()->interpretCommand(addModuleCommandArray);
 
             /*TODO: Check that the module was correctly imported before drawing.*/
-            AddAsset();
+            modelHierarchy.AddAssetName(assetNameBuffer);
 
             utilityState &= 0 << 0;
         }

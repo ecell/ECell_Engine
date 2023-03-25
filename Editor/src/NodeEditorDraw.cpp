@@ -1,33 +1,30 @@
-#include "NodeEditorUtility.hpp"
+#include "NodeEditorDraw.hpp"
 
-void ECellEngine::Editor::Utility::NodeEditorUtility::DrawNode(
-	int& _id, const char* _name,
-	const short _nbInputPin, const char* _inputPinNames[],
-	const short _nbOutputPin, const char* _outputPinNames[])
+void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, const AssetNodeData& _assetNodeInfo)
 {
-	ax::NodeEditor::BeginNode(_id);
-	_id++;
+    ax::NodeEditor::BeginNode(_assetNodeInfo.id);
 
-	ImGui::Text(_name);
+    ImGui::Text(_name);
 
-	ECellEngine::Editor::Utility::NodeEditorUtility::BeginColumn();
-	for (std::size_t i = 0; i < _nbInputPin; i++)
-	{
-		DrawInputPin(_id, _inputPinNames[i]);
-	}
+    /*ECellEngine::Editor::Utility::NodeEditorDraw::BeginColumn();
+    for (std::size_t i = 0; i < _assetNodeInfo.inputPins.nbPins; i++)
+    {
+        ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(i, _assetNodeInfo.inputPins.pinNames[i]);
+    }
 
-	ECellEngine::Editor::Utility::NodeEditorUtility::NextColumn();
+    ECellEngine::Editor::Utility::NodeEditorDraw::NextColumn();
 
-	for (std::size_t i = 0; i < _nbOutputPin; i++)
-	{
-		DrawOutputPin(_id, _outputPinNames[i]);
-	}
-	ECellEngine::Editor::Utility::NodeEditorUtility::EndColumn();
+    for (std::size_t i = 0; i < _assetNodeInfo.outputPins.nbPins; i++)
+    {
+        ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(i, _assetNodeInfo.outputPins.pinNames[i]);
+    }
 
-	ax::NodeEditor::EndNode();
+    ECellEngine::Editor::Utility::NodeEditorDraw::EndColumn();*/
+
+    ax::NodeEditor::EndNode();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorUtility::DrawInputPin(int& _id, const char* _name)
+void ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(std::size_t& _id, const char* _name)
 {
 	ax::NodeEditor::BeginPin(_id, ax::NodeEditor::PinKind::Input);
 	_id++;
@@ -37,7 +34,7 @@ void ECellEngine::Editor::Utility::NodeEditorUtility::DrawInputPin(int& _id, con
 	ax::NodeEditor::EndPin();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorUtility::DrawOutputPin(int& _id, const char* _name)
+void ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(std::size_t& _id, const char* _name)
 {
 	ax::NodeEditor::BeginPin(_id, ax::NodeEditor::PinKind::Output);
 	_id++;
@@ -47,7 +44,32 @@ void ECellEngine::Editor::Utility::NodeEditorUtility::DrawOutputPin(int& _id, co
 	ax::NodeEditor::EndPin();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorUtility::LinkCreation(int& _id, std::vector<ECellEngine::Editor::Utility::LinkInfo>& _links)
+void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo)
+{
+
+    ax::NodeEditor::BeginNode(_solverNodeInfo.id);
+
+    ImGui::Text(_name);
+
+    /*ECellEngine::Editor::Utility::NodeEditorDraw::BeginColumn();
+    for (std::size_t i = 0; i < _solverNodeInfo.inputPins.nbPins; i++)
+    {
+        ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(i, _solverNodeInfo.inputPins.pinNames[i]);
+    }
+
+    ECellEngine::Editor::Utility::NodeEditorDraw::NextColumn();
+
+    for (std::size_t i = 0; i < _solverNodeInfo.outputPins.nbPins; i++)
+    {
+        ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(i, _solverNodeInfo.outputPins.pinNames[i]);
+    }
+
+    ECellEngine::Editor::Utility::NodeEditorDraw::EndColumn();*/
+
+    ax::NodeEditor::EndNode();
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(int& _id, std::vector<ECellEngine::Editor::Utility::LinkData>& _links)
 {
     // Handle creation action, returns true if editor want to create new object (node or link)
     if (ax::NodeEditor::BeginCreate())
@@ -88,7 +110,7 @@ void ECellEngine::Editor::Utility::NodeEditorUtility::LinkCreation(int& _id, std
     ax::NodeEditor::EndCreate(); // Wraps up object creation action handling.
 }
 
-void ECellEngine::Editor::Utility::NodeEditorUtility::LinkDestruction(std::vector<ECellEngine::Editor::Utility::LinkInfo>& _links)
+void ECellEngine::Editor::Utility::NodeEditorDraw::LinkDestruction(std::vector<ECellEngine::Editor::Utility::LinkData>& _links)
 {
     if (ax::NodeEditor::BeginDelete())
     {
@@ -100,7 +122,7 @@ void ECellEngine::Editor::Utility::NodeEditorUtility::LinkDestruction(std::vecto
             if (ax::NodeEditor::AcceptDeletedItem())
             {
                 // Then remove link from your data.
-                for (std::vector<ECellEngine::Editor::Utility::LinkInfo>::iterator it = _links.begin(); it != _links.end(); it++)
+                for (std::vector<ECellEngine::Editor::Utility::LinkData>::iterator it = _links.begin(); it != _links.end(); it++)
                 {
                     if ((*it).id == deletedLinkId)
                     {

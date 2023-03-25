@@ -8,7 +8,7 @@ namespace ECellEngine::Editor
 	class ModelExplorerWidget;
 }
 
-#include "NodeEditorUtility.hpp"
+#include "NodeEditorDraw.hpp"
 #include "Widget.hpp"
 
 namespace ECellEngine::Editor
@@ -25,6 +25,14 @@ namespace ECellEngine::Editor
 	*/
 	class ModelNodeBasedViewerWidget : public Widget
 	{
+	private:
+
+		/*!
+		@brief The logic to decide what to draw when the user drops (from a drag
+				& drop action) a payload in the area of this viewer.
+		*/
+		void HandleSimuDataRefDrop();
+
 	public:
 
 		/*!
@@ -43,9 +51,16 @@ namespace ECellEngine::Editor
 		@details It contains the information used to draw the nodes corresponding
 				 to each asset imported in the current simulation space.
 		*/
-		std::vector<ECellEngine::Editor::Utility::AssetNodeInfo> assetNodes;
+		std::vector<ECellEngine::Editor::Utility::AssetNodeData> assetNodes;
 
-		std::vector<ECellEngine::Editor::Utility::LinkInfo> links;// List of live links. It is dynamic unless you want to create read-only view over nodes.
+		/*!
+		@brief The list of solver nodes.
+		@details It contains the information used to draw the nodes corresponding
+				 to each solvers imported in the current simulation space.
+		*/
+		std::vector<ECellEngine::Editor::Utility::SolverNodeData> solverNodes;
+
+		std::vector<ECellEngine::Editor::Utility::LinkData> links;// List of live links. It is dynamic unless you want to create read-only view over nodes.
 
 		ModelNodeBasedViewerWidget(Editor& _editor, ModelExplorerWidget* _rootExplorer) :
 			Widget(_editor), rootExplorer{ _rootExplorer }
@@ -60,8 +75,15 @@ namespace ECellEngine::Editor
 
 		/*!
 		@brief Adds an ECellEngine::Editor::Utility::AssetNodeInfo in ::assetNodes.
+		@details It has for consequence to draw an asset node in the editor.
 		*/
-		void AddAssetNode(const char* _name);
+		void AddAssetNode(const std::size_t _dataIdx);
+
+		/*!
+		@brief Adds an ECellEngine::Editor::Utility::SolverNodeInfo in ::solverNodes.
+		@details It has for consequence to draw a solver node in the editor.
+		*/
+		void AddSolverNode(const std::size_t _dataIdx);
 
 		void Awake() override;
 
