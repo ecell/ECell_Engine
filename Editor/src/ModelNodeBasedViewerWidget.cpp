@@ -3,24 +3,14 @@
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::AddAssetNode(const std::size_t _dataIdx)
 {
-    assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeData(uniqueIdx, _dataIdx));
-    
-    //Retrieve raw pointer to data (encapsulated in shared_ptr)
-    assetNodes.back().data = editor.engine.GetSimulationsManager()->GetSimulation(0)->GetModule(_dataIdx).get();
-    ax::NodeEditor::SetNodePosition(uniqueIdx, ImGui::GetIO().MousePos);
-
-    uniqueIdx++;
+    assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeData(
+        uniqueIdx, _dataIdx, editor.engine.GetSimulationsManager()->GetSimulation(0)->GetModule(_dataIdx).get()));
 }
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::AddSolverNode(const std::size_t _dataIdx)
 {
-    solverNodes.push_back(ECellEngine::Editor::Utility::SolverNodeData(uniqueIdx, _dataIdx));
-    
-    //Retrieve raw pointer to data (encapsulated in shared_ptr)
-    solverNodes.back().data = editor.engine.GetSimulationsManager()->GetSimulation(0)->GetSolver(_dataIdx).get();
-    ax::NodeEditor::SetNodePosition(uniqueIdx, ImGui::GetIO().MousePos);
-
-    uniqueIdx++;
+    solverNodes.push_back(ECellEngine::Editor::Utility::SolverNodeData(
+        uniqueIdx, _dataIdx, editor.engine.GetSimulationsManager()->GetSimulation(0)->GetSolver(_dataIdx).get()));
 }
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::Awake()

@@ -43,19 +43,17 @@ namespace ECellEngine::Editor::Utility
 
 		/*!
 		@brief Draw a basic input pin symbolized by an arrow. 
-		@param _idx The index of this pin to draw. The value is incremented
-					immediately after it is used for this pin.
-		@param _name The name of the pin to dislay after the arrow.
+		@param _pinData The struct containing the information about the
+				pin to be drawn as an input pin.
 		*/
-		static void InputPin(std::size_t& _idx, const char* _name);
+		static void InputPin(const NodePinData& _pinData);
 
 		/*!
 		@brief Draw a basic output pin symbolized by an arrow.
-		@param _idx The index of this pin to draw. The value is incremented
-					immediately after it is used for this pin.
-		@param _name The name of the pin to dislay before the arrow.
+		@param _pinData The struct containing the information about the
+				pin to be drawn as an output pin.
 		*/
-		static void OutputPin(std::size_t& _idx, const char* _name);
+		static void OutputPin(const NodePinData& _pinData);
 
 		/*!
 		@brief The basic logic to create links between input and output

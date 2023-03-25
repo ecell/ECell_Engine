@@ -18,26 +18,30 @@ namespace ECellEngine::Editor::Utility
 		ax::NodeEditor::PinId  inputId;
 		ax::NodeEditor::PinId  outputId;
 	};
-
+	
 	/*
-	@brief Information about a set of pins to draw in a node
-	@remarks The number of strings encoded in ::pinNames MUST
-				 be identical to ::nbPins. If ::pinNames <
-				 ::nbPins, an index error will be generated. If
-				 If ::pinNames > ::nbPins no errors will be
-				 generated but not every pins will be drawn.
+	@brief Information about a pin to draw in a node.
 	*/
-	struct NodePinsData
+	struct NodePinData
 	{
 		/*!
-		@brief The number of input pins to add to the node.
+		@brief The id of this pin to be identifiable in the node editor.
 		*/
-		unsigned short nbPins;
+		ax::NodeEditor::PinId id;
 
 		/*!
-		@brief The array of names of each pin to draw.
+		@brief The name of this pin to display.
 		*/
-		std::vector<char*> pinNames;
+		char* name;
+
+		/*!
+		@remarks @p _pinId is incremented immeditely after use.
+		*/
+		NodePinData(std::size_t& _pinId, char* _name) :
+			id{ _pinId++ }, name{ _name }
+		{
+
+		}
 	};
 
 	struct AssetNodeData
@@ -58,19 +62,26 @@ namespace ECellEngine::Editor::Utility
 
 		ECellEngine::Data::Module* data;
 
-		NodePinsData inputPins;
-		NodePinsData outputPins;
+		std::vector<NodePinData> inputPins;
+		std::vector<NodePinData> outputPins;
 
-		AssetNodeData(std::size_t& _nodeId, std::size_t _dataIdx) :
-			id{ _nodeId }, dataIdx{ _dataIdx }
+		/*!
+		@remarks @p _nodeId is incremented immeditely after use.
+		*/
+		AssetNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::Module* _data) :
+			id{ _nodeId }, dataIdx{ _dataIdx }, data{_data}
 		{
-			inputPins.nbPins = 3;
-			inputPins.pinNames = { "o", "o", "o" };
+			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
+			_nodeId++;
 
-			outputPins.nbPins = 3;
-			outputPins.pinNames = { "o", "o", "o" };
+			inputPins.push_back(NodePinData(_nodeId, "o"));
+			inputPins.push_back(NodePinData(_nodeId, "o"));
+			inputPins.push_back(NodePinData(_nodeId, "o"));
+
+			outputPins.push_back(NodePinData(_nodeId, "o"));
+			outputPins.push_back(NodePinData(_nodeId, "o"));
+			outputPins.push_back(NodePinData(_nodeId, "o"));
 		}
-
 	};
 
 	struct SolverNodeData
@@ -91,16 +102,18 @@ namespace ECellEngine::Editor::Utility
 
 		ECellEngine::Solvers::Solver* data;
 
-		NodePinsData inputPins;
-		NodePinsData outputPins;
+		std::vector<NodePinData> outputPins;
 
-		SolverNodeData(std::size_t& _nodeId, std::size_t _dataIdx) :
-			id{ _nodeId }, dataIdx{ _dataIdx }
+		/*!
+		@remarks @p _nodeId is incremented immeditely after use.
+		*/
+		SolverNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Solvers::Solver* _data) :
+			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
 		{
-			inputPins.nbPins = 0;
+			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
+			_nodeId++;
 
-			outputPins.nbPins = 1;
-			outputPins.pinNames = { "o" };
+			outputPins.push_back(NodePinData(_nodeId, "o"));
 		}
 
 	};

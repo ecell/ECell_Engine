@@ -5,40 +5,38 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
     ax::NodeEditor::BeginNode(_assetNodeInfo.id);
 
     ImGui::Text(_name);
+    ImGui::Separator();
 
-    /*ECellEngine::Editor::Utility::NodeEditorDraw::BeginColumn();
-    for (std::size_t i = 0; i < _assetNodeInfo.inputPins.nbPins; i++)
+    ECellEngine::Editor::Utility::NodeEditorDraw::BeginColumn();
+    for (std::size_t i = 0; i < _assetNodeInfo.inputPins.size(); i++)
     {
-        ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(i, _assetNodeInfo.inputPins.pinNames[i]);
+        ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(_assetNodeInfo.inputPins[i]);
     }
 
     ECellEngine::Editor::Utility::NodeEditorDraw::NextColumn();
-
-    for (std::size_t i = 0; i < _assetNodeInfo.outputPins.nbPins; i++)
+    for (std::size_t i = 0; i < _assetNodeInfo.outputPins.size(); i++)
     {
-        ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(i, _assetNodeInfo.outputPins.pinNames[i]);
+        ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_assetNodeInfo.outputPins[i]);
     }
 
-    ECellEngine::Editor::Utility::NodeEditorDraw::EndColumn();*/
+    ECellEngine::Editor::Utility::NodeEditorDraw::EndColumn();
 
     ax::NodeEditor::EndNode();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(std::size_t& _id, const char* _name)
+void ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(const NodePinData& _pinData)
 {
-	ax::NodeEditor::BeginPin(_id, ax::NodeEditor::PinKind::Input);
-	_id++;
+	ax::NodeEditor::BeginPin(_pinData.id, ax::NodeEditor::PinKind::Input);
 	ImGui::Text("->");
 	ImGui::SameLine();
-	ImGui::Text(_name);
+	ImGui::Text(_pinData.name);
 	ax::NodeEditor::EndPin();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(std::size_t& _id, const char* _name)
+void ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(const NodePinData& _pinData)
 {
-	ax::NodeEditor::BeginPin(_id, ax::NodeEditor::PinKind::Output);
-	_id++;
-	ImGui::Text(_name);
+	ax::NodeEditor::BeginPin(_pinData.id, ax::NodeEditor::PinKind::Output);
+	ImGui::Text(_pinData.name);
 	ImGui::SameLine();
 	ImGui::Text("->");
 	ax::NodeEditor::EndPin();
@@ -51,20 +49,16 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name,
 
     ImGui::Text(_name);
 
-    /*ECellEngine::Editor::Utility::NodeEditorDraw::BeginColumn();
-    for (std::size_t i = 0; i < _solverNodeInfo.inputPins.nbPins; i++)
-    {
-        ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(i, _solverNodeInfo.inputPins.pinNames[i]);
-    }
+    ECellEngine::Editor::Utility::NodeEditorDraw::BeginColumn();
 
     ECellEngine::Editor::Utility::NodeEditorDraw::NextColumn();
 
-    for (std::size_t i = 0; i < _solverNodeInfo.outputPins.nbPins; i++)
+    for (std::size_t i = 0; i < _solverNodeInfo.outputPins.size(); i++)
     {
-        ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(i, _solverNodeInfo.outputPins.pinNames[i]);
+        ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_solverNodeInfo.outputPins[i]);
     }
 
-    ECellEngine::Editor::Utility::NodeEditorDraw::EndColumn();*/
+    ECellEngine::Editor::Utility::NodeEditorDraw::EndColumn();
 
     ax::NodeEditor::EndNode();
 }
