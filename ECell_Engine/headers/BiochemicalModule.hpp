@@ -83,20 +83,5 @@ namespace ECellEngine::Data
 		{
 			return dynamic_cast<const ECellEngine::Solvers::BiochemicalSolver*>(_solver) != nullptr;
 		}
-
-		inline void ResizeReactions(std::size_t _size)
-		{
-			reactions.resize(_size);
-		}
-		
-		inline void ResizeSimpleParameters(std::size_t _size)
-		{
-			simpleParameters.resize(_size);
-		}
-		
-		inline void ResizeSpecies(std::size_t _size)
-		{
-			species.resize(_size);
-		}
 	};
 }

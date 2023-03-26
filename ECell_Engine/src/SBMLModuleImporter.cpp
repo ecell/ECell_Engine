@@ -21,9 +21,6 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(ECellEngine::Data
         }
     }
 
-    _sbmlModule.ResizeSimpleParameters(nbSimpleParameters);
-    _sbmlModule.ResizeComputedParameters(nbComputedParameters);
-
     for (unsigned int i = 0; i < nbParameters; i++)
     {
         param = _model->getParameter(i);
@@ -70,7 +67,6 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
     std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
     unsigned int nbReactions = _model->getNumReactions();
-    _sbmlModule.ResizeReactions(nbReactions);
     const LIBSBML_CPP_NAMESPACE::Reaction* reaction;
 
     unsigned int nbReactants;
@@ -122,7 +118,6 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeSpecies(ECellEngine::Data::D
     std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
     unsigned int nbSpecies = _model->getNumSpecies();
-    _sbmlModule.ResizeSpecies(nbSpecies);
     const LIBSBML_CPP_NAMESPACE::Species* sp;
     for (unsigned int i = 0; i < nbSpecies; ++i)
     {
