@@ -11,18 +11,7 @@ namespace ECellEngine::Editor::Utility
 	*/
 	struct NodeEditorDraw
 	{
-		 
-		/*!
-		@brief To start a column in a node.
-		@details Effectively is ImGui::BeginGroup().
-		@see ::NextColumn
-		@see ::EndColumn
-		*/
-		inline static void BeginColumn()
-		{
-			ImGui::BeginGroup();
-		}
-
+#pragma region Nodes
 		/*!
 		@brief Draws a node to display and access the content of an
 				ECellEngine::Data::Module.
@@ -30,7 +19,7 @@ namespace ECellEngine::Editor::Utility
 				node in the editor.
 		@param _assetNodeInfo The struct with information about what to draw..
 		*/
-		static void AssetNode(const char* _name, const AssetNodeData& _assetNodeInfo);
+		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo);
 
 		/*!
 		@brief Draws a node to display and access the content of a
@@ -40,7 +29,9 @@ namespace ECellEngine::Editor::Utility
 		@param _solverNodeInfo The struct with information about what to draw.
 		*/
 		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo);
+#pragma endregion
 
+#pragma region Node Pins
 		/*!
 		@brief Draw a basic input pin symbolized by an arrow. 
 		@param _pinData The struct containing the information about the
@@ -68,6 +59,19 @@ namespace ECellEngine::Editor::Utility
 		@param _links The current list of links.
 		*/
 		static void LinkDestruction(std::vector<ECellEngine::Editor::Utility::LinkData>& _links);
+#pragma endregion
+
+#pragma region Custom Node Widget
+		/*!
+		@brief To start a column in a node.
+		@details Effectively is ImGui::BeginGroup().
+		@see ::NextColumn
+		@see ::EndColumn
+		*/
+		inline static void BeginColumn()
+		{
+			ImGui::BeginGroup();
+		}
 
 		/*!
 		@brief To start a new column after one has already been opened.
@@ -84,6 +88,67 @@ namespace ECellEngine::Editor::Utility
 		}
 
 		/*!
+		@brief Custom collapsing header for nodes.
+		@details This intends to reproduce ImGui::CollapsingHeader but without
+				 relying on ImGui's tree nodes API. Because it is not possible
+				 (as of ImGui 1.89) to control the width of a tree node which
+				 creates a visual artifact: the node extends infinitely because
+				 in the Node Editor virtual area has not limits.
+		@param _label The text to display in the collapsing header.
+		@param _utilityState The reference to the character containing the encoding
+				of the the open/close state of this header.
+		@param _stateBitPos The position of the bit in @p _utilityState that
+				encodes the open/close state of this header
+		@param _size The size of the button representing the collapsing header.
+		*/
+		inline static bool NodeCollapsingHeader(const char* _label,
+			unsigned char& _utilityState, const short _stateBitPos, const ImVec2& _size = ImVec2(0, 0))
+		{
+			if (ImGui::Button(_label, _size))
+			{
+				_utilityState ^= 1 << _stateBitPos;
+			}
+			return _utilityState >> _stateBitPos & 1;
+		}
+
+		/*!
+		@brief Custom scroll bar for nodes.
+		@details This intends to reproduce the scroll bars visible in 
+				 ImGui::ListBox or ImGui::Child.
+		@param _id A char-based label to uniquelly identify the scroll bar.
+				This is relevant in the case that multiple scroll bars are
+				drawn in the same node.
+		@param _cursor A reference to the cursor of a
+				ECellEngine::Editor::Utility::NodeListBoxData
+		@param _height The height of the scroll bar in pixels.
+		@param _min The min value that the @p _cursor can take.
+		@param _max The max value that the @p _cursor can take.
+		@see It is used in ::NodeStringListBox.
+		*/
+		static void NodeScrollBar(const char* _id, std::size_t& _cursor,
+			const float _height, const short _min, const short _max);
+
+		/*!
+		@brief Custom list box to display strings in nodes.
+		@details This intends to reproduce ImGui::ListBox which is not
+				 readily compatible with the node editor.
+		@param _id A char-based label to uniquelly identify the scroll bar
+				of the list box. This is relevant in the case that multiple
+				scroll bars are drawn in the same node.
+		@param _selectedItemIdx A reference to the selected item index of a
+				ECellEngine::Editor::Utility::NodeListBoxData
+		@param _cursor A reference to the cursor of a
+				ECellEngine::Editor::Utility::NodeListBoxData
+		@param _widgetWidth The width of the whole list box (scroll bar
+				included) in pixels.
+		@param _itemViewHeight The number of items to display in the list box.
+		@see It is using ::NodeScrollBar to control the scrolling of the items.
+		*/
+		static void NodeStringListBox(const char* _id, const std::vector<std::string>& _items,
+			std::size_t& _selectedItemIdx, std::size_t& _cursor,
+			const float _widgetWidth = 200.f, const short _itemViewHeight = 7);
+
+		/*!
 		@brief To close a column in a node.
 		@details Effectively is ImGui::EndGroup().
 		@see ::BeginColumn
@@ -94,6 +159,7 @@ namespace ECellEngine::Editor::Utility
 			ImGui::EndGroup();
 		}
 
+#pragma endregion
 
 	};
 }
