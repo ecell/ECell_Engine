@@ -74,6 +74,17 @@ namespace ECellEngine::Editor::Utility
 		}
 
 		/*!
+		@brief To close a column in a node.
+		@details Effectively is ImGui::EndGroup().
+		@see ::BeginColumn
+		@see ::NextColumn
+		*/
+		inline static void EndColumn()
+		{
+			ImGui::EndGroup();
+		}
+
+		/*!
 		@brief To start a new column after one has already been opened.
 		@details Effectively closes the group started in ::BeginColumn and
 				 starts a new one.
@@ -112,52 +123,35 @@ namespace ECellEngine::Editor::Utility
 		}
 
 		/*!
-		@brief Custom scroll bar for nodes.
-		@details This intends to reproduce the scroll bars visible in 
-				 ImGui::ListBox or ImGui::Child.
-		@param _id A char-based label to uniquelly identify the scroll bar.
-				This is relevant in the case that multiple scroll bars are
-				drawn in the same node.
-		@param _cursor A reference to the cursor of a
-				ECellEngine::Editor::Utility::NodeListBoxData
-		@param _height The height of the scroll bar in pixels.
-		@param _min The min value that the @p _cursor can take.
-		@param _max The max value that the @p _cursor can take.
-		@see It is used in ::NodeStringListBox.
-		*/
-		static void NodeScrollBar(const char* _id, std::size_t& _cursor,
-			const float _height, const short _min, const short _max);
-
-		/*!
 		@brief Custom list box to display strings in nodes.
 		@details This intends to reproduce ImGui::ListBox which is not
 				 readily compatible with the node editor.
 		@param _id A char-based label to uniquelly identify the scroll bar
 				of the list box. This is relevant in the case that multiple
 				scroll bars are drawn in the same node.
-		@param _selectedItemIdx A reference to the selected item index of a
-				ECellEngine::Editor::Utility::NodeListBoxData
-		@param _cursor A reference to the cursor of a
-				ECellEngine::Editor::Utility::NodeListBoxData
+		@param _lbsData
 		@param _widgetWidth The width of the whole list box (scroll bar
 				included) in pixels.
 		@param _itemViewHeight The number of items to display in the list box.
 		@see It is using ::NodeScrollBar to control the scrolling of the items.
 		*/
-		static void NodeStringListBox(const char* _id, const std::vector<std::string>& _items,
-			std::size_t& _selectedItemIdx, std::size_t& _cursor,
+		static void NodeStringListBox(const char* _id, NodeListBoxStringData& _lbsData,
 			const float _widgetWidth = 200.f, const short _itemViewHeight = 7);
 
+
 		/*!
-		@brief To close a column in a node.
-		@details Effectively is ImGui::EndGroup().
-		@see ::BeginColumn
-		@see ::NextColumn
+		@brief Pops the number of styles pushed with ::PushScrollBarStyle(ImGuiStyle& _style)
 		*/
-		inline static void EndColumn()
-		{
-			ImGui::EndGroup();
-		}
+		static void PopScrollBarStyle();
+
+		/*!
+		@brief Pushes a bunch of styles to match ImGui's default Scroll Bar style.
+				Can be used with sliders in nodes.
+		@details Don't forget to call ::PopScrollBarStyle() after you've drawn the
+				 slider.
+		@see ::PopScrollBarStyle()
+		*/
+		static void PushScrollBarStyle(ImGuiStyle& _style);
 
 #pragma endregion
 

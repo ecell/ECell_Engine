@@ -6,7 +6,7 @@
 
 namespace ECellEngine::Editor::Utility
 {
-	/*!
+#pragma region Custom Node Widgets Data
 	@brief Information about connection between pins.
 	@details Note that connection (aka. link) has its own ID. This is useful
 			 later with dealing with selections, deletion or other operations.
@@ -24,18 +24,96 @@ namespace ECellEngine::Editor::Utility
 			a node.
 	@see It is used in ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox
 	*/
-	struct NodeListBoxData
+	struct NodeListBoxStringData
 	{
+		const std::vector<std::string>* data;
+		/*!
+		@brief 1-byte char to encode states of the widget
+		@details Bit 0 encodes the hovering of an item this frame.
+
+				 Bit 1 encodes the 1 click (selection) of an item this frame.
+
+				 Bit 2 encodes the double click of an item this frame.
+
+				 Bit 3 encodes the hovering of the scroll bar this frame.
+
+				 Bit 4 encodes the activation of the scroll bar this frame.
+		*/
+		unsigned char utilityState = 0;
+
+		std::size_t doubleClickedItem = 0;
+
+		std::size_t hoveredItem = 0;
+
 		/*!
 		@brief The index of the last selected item in the associated node list box.
 		*/
-		std::size_t selectedItemIdx = 0;
+		std::size_t selectedItem = 0;
 
 		/*!
-		@brief The position from which we start displaying the data of the node 
+		@brief The position from which we start displaying the data of the node
 				list box.
 		*/
 		std::size_t cursor = 0;
+
+		inline bool IsAnItemHovered() noexcept
+		{
+			return (utilityState >> 0) & 1;
+		}
+
+		inline bool IsAnItemClicked() noexcept
+		{
+			return (utilityState >> 1) & 1;
+		}
+
+		inline bool IsAnItemDoubleClicked() noexcept
+		{
+			return (utilityState >> 2) & 1;
+		}
+
+		inline bool IsScrollBarHovered() noexcept
+		{
+			return (utilityState >> 3) & 1;
+		}
+
+		inline bool IsScrollBarActivated() noexcept
+		{
+			return (utilityState >> 4) & 1;
+		}
+
+		inline void SetItemHovered() noexcept
+		{
+			utilityState |= 1 << 0;
+		}
+		
+		inline void SetItemClicked() noexcept
+		{
+			utilityState |= 1 << 1;
+		}
+		
+		inline void SetItemDoubleClicked() noexcept
+		{
+			utilityState |= 1 << 2;
+		}
+		
+		inline void SetScrollBarHovered() noexcept
+		{
+			utilityState |= 1 << 3;
+		}
+		
+		inline void SetScrollBarActivated() noexcept
+		{
+			utilityState |= 1 << 4;
+		}
+
+		inline void ResetUtilityState() noexcept
+		{
+			utilityState = 0;
+		}
+	};
+#pragma endregion
+
+#pragma region Node Pins Data
 	};
 	
 	/*
@@ -62,7 +140,9 @@ namespace ECellEngine::Editor::Utility
 
 		}
 	};
+#pragma endregion
 
+#pragma region Nodes Data
 	struct AssetNodeData
 	{
 		/*!
@@ -86,10 +166,10 @@ namespace ECellEngine::Editor::Utility
 
 		unsigned char utilityState = 0;
 
-		NodeListBoxData speciesNLB;
-		NodeListBoxData simpleParametersNLB;
-		NodeListBoxData computedParametersNLB;
-		NodeListBoxData reactionsNLB;
+		NodeListBoxStringData speciesNLB;
+		NodeListBoxStringData simpleParametersNLB;
+		NodeListBoxStringData computedParametersNLB;
+		NodeListBoxStringData reactionsNLB;
 
 		/*!
 		@remarks @p _nodeId is incremented immeditely after use.
@@ -104,14 +184,18 @@ namespace ECellEngine::Editor::Utility
 			inputPins.push_back(NodePinData(_nodeId, "o"));
 			inputPins.push_back(NodePinData(_nodeId, "o"));
 			inputPins.push_back(NodePinData(_nodeId, "o"));
+			//Initialize the list boxes data
+			speciesNLB.data = &data->GetAllSpecies();
+			speciesNLB.cursor = speciesNLB.data->size();
 
-			outputPins.push_back(NodePinData(_nodeId, "o"));
-			outputPins.push_back(NodePinData(_nodeId, "o"));
-			outputPins.push_back(NodePinData(_nodeId, "o"));
-			outputPins.push_back(NodePinData(_nodeId, "o"));
+			simpleParametersNLB.data = &data->GetAllSimpleParameter();
+			simpleParametersNLB.cursor = simpleParametersNLB.data->size();
 
-			//Initialize the list boxes cursors
-			speciesNLB.cursor = data->GetAllSpecies().size();
+			computedParametersNLB.data = &data->GetAllComputedParameter();
+			computedParametersNLB.cursor = computedParametersNLB.data->size();
+
+			reactionsNLB.data = &data->GetAllReaction();
+			reactionsNLB.cursor = reactionsNLB.data->size();
 			simpleParametersNLB.cursor = data->GetAllSimpleParameter().size();
 			computedParametersNLB.cursor = data->GetAllComputedParameter().size();
 			reactionsNLB.cursor = data->GetAllReaction().size();
@@ -151,4 +235,5 @@ namespace ECellEngine::Editor::Utility
 		}
 
 	};
+#pragma endregion
 }

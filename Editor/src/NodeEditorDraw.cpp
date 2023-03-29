@@ -8,28 +8,35 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
 
     ImGui::Text(_name);
 
+    ECellEngine::Editor::Utility::NodeEditorDraw::BeginColumn();
     if (NodeCollapsingHeader("Species", _assetNodeInfo.utilityState, 0, ImVec2(200, 0)))
     {
-        NodeStringListBox("1", _assetNodeInfo.data->GetAllSpecies(),
-            _assetNodeInfo.speciesNLB.selectedItemIdx, _assetNodeInfo.speciesNLB.cursor);
+        NodeStringListBox("1", _assetNodeInfo.speciesNLB);
+
+        if (_assetNodeInfo.speciesNLB.IsAnItemHovered())
+        {
+            ax::NodeEditor::Suspend();
+            ImGui::SetTooltip("%s", _assetNodeInfo.speciesNLB.data->at(_assetNodeInfo.speciesNLB.hoveredItem).c_str());
+            ax::NodeEditor::Resume();
+        }
     }
+    ECellEngine::Editor::Utility::NodeEditorDraw::NextColumn();
+    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_assetNodeInfo.outputPins[0]);
+    ECellEngine::Editor::Utility::NodeEditorDraw::EndColumn();
 
     if (NodeCollapsingHeader("Constant Parameters", _assetNodeInfo.utilityState, 1, ImVec2(200, 0)))
     {
-        NodeStringListBox("2", _assetNodeInfo.data->GetAllSimpleParameter(),
-            _assetNodeInfo.simpleParametersNLB.selectedItemIdx, _assetNodeInfo.simpleParametersNLB.cursor);
+        NodeStringListBox("2", _assetNodeInfo.simpleParametersNLB);
     }
 
     if (NodeCollapsingHeader("Computed Parameters", _assetNodeInfo.utilityState, 2, ImVec2(200, 0)))
     {
-        NodeStringListBox("3", _assetNodeInfo.data->GetAllComputedParameter(),
-            _assetNodeInfo.computedParametersNLB.selectedItemIdx, _assetNodeInfo.computedParametersNLB.cursor);
+        NodeStringListBox("3", _assetNodeInfo.computedParametersNLB);
     }
 
     if (NodeCollapsingHeader("Reactions", _assetNodeInfo.utilityState, 3, ImVec2(200, 0)))
     {
-        NodeStringListBox("4", _assetNodeInfo.data->GetAllReaction(),
-            _assetNodeInfo.reactionsNLB.selectedItemIdx, _assetNodeInfo.reactionsNLB.cursor);
+        NodeStringListBox("4", _assetNodeInfo.reactionsNLB);
     }
 
     ax::NodeEditor::EndNode();
@@ -153,63 +160,76 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkDestruction(std::vector<E
 
 #pragma region Custom Node Widgets
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeScrollBar(const char* _id, std::size_t& _cursor,
-    const float _height, const short _min, const short _max)
-{
-    ImGuiStyle& style = ImGui::GetStyle();
-    ImGui::PushID(_id);
-
-    //Style the vertical slider like a scroll bar
-    ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 40);
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, style.ScrollbarRounding);
-    ImGui::PushStyleVar(ImGuiStyleVar_GrabRounding, style.ScrollbarRounding);
-    ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarGrab));
-    ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
-    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
-    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
-
-    ImGui::VSliderInt("##VertSliderInt", ImVec2(style.ScrollbarSize, _height),
-        (int*)&_cursor, _min, _max, "", ImGuiSliderFlags_None);
-    
-    //usefull only if the list is sorted
-    /*if (ImGui::IsItemActive())
-    {
-        ax::NodeEditor::Suspend();
-        ImGui::SetTooltip("%X - %X", _items[_items.size() - _cursor][0], _items[_items.size() - _cursor + _itemViewHeight - 1][0]);
-        ax::NodeEditor::Resume();
-    }*/
-
-    ImGui::PopStyleColor(4);
-    ImGui::PopStyleVar(3);
-    ImGui::PopID();
-}
-
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char* _id, const std::vector<std::string>& _items,
-    std::size_t& _selectedItemIdx, std::size_t& _cursor,
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char* _id, NodeListBoxStringData& _lbsData,
     const float _widgetWidth, const short _itemViewHeight)
 {
     ImGui::BeginGroup();
-    
+
     //The list of items to display
     ImGui::BeginGroup();
-    for (int n = _cursor; n > _cursor - _itemViewHeight; n--)
+    for (int n = _lbsData.cursor; n > _lbsData.cursor - _itemViewHeight; n--)
     {
-        const bool is_selected = (_selectedItemIdx == _items.size() - n);
-        if (ImGui::Selectable(_items.at(_items.size() - n).c_str(), is_selected, ImGuiSelectableFlags_None, ImVec2(_widgetWidth - 20, 0)))
+        if (ImGui::Selectable(_lbsData.data->at(_lbsData.data->size() - n).c_str(), false, ImGuiSelectableFlags_None, ImVec2(_widgetWidth - 20, 0)))
         {
-            _selectedItemIdx = _items.size() - n;
+            _lbsData.selectedItem = _lbsData.data->size() - n;
+            _lbsData.SetItemClicked();
         }
+
+        if (ImGui::IsItemHovered())
+        {
+            _lbsData.hoveredItem = _lbsData.data->size() - n;
+            _lbsData.SetItemHovered();
+
+            if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+            {
+                //ECellEngine::Logging::Logger::GetSingleton().LogDebug("Item: " + _lbsData.data->at(_lbsData.data->size() - n) + " was double clicked!");
+                _lbsData.doubleClickedItem = _lbsData.data->size() - n;
+                _lbsData.SetItemDoubleClicked();
+            }
+        }
+
     }
     ImGui::EndGroup();
 
     ImGui::SameLine();
 
     //The vertical slider to control the list of items
-    ImGui::BeginGroup();
-    NodeScrollBar(_id, _cursor, _itemViewHeight * ImGui::GetTextLineHeightWithSpacing(), _itemViewHeight, _items.size());
-    ImGui::EndGroup();
+    ImGui::PushID(_id);
+    ImGuiStyle& style = ImGui::GetStyle();
+    PushScrollBarStyle(style);
+    ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 40);
+    ImGui::VSliderInt("##VertSliderInt", ImVec2(style.ScrollbarSize, _itemViewHeight * ImGui::GetTextLineHeightWithSpacing()),
+                        (int*)&_lbsData.cursor, _itemViewHeight, _lbsData.data->size(), "", ImGuiSliderFlags_None);
+    if (ImGui::IsItemHovered())
+    {
+        _lbsData.SetScrollBarHovered();
+    }
+    if (ImGui::IsItemActive())
+    {
+        _lbsData.SetScrollBarActivated();
+    }
+    ImGui::PopStyleVar(); //poping ImGuiStyleVar_GrabMinSize
+    PopScrollBarStyle(); //poping after PushScrollBarStyle(style);
+    ImGui::PopID();
 
     ImGui::EndGroup();
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::PushScrollBarStyle(ImGuiStyle& _style)
+{
+    //Style the vertical slider like a scroll bar
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, _style.ScrollbarRounding);
+    ImGui::PushStyleVar(ImGuiStyleVar_GrabRounding, _style.ScrollbarRounding);
+    ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarGrab));
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::PopScrollBarStyle()
+{
+    ImGui::PopStyleColor(4);
+    ImGui::PopStyleVar(2);
 }
 
 #pragma endregion
