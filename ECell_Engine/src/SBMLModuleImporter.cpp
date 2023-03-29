@@ -164,7 +164,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
             if (cNode->getType() == ASTNodeType_t::AST_INTEGER ||
                 cNode->getType() == ASTNodeType_t::AST_REAL)
             {
-                pOP->AddConstant(cNode->getValue());
+                pOP->AddConstant((float)cNode->getValue());
                 nodesStack.pop_back();
             }
 

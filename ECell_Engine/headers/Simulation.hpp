@@ -94,6 +94,11 @@ namespace ECellEngine::Core
 		*/
 		void AddSolver(const std::string& _solverClassName);
 
+		inline ECellEngine::Data::DataState* GetDataState()
+		{
+			return &dataState;
+		}
+
 		/*!
 		@brief Gets the module at position @p _idx in ::modules.
 		@param _idx The position of the module to retrieve from ::modules.
