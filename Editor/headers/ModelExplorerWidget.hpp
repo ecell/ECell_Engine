@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+#include "DataState.hpp"
 #include "Logger.hpp"
 #include "ModelHierarchyWidget.hpp"
 #include "ModelNodeBasedViewerWidget.hpp"
@@ -17,6 +18,12 @@ namespace ECellEngine::Editor
 	class ModelExplorerWidget : public Widget
 	{
 	private:
+
+		/*!
+		@brief Pointer to the data state of the simulation space visualized in
+				this model explorer.
+		*/
+		ECellEngine::Data::DataState* dataState;
 
 		/*!
 		@brief 1-byte char to encode states of the widget
@@ -101,6 +108,15 @@ namespace ECellEngine::Editor
 		}
 
 		/*!
+		@brief Get the pointer of the data state visualized in this model
+				explorer.
+		*/
+		inline ECellEngine::Data::DataState* GetDataState() noexcept
+		{
+			return dataState;
+		}
+
+		/*!
 		@brief Retrieves the pointer to ::modelHierarchy
 		*/
 		inline ModelHierarchyWidget* GetModelHierarchy() noexcept 
@@ -117,6 +133,15 @@ namespace ECellEngine::Editor
 		{
 			return &mnbViewers[_idx];
 		}
+
+		/*!
+		@brief Set the pointer of the data state to be visualized in this
+				model explorer.
+		@remarks Needs an access to ::editor which class is forward declared
+				 so we cannot inline this function and it must be defined in
+				 the .cpp. 
+		*/
+		void SetDataState(std::size_t _simuIdx);
 
 		void Awake() override;
 

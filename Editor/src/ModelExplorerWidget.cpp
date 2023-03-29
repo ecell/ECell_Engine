@@ -2,6 +2,8 @@
 
 void ECellEngine::Editor::ModelExplorerWidget::Awake()
 {
+    SetDataState(0);
+    
     ImGui::Begin("Model Explorer");
     
     ImGuiID rootNode = ImGui::DockBuilderAddNode(ImGui::GetID("Model Explorer"));
@@ -34,7 +36,7 @@ void ECellEngine::Editor::ModelExplorerWidget::Draw()
     {
         if (!wasdocked)
         {
-            ImGui::DockBuilderSetNodeSize(ImGui::GetWindowDockID(), ImVec2(ImGui::GetMainViewport()->Size.x, ImGui::GetMainViewport()->Size.y * 0.95));
+            ImGui::DockBuilderSetNodeSize(ImGui::GetWindowDockID(), ImVec2(ImGui::GetMainViewport()->Size.x, (float)ImGui::GetMainViewport()->Size.y * 0.95));
             wasdocked = true;
         }
     }
@@ -155,4 +157,9 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawMenuBar()
         }
         ImGui::EndMenuBar();
     }
+}
+
+void ECellEngine::Editor::ModelExplorerWidget::SetDataState(std::size_t _simuIdx)
+{
+    dataState = editor.engine.GetSimulationsManager()->GetSimulation(_simuIdx)->GetDataState();
 }
