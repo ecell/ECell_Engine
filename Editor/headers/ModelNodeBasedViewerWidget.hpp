@@ -28,6 +28,12 @@ namespace ECellEngine::Editor
 	private:
 
 		/*!
+		@brief The index of the Node Editor Context in ModelExplorerWidget::nodeEditorCtxt
+				that this model viewer is using.
+		*/
+		std::size_t ctxIndex = 0;
+
+		/*!
 		@brief The logic to decide what to draw when the user drops (from a drag
 				& drop action) a payload in the area of this viewer.
 		*/
@@ -40,10 +46,6 @@ namespace ECellEngine::Editor
 		*/
 		ModelExplorerWidget* rootExplorer;
 
-		/*!
-		@brief The node editor context.
-		*/
-		ax::NodeEditor::EditorContext* nodeEditorCtxt = nullptr;
 		std::size_t uniqueIdx = 0;
 
 		/*!
@@ -68,10 +70,11 @@ namespace ECellEngine::Editor
 			
 		}
 
-		~ModelNodeBasedViewerWidget()
-		{
-			ax::NodeEditor::DestroyEditor(nodeEditorCtxt);
-		}
+		/*!
+		@remarks We are using ::rootExplorer which is forward declared so the
+				 definition of this destructor is in the .cpp.
+		*/
+		~ModelNodeBasedViewerWidget();
 
 		/*!
 		@brief Adds an ECellEngine::Editor::Utility::AssetNodeInfo in ::assetNodes.

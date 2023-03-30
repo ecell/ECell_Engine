@@ -1,6 +1,11 @@
 #include "ModelExplorerWidget.hpp"//forward declaration
 #include "Editor.hpp"
 
+ECellEngine::Editor::ModelNodeBasedViewerWidget::~ModelNodeBasedViewerWidget()
+{
+    rootExplorer->RemoveNodeEditorContext(ctxIndex);
+}
+
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::AddAssetNode(const std::size_t _dataIdx)
 {
     assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeData(
@@ -16,7 +21,8 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::AddSolverNode(const std::s
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::Awake()
 {
     ax::NodeEditor::Config nodeConfig;
-    nodeEditorCtxt = ax::NodeEditor::CreateEditor(&nodeConfig);
+    rootExplorer->AddNodeEditorContext(ax::NodeEditor::CreateEditor(&nodeConfig));
+    ctxIndex = rootExplorer->CountEditorContexts()-1;
 }
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
@@ -28,8 +34,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
 
         ImGui::Separator();
-
-        ax::NodeEditor::SetCurrentEditor(nodeEditorCtxt);
+        ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(ctxIndex));
 
         // Start interaction with editor.
         ax::NodeEditor::Begin("Model Exploration Space", ImVec2(0.0, 0.0f));

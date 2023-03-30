@@ -31,6 +31,8 @@ namespace ECellEngine::Editor
 				 from file.
 
 				 Bit 1 encodes the open/close status of the popup to add a solver.
+
+				 Bit 2 encodes the open/close status of the popup to set the preferences.
 		*/
 		unsigned char utilityState = 0;
 
@@ -75,6 +77,11 @@ namespace ECellEngine::Editor
 				space as a tree.
 		*/
 		ModelHierarchyWidget modelHierarchy;
+		
+		/*!
+		@brief The list of node editor contexts used in this Model Explorer.
+		*/
+		std::vector<ax::NodeEditor::EditorContext*> nodeEditorCtxts;
 
 		/*!
 		@brief The list of model viewers opened to explore the data added
@@ -95,6 +102,12 @@ namespace ECellEngine::Editor
 		void DrawImportAssetPopup();
 
 		/*!
+		@brief Draws the popup window used to consult and change the preference
+				values related to the Model Explorer.
+		*/
+		void DrawPreferencesPopup();
+
+		/*!
 		@brief Draw every options of the Model Explorer's menu bar.
 		*/
 		void DrawMenuBar();
@@ -105,6 +118,22 @@ namespace ECellEngine::Editor
 			Widget(_editor), modelHierarchy(_editor, this)
 		{
 			mnbViewers.push_back(ModelNodeBasedViewerWidget(editor, this));
+		}
+
+		/*!
+		@brief Adds a new ax::NodeEditor::EditorContext to ::nodeEditorCtxts.
+		*/
+		inline void AddNodeEditorContext(ax::NodeEditor::EditorContext* _ctx)
+		{
+			nodeEditorCtxts.push_back(_ctx);
+		}
+
+		/*!
+		@brief Gets the size of ::nodeEditorCtxts
+		*/
+		inline std::size_t CountEditorContexts()
+		{
+			return nodeEditorCtxts.size();
 		}
 
 		/*!
@@ -135,6 +164,16 @@ namespace ECellEngine::Editor
 		}
 
 		/*!
+		@brief Retrieves the pointer to the node editor context at index
+				@p _idx in ::nodeEditorCtxts.
+		@param _idx The index of the context to retrieve in ::nodeEditorCtxts.
+		*/
+		inline ax::NodeEditor::EditorContext* GetNodeEditorContext(std::size_t _idx)
+		{
+			return nodeEditorCtxts[_idx];
+		}
+
+		/*!
 		@brief Set the pointer of the data state to be visualized in this
 				model explorer.
 		@remarks Needs an access to ::editor which class is forward declared
@@ -142,6 +181,24 @@ namespace ECellEngine::Editor
 				 the .cpp. 
 		*/
 		void SetDataState(std::size_t _simuIdx);
+
+		/*!
+		@brief Destroys and removes the pointer of the node editor context
+				at index @p _idx in ::nodeEditorCtxts.
+		@param _idx The index of the context to destroy and remove in
+				::nodeEditorCtxts.
+		@remarks Checks that @p _idx is not out of bounds of ::nodeEditorCtxts.
+		*/
+		inline void RemoveNodeEditorContext(std::size_t _idx)
+		{
+			if (_idx >= CountEditorContexts())
+			{
+				return;
+			}
+
+			ax::NodeEditor::DestroyEditor(nodeEditorCtxts[_idx]);
+			nodeEditorCtxts.erase(nodeEditorCtxts.begin() + _idx);
+		}
 
 		void Awake() override;
 
