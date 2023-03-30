@@ -147,15 +147,17 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawMenuBar()
             if (ImGui::MenuItem("Import Asset From File"))
             {
                 utilityState |= 1 << 0;
-                ImGui::SetNextWindowPos(ImGui::GetIO().MousePos);
-                ImGui::SetNextWindowSize(ImVec2(400, 120));
+                ImGui::SetNextWindowPos(ImGui::GetIO().MousePos, ImGuiCond_Always);
+                ImGui::SetNextWindowSize(ImVec2(400, 120), ImGuiCond_Always);
+                DrawImportAssetPopup();//to draw immediately during this frame
             }
 
             if (ImGui::MenuItem("Asset Solver"))
             {
                 utilityState |= 1 << 1;
-                ImGui::SetNextWindowPos(ImGui::GetIO().MousePos);
-                ImGui::SetNextWindowSize(ImVec2(150, 90));
+                ImGui::SetNextWindowPos(ImGui::GetIO().MousePos, ImGuiCond_Always);
+                ImGui::SetNextWindowSize(ImVec2(150, 90), ImGuiCond_Always);
+                DrawAddSolverPopup();//to draw immediately during this frame
             }
 
             ImGui::EndMenu();
@@ -166,8 +168,9 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawMenuBar()
             if (ImGui::MenuItem("Preferences"))
             {
                 utilityState |= 1 << 2;
-                ImGui::SetNextWindowPos(ImGui::GetIO().MousePos);
-                ImGui::SetNextWindowSize(ImVec2(600, 600));
+                ImGui::SetNextWindowPos(ImGui::GetIO().MousePos, ImGuiCond_Always);
+                ImGui::SetNextWindowSize(ImVec2(600, 600), ImGuiCond_Always);
+                DrawPreferencesPopup();//to draw immediately during this frame
             }
 
             ImGui::EndMenu();
