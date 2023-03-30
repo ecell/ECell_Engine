@@ -160,6 +160,28 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkDestruction(std::vector<E
 
 #pragma region Custom Node Widgets
 
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type, const char* _name,
+    const float _width, const short _height)
+{
+    const ImVec2 typeTextSize = ImGui::CalcTextSize(_type);
+    const ImVec2 nameTextSize = ImGui::CalcTextSize(_name);
+
+    ImGui::Text(_type); ImGui::SameLine(); ImGui::Text(_name);
+
+    NodeHorizontalSeparator(typeTextSize.x + nameTextSize.x + ImGui::GetStyle().ItemSpacing.x);
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const float _width, const float _thickness)
+{
+    //ItemAdd and ImRect are part of imgui_internal.hpp
+    const ImRect bb(ImGui::GetCursorScreenPos(), ImVec2(ImGui::GetCursorScreenPos().x + _width, ImGui::GetCursorScreenPos().y + _thickness));
+    if (ImGui::ItemAdd(bb, 0))
+    {
+        ImGui::ItemSize(ImVec2(0.0f, _thickness));
+        ImGui::GetWindowDrawList()->AddLine(bb.Min, ImVec2(bb.Max.x, bb.Min.y), ImColor(ImGui::GetStyleColorVec4(ImGuiCol_Separator)));
+    }
+}
+
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char* _id, NodeListBoxStringData& _lbsData,
     const float _widgetWidth, const short _itemViewHeight)
 {

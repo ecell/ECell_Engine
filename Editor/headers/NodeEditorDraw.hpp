@@ -122,6 +122,19 @@ namespace ECellEngine::Editor::Utility
 			return _utilityState >> _stateBitPos & 1;
 		}
 
+
+		/*!
+		@brief Logic to draw headers of nodes.
+		*/
+		static void NodeHeader(const char* _type, const char* _name, const float _width = 200.f, const short _height = 1);
+
+		/*!
+		@brief Draws a horizontal line of a set width and thickness.
+		@details Intends to replace ImGui::Separator() which spans infinitely in width within
+				 the node editor.
+		*/
+		static void NodeHorizontalSeparator(const float _width, const float _thickness = 1.f);
+
 		/*!
 		@brief Custom list box to display strings in nodes.
 		@details This intends to reproduce ImGui::ListBox which is not
