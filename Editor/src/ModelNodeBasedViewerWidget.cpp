@@ -3,7 +3,7 @@
 
 ECellEngine::Editor::ModelNodeBasedViewerWidget::~ModelNodeBasedViewerWidget()
 {
-    rootExplorer->RemoveNodeEditorContext(ctxIndex);
+    rootExplorer->RemoveNodeEditorContext(ctxtIndex);
 }
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::AddAssetNode(const std::size_t _dataIdx)
@@ -22,7 +22,9 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Awake()
 {
     ax::NodeEditor::Config nodeConfig;
     rootExplorer->AddNodeEditorContext(ax::NodeEditor::CreateEditor(&nodeConfig));
-    ctxIndex = rootExplorer->CountEditorContexts()-1;
+    ctxtIndex = rootExplorer->CountEditorContexts()-1;
+    rootExplorer->AddNodeEditorStyle(rootExplorer->GetNodeEditorContext(ctxtIndex));
+    styleIndex = rootExplorer->CountEditorStyles()-1;
 }
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
@@ -34,7 +36,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
 
         ImGui::Separator();
-        ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(ctxIndex));
+        ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(ctxtIndex));
 
         // Start interaction with editor.
         ax::NodeEditor::Begin("Model Exploration Space", ImVec2(0.0, 0.0f));
@@ -59,7 +61,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         // Submit Links
         for (ECellEngine::Editor::Utility::LinkData& linkInfo : links)
         {
-            ax::NodeEditor::Link(linkInfo.id, linkInfo.inputId, linkInfo.outputId);
+            ax::NodeEditor::Link(linkInfo.id, linkInfo.startId, linkInfo.endId);
         }
 
         // End of interaction with editor.

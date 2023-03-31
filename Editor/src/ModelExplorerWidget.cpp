@@ -187,12 +187,12 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
     {
         if (ImGui::BeginTabBar("##ModelExplorerPreferencesTabs"))
         {
-            if (ImGui::BeginTabItem("Node Editor Default"))
+            if (ImGui::BeginTabItem("Node Editor Original"))
             {
                 if (CountEditorContexts() > 0)
                 {
-                    static int item_current_idx = 0; // Here we store our selection data as an index.
-                    const std::string combo_preview_value = std::to_string(item_current_idx + 1);  // Pass in the preview value visible before opening the combo (it could be anything)
+                    static int currentEditorCtxtIdx = 0; // Here we store our selection data as an index.
+                    const std::string combo_preview_value = std::to_string(currentEditorCtxtIdx + 1);  // Pass in the preview value visible before opening the combo (it could be anything)
                     std::string combo_visualization_value = std::to_string(CountEditorContexts() + 1);
                     if (ImGui::BeginCombo("Editor Context", combo_preview_value.c_str()))
                     {
@@ -201,7 +201,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
                             combo_visualization_value = std::to_string(n + 1);
                             if (ImGui::Selectable(combo_visualization_value.c_str()))
                             {
-                                item_current_idx = n;
+                                currentEditorCtxtIdx = n;
                             }
                         }
                         ImGui::EndCombo();
@@ -209,7 +209,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
 
                     if (ImGui::CollapsingHeader("Node Style"))
                     {
-                        ax::NodeEditor::SetCurrentEditor(nodeEditorCtxts[item_current_idx]);
+                        ax::NodeEditor::SetCurrentEditor(nodeEditorCtxts[currentEditorCtxtIdx]);
                         ax::NodeEditor::Style& nodeStyle = ax::NodeEditor::GetStyle();
 
                         if (ImGui::TreeNode("Flow"))
@@ -220,7 +220,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
                             ImGui::TreePop();
                         }
 
-                        if(ImGui::TreeNode("Group"))
+                        if (ImGui::TreeNode("Group"))
                         {
                             ImGui::SliderFloat("Group Rounding", (float*)&nodeStyle.GroupRounding, 0.f, 20.f, "%.0f");
                             ImGui::SliderFloat("Group Border Width", (float*)&nodeStyle.GroupBorderWidth, 0.f, 20.f, "%.0f");
@@ -243,7 +243,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
                             ImGui::SliderFloat("Node Hovered Border Width", (float*)&nodeStyle.HoveredNodeBorderWidth, 0.f, 20.f, "%.0f");
                             ImGui::SliderFloat("Node Selected Border Width", (float*)&nodeStyle.SelectedNodeBorderWidth, 0.f, 20.f, "%.0f");
                             ImGui::TreePop();
-                        }                        
+                        }
 
                         if (ImGui::TreeNode("Pin"))
                         {
@@ -283,7 +283,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
                         }
                         ImGui::SameLine();
                         if (ImGui::RadioButton("Alpha", alpha_flags == ImGuiColorEditFlags_AlphaPreview))
-                        { 
+                        {
                             alpha_flags = ImGuiColorEditFlags_AlphaPreview;
                         }
                         ImGui::SameLine();
@@ -292,7 +292,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
                             alpha_flags = ImGuiColorEditFlags_AlphaPreviewHalf;
                         }
 
-                        ax::NodeEditor::SetCurrentEditor(nodeEditorCtxts[item_current_idx]);
+                        ax::NodeEditor::SetCurrentEditor(nodeEditorCtxts[currentEditorCtxtIdx]);
                         ax::NodeEditor::Style& nodeStyle = ax::NodeEditor::GetStyle();
                         for (int i = 0; i < ax::NodeEditor::StyleColor_Count; i++)
                         {
@@ -310,7 +310,126 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
                     ImGui::TextColored(ImVec4(255, 0, 0, 255), "No model viewer currently opened.");
                 }
                 
+                ImGui::EndTabItem();
+            }
 
+            if (ImGui::BeginTabItem("Node Editor Custom"))
+            {
+                static int currentEditorStyleIdx = 0; // Here we store our selection data as an index.
+                const std::string combo_preview_value = std::to_string(currentEditorStyleIdx + 1);  // Pass in the preview value visible before opening the combo (it could be anything)
+                std::string combo_visualization_value = std::to_string(CountEditorStyles() + 1);
+                if (ImGui::BeginCombo("Editor Style", combo_preview_value.c_str()))
+                {
+                    for (int n = 0; n < CountEditorStyles(); n++)
+                    {
+                        combo_visualization_value = std::to_string(n + 1);
+                        if (ImGui::Selectable(combo_visualization_value.c_str()))
+                        {
+                            currentEditorStyleIdx = n;
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
+
+                ECellEngine::Editor::Utility::NodeEditorStyle& nodeEditorStyle = nodeEditorStyles[currentEditorStyleIdx];
+                if (ImGui::CollapsingHeader("Colors"))
+                {
+                    static ImGuiColorEditFlags alpha_flags = 0;
+                    if (ImGui::RadioButton("Opaque", alpha_flags == ImGuiColorEditFlags_None))
+                    {
+                        alpha_flags = ImGuiColorEditFlags_None;
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::RadioButton("Alpha", alpha_flags == ImGuiColorEditFlags_AlphaPreview))
+                    {
+                        alpha_flags = ImGuiColorEditFlags_AlphaPreview;
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::RadioButton("Both", alpha_flags == ImGuiColorEditFlags_AlphaPreviewHalf))
+                    {
+                        alpha_flags = ImGuiColorEditFlags_AlphaPreviewHalf;
+                    }
+
+                    if (ImGui::TreeNode("Nodes"))
+                    {
+                        if (ImGui::TreeNode("Default Node"))
+                        {
+                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
+                            {
+                                const char* name = nodeEditorStyle.colors.GetNodeStyleColorName((ECellEngine::Editor::Utility::NodeStyleColor)i);
+                                ImGui::PushID(i);
+                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.defaultNode[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
+                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                                ImGui::TextUnformatted(name);
+                                ImGui::PopID();
+                            }
+
+                            ImGui::TreePop();
+                        }
+
+                        if (ImGui::TreeNode("Asset Node"))
+                        {
+                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
+                            {
+                                const char* name = nodeEditorStyle.colors.GetNodeStyleColorName((ECellEngine::Editor::Utility::NodeStyleColor)i);
+                                ImGui::PushID(i);
+                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.assetNode[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
+                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                                ImGui::TextUnformatted(name);
+                                ImGui::PopID();
+                            }
+
+                            ImGui::TreePop();
+                        }
+
+                        if (ImGui::TreeNode("Parameter Node"))
+                        {
+                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
+                            {
+                                const char* name = nodeEditorStyle.colors.GetNodeStyleColorName((ECellEngine::Editor::Utility::NodeStyleColor)i);
+                                ImGui::PushID(i);
+                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.parameterNode[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
+                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                                ImGui::TextUnformatted(name);
+                                ImGui::PopID();
+                            }
+
+                            ImGui::TreePop();
+                        }
+
+                        if (ImGui::TreeNode("Reaction Node"))
+                        {
+                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
+                            {
+                                const char* name = nodeEditorStyle.colors.GetNodeStyleColorName((ECellEngine::Editor::Utility::NodeStyleColor)i);
+                                ImGui::PushID(i);
+                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.reactionNode[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
+                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                                ImGui::TextUnformatted(name);
+                                ImGui::PopID();
+                            }
+
+                            ImGui::TreePop();
+                        }
+
+                        if (ImGui::TreeNode("Species Node"))
+                        {
+                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
+                            {
+                                const char* name = nodeEditorStyle.colors.GetNodeStyleColorName((ECellEngine::Editor::Utility::NodeStyleColor)i);
+                                ImGui::PushID(i);
+                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.speciesNode[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
+                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                                ImGui::TextUnformatted(name);
+                                ImGui::PopID();
+                            }
+
+                            ImGui::TreePop();
+                        }
+
+                        ImGui::TreePop();
+                    }
+                }
                 ImGui::EndTabItem();
             }
 

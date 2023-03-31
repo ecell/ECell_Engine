@@ -84,6 +84,11 @@ namespace ECellEngine::Editor
 		std::vector<ax::NodeEditor::EditorContext*> nodeEditorCtxts;
 
 		/*!
+		@brief The list of node editor styles used in this Model Explorer.
+		*/
+		std::vector<ECellEngine::Editor::Utility::NodeEditorStyle> nodeEditorStyles;
+
+		/*!
 		@brief The list of model viewers opened to explore the data added
 				in the current simulation.
 		*/
@@ -121,11 +126,23 @@ namespace ECellEngine::Editor
 		}
 
 		/*!
-		@brief Adds a new ax::NodeEditor::EditorContext to ::nodeEditorCtxts.
+		@brief Adds an editor context (@p _ctxt) to ::nodeEditorCtxts.
+		@param _ctxt The pointer to a ax::NodeEditor::EditorContext to add.
+		@remarks You probably also want to call ::AddNodeEditorContext()
 		*/
-		inline void AddNodeEditorContext(ax::NodeEditor::EditorContext* _ctx)
+		inline void AddNodeEditorContext(ax::NodeEditor::EditorContext* _ctxt)
 		{
-			nodeEditorCtxts.push_back(_ctx);
+			nodeEditorCtxts.push_back(_ctxt);
+		}
+
+		/*!
+		@brief Adds a new ECellEngine::Editor::Utility::NodeEditorStyle() to
+				::nodeEditorCtxts.
+		*/
+		inline void AddNodeEditorStyle(ax::NodeEditor::EditorContext* _ctxt)
+		{
+			ax::NodeEditor::SetCurrentEditor(_ctxt);
+			nodeEditorStyles.push_back(ECellEngine::Editor::Utility::NodeEditorStyle(ax::NodeEditor::GetStyle()));
 		}
 
 		/*!
@@ -134,6 +151,14 @@ namespace ECellEngine::Editor
 		inline std::size_t CountEditorContexts()
 		{
 			return nodeEditorCtxts.size();
+		}
+
+		/*!
+		@brief Gets the size of ::nodeEditorStyles
+		*/
+		inline std::size_t CountEditorStyles()
+		{
+			return nodeEditorStyles.size();
 		}
 
 		/*!
@@ -174,6 +199,16 @@ namespace ECellEngine::Editor
 		}
 
 		/*!
+		@brief Retrieves the pointer to the node editor style data at index
+				@p _idx in ::nodeEditorStyles.
+		@param _idx The index of the style struct to retrieve in ::nodeEditorStyles.
+		*/
+		inline ECellEngine::Editor::Utility::NodeEditorStyle* GetNodeEditorStyle(std::size_t _idx)
+		{
+			return &nodeEditorStyles[_idx];
+		}
+
+		/*!
 		@brief Set the pointer of the data state to be visualized in this
 				model explorer.
 		@remarks Needs an access to ::editor which class is forward declared
@@ -191,13 +226,29 @@ namespace ECellEngine::Editor
 		*/
 		inline void RemoveNodeEditorContext(std::size_t _idx)
 		{
-			if (_idx >= CountEditorContexts())
+			if (_idx >= nodeEditorCtxts.size())
 			{
 				return;
 			}
 
 			ax::NodeEditor::DestroyEditor(nodeEditorCtxts[_idx]);
 			nodeEditorCtxts.erase(nodeEditorCtxts.begin() + _idx);
+		}
+
+		/*!
+		@brief Erases the node editor styles struct stored a index @p
+				_idx in ::nodeEditorStyles.
+		@param _idx The index of the style struct to erase from
+				::nodeEditorStyles.
+		@remarks Checks that @p _idx is not out of bounds of ::nodeEditorStyles.
+		*/
+		inline void RemoveNodeEditorStyle(std::size_t _idx)
+		{
+			if (_idx >= nodeEditorStyles.size())
+			{
+				return;
+			}
+			nodeEditorStyles.erase(nodeEditorStyles.begin() + _idx);
 		}
 
 		void Awake() override;

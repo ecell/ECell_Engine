@@ -112,10 +112,10 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(int& _id, std::v
                 if (ax::NodeEditor::AcceptNewItem())
                 {
                     // Since we accepted new link, lets add one to our list of links.
-                    _links.push_back({ ax::NodeEditor::LinkId(_id++), inputPinId, outputPinId });
+                    _links.push_back(LinkData(_id, inputPinId, outputPinId));
 
                     // Draw new link.
-                    ax::NodeEditor::Link(_links.back().id, _links.back().inputId, _links.back().outputId);
+                    ax::NodeEditor::Link(_links.back().id, _links.back().startId, _links.back().endId);
                 }
 
                 // You may choose to reject connection between these nodes
