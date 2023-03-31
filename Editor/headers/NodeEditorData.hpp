@@ -20,8 +20,8 @@ namespace ECellEngine::Editor::Utility
 	{
 		NodeStyleColor_Bg,
 		NodeStyleColor_Border,
-		NodeStyleColor_BorderHovered,
-		NodeStyleColor_BorderSelected,
+		//NodeStyleColor_BorderHovered,
+		//NodeStyleColor_BorderSelected,
 		NodeStyleColor_HeaderBg,
 		NodeStyleColor_HeaderActivated,
 		NodeStyleColor_HeaderHovered,
@@ -59,43 +59,43 @@ namespace ECellEngine::Editor::Utility
 		{
 			defaultNode[NodeStyleColor_Bg] =				_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBg];
 			defaultNode[NodeStyleColor_Border] =			_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBorder];
-			defaultNode[NodeStyleColor_BorderHovered] =		_defaultStyle.Colors[ax::NodeEditor::StyleColor_HovNodeBorder];
-			defaultNode[NodeStyleColor_BorderSelected] =	_defaultStyle.Colors[ax::NodeEditor::StyleColor_SelNodeBorder];
+			//defaultNode[NodeStyleColor_BorderHovered] =		_defaultStyle.Colors[ax::NodeEditor::StyleColor_HovNodeBorder];
+			//defaultNode[NodeStyleColor_BorderSelected] =	_defaultStyle.Colors[ax::NodeEditor::StyleColor_SelNodeBorder];
 			defaultNode[NodeStyleColor_HeaderBg] =			_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBorder];
-			defaultNode[NodeStyleColor_HeaderHovered] =		_defaultStyle.Colors[ax::NodeEditor::StyleColor_HovNodeBorder];
 			defaultNode[NodeStyleColor_HeaderActivated] =	_defaultStyle.Colors[ax::NodeEditor::StyleColor_SelNodeBorder];
+			defaultNode[NodeStyleColor_HeaderHovered] =		_defaultStyle.Colors[ax::NodeEditor::StyleColor_HovNodeBorder];
 			
-			assetNode[NodeStyleColor_Bg] =					_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBg];
-			assetNode[NodeStyleColor_Border] =				ImVec4(1.f, 0.f, 0.f, 1.f);
-			assetNode[NodeStyleColor_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
-			assetNode[NodeStyleColor_BorderSelected] =		ImVec4(0.f, 0.f, 1.f, 1.f);
-			assetNode[NodeStyleColor_HeaderBg] =			assetNode[NodeStyleColor_Border];
-			assetNode[NodeStyleColor_HeaderHovered] =		assetNode[NodeStyleColor_BorderHovered];
-			assetNode[NodeStyleColor_HeaderActivated] =		assetNode[NodeStyleColor_BorderSelected];
+			assetNode[NodeStyleColor_Bg] =					ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
+			assetNode[NodeStyleColor_Border] =				ImVec4(0.7f, 0.7f, 0.7f, 1.f);
+			//assetNode[NodeStyleColor_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
+			//assetNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			assetNode[NodeStyleColor_HeaderBg] =			ImVec4(0.7f, 0.7f, 0.7f, 0.25f);
+			assetNode[NodeStyleColor_HeaderActivated] =		ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
+			assetNode[NodeStyleColor_HeaderHovered] =		ImVec4(0.7f, 0.7f, 0.7f, 0.5f);
 
 			parameterNode[NodeStyleColor_Bg] =				_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBg];
 			parameterNode[NodeStyleColor_Border] =			ImVec4(1.f, 0.f, 0.f, 1.f);
-			parameterNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
-			parameterNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			parameterNode[NodeStyleColor_HeaderBg] =		parameterNode[NodeStyleColor_Border];
-			parameterNode[NodeStyleColor_HeaderHovered] =	parameterNode[NodeStyleColor_BorderHovered];
-			parameterNode[NodeStyleColor_HeaderActivated] = parameterNode[NodeStyleColor_BorderSelected];
+			//parameterNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
+			//parameterNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			parameterNode[NodeStyleColor_HeaderBg] =		ImVec4(1.f, 0.f, 0.f, 1.f);;
+			parameterNode[NodeStyleColor_HeaderActivated] = ImVec4(1.f, 0.f, 0.f, 1.f);;
+			parameterNode[NodeStyleColor_HeaderHovered] =	ImVec4(1.f, 0.f, 0.f, 1.f);;
 
 			reactionNode[NodeStyleColor_Bg] =				_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBg];
 			reactionNode[NodeStyleColor_Border] =			ImVec4(1.f, 0.f, 0.f, 1.f);
-			reactionNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
-			reactionNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			reactionNode[NodeStyleColor_HeaderBg] =			reactionNode[NodeStyleColor_Border];
-			reactionNode[NodeStyleColor_HeaderHovered] =	reactionNode[NodeStyleColor_BorderHovered];
-			reactionNode[NodeStyleColor_HeaderActivated] =	reactionNode[NodeStyleColor_BorderSelected];
+			//reactionNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
+			//reactionNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			reactionNode[NodeStyleColor_HeaderBg] =			ImVec4(1.f, 0.f, 0.f, 1.f);
+			reactionNode[NodeStyleColor_HeaderActivated] =	ImVec4(1.f, 0.f, 0.f, 1.f);
+			reactionNode[NodeStyleColor_HeaderHovered] =	ImVec4(1.f, 0.f, 0.f, 1.f);
 
-			speciesNode[NodeStyleColor_Bg] =				_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBg];
+			speciesNode[NodeStyleColor_Bg] =				ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
 			speciesNode[NodeStyleColor_Border] =			ImVec4(1.f, 0.f, 0.f, 1.f);
-			speciesNode[NodeStyleColor_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
-			speciesNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			speciesNode[NodeStyleColor_HeaderBg] =			speciesNode[NodeStyleColor_Border];
-			speciesNode[NodeStyleColor_HeaderHovered] =		speciesNode[NodeStyleColor_BorderHovered];
-			speciesNode[NodeStyleColor_HeaderActivated] =	speciesNode[NodeStyleColor_BorderSelected];
+			//speciesNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);.f);
+			//speciesNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			speciesNode[NodeStyleColor_HeaderBg] =			ImVec4(1.f, 0.f, 0.f, 0.25f);
+			speciesNode[NodeStyleColor_HeaderActivated] =	ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
+			speciesNode[NodeStyleColor_HeaderHovered] =		ImVec4(1.f, 0.f, 0.f, 0.5f);
 
 		}
 
@@ -118,10 +118,10 @@ namespace ECellEngine::Editor::Utility
 				return "NodeStyleColor_Bg";
 			case NodeStyleColor_Border:
 				return "NodeStyleColor_Border";
-			case NodeStyleColor_BorderHovered:
-				return "NodeStyleColor_BorderHovered";
-			case NodeStyleColor_BorderSelected:
-				return "NodeStyleColor_BorderSelected";
+			/*case NodeStyleColor_BorderHovered:
+				return "NodeStyleColor_BorderHovered";*/
+			/*case NodeStyleColor_BorderSelected:
+				return "NodeStyleColor_BorderSelected";*/
 			case NodeStyleColor_HeaderBg:
 				return "NodeStyleColor_HeaderBg";
 			case NodeStyleColor_HeaderActivated:
