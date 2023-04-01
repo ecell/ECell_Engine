@@ -263,21 +263,4 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char*
     ImGui::EndGroup();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::PushScrollBarStyle(ImGuiStyle& _style)
-{
-    //Style the vertical slider like a scroll bar
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, _style.ScrollbarRounding);
-    ImGui::PushStyleVar(ImGuiStyleVar_GrabRounding, _style.ScrollbarRounding);
-    ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarGrab));
-    ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
-    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
-    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
-}
-
-void ECellEngine::Editor::Utility::NodeEditorDraw::PopScrollBarStyle()
-{
-    ImGui::PopStyleColor(4);
-    ImGui::PopStyleVar(2);
-}
-
 #pragma endregion

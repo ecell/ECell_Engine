@@ -13,6 +13,62 @@ namespace ECellEngine::Editor::Utility
 	*/
 	struct NodeEditorDraw
 	{
+#pragma region Custom Styles
+
+		/*!
+		@brief Pops the number of color styles pushed with ::PushNodeStyle(const ImVec4 _colorSet[])
+		*/
+		inline static void PopNodeStyle()
+		{
+			ImGui::PopStyleColor(4);
+			ax::NodeEditor::PopStyleColor(2);
+		}
+
+		/*!
+		@brief Pushes a bunch of colors to customize a node' style.
+		@details Don't forget to call ::PopNodeStyle() after you've drawn the
+				 node.
+		@see ::PopNodeStyle()
+		*/
+		inline static void PushNodeStyle(const ImVec4 _colorSet[])
+		{
+			ax::NodeEditor::PushStyleColor(ax::NodeEditor::StyleColor_NodeBg, _colorSet[NodeStyleColor_Bg]);
+			ax::NodeEditor::PushStyleColor(ax::NodeEditor::StyleColor_NodeBorder, _colorSet[NodeStyleColor_Border]);
+			ImGui::PushStyleColor(ImGuiCol_Button, _colorSet[NodeStyleColor_Bg]);
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, _colorSet[NodeStyleColor_HeaderActivated]);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, _colorSet[NodeStyleColor_HeaderHovered]);
+			ImGui::PushStyleColor(ImGuiCol_Separator, _colorSet[NodeStyleColor_Border]);
+		}
+
+		/*!
+		@brief Pops the number of styles pushed with ::PushScrollBarStyle(ImGuiStyle& _style)
+		*/
+		inline static void PopScrollBarStyle()
+		{
+			ImGui::PopStyleColor(4);
+			ImGui::PopStyleVar(2);
+		}
+
+		/*!
+		@brief Pushes a bunch of styles to match ImGui's default Scroll Bar style.
+				Can be used with sliders in nodes.
+		@details Don't forget to call ::PopScrollBarStyle() after you've drawn the
+				 slider.
+		@see ::PopScrollBarStyle()
+		*/
+		inline static void PushScrollBarStyle(const ImGuiStyle& _style)
+		{
+			//Style the vertical slider like a scroll bar
+			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, _style.ScrollbarRounding);
+			ImGui::PushStyleVar(ImGuiStyleVar_GrabRounding, _style.ScrollbarRounding);
+			ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarGrab));
+			ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
+			ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
+			ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
+		}
+#pragma endregion
+
+
 #pragma region Nodes
 		/*!
 		@brief Draws a node to display and access the content of an
@@ -162,22 +218,6 @@ namespace ECellEngine::Editor::Utility
 		*/
 		static void NodeStringListBox(const char* _id, NodeListBoxStringData& _lbsData,
 			const float _widgetWidth = 200.f, const short _itemViewHeight = 7);
-
-
-		/*!
-		@brief Pops the number of styles pushed with ::PushScrollBarStyle(ImGuiStyle& _style)
-		*/
-		static void PopScrollBarStyle();
-
-		/*!
-		@brief Pushes a bunch of styles to match ImGui's default Scroll Bar style.
-				Can be used with sliders in nodes.
-		@details Don't forget to call ::PopScrollBarStyle() after you've drawn the
-				 slider.
-		@see ::PopScrollBarStyle()
-		*/
-		static void PushScrollBarStyle(ImGuiStyle& _style);
-
 #pragma endregion
 
 	};
