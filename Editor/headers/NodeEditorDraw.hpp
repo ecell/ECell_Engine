@@ -1,4 +1,6 @@
 #pragma once
+
+#include "imgui_internal.h"
 #include "NodeEditorData.hpp"
 
 #include "Logger.hpp"

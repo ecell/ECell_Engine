@@ -161,14 +161,40 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkDestruction(std::vector<E
 #pragma region Custom Node Widgets
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type, const char* _name,
-    const float _width, const short _height)
+    const ImVec4 _colorSet[], const float _width, const short _height)
 {
-    const ImVec2 typeTextSize = ImGui::CalcTextSize(_type);
-    const ImVec2 nameTextSize = ImGui::CalcTextSize(_name);
+    const float titleSize = ImGui::CalcTextSize(_type).x + ImGui::CalcTextSize(_name).x + ImGui::GetStyle().ItemSpacing.x;
+    
+    const ImVec2 startPos = ImGui::GetCursorScreenPos();
+    const ImVec2 endPos = ImVec2(startPos.x + std::max(_width, titleSize), startPos.y);
 
-    ImGui::Text(_type); ImGui::SameLine(); ImGui::Text(_name);
+    const ImRect bb(startPos, ImVec2(endPos.x + 2 * ImGui::GetStyle().FramePadding.x, endPos.y + ImGui::GetTextLineHeightWithSpacing()));
 
-    NodeHorizontalSeparator(typeTextSize.x + nameTextSize.x + ImGui::GetStyle().ItemSpacing.x);
+    if (ImGui::ItemAdd(bb, 0))
+    {
+        /*NodeStyleColor colFlag = NodeStyleColor_HeaderBg;
+        if (ImGui::IsItemHovered())
+        {
+            colFlag = NodeStyleColor_HeaderHovered;
+            if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+            {
+                ECellEngine::Logging::Logger::GetSingleton().LogDebug("Id of Hovered Item is: " + std::to_string(ImGui::GetItemID()));
+            }
+        }
+
+        if (ImGui::IsItemClicked())
+        {
+            colFlag = NodeStyleColor_HeaderActivated;
+        }*/
+
+        ImGui::GetWindowDrawList()->AddRectFilled(bb.Min, bb.Max, ImColor(_colorSet[NodeStyleColor_HeaderBg]), ax::NodeEditor::GetStyle().NodeRounding);
+        ImGui::SetCursorPos(ImVec2(startPos.x + ImGui::GetStyle().FramePadding.x, startPos.y));
+        ImGui::Text(_type); ImGui::SameLine(); ImGui::Text(_name);
+    }
+    
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
+
+    NodeHorizontalSeparator(titleSize + 2 * ImGui::GetStyle().FramePadding.x);
 }
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const float _width, const float _thickness)
