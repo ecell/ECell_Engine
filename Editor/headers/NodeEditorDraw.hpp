@@ -127,13 +127,23 @@ namespace ECellEngine::Editor::Utility
 
 		/*!
 		@brief Logic to draw headers of nodes.
+		@param _type A string that describes the type of the node.
+		@param _name The name of the node. It is displayed right after @p _type.
+		@param _colorSet The array of colors to style the header similarly to the
+				rest of the node.
+		@param _width The minimal width of the header. The header may be bigger than
+				this width if the string @p _type + @p _name is bigger.
+		@param _height The height of the header. It is counted in number of lines.
 		*/
-		static void NodeHeader(const char* _type, const char* _name, const float _width = 200.f, const short _height = 1);
+		static void NodeHeader(const char* _type, const char* _name, const ImVec4 _colorSet[],
+			const float _width = 200.f, const short _height = 1);
 
 		/*!
 		@brief Draws a horizontal line of a set width and thickness.
 		@details Intends to replace ImGui::Separator() which spans infinitely in width within
 				 the node editor.
+		@param _width The length of the line to draw as a seperator.
+		@param _thickness The thickness in pixel of the line to draw as a separator.
 		*/
 		static void NodeHorizontalSeparator(const float _width, const float _thickness = 1.f);
 
