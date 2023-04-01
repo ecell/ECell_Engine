@@ -21,10 +21,27 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::AddSolverNode(const std::s
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::Awake()
 {
     ax::NodeEditor::Config nodeConfig;
+
+    //Create a new Editor context and add it to the list of all Editor contexts managed
+    //by the Model Explorer
     rootExplorer->AddNodeEditorContext(ax::NodeEditor::CreateEditor(&nodeConfig));
     ctxtIndex = rootExplorer->CountEditorContexts()-1;
+
+    //Create the style data customized for the nodes specific to our use case.
     rootExplorer->AddNodeEditorStyle(rootExplorer->GetNodeEditorContext(ctxtIndex));
     styleIndex = rootExplorer->CountEditorStyles()-1;
+
+    //Updates global style values that we want to be applied to everything in our use case.
+    //We don't use the Push/Pop API on purpose because we will not change those values in the
+    //future.
+    ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(ctxtIndex));
+    ax::NodeEditor::Style& style = ax::NodeEditor::GetStyle();
+    style.NodeRounding = 6; //instead of 12 by default.
+    style.NodeBorderWidth = 3; //instead of 2 by default.
+    style.HoveredNodeBorderWidth = 6; //instead of 3 by default.
+    style.SelectedNodeBorderWidth = 6; //instead of 3 by default.
+    ax::NodeEditor::SetCurrentEditor(nullptr);
+
 }
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
