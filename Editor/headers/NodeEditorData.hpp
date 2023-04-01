@@ -318,8 +318,7 @@ namespace ECellEngine::Editor::Utility
 
 		ECellEngine::Data::SBMLModule* data;
 
-		std::vector<NodePinData> inputPins;
-		std::vector<NodePinData> outputPins;
+		NodePinData outputPins[4];
 
 		unsigned char utilityState = 0;
 
@@ -329,7 +328,7 @@ namespace ECellEngine::Editor::Utility
 		NodeListBoxStringData reactionsNLB;
 
 		/*!
-		@remarks @p _nodeId is incremented immeditely after use.
+		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		AssetNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::Module* _data) :
 			id{ _nodeId }, dataIdx{ _dataIdx }, data{dynamic_cast<ECellEngine::Data::SBMLModule*>(_data)}
@@ -337,10 +336,11 @@ namespace ECellEngine::Editor::Utility
 			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
 			_nodeId++;
 
-			inputPins.push_back(NodePinData(_nodeId, "o"));
-			inputPins.push_back(NodePinData(_nodeId, "o"));
-			inputPins.push_back(NodePinData(_nodeId, "o"));
-			inputPins.push_back(NodePinData(_nodeId, "o"));
+			outputPins[0] = NodePinData(_nodeId, "o");
+			outputPins[1] = NodePinData(_nodeId, "o");
+			outputPins[2] = NodePinData(_nodeId, "o");
+			outputPins[3] = NodePinData(_nodeId, "o");
+
 			//Initialize the list boxes data
 			speciesNLB.data = &data->GetAllSpecies();
 			speciesNLB.cursor = speciesNLB.data->size();
@@ -353,9 +353,6 @@ namespace ECellEngine::Editor::Utility
 
 			reactionsNLB.data = &data->GetAllReaction();
 			reactionsNLB.cursor = reactionsNLB.data->size();
-			simpleParametersNLB.cursor = data->GetAllSimpleParameter().size();
-			computedParametersNLB.cursor = data->GetAllComputedParameter().size();
-			reactionsNLB.cursor = data->GetAllReaction().size();
 		}
 	};
 
@@ -380,7 +377,7 @@ namespace ECellEngine::Editor::Utility
 		std::vector<NodePinData> outputPins;
 
 		/*!
-		@remarks @p _nodeId is incremented immeditely after use.
+		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		SolverNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Solvers::Solver* _data) :
 			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }

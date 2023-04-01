@@ -1,12 +1,12 @@
 #include "NodeEditorDraw.hpp"
 
 #pragma region Nodes
-
-void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, AssetNodeData& _assetNodeInfo)
+void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, AssetNodeData& _assetNodeInfo, const ImVec4 _assetNodeColors[])
 {
+    PushNodeStyle(_assetNodeColors);
     ax::NodeEditor::BeginNode(_assetNodeInfo.id);
 
-    ImGui::Text(_name);
+    NodeHeader("Asset:", _name, _assetNodeColors);
 
     ECellEngine::Editor::Utility::NodeEditorDraw::BeginColumn();
     if (NodeCollapsingHeader("Species", _assetNodeInfo.utilityState, 0, ImVec2(200, 0)))
@@ -40,6 +40,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
     }
 
     ax::NodeEditor::EndNode();
+    PopNodeStyle();
+
 }
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo)

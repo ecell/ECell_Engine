@@ -75,9 +75,11 @@ namespace ECellEngine::Editor::Utility
 				ECellEngine::Data::Module.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _assetNodeInfo The struct with information about what to draw..
+		@param _assetNodeInfo The struct with information about what to draw.
+		@param _assetNodeColors The set of colors to cutomize the looks of this
+				node.
 		*/
-		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo);
+		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo, const ImVec4 _assetNodeColors[]);
 
 		/*!
 		@brief Draws a node to display and access the content of a
