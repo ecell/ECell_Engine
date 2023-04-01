@@ -88,13 +88,13 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawAddSolverPopup()
 
                 modelHierarchy.AddSolverName("Gillespie Next Reaction Method");
 
-                utilityState &= 0 << 1;
+                SwitchState(1); //Marks the Add Solver popup as closed
             }
                 
             if (ImGui::MenuItem("Ordinary Differential Equations (TODO)"))
             {
                 ECellEngine::Logging::Logger::GetSingleton().LogWarning("ODE Solver is not yet available");
-                utilityState &= 0 << 1;
+                SwitchState(1); //Marks the Add Solver popup as closed
             }
 
             ImGui::EndMenu();// Biochemical
@@ -102,10 +102,10 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawAddSolverPopup()
 
         if (ImGui::Button("Close"))
         {
-            utilityState &= 0 << 1;
+            SwitchState(1); //Marks the Add Solver popup as closed
         }
 
-        ImGui::End();
+        ImGui::End();// AddSolver
     }
 }
 
@@ -124,14 +124,14 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawImportAssetPopup()
             /*TODO: Check that the module was correctly imported before drawing.*/
             modelHierarchy.AddAssetName(assetNameBuffer);
 
-            utilityState &= 0 << 0;
+            SwitchState(0); //Marks the Import Asset popup as closed
         }
 
         ImGui::SameLine();
 
         if (ImGui::Button("Close"))
         {
-            utilityState &= 0 << 0;
+            SwitchState(0); //Marks the Import Asset popup as closed
         }
 
         ImGui::End();
@@ -146,7 +146,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawMenuBar()
         {
             if (ImGui::MenuItem("Import Asset From File"))
             {
-                utilityState |= 1 << 0;
+                SwitchState(0); //Marks the Import Asset From File popup as opened
                 ImGui::SetNextWindowPos(ImGui::GetIO().MousePos, ImGuiCond_Always);
                 ImGui::SetNextWindowSize(ImVec2(400, 120), ImGuiCond_Always);
                 DrawImportAssetPopup();//to draw immediately during this frame
@@ -154,7 +154,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawMenuBar()
 
             if (ImGui::MenuItem("Asset Solver"))
             {
-                utilityState |= 1 << 1;
+                SwitchState(1); //Marks the Add Asset popup as opened
                 ImGui::SetNextWindowPos(ImGui::GetIO().MousePos, ImGuiCond_Always);
                 ImGui::SetNextWindowSize(ImVec2(150, 90), ImGuiCond_Always);
                 DrawAddSolverPopup();//to draw immediately during this frame
@@ -167,7 +167,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawMenuBar()
         {
             if (ImGui::MenuItem("Preferences"))
             {
-                utilityState |= 1 << 2;
+                SwitchState(2); //Marks the Preferences popup as opened
                 ImGui::SetNextWindowPos(ImGui::GetIO().MousePos, ImGuiCond_Always);
                 ImGui::SetNextWindowSize(ImVec2(600, 600), ImGuiCond_Always);
                 DrawPreferencesPopup();//to draw immediately during this frame
@@ -438,7 +438,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
 
         if (ImGui::Button("Close"))
         {
-            utilityState &= 0 << 2;
+            SwitchState(2); //Marks the preferences popup as closed
         }
 
         ImGui::End();
