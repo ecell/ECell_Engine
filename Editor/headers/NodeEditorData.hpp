@@ -44,6 +44,7 @@ namespace ECellEngine::Editor::Utility
 		ImVec4 assetNode[NodeStyleColor_Count];
 		ImVec4 parameterNode[NodeStyleColor_Count];
 		ImVec4 reactionNode[NodeStyleColor_Count];
+		ImVec4 solverNode[NodeStyleColor_Count];
 		ImVec4 speciesNode[NodeStyleColor_Count];
 
 		/*ImVec4 assetLink[LinkStyleColor_Count];
@@ -55,6 +56,7 @@ namespace ECellEngine::Editor::Utility
 		ImVec4 assetPin[PinStyleColor_Count];
 		ImVec4 parameterPin[PinStyleColor_Count];
 		ImVec4 reactionPin[PinStyleColor_Count];
+		ImVec4 solverPin[PinStyleColor_Count];
 		ImVec4 speciesPin[PinStyleColor_Count];
 
 		NodeEditorStyleColors(ax::NodeEditor::Style& _defaultStyle)
@@ -67,12 +69,12 @@ namespace ECellEngine::Editor::Utility
 			defaultNode[NodeStyleColor_HeaderActivated] =	_defaultStyle.Colors[ax::NodeEditor::StyleColor_SelNodeBorder];
 			defaultNode[NodeStyleColor_HeaderHovered] =		_defaultStyle.Colors[ax::NodeEditor::StyleColor_HovNodeBorder];
 			
-			assetNode[NodeStyleColor_Bg] =					ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
+			assetNode[NodeStyleColor_Bg] =					ImVec4( 0.f,  0.f,  0.f, 0.5f);
 			assetNode[NodeStyleColor_Border] =				ImVec4(0.7f, 0.7f, 0.7f, 1.f);
 			//assetNode[NodeStyleColor_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
 			//assetNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
 			assetNode[NodeStyleColor_HeaderBg] =			ImVec4(0.7f, 0.7f, 0.7f, 0.25f);
-			assetNode[NodeStyleColor_HeaderActivated] =		ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
+			assetNode[NodeStyleColor_HeaderActivated] =		ImVec4( 0.f,  0.f,  0.f, 0.5f);
 			assetNode[NodeStyleColor_HeaderHovered] =		ImVec4(0.7f, 0.7f, 0.7f, 0.5f);
 
 			parameterNode[NodeStyleColor_Bg] =				_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBg];
@@ -91,13 +93,21 @@ namespace ECellEngine::Editor::Utility
 			reactionNode[NodeStyleColor_HeaderActivated] =	ImVec4(1.f, 0.f, 0.f, 1.f);
 			reactionNode[NodeStyleColor_HeaderHovered] =	ImVec4(1.f, 0.f, 0.f, 1.f);
 
-			speciesNode[NodeStyleColor_Bg] =				ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
-			speciesNode[NodeStyleColor_Border] =			ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
+			solverNode[NodeStyleColor_Bg] =					ImVec4( 0.f,    0.f,  0.f, 0.5f);
+			solverNode[NodeStyleColor_Border] =				ImVec4( 1.f, 0.365f,  0.f,  1.f);
+			//solverNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
+			//solverNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			solverNode[NodeStyleColor_HeaderBg] =			ImVec4( 1.f, 0.365f,  0.f, 0.25f);
+			solverNode[NodeStyleColor_HeaderActivated] =	ImVec4( 0.f,    0.f,  0.f,  0.5f);
+			solverNode[NodeStyleColor_HeaderHovered] =		ImVec4( 1.f, 0.365f,  0.f,  0.5f);
+
+			speciesNode[NodeStyleColor_Bg] =				ImVec4( 0.f,  0.f,  0.f, 0.5f);
+			speciesNode[NodeStyleColor_Border] =			ImVec4( 1.f,  0.f,  0.f,  1.f);
 			//speciesNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);.f);
 			//speciesNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			speciesNode[NodeStyleColor_HeaderBg] =			ImVec4(1.0f, 0.0f, 0.0f, 0.25f);
-			speciesNode[NodeStyleColor_HeaderActivated] =	ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
-			speciesNode[NodeStyleColor_HeaderHovered] =		ImVec4(1.0f, 0.0f, 0.0f, 0.5f);
+			speciesNode[NodeStyleColor_HeaderBg] =			ImVec4( 1.f,  0.f,  0.f, 0.25f);
+			speciesNode[NodeStyleColor_HeaderActivated] =	ImVec4( 0.f,  0.f,  0.f, 0.5f);
+			speciesNode[NodeStyleColor_HeaderHovered] =		ImVec4( 1.f,  0.f,  0.f, 0.5f);
 
 			defaultPin[PinStyleColor_BgActivated] = defaultNode[NodeStyleColor_Border];
 			defaultPin[PinStyleColor_BgInactivated] = defaultNode[NodeStyleColor_Bg];
@@ -115,6 +125,10 @@ namespace ECellEngine::Editor::Utility
 			reactionPin[PinStyleColor_BgInactivated] = reactionNode[NodeStyleColor_Bg];
 			reactionPin[PinStyleColor_Border] = reactionNode[NodeStyleColor_Border];
 
+			solverPin[PinStyleColor_BgActivated] = solverNode[NodeStyleColor_Border];
+			solverPin[PinStyleColor_BgInactivated] = solverNode[NodeStyleColor_Bg];
+			solverPin[PinStyleColor_Border] = solverNode[NodeStyleColor_Border];
+			
 			speciesPin[PinStyleColor_BgActivated] = speciesNode[NodeStyleColor_Border];
 			speciesPin[PinStyleColor_BgInactivated] = speciesNode[NodeStyleColor_Bg];
 			speciesPin[PinStyleColor_Border] = speciesNode[NodeStyleColor_Border];
