@@ -78,6 +78,14 @@ namespace ECellEngine::Editor::Utility
 		@param _assetNodeInfo The struct with information about what to draw.
 		@param _assetNodeColors The set of colors to cutomize the looks of this
 				node.
+		@param _solverPinColors The set of colors to cutomize the solver pin in
+				this node.
+		@param _parameterPinColors The set of colors to cutomize the parameter
+				pin in this node.
+		@param _reactionPinColors The set of colors to cutomize the reaction pin
+				in this node.
+		@param _speciesPinColors The set of colors to cutomize the species pin in
+				this node.
 		*/
 		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo,
 			const ImVec4 _assetNodeColors[], const ImVec4 _solverPinColors[],
@@ -90,8 +98,15 @@ namespace ECellEngine::Editor::Utility
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _solverNodeInfo The struct with information about what to draw.
+		@param _solverNodeColors The set of colors to cutomize the looks of this
+				node.
+		@param _assetPinColors The set of colors to cutomize the asset pin in
+				this node.
 		*/
-		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo);
+		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo,
+			const ImVec4 _solverNodeColors[], const ImVec4 _assetPinColors[]);
+
+		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo);
 #pragma endregion
 
 #pragma region Node Pins
