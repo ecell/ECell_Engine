@@ -216,9 +216,12 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type,
     const float titleSize = ImGui::CalcTextSize(_type).x + ImGui::CalcTextSize(_name).x + ImGui::GetStyle().ItemSpacing.x;
     
     const ImVec2 startPos = ImGui::GetCursorScreenPos();
-    const ImVec2 endPos = ImVec2(startPos.x + std::max(_width, titleSize), startPos.y);
+    const ImVec2 endPos = ImVec2(
+        startPos.x + std::max(_width + 2.f * GetPinDrawOffset(), titleSize + 2.f * ImGui::GetStyle().FramePadding.x),
+        startPos.y + ImGui::GetTextLineHeightWithSpacing()
+    );
 
-    const ImRect bb(startPos, ImVec2(endPos.x + 2 * ImGui::GetStyle().FramePadding.x, endPos.y + ImGui::GetTextLineHeightWithSpacing()));
+    const ImRect bb(startPos, endPos);
 
     if (ImGui::ItemAdd(bb, 0))
     {
@@ -244,7 +247,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type,
     
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
 
-    NodeHorizontalSeparator(titleSize + 2 * ImGui::GetStyle().FramePadding.x);
+    NodeHorizontalSeparator(bb.GetWidth());
 }
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const float _width, const float _thickness)
