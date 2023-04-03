@@ -12,7 +12,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
     NodeHeader("Asset:", _name, _assetNodeColors);
 
     // ----- Pin and Text to connect the solver to the asset -----
-    ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(_assetNodeInfo.inputPin, _solverPinColors);
+    InputPin(_assetNodeInfo.inputPin, _solverPinColors);
     ImGui::SameLine(); ImGui::AlignTextToFramePadding(); ImGui::Text("Solver");
 
     // ----- String List Box and Pin to access the species of the asset -----
@@ -22,34 +22,34 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         NodeStringListBox("1", _assetNodeInfo.speciesNLB, GetPinDrawOffset());
     }
     ImGui::EndGroup(); ImGui::SameLine();
-    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_assetNodeInfo.outputPins[0], _speciesPinColors);
+    OutputPin(_assetNodeInfo.outputPins[0], _speciesPinColors);
 
     // ----- String List Box and Pin to access the simple parameters of the asset -----
     ImGui::BeginGroup(); ApplyPinDrawOffset();
     if (NodeCollapsingHeader("Constant Parameters", _assetNodeInfo.utilityState, 1, ImVec2(200, 0)))
     {
-        NodeStringListBox("2", _assetNodeInfo.simpleParametersNLB);
+        NodeStringListBox("2", _assetNodeInfo.simpleParametersNLB, GetPinDrawOffset());
     }
     ImGui::EndGroup(); ImGui::SameLine();
-    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_assetNodeInfo.outputPins[1], _parameterPinColors);
+    OutputPin(_assetNodeInfo.outputPins[1], _parameterPinColors);
 
     // ----- String List Box and Pin to access the computed parameters of the asset -----
     ImGui::BeginGroup(); ApplyPinDrawOffset();
     if (NodeCollapsingHeader("Computed Parameters", _assetNodeInfo.utilityState, 2, ImVec2(200, 0)))
     {
-        NodeStringListBox("3", _assetNodeInfo.computedParametersNLB);
+        NodeStringListBox("3", _assetNodeInfo.computedParametersNLB, GetPinDrawOffset());
     }
     ImGui::EndGroup(); ImGui::SameLine();
-    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_assetNodeInfo.outputPins[2], _parameterPinColors);
+    OutputPin(_assetNodeInfo.outputPins[2], _parameterPinColors);
 
     // ----- String List Box and Pin to access the reactions of the asset -----
     ImGui::BeginGroup(); ApplyPinDrawOffset();
     if (NodeCollapsingHeader("Reactions", _assetNodeInfo.utilityState, 3, ImVec2(200, 0)))
     {
-        NodeStringListBox("4", _assetNodeInfo.reactionsNLB);
+        NodeStringListBox("4", _assetNodeInfo.reactionsNLB, GetPinDrawOffset());
     }
     ImGui::EndGroup(); ImGui::SameLine();
-    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_assetNodeInfo.outputPins[3], _reactionPinColors);
+    OutputPin(_assetNodeInfo.outputPins[3], _reactionPinColors);
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
@@ -66,7 +66,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name,
     const float itemWidths[3] = { ImGui::CalcTextSize("Target Asset").x, 8.f, ImGui::GetStyle().ItemSpacing.x};
     AlignToRight(headerWidth, itemWidths, 3);
     ImGui::AlignTextToFramePadding(); ImGui::Text("Target Asset"); ImGui::SameLine();
-    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_solverNodeInfo.outputPin, _assetPinColors);
+    OutputPin(_solverNodeInfo.outputPin, _assetPinColors);
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
