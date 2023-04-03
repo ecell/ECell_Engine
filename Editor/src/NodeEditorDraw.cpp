@@ -269,9 +269,12 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char*
 
     //The list of items to display
     ImGui::BeginGroup();
+    float itemSize = _widgetWidth - style.ScrollbarSize - style.ItemSpacing.x;
+    const char* itemString;
     for (int n = _lbsData.cursor; n > _lbsData.cursor - _itemViewHeight; n--)
     {
-        if (ImGui::Selectable(_lbsData.data->at(_lbsData.data->size() - n).c_str(), false, ImGuiSelectableFlags_None, ImVec2(_widgetWidth - style.ScrollbarSize - style.ItemSpacing.x, 0)))
+        itemString = _lbsData.data->at(_lbsData.data->size() - n).c_str();
+        if (ImGui::Selectable(itemString, false, ImGuiSelectableFlags_None, ImVec2(itemSize, 0)))
         {
             _lbsData.selectedItem = _lbsData.data->size() - n;
             _lbsData.SetItemClicked();
@@ -281,6 +284,13 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char*
         {
             _lbsData.hoveredItem = _lbsData.data->size() - n;
             _lbsData.SetItemHovered();
+
+            if (ImGui::CalcTextSize(itemString).x > itemSize)
+            {
+                ax::NodeEditor::Suspend();
+                ImGui::SetTooltip("%s", itemString);
+                ax::NodeEditor::Resume();
+            }
 
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
             {
