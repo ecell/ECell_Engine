@@ -220,7 +220,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkDestruction(std::vector<E
 
 #pragma region Custom Node Widgets
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type, const char* _name,
+float ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type, const char* _name,
     const ImVec4 _colorSet[], const float _width, const short _height)
 {
     const float titleSize = ImGui::CalcTextSize(_type).x + ImGui::CalcTextSize(_name).x + ImGui::GetStyle().ItemSpacing.x;
@@ -258,6 +258,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type,
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
 
     NodeHorizontalSeparator(bb.GetWidth());
+
+    return bb.GetWidth();
 }
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const float _width, const float _thickness)

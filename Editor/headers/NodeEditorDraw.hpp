@@ -261,8 +261,9 @@ namespace ECellEngine::Editor::Utility
 		@param _width The minimal width of the header. The header may be bigger than
 				this width if the string @p _type + @p _name is bigger.
 		@param _height The height of the header. It is counted in number of lines.
+		@returns The final width of the header.
 		*/
-		static void NodeHeader(const char* _type, const char* _name, const ImVec4 _colorSet[],
+		static float NodeHeader(const char* _type, const char* _name, const ImVec4 _colorSet[],
 			const float _width = 200.f, const short _height = 1);
 
 		/*!
