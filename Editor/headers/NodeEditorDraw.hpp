@@ -146,16 +146,38 @@ namespace ECellEngine::Editor::Utility
 #pragma region Custom Node Widget
 
 		/*!
-		@brief Offsets the current position of the cursor (the drawer in ImGui) by the width
-				of a Node pin and the default Item Spacing on the X Axis.
-		@details This is particularly usefull when we need to align the center components but
-				 there was no need to draw an input pin on the left side.
-		@todo Currently, the size of the pin itself is hardcoded to the default value (8 pixels).
-			  This must be updated once the size will be set globally in the Node Style struct.
+		@brief Offsets the current position of the cursor (the drawer in ImGui) by
+				the width of a Node pin and the default Item Spacing on the X Axis.
+		@details This is particularly usefull when we need to align the center
+				 components but there was no need to draw an input pin on the left
+				 side.
+		@todo Currently, the size of the pin itself is hardcoded to the default
+			  value (8 pixels). This must be updated once the size will be set
+			  globally in the Node Style struct.
 		*/
 		inline static void ApplyPinDrawOffset()
 		{
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 8.f + ImGui::GetStyle().ItemSpacing.x);
+		}
+
+		/*!
+		@brief Offsets the current position of the cursor (the drawer in ImGui)
+				so that a set of item to be drawn will be aligned on the right
+				side of a node.
+		@param _nodeWidth The width of the node for which we want to align some
+				items on the right.
+		@param _itemWidths The widths of the set of items we want to align on
+				the right.
+		@param _nbItems The number of items to align.
+		*/
+		inline static void AlignToRight(const float _nodeWidth, const float _itemWidths[], const std::size_t _nbItems)
+		{
+			float offset = 0;
+			for (std::size_t i = 0; i < _nbItems; i++)
+			{
+				offset += _itemWidths[i];
+			}
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + _nodeWidth - offset);
 		}
 
 		/*!
