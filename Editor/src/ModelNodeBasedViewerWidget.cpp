@@ -40,6 +40,8 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Awake()
     style.NodeBorderWidth = 3; //instead of 2 by default.
     style.HoveredNodeBorderWidth = 6; //instead of 3 by default.
     style.SelectedNodeBorderWidth = 6; //instead of 3 by default.
+    style.PinBorderWidth = 3; //instead of 0 by default.
+    style.PinRounding = 0; //instead of 4 by default.
     ax::NodeEditor::SetCurrentEditor(nullptr);
 
 }
