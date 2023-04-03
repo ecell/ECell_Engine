@@ -56,13 +56,21 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
 
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo)
+void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo,
+    const ImVec4 _solverNodeColors[], const ImVec4 _assetPinColors[])
 {
-
+    PushNodeStyle(_solverNodeColors);
     ax::NodeEditor::BeginNode(_solverNodeInfo.id);
 
-    ImGui::Text(_name);
+    const float headerWidth = NodeHeader("Solver:", _name, _solverNodeColors);
+    const float itemWidths[3] = { ImGui::CalcTextSize("Target Asset").x, 8.f, ImGui::GetStyle().ItemSpacing.x};
+    AlignToRight(headerWidth, itemWidths, 3);
+    ImGui::AlignTextToFramePadding(); ImGui::Text("Target Asset"); ImGui::SameLine();
+    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_solverNodeInfo.outputPin, _assetPinColors);
 
+    ax::NodeEditor::EndNode();
+    PopNodeStyle();
+}
     ECellEngine::Editor::Utility::NodeEditorDraw::BeginColumn();
 
     ECellEngine::Editor::Utility::NodeEditorDraw::NextColumn();
