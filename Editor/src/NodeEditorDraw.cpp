@@ -134,8 +134,6 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(const NodePinData& 
     ax::NodeEditor::EndPin();
 }
 
-
-
 void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::size_t& _id, std::vector<ECellEngine::Editor::Utility::LinkData>& _links)
 {
     // Handle creation action, returns true if editor want to create new object (node or link)
@@ -262,15 +260,18 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const
 }
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char* _id, NodeListBoxStringData& _lbsData,
-    const float _widgetWidth, const short _itemViewHeight)
+    const float _xOffset, const float _widgetWidth, const short _itemViewHeight)
 {
+    ImGuiStyle& style = ImGui::GetStyle();
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + _xOffset);
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f,0.f));
     ImGui::BeginGroup();
 
     //The list of items to display
     ImGui::BeginGroup();
     for (int n = _lbsData.cursor; n > _lbsData.cursor - _itemViewHeight; n--)
     {
-        if (ImGui::Selectable(_lbsData.data->at(_lbsData.data->size() - n).c_str(), false, ImGuiSelectableFlags_None, ImVec2(_widgetWidth - 20, 0)))
+        if (ImGui::Selectable(_lbsData.data->at(_lbsData.data->size() - n).c_str(), false, ImGuiSelectableFlags_None, ImVec2(_widgetWidth - style.ScrollbarSize - style.ItemSpacing.x, 0)))
         {
             _lbsData.selectedItem = _lbsData.data->size() - n;
             _lbsData.SetItemClicked();
@@ -283,7 +284,6 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char*
 
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
             {
-                //ECellEngine::Logging::Logger::GetSingleton().LogDebug("Item: " + _lbsData.data->at(_lbsData.data->size() - n) + " was double clicked!");
                 _lbsData.doubleClickedItem = _lbsData.data->size() - n;
                 _lbsData.SetItemDoubleClicked();
             }
@@ -296,7 +296,6 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char*
 
     //The vertical slider to control the list of items
     ImGui::PushID(_id);
-    ImGuiStyle& style = ImGui::GetStyle();
     PushScrollBarStyle(style);
     ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 40);
     ImGui::VSliderInt("##VertSliderInt", ImVec2(style.ScrollbarSize, _itemViewHeight * ImGui::GetTextLineHeightWithSpacing()),
@@ -309,7 +308,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char*
     {
         _lbsData.SetScrollBarActivated();
     }
-    ImGui::PopStyleVar(); //poping ImGuiStyleVar_GrabMinSize
+    ImGui::PopStyleVar(2); //poping ImGuiStyleVar_GrabMinSize & ImGuiStyleVar_ItemSpacing
     PopScrollBarStyle(); //poping after PushScrollBarStyle(style);
     ImGui::PopID();
 

@@ -241,13 +241,16 @@ namespace ECellEngine::Editor::Utility
 		@param _id A char-based label to uniquelly identify the scroll bar
 				of the list box. This is relevant in the case that multiple
 				scroll bars are drawn in the same node.
-		@param _lbsData
+		@param _lbsData The data struct contianing the items to draw.
+		@param _xOffset An offset to manage the X offset of the drawing start
+				position of the listbox.
 		@param _widgetWidth The width of the whole list box (scroll bar
 				included) in pixels.
 		@param _itemViewHeight The number of items to display in the list box.
 		@see It is using ::NodeScrollBar to control the scrolling of the items.
 		*/
 		static void NodeStringListBox(const char* _id, NodeListBoxStringData& _lbsData,
+			const float _xOffset = 0.f,
 			const float _widgetWidth = 200.f, const short _itemViewHeight = 7);
 #pragma endregion
 
