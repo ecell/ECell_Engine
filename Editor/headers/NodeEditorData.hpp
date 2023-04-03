@@ -344,6 +344,7 @@ namespace ECellEngine::Editor::Utility
 
 		ECellEngine::Data::SBMLModule* data;
 
+		NodePinData inputPin; // only for the Solver link
 		NodePinData outputPins[4];
 
 		unsigned char utilityState = 0;
@@ -362,10 +363,12 @@ namespace ECellEngine::Editor::Utility
 			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
 			_nodeId++;
 
-			outputPins[0] = NodePinData(_nodeId, "o");
-			outputPins[1] = NodePinData(_nodeId, "o");
-			outputPins[2] = NodePinData(_nodeId, "o");
-			outputPins[3] = NodePinData(_nodeId, "o");
+			inputPin = NodePinData(_nodeId);
+
+			outputPins[0] = NodePinData(_nodeId);
+			outputPins[1] = NodePinData(_nodeId);
+			outputPins[2] = NodePinData(_nodeId);
+			outputPins[3] = NodePinData(_nodeId);
 
 			//Initialize the list boxes data
 			speciesNLB.data = &data->GetAllSpecies();

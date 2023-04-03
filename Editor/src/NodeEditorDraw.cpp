@@ -1,43 +1,55 @@
 #include "NodeEditorDraw.hpp"
 
 #pragma region Nodes
-void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, AssetNodeData& _assetNodeInfo, const ImVec4 _assetNodeColors[])
+void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, AssetNodeData& _assetNodeInfo,
+    const ImVec4 _assetNodeColors[], const ImVec4 _solverPinColors[],
+    const ImVec4 _parameterPinColors[],
+    const ImVec4 _reactionPinColors[], const ImVec4 _speciesPinColors[])
 {
     PushNodeStyle(_assetNodeColors);
     ax::NodeEditor::BeginNode(_assetNodeInfo.id);
 
     NodeHeader("Asset:", _name, _assetNodeColors);
 
-    ECellEngine::Editor::Utility::NodeEditorDraw::BeginColumn();
+    // ----- Pin and Text to connect the solver to the asset -----
+    ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(_assetNodeInfo.inputPin, _solverPinColors);
+    ImGui::SameLine(); ImGui::AlignTextToFramePadding(); ImGui::Text("Solver");
+
+    // ----- String List Box and Pin to access the species of the asset -----
+    ImGui::BeginGroup(); ApplyPinDrawOffset();
     if (NodeCollapsingHeader("Species", _assetNodeInfo.utilityState, 0, ImVec2(200, 0)))
     {
-        NodeStringListBox("1", _assetNodeInfo.speciesNLB);
-
-        if (_assetNodeInfo.speciesNLB.IsAnItemHovered())
-        {
-            ax::NodeEditor::Suspend();
-            ImGui::SetTooltip("%s", _assetNodeInfo.speciesNLB.data->at(_assetNodeInfo.speciesNLB.hoveredItem).c_str());
-            ax::NodeEditor::Resume();
-        }
+        NodeStringListBox("1", _assetNodeInfo.speciesNLB, GetPinDrawOffset());
     }
-    ECellEngine::Editor::Utility::NodeEditorDraw::NextColumn();
-    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_assetNodeInfo.outputPins[0]);
-    ECellEngine::Editor::Utility::NodeEditorDraw::EndColumn();
+    ImGui::EndGroup(); ImGui::SameLine();
+    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_assetNodeInfo.outputPins[0], _speciesPinColors);
 
+    // ----- String List Box and Pin to access the simple parameters of the asset -----
+    ImGui::BeginGroup(); ApplyPinDrawOffset();
     if (NodeCollapsingHeader("Constant Parameters", _assetNodeInfo.utilityState, 1, ImVec2(200, 0)))
     {
         NodeStringListBox("2", _assetNodeInfo.simpleParametersNLB);
     }
+    ImGui::EndGroup(); ImGui::SameLine();
+    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_assetNodeInfo.outputPins[1], _parameterPinColors);
 
+    // ----- String List Box and Pin to access the computed parameters of the asset -----
+    ImGui::BeginGroup(); ApplyPinDrawOffset();
     if (NodeCollapsingHeader("Computed Parameters", _assetNodeInfo.utilityState, 2, ImVec2(200, 0)))
     {
         NodeStringListBox("3", _assetNodeInfo.computedParametersNLB);
     }
+    ImGui::EndGroup(); ImGui::SameLine();
+    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_assetNodeInfo.outputPins[2], _parameterPinColors);
 
+    // ----- String List Box and Pin to access the reactions of the asset -----
+    ImGui::BeginGroup(); ApplyPinDrawOffset();
     if (NodeCollapsingHeader("Reactions", _assetNodeInfo.utilityState, 3, ImVec2(200, 0)))
     {
         NodeStringListBox("4", _assetNodeInfo.reactionsNLB);
     }
+    ImGui::EndGroup(); ImGui::SameLine();
+    ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_assetNodeInfo.outputPins[3], _reactionPinColors);
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();

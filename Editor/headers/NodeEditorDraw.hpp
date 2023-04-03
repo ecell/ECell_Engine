@@ -79,7 +79,10 @@ namespace ECellEngine::Editor::Utility
 		@param _assetNodeColors The set of colors to cutomize the looks of this
 				node.
 		*/
-		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo, const ImVec4 _assetNodeColors[]);
+		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo,
+			const ImVec4 _assetNodeColors[], const ImVec4 _solverPinColors[],
+			const ImVec4 _parameterPinColors[],
+			const ImVec4 _reactionPinColors[], const ImVec4 _speciesPinColors[]);
 
 		/*!
 		@brief Draws a node to display and access the content of a
