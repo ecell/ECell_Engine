@@ -31,8 +31,9 @@ namespace ECellEngine::Editor::Utility
 
 	enum PinStyleColor
 	{
-		PinStyleColor_Rect,
-		PinStyleColor_RectBorder,
+		PinStyleColor_BgActivated,
+		PinStyleColor_BgInactivated,
+		PinStyleColor_Border,
 
 		PinStyleColor_Count
 	};
@@ -48,12 +49,13 @@ namespace ECellEngine::Editor::Utility
 		/*ImVec4 assetLink[LinkStyleColor_Count];
 		ImVec4 parameterLink[LinkStyleColor_Count];
 		ImVec4 reactionLink[LinkStyleColor_Count];
-		ImVec4 speciesLink[LinkStyleColor_Count];
+		ImVec4 speciesLink[LinkStyleColor_Count];*/
 
+		ImVec4 defaultPin[PinStyleColor_Count];
 		ImVec4 assetPin[PinStyleColor_Count];
 		ImVec4 parameterPin[PinStyleColor_Count];
 		ImVec4 reactionPin[PinStyleColor_Count];
-		ImVec4 speciesPin[PinStyleColor_Count];*/
+		ImVec4 speciesPin[PinStyleColor_Count];
 
 		NodeEditorStyleColors(ax::NodeEditor::Style& _defaultStyle)
 		{
@@ -90,12 +92,32 @@ namespace ECellEngine::Editor::Utility
 			reactionNode[NodeStyleColor_HeaderHovered] =	ImVec4(1.f, 0.f, 0.f, 1.f);
 
 			speciesNode[NodeStyleColor_Bg] =				ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
-			speciesNode[NodeStyleColor_Border] =			ImVec4(1.f, 0.f, 0.f, 1.f);
+			speciesNode[NodeStyleColor_Border] =			ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
 			//speciesNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);.f);
 			//speciesNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			speciesNode[NodeStyleColor_HeaderBg] =			ImVec4(1.f, 0.f, 0.f, 0.25f);
+			speciesNode[NodeStyleColor_HeaderBg] =			ImVec4(1.0f, 0.0f, 0.0f, 0.25f);
 			speciesNode[NodeStyleColor_HeaderActivated] =	ImVec4(0.0f, 0.0f, 0.0f, 0.5f);
-			speciesNode[NodeStyleColor_HeaderHovered] =		ImVec4(1.f, 0.f, 0.f, 0.5f);
+			speciesNode[NodeStyleColor_HeaderHovered] =		ImVec4(1.0f, 0.0f, 0.0f, 0.5f);
+
+			defaultPin[PinStyleColor_BgActivated] = defaultNode[NodeStyleColor_Border];
+			defaultPin[PinStyleColor_BgInactivated] = defaultNode[NodeStyleColor_Bg];
+			defaultPin[PinStyleColor_Border] = defaultNode[NodeStyleColor_Border];
+
+			assetPin[PinStyleColor_BgActivated] = assetNode[NodeStyleColor_Border];
+			assetPin[PinStyleColor_BgInactivated] = assetNode[NodeStyleColor_Bg];
+			assetPin[PinStyleColor_Border] = assetNode[NodeStyleColor_Border];
+
+			parameterPin[PinStyleColor_BgActivated] = parameterNode[NodeStyleColor_Border];
+			parameterPin[PinStyleColor_BgInactivated] = parameterNode[NodeStyleColor_Bg];
+			parameterPin[PinStyleColor_Border] = parameterNode[NodeStyleColor_Border];
+
+			reactionPin[PinStyleColor_BgActivated] = reactionNode[NodeStyleColor_Border];
+			reactionPin[PinStyleColor_BgInactivated] = reactionNode[NodeStyleColor_Bg];
+			reactionPin[PinStyleColor_Border] = reactionNode[NodeStyleColor_Border];
+
+			speciesPin[PinStyleColor_BgActivated] = speciesNode[NodeStyleColor_Border];
+			speciesPin[PinStyleColor_BgInactivated] = speciesNode[NodeStyleColor_Bg];
+			speciesPin[PinStyleColor_Border] = speciesNode[NodeStyleColor_Border];
 
 		}
 
@@ -131,14 +153,16 @@ namespace ECellEngine::Editor::Utility
 			}
 		}
 		
-		inline char* GetPinStyleColorName(PinStyleColor _nodeStyleColorType)
+		inline char* GetPinStyleColorName(PinStyleColor _pinStyleColorType)
 		{
-			switch (_nodeStyleColorType)
+			switch (_pinStyleColorType)
 			{
-			case PinStyleColor_Rect:
-				return "PinStyleColor_Rect";
-			case PinStyleColor_RectBorder:
-				return "PinStyleColor_RectBorder";
+			case PinStyleColor_BgActivated:
+				return "PinStyleColor_BgActivated";
+			case PinStyleColor_BgInactivated:
+				return "PinStyleColor_BgInactivated";
+			case PinStyleColor_Border:
+				return "PinStyleColor_Border";
 			}
 		}
 
@@ -284,15 +308,17 @@ namespace ECellEngine::Editor::Utility
 		ax::NodeEditor::PinId id;
 
 		/*!
-		@brief The name of this pin to display.
+		@brief Whether a link is connected to the pin.
 		*/
-		char* name;
+		bool isUsed = false;
+
+		NodePinData() = default;
 
 		/*!
 		@remarks @p _pinId is incremented immeditely after use.
 		*/
-		NodePinData(std::size_t& _pinId, char* _name) :
-			id{ _pinId++ }, name{ _name }
+		NodePinData(std::size_t& _pinId) :
+			id{ _pinId++ }
 		{
 
 		}

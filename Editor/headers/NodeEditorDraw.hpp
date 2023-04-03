@@ -96,15 +96,19 @@ namespace ECellEngine::Editor::Utility
 		@brief Draw a basic input pin symbolized by an arrow. 
 		@param _pinData The struct containing the information about the
 				pin to be drawn as an input pin.
+		@param _pinColors The set of colors to cutomize the looks of this pin.
+		@param _size The length of the side of the square we draw to represent the pin.
 		*/
-		static void InputPin(const NodePinData& _pinData);
+		static void InputPin(const NodePinData& _pinData, const ImVec4 _pinColors[], const float _size = 8.f);
 
 		/*!
 		@brief Draw a basic output pin symbolized by an arrow.
 		@param _pinData The struct containing the information about the
 				pin to be drawn as an output pin.
+		@param _pinColors The set of colors to cutomize the looks of this pin.
+		@param _size The length of the side of the square we draw to represent the pin.
 		*/
-		static void OutputPin(const NodePinData& _pinData);
+		static void OutputPin(const NodePinData& _pinData, const ImVec4 _pinColors[], const float _size = 8.f);
 
 		/*!
 		@brief The basic logic to create links between input and output

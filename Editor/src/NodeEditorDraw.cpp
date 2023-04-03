@@ -68,27 +68,75 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name,
 #pragma endregion
 
 #pragma region Node Pins
-void ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(const NodePinData& _pinData)
+void ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(const NodePinData& _pinData, const ImVec4 _pinColors[], const float _size)
 {
     ax::NodeEditor::BeginPin(_pinData.id, ax::NodeEditor::PinKind::Input);
-    ImGui::Text("->");
-    ImGui::SameLine();
-    ImGui::Text(_pinData.name);
+
+    //We center on the Y axis the start position of the cursor relatively to texts within buttons in ImGui
+    //We chose buttons as reference as they are used extensively in nodes.
+    const ImVec2 startPos = ImVec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y + 0.5f * ImGui::GetTextLineHeight());
+    const ImVec2 endPos = ImVec2(startPos.x + _size, startPos.y + _size);
+
+    const ImRect bb(startPos, endPos);
+    if (ImGui::ItemAdd(bb, 0))
+    {
+        ax::NodeEditor::PinRect(bb.Min, bb.Max);
+        PinStyleColor bgColor = PinStyleColor_BgInactivated;
+        if (_pinData.isUsed || ImGui::IsItemHovered())
+        {
+            bgColor = PinStyleColor_BgActivated;
+        }
+
+        //Drawing the center of the pin
+        ImGui::GetWindowDrawList()->AddRectFilled(bb.Min, bb.Max, ImColor(_pinColors[bgColor]));
+        //Going back to start position
+        ImGui::SetCursorPos(startPos);
+        //Drawing the border of the pin on top of the center.
+        ImGui::GetWindowDrawList()->AddRect(bb.Min, bb.Max, ImColor(_pinColors[PinStyleColor_Border]));
+
+        // We set the cursor here to where it already is trigger the automatic addition of the Itemspacing.x 
+        // at the end of the pin when anything is drawn on the same line after it.
+        ImGui::SetCursorPosX(endPos.x);
+    }
     ax::NodeEditor::EndPin();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(const NodePinData& _pinData)
+void ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(const NodePinData& _pinData, const ImVec4 _pinColors[], const float _size)
 {
     ax::NodeEditor::BeginPin(_pinData.id, ax::NodeEditor::PinKind::Output);
-    ImGui::Text(_pinData.name);
-    ImGui::SameLine();
-    ImGui::Text("->");
+
+    //We center on the Y axis the start position of the cursor relatively to texts within buttons in ImGui
+    //We chose buttons as reference as they are used extensively in nodes.
+    const ImVec2 startPos = ImVec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y + 0.5f * ImGui::GetTextLineHeight());
+    const ImVec2 endPos = ImVec2(startPos.x + _size, startPos.y + _size);
+
+    const ImRect bb(startPos, endPos);
+    if (ImGui::ItemAdd(bb, 0))
+    {
+        ax::NodeEditor::PinRect(bb.Min, bb.Max);
+        PinStyleColor bgColor = PinStyleColor_BgInactivated;
+        if (_pinData.isUsed || ImGui::IsItemHovered())
+        {
+            bgColor = PinStyleColor_BgActivated;
+        }
+
+        //Drawing the center of the pin
+        ImGui::GetWindowDrawList()->AddRectFilled(bb.Min, bb.Max, ImColor(_pinColors[bgColor]));
+        //Going back to start position
+        ImGui::SetCursorPos(startPos);
+        //Drawing the border of the pin on top of the center.
+        ImGui::GetWindowDrawList()->AddRect(bb.Min, bb.Max, ImColor(_pinColors[PinStyleColor_Border]));
+
+        // We set the cursor here to where it already is trigger the automatic addition of the Nodepadding.z (right side)
+        // after the outpin. Normally, there is no reason to have anything on the right side of an outpin within a node.
+        ImGui::SetCursorPosX(endPos.x);
+    }
     ax::NodeEditor::EndPin();
 }
 
 
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(int& _id, std::vector<ECellEngine::Editor::Utility::LinkData>& _links)
+void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::size_t& _id, std::vector<ECellEngine::Editor::Utility::LinkData>& _links)
 {
     // Handle creation action, returns true if editor want to create new object (node or link)
     if (ax::NodeEditor::BeginCreate())
