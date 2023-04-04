@@ -63,10 +63,11 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name,
     ax::NodeEditor::BeginNode(_solverNodeInfo.id);
 
     const float headerWidth = NodeHeader("Solver:", _name, _solverNodeColors);
-    const float itemWidths[3] = { ImGui::CalcTextSize("Target Asset").x, 8.f, ImGui::GetStyle().ItemSpacing.x};
-    AlignToRight(headerWidth, itemWidths, 3);
-    ImGui::AlignTextToFramePadding(); ImGui::Text("Target Asset"); ImGui::SameLine();
-    OutputPin(_solverNodeInfo.outputPin, _assetPinColors);
+    const float labelWidth = ImGui::CalcTextSize("Target Asset").x;
+
+    NodeText_Out("Target Asset", labelWidth,
+        ImGui::GetCursorPosX(), headerWidth, 8.f, ImGui::GetStyle().ItemSpacing.x,
+        _solverNodeInfo.outputPin, _assetPinColors);
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
