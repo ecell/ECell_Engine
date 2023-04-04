@@ -169,46 +169,50 @@ namespace ECellEngine::Editor::Utility
 		@brief Offsets the current position of the cursor (the drawer in ImGui)
 				so that a set of item to be drawn will be right-aligned at
 				@p _targetLength.
+		@param _startX The start position on the X axis for the alignment
+				calculations.
 		@param _targetLength The length at which we want to align some items on
 				the right.
 		@param _itemWidths The widths of the set of items we want to align on
 				the right.
 		@param _nbItems The number of items to align.
 		*/
-		inline static void AlignAllToRight(const float _currentX, const float _targetLength, const float _itemWidths[], const std::size_t _nbItems)
+		inline static void AlignAllToRight(const float _startX, const float _targetLength, const float _itemWidths[], const std::size_t _nbItems)
 		{
 			float offset = 0;
 			for (std::size_t i = 0; i < _nbItems; i++)
 			{
 				offset += _itemWidths[i];
 			}
-			ImGui::SetCursorPosX(_currentX + _targetLength - offset);
+			ImGui::SetCursorPosX(_startX + _targetLength - offset);
 		}
 
 		/*!
 		@brief Offsets the current position of the cursor (the drawer in ImGui)
 				so that the next item will be center-aligned on @p _targetLength.
+		@param _startX The start position on the X axis for the alignment
+				calculations.
 		@param _targetLength The length at which we want to align some items at
 				the center.
 		@param _itemWidth The width of the item we want to align at the center.
-		@param _nbItems The number of items to align.
 		*/
-		inline static void AlignToCenter(const float _currentX, const float _targetLength, const float _itemWidth)
+		inline static void AlignToCenter(const float _startX, const float _targetLength, const float _itemWidth)
 		{
-			ImGui::SetCursorPosX(_currentX + 0.5f * (_targetLength - _itemWidth));
+			ImGui::SetCursorPosX(_startX + 0.5f * (_targetLength - _itemWidth));
 		}
 
 		/*!
 		@brief Offsets the current position of the cursor (the drawer in ImGui)
 				so that the next item will be right-aligned at @p _targetLength.
+		@param _startX The start position on the X axis for the alignment
+				calculations.
 		@param _targetLength The length at which we want to align some items on
 				the right.
 		@param _itemWidth The width of the item we want to align on the right.
-		@param _nbItems The number of items to align.
 		*/
-		inline static void AlignToRight(const float _currentX, const float _targetLength, const float _itemWidth)
+		inline static void AlignToRight(const float _startX, const float _targetLength, const float _itemWidth)
 		{
-			ImGui::SetCursorPosX(_currentX + _targetLength - _itemWidth);
+			ImGui::SetCursorPosX(_startX + _targetLength - _itemWidth);
 		}
 
 		/*!
@@ -259,8 +263,11 @@ namespace ECellEngine::Editor::Utility
 		}
 
 		/*!
-		@brief Custom collapsing header for nodes.
-		@details This intends to reproduce ImGui::CollapsingHeader but without
+		@brief Custom collapsing header for nodes with an input pin and output
+				pin.
+		@details The collapsing header is a button that changes the value of the
+				@p utilityState. The button is drawn at the center of the node.
+		@remarks This intends to reproduce ImGui::CollapsingHeader but without
 				 relying on ImGui's tree nodes API. Because it is not possible
 				 (as of ImGui 1.89) to control the width of a tree node which
 				 creates a visual artifact: the node extends infinitely because
@@ -270,18 +277,52 @@ namespace ECellEngine::Editor::Utility
 				of the the open/close state of this header.
 		@param _stateBitPos The position of the bit in @p _utilityState that
 				encodes the open/close state of this header
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _pinWidth The size of a pin. Used for alignment calculations.
+		@param _inputPin The pin data used for the input pin to draw.
+		@param _outputPin The pin data used for the output pin to draw.
+		@param _pinColors The set of colors to cutomize both pins.
 		@param _size The size of the button representing the collapsing header.
 		*/
-		inline static bool NodeCollapsingHeader(const char* _label,
-			unsigned char& _utilityState, const short _stateBitPos, const ImVec2& _size = ImVec2(0, 0))
-		{
-			if (ImGui::Button(_label, _size))
-			{
-				_utilityState ^= 1 << _stateBitPos;
-			}
-			return _utilityState >> _stateBitPos & 1;
-		}
-
+		static bool NodeCollapsingHeader_InOut(const char* _label,
+			unsigned char& _utilityState, const short _stateBitPos,
+			const float _startX, const float _drawLength, const float _pinWidth,
+			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
+			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
+			
+		/*!
+		@brief Custom collapsing header for nodes with an output pin.
+		@details The collapsing header is a button that changes the value of the
+				@p utilityState. The button is drawn at the center of the node
+				and the side of the button extends until it touches the output
+				pin.
+		@remarks This intends to reproduce ImGui::CollapsingHeader but without
+				 relying on ImGui's tree nodes API. Because it is not possible
+				 (as of ImGui 1.89) to control the width of a tree node which
+				 creates a visual artifact: the node extends infinitely because
+				 in the Node Editor virtual area has not limits.
+		@param _label The text to display in the collapsing header.
+		@param _utilityState The reference to the character containing the encoding
+				of the the open/close state of this header.
+		@param _stateBitPos The position of the bit in @p _utilityState that
+				encodes the open/close state of this header
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _pinWidth The size of a pin. Used for alignment calculations.
+		@param _pin The pin data used for the output pin to draw.
+		@param _pinColors The set of colors to cutomize both pins.
+		@param _size The size of the button representing the collapsing header.
+		*/
+		static bool NodeCollapsingHeader_Out(const char* _label,
+			unsigned char& _utilityState, const short _stateBitPos,
+			const float _startX, const float _drawLength, const float _pinWidth,
+			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
 
 		/*!
 		@brief Logic to draw headers of nodes.

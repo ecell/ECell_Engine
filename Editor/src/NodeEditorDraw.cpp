@@ -6,47 +6,49 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
     PushNodeStyle(GetNodeColors(NodeType_Asset));
     ax::NodeEditor::BeginNode(_assetNodeInfo.id);
 
-    NodeHeader("Asset:", _name, GetNodeColors(NodeType_Asset));
+    const float headerSize = NodeHeader("Asset:", _name, GetNodeColors(NodeType_Asset));
+    const float startX = ImGui::GetCursorPosX();
+    const static float pinWidth = 8.f;
 
     // ----- Pin and Text to connect the solver to the asset -----
     InputPin(_assetNodeInfo.inputPin, GetPinColors(PinType_Solver));
     ImGui::SameLine(); ImGui::AlignTextToFramePadding(); ImGui::Text("Solver");
 
     // ----- String List Box and Pin to access the species of the asset -----
-    ImGui::BeginGroup(); ApplyPinDrawOffset();
-    if (NodeCollapsingHeader("Species", _assetNodeInfo.utilityState, 0, ImVec2(200, 0)))
+    if (NodeCollapsingHeader_Out("Species", _assetNodeInfo.utilityState, 0,
+        startX, headerSize, pinWidth,
+        _assetNodeInfo.outputPins[0], GetPinColors(PinType_Species),
+        ImVec2(200, 0), false))
     {
         NodeStringListBox("1", _assetNodeInfo.speciesNLB, GetPinDrawOffset());
     }
-    ImGui::EndGroup(); ImGui::SameLine();
-    OutputPin(_assetNodeInfo.outputPins[0], GetPinColors(PinType_Species));
 
     // ----- String List Box and Pin to access the simple parameters of the asset -----
-    ImGui::BeginGroup(); ApplyPinDrawOffset();
-    if (NodeCollapsingHeader("Constant Parameters", _assetNodeInfo.utilityState, 1, ImVec2(200, 0)))
+    if (NodeCollapsingHeader_Out("Constant Parameters", _assetNodeInfo.utilityState, 1,
+        startX, headerSize, pinWidth,
+        _assetNodeInfo.outputPins[1], GetPinColors(PinType_Species),
+        ImVec2(200, 0), false))
     {
         NodeStringListBox("2", _assetNodeInfo.simpleParametersNLB, GetPinDrawOffset());
     }
-    ImGui::EndGroup(); ImGui::SameLine();
-    OutputPin(_assetNodeInfo.outputPins[1], GetPinColors(PinType_Parameter));
 
     // ----- String List Box and Pin to access the computed parameters of the asset -----
-    ImGui::BeginGroup(); ApplyPinDrawOffset();
-    if (NodeCollapsingHeader("Computed Parameters", _assetNodeInfo.utilityState, 2, ImVec2(200, 0)))
+    if (NodeCollapsingHeader_Out("Computed Parameters", _assetNodeInfo.utilityState, 2,
+        startX, headerSize, pinWidth,
+        _assetNodeInfo.outputPins[2], GetPinColors(PinType_Species),
+        ImVec2(200, 0), false))
     {
         NodeStringListBox("3", _assetNodeInfo.computedParametersNLB, GetPinDrawOffset());
     }
-    ImGui::EndGroup(); ImGui::SameLine();
-    OutputPin(_assetNodeInfo.outputPins[2], GetPinColors(PinType_Parameter));
 
     // ----- String List Box and Pin to access the reactions of the asset -----
-    ImGui::BeginGroup(); ApplyPinDrawOffset();
-    if (NodeCollapsingHeader("Reactions", _assetNodeInfo.utilityState, 3, ImVec2(200, 0)))
+    if (NodeCollapsingHeader_Out("Reactions", _assetNodeInfo.utilityState, 3,
+        startX, headerSize, pinWidth,
+        _assetNodeInfo.outputPins[3], GetPinColors(PinType_Species),
+        ImVec2(200, 0), false))
     {
         NodeStringListBox("4", _assetNodeInfo.reactionsNLB, GetPinDrawOffset());
     }
-    ImGui::EndGroup(); ImGui::SameLine();
-    OutputPin(_assetNodeInfo.outputPins[3], GetPinColors(PinType_Reaction));
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
@@ -78,9 +80,10 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
     const float startX = ImGui::GetCursorPosX();
     const static float pinWidth = 8.f;
 
-    InputPin(_speciesNodeInfo.inputPins[0], GetPinColors(PinType_Default)); ImGui::SameLine();
-    ImGui::BeginGroup();
-    if (NodeCollapsingHeader("Model Links", _speciesNodeInfo.utilityState, 0, ImVec2(200.f, 0.f)))
+    if (NodeCollapsingHeader_InOut("Model Links", _speciesNodeInfo.utilityState, 0,
+        startX, headerSize, pinWidth,
+        _speciesNodeInfo.inputPins[0], _speciesNodeInfo.outputPins[0], GetPinColors(PinType_Default),
+        ImVec2(200, 0)))
     {
         const static float icpTextWidth = ImGui::CalcTextSize("In Computed Parameters").x;
         const static float irTextWidth = ImGui::CalcTextSize("Is Reactant").x;
@@ -105,14 +108,13 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
             startX, headerSize, 8.f,
             _speciesNodeInfo.inputPins[5], _speciesNodeInfo.outputPins[4], GetPinColors(PinType_Reaction));
     }
-    ImGui::EndGroup(); ImGui::SameLine(); AlignToRight(startX, headerSize, pinWidth);
-    OutputPin(_speciesNodeInfo.outputPins[0], GetPinColors(PinType_Default));
 
-    InputPin(_speciesNodeInfo.inputPins[6], GetPinColors(PinType_Default)); ImGui::SameLine();
-    ImGui::BeginGroup();
-    if (NodeCollapsingHeader("Data Fields", _speciesNodeInfo.utilityState, 1, ImVec2(200.f, 0.f)))
+    if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.utilityState, 1,
+        startX, headerSize, pinWidth,
+        _speciesNodeInfo.inputPins[6], _speciesNodeInfo.outputPins[5], GetPinColors(PinType_Default),
+        ImVec2(200, 0)))
     {
-        const static float inputFieldWidth = ImGui::CalcTextSize("Quantity").x + 100.f; //100.0f is the default length for a field
+        const static float inputFieldWidth = ImGui::CalcTextSize("Quantity").x + 100.f + ImGui::GetStyle().ItemSpacing.x; //100.0f is the default length for a field
         float value = _speciesNodeInfo.data->Get();
         if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &value,
             inputFieldWidth, startX, headerSize, pinWidth,
@@ -121,8 +123,6 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
             _speciesNodeInfo.data->Set(value);
         }
     }
-    ImGui::EndGroup(); ImGui::SameLine(); AlignToRight(startX, headerSize, pinWidth);
-    OutputPin(_speciesNodeInfo.outputPins[5], GetPinColors(PinType_Default));
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
@@ -283,6 +283,56 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::Link(LinkData& linkInfo)
 
 #pragma region Custom Node Widgets
 
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_InOut(const char* _label,
+    unsigned char& _utilityState, const short _stateBitPos,
+    const float _startX, const float _drawLength, const float _pinWidth,
+    const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
+    const ImVec2& _size, const bool _hidePinsOnExpand)
+{
+    AlignToCenter(_startX, _drawLength, _size.x);
+    if (ImGui::Button(_label, _size))
+    {
+        _utilityState ^= 1 << _stateBitPos;
+    }
+
+    bool open = _utilityState >> _stateBitPos & 1;
+
+    if (!open || !_hidePinsOnExpand)
+    {
+        ImGui::SameLine(); ImGui::SetCursorPosX(_startX);
+        InputPin(_inputPin, _pinColors);
+
+        ImGui::SameLine(); AlignToRight(_startX, _drawLength, _pinWidth);
+        OutputPin(_outputPin, _pinColors);
+    }
+
+    return open;
+}
+
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_Out(const char* _label,
+    unsigned char& _utilityState, const short _stateBitPos,
+    const float _startX, const float _drawLength, const float _pinWidth,
+    const NodePinData& _pin, const ImVec4 _pinColors[],
+    const ImVec2& _size, const bool _hidePinsOnExpand)
+{
+    AlignToCenter(_startX, _drawLength, _size.x);
+    if (ImGui::Button(_label, _size))
+    {
+        _utilityState ^= 1 << _stateBitPos;
+    }
+
+    bool open = _utilityState >> _stateBitPos & 1;
+
+    if (!open || !_hidePinsOnExpand)
+    {
+        ImGui::SameLine();
+        AlignToRight(_startX, _drawLength, _pinWidth);
+        OutputPin(_pin, _pinColors);
+    }
+
+    return open;
+}
+
 float ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type, const char* _name,
     const ImVec4 _colorSet[], const float _width, const short _height)
 {
@@ -365,7 +415,6 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const ch
 
     return edited;
 }
-
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char* _id, NodeListBoxStringData& _lbsData,
     const float _xOffset, const float _widgetWidth, const short _itemViewHeight)
