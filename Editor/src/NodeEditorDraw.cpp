@@ -347,4 +347,48 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char*
     ImGui::EndGroup();
 }
 
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_In(const char* _label, const float _startX,
+    const NodePinData& _pin, const ImVec4 _pinColors[])
+{
+    ImGui::SetCursorPosX(_startX);
+    InputPin(_pin, _pinColors);
+
+    ImGui::SameLine();
+
+    ImGui::AlignTextToFramePadding();
+    ImGui::Text(_label);
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_InOut(const char* _label, const float _labelWidth,
+    const float _startX, const float _drawLength, const float _pinWidth,
+    const NodePinData& _inputPin, const NodePinData& _outputPin,
+    const ImVec4 _pinColors[])
+{
+    ImGui::SetCursorPosX(_startX);
+
+    InputPin(_inputPin, _pinColors); ImGui::SameLine();
+
+    ImGui::AlignTextToFramePadding();
+    AlignToCenter(_startX, _drawLength, _labelWidth);
+    ImGui::Text(_label);
+    
+    ImGui::SameLine();
+
+    AlignToRight(_startX, _drawLength, _pinWidth);
+    OutputPin(_outputPin, _pinColors);
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_Out(const char* _label, const float _labelWidth,
+    const float _startX, const float _drawLength, const float _pinWidth, const float itemSpacingX,
+    const NodePinData& _pin, const ImVec4 _pinColors[])
+{
+    AlignToRight(_startX, _drawLength - _pinWidth - itemSpacingX, _labelWidth);
+    ImGui::AlignTextToFramePadding();
+    ImGui::Text(_label);
+
+    ImGui::SameLine();
+
+    OutputPin(_pin, _pinColors);
+}
+
 #pragma endregion

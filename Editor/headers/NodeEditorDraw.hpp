@@ -319,6 +319,54 @@ namespace ECellEngine::Editor::Utility
 		static void NodeStringListBox(const char* _id, NodeListBoxStringData& _lbsData,
 			const float _xOffset = 0.f,
 			const float _widgetWidth = 200.f, const short _itemViewHeight = 7);
+
+		/*!
+		@brief Draws a Text label with an input pin.
+		@details Aligns the Text label to the left of the node (input side).
+		@param _label The text label to display.
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _pin The pin data used to for the input pin to draw.
+		@param _pinColors The set of colors to cutomize the input pin.
+		*/
+		static void NodeText_In(const char* _label, const float _startX,
+			const NodePinData& _pin, const ImVec4 _pinColors[]);
+
+		/*!
+		@brief Draws a Text label with an input pin and an output pin.
+		@details Aligns the Text label to the center of the node.
+		@param _label The text label to display.
+		@param _labelWidth The width of the text label to display.
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _pinWidth The size of a pin. Used for alignment calculations.
+		@param _inputPin The pin data used to for the input pin to draw.
+		@param _outputPin The pin data used to for the output pin to draw.
+		@param _pinColors The set of colors to cutomize both pins.
+		*/
+		static void NodeText_InOut(const char* _label, const float _labelWidth,
+			const float _startX, const float _drawLength, const float _pinWidth,
+			const NodePinData& _inputPin, const NodePinData& _outputPin,
+			const ImVec4 _pinColors[]);
+
+		/*!
+		@brief Draws a Text Label with an output pin.
+		@details Aligns the Text label to the right of the node (output side).
+		@param _label The text label to display.
+		@param _labelWidth The width of the text label to display.
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _pinWidth The size of a pin. Used for alignment calculations.
+		@param _pin The pin data used to for the output pin to draw.
+		@param _pinColors The set of colors to cutomize the output pin.
+		*/
+		static void NodeText_Out(const char* _label, const float _labelWidth,
+			const float _startX, const float _drawLength, const float _pinWidth, const float itemSpacingX,
+			const NodePinData& _pin, const ImVec4 _pinColors[]);
 #pragma endregion
 
 	};
