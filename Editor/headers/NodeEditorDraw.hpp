@@ -302,6 +302,30 @@ namespace ECellEngine::Editor::Utility
 		static void NodeHorizontalSeparator(const float _width, const float _thickness = 1.f);
 
 		/*!
+		@brief Draw an input field for floats with an input pin and an
+				output pin.
+		@details Aligns the InputField text label and the Input Field body
+				to the center of the node.
+		@param _label The text label of the Input Field to display.
+		@param _id The _id of the InputField for ImGui.
+		@param _valueBuffer The float buffer to hold the value given by the user
+				and displayed in the field.
+		@param _inputFieldWidth The total width of the input field (text label
+				and body).
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _pinWidth The size of a pin. Used for alignment calculations.
+		@param _inputPin The pin data used for the input pin to draw.
+		@param _outputPin The pin data used for the output pin to draw.
+		@param _pinColors The set of colors to cutomize both pins.
+		*/
+		static bool NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* _valueBuffer, 
+			const float _inputFieldWidth, const float _startX, const float _drawLength, const float _pinWidth,
+			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[]);
+
+		/*!
 		@brief Custom list box to display strings in nodes.
 		@details This intends to reproduce ImGui::ListBox which is not
 				 readily compatible with the node editor.
@@ -326,7 +350,7 @@ namespace ECellEngine::Editor::Utility
 		@param _label The text label to display.
 		@param _startX The position from which the alignment calculations are
 				done. Typically the left side of the node.
-		@param _pin The pin data used to for the input pin to draw.
+		@param _pin The pin data used for the input pin to draw.
 		@param _pinColors The set of colors to cutomize the input pin.
 		*/
 		static void NodeText_In(const char* _label, const float _startX,
@@ -342,8 +366,8 @@ namespace ECellEngine::Editor::Utility
 		@param _drawLength The distance where to draw the output pin relatively
 				to @p _startX. Used for alignment calculations.
 		@param _pinWidth The size of a pin. Used for alignment calculations.
-		@param _inputPin The pin data used to for the input pin to draw.
-		@param _outputPin The pin data used to for the output pin to draw.
+		@param _inputPin The pin data used for the input pin to draw.
+		@param _outputPin The pin data used for the output pin to draw.
 		@param _pinColors The set of colors to cutomize both pins.
 		*/
 		static void NodeText_InOut(const char* _label, const float _labelWidth,
@@ -361,7 +385,7 @@ namespace ECellEngine::Editor::Utility
 		@param _drawLength The distance where to draw the output pin relatively
 				to @p _startX. Used for alignment calculations.
 		@param _pinWidth The size of a pin. Used for alignment calculations.
-		@param _pin The pin data used to for the output pin to draw.
+		@param _pin The pin data used for the output pin to draw.
 		@param _pinColors The set of colors to cutomize the output pin.
 		*/
 		static void NodeText_Out(const char* _label, const float _labelWidth,

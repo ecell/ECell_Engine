@@ -281,6 +281,37 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const
     }
 }
 
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* valueBuffer,
+    const float _inputFieldWidth, const float _startX, const float _drawLength, const float _pinWidth,
+    const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[])
+{
+    ImGui::SetCursorPosX(_startX);
+
+    InputPin(_inputPin, _pinColors); ImGui::SameLine();
+
+    ImGui::PushID(_id);
+    ImGui::AlignTextToFramePadding(); AlignToCenter(_startX, _drawLength, _inputFieldWidth);
+    
+    ImGui::Text(_label); ImGui::SameLine();
+    ImGui::SetNextItemWidth(100.f);
+    bool edited = ImGui::InputFloat("##quantity", valueBuffer, 0.f, 0.f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CharsScientific);
+    if (ImGui::IsItemActive())
+    {
+        ax::NodeEditor::Suspend();
+        ImGui::SetTooltip("Press ENTER to confirm.");
+        ax::NodeEditor::Resume();
+    }
+    ImGui::PopID();
+
+    ImGui::SameLine();
+    
+    AlignToRight(_startX, _drawLength, _pinWidth);
+    OutputPin(_outputPin, _pinColors);
+
+    return edited;
+}
+
+
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char* _id, NodeListBoxStringData& _lbsData,
     const float _xOffset, const float _widgetWidth, const short _itemViewHeight)
 {
