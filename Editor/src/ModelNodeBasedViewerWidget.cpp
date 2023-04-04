@@ -64,12 +64,11 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         //Relevant payloads are the references to assets or solvers loaded in
         //the simulation space.
         HandleSimuDataRefDrop();
-        ECellEngine::Editor::Utility::NodeEditorStyle* style = rootExplorer->GetNodeEditorStyle(styleIndex);
+        ECellEngine::Editor::Utility::SetCurrentStyle(rootExplorer->GetNodeEditorStyle(styleIndex));
         for (std::vector<ECellEngine::Editor::Utility::AssetNodeData>::iterator it = assetNodes.begin(); it != assetNodes.end(); it++)
         {
             ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(rootExplorer->GetModelHierarchy()->GetAssetName(it->dataIdx),
-                *it, style->colors.assetNode, style->colors.solverPin,
-                style->colors.parameterPin, style->colors.reactionPin, style->colors.speciesPin);
+                *it);
 
             if ((*it).speciesNLB.IsAnItemDoubleClicked())
             {
@@ -90,13 +89,12 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         for (std::vector<ECellEngine::Editor::Utility::SolverNodeData>::iterator it = solverNodes.begin(); it != solverNodes.end(); it++)
         {
             ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(rootExplorer->GetModelHierarchy()->GetSolverName(it->dataIdx),
-                *it, style->colors.solverNode, style->colors.assetPin);
+                *it);
         }
 
         for (std::vector<ECellEngine::Editor::Utility::SpeciesNodeData>::iterator it = speciesNodes.begin(); it != speciesNodes.end(); it++)
         {
-            ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode((*it).data->name.c_str(), (*it),
-                style->colors.speciesNode, style->colors.assetPin, style->colors.parameterPin, style->colors.reactionPin, style->colors.defaultPin);
+            ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode((*it).data->name.c_str(), *it);
         }
 
         // Submit Links
@@ -107,6 +105,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
 
         // End of interaction with editor.
         ax::NodeEditor::End();
+        ECellEngine::Editor::Utility::SetCurrentStyle(nullptr);
         ax::NodeEditor::SetCurrentEditor(nullptr);
 
         ImGui::End();

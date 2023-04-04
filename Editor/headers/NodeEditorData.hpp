@@ -16,182 +16,139 @@ namespace ECellEngine::Editor::Utility
 		LinkStyleColor_Count
 	};
 	
-	enum NodeStyleColor
+	enum NodeType
 	{
-		NodeStyleColor_Bg,
-		NodeStyleColor_Border,
-		//NodeStyleColor_BorderHovered,
-		//NodeStyleColor_BorderSelected,
-		NodeStyleColor_HeaderBg,
-		NodeStyleColor_HeaderActivated,
-		NodeStyleColor_HeaderHovered,
-
-		NodeStyleColor_Count
-	};
-
-	enum PinStyleColor
-	{
-		PinStyleColor_BgActivated,
-		PinStyleColor_BgInactivated,
-		PinStyleColor_Border,
-
-		PinStyleColor_Count
-	};
-
-	struct NodeEditorStyleColors
-	{
-		ImVec4 defaultNode[NodeStyleColor_Count];
-		ImVec4 assetNode[NodeStyleColor_Count];
-		ImVec4 parameterNode[NodeStyleColor_Count];
-		ImVec4 reactionNode[NodeStyleColor_Count];
-		ImVec4 solverNode[NodeStyleColor_Count];
-		ImVec4 speciesNode[NodeStyleColor_Count];
-
-		/*ImVec4 assetLink[LinkStyleColor_Count];
-		ImVec4 parameterLink[LinkStyleColor_Count];
-		ImVec4 reactionLink[LinkStyleColor_Count];
-		ImVec4 speciesLink[LinkStyleColor_Count];*/
-
-		ImVec4 defaultPin[PinStyleColor_Count];
-		ImVec4 assetPin[PinStyleColor_Count];
-		ImVec4 parameterPin[PinStyleColor_Count];
-		ImVec4 reactionPin[PinStyleColor_Count];
-		ImVec4 solverPin[PinStyleColor_Count];
-		ImVec4 speciesPin[PinStyleColor_Count];
-
-		NodeEditorStyleColors(ax::NodeEditor::Style& _defaultStyle)
-		{
-			defaultNode[NodeStyleColor_Bg] =				_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBg];
-			defaultNode[NodeStyleColor_Border] =			_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBorder];
-			//defaultNode[NodeStyleColor_BorderHovered] =		_defaultStyle.Colors[ax::NodeEditor::StyleColor_HovNodeBorder];
-			//defaultNode[NodeStyleColor_BorderSelected] =	_defaultStyle.Colors[ax::NodeEditor::StyleColor_SelNodeBorder];
-			defaultNode[NodeStyleColor_HeaderBg] =			_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBorder];
-			defaultNode[NodeStyleColor_HeaderActivated] =	_defaultStyle.Colors[ax::NodeEditor::StyleColor_SelNodeBorder];
-			defaultNode[NodeStyleColor_HeaderHovered] =		_defaultStyle.Colors[ax::NodeEditor::StyleColor_HovNodeBorder];
-			
-			assetNode[NodeStyleColor_Bg] =					ImVec4( 0.f,  0.f,  0.f, 0.5f);
-			assetNode[NodeStyleColor_Border] =				ImVec4(0.7f, 0.7f, 0.7f, 1.f);
-			//assetNode[NodeStyleColor_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
-			//assetNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			assetNode[NodeStyleColor_HeaderBg] =			ImVec4(0.7f, 0.7f, 0.7f, 0.25f);
-			assetNode[NodeStyleColor_HeaderActivated] =		ImVec4( 0.f,  0.f,  0.f, 0.5f);
-			assetNode[NodeStyleColor_HeaderHovered] =		ImVec4(0.7f, 0.7f, 0.7f, 0.5f);
-
-			parameterNode[NodeStyleColor_Bg] =				_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBg];
-			parameterNode[NodeStyleColor_Border] =			ImVec4(1.f, 0.f, 0.f, 1.f);
-			//parameterNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
-			//parameterNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			parameterNode[NodeStyleColor_HeaderBg] =		ImVec4(1.f, 0.f, 0.f, 1.f);;
-			parameterNode[NodeStyleColor_HeaderActivated] = ImVec4(1.f, 0.f, 0.f, 1.f);;
-			parameterNode[NodeStyleColor_HeaderHovered] =	ImVec4(1.f, 0.f, 0.f, 1.f);;
-
-			reactionNode[NodeStyleColor_Bg] =				_defaultStyle.Colors[ax::NodeEditor::StyleColor_NodeBg];
-			reactionNode[NodeStyleColor_Border] =			ImVec4(1.f, 0.f, 0.f, 1.f);
-			//reactionNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
-			//reactionNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			reactionNode[NodeStyleColor_HeaderBg] =			ImVec4(1.f, 0.f, 0.f, 1.f);
-			reactionNode[NodeStyleColor_HeaderActivated] =	ImVec4(1.f, 0.f, 0.f, 1.f);
-			reactionNode[NodeStyleColor_HeaderHovered] =	ImVec4(1.f, 0.f, 0.f, 1.f);
-
-			solverNode[NodeStyleColor_Bg] =					ImVec4( 0.f,    0.f,  0.f, 0.5f);
-			solverNode[NodeStyleColor_Border] =				ImVec4( 1.f, 0.365f,  0.f,  1.f);
-			//solverNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
-			//solverNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			solverNode[NodeStyleColor_HeaderBg] =			ImVec4( 1.f, 0.365f,  0.f, 0.25f);
-			solverNode[NodeStyleColor_HeaderActivated] =	ImVec4( 0.f,    0.f,  0.f,  0.5f);
-			solverNode[NodeStyleColor_HeaderHovered] =		ImVec4( 1.f, 0.365f,  0.f,  0.5f);
-
-			speciesNode[NodeStyleColor_Bg] =				ImVec4( 0.f,  0.f,  0.f, 0.5f);
-			speciesNode[NodeStyleColor_Border] =			ImVec4( 1.f,  0.f,  0.f,  1.f);
-			//speciesNode[NodeStyleColor_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);.f);
-			//speciesNode[NodeStyleColor_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			speciesNode[NodeStyleColor_HeaderBg] =			ImVec4( 1.f,  0.f,  0.f, 0.25f);
-			speciesNode[NodeStyleColor_HeaderActivated] =	ImVec4( 0.f,  0.f,  0.f, 0.5f);
-			speciesNode[NodeStyleColor_HeaderHovered] =		ImVec4( 1.f,  0.f,  0.f, 0.5f);
-
-			defaultPin[PinStyleColor_BgActivated] = defaultNode[NodeStyleColor_Border];
-			defaultPin[PinStyleColor_BgInactivated] = defaultNode[NodeStyleColor_Bg];
-			defaultPin[PinStyleColor_Border] = defaultNode[NodeStyleColor_Border];
-
-			assetPin[PinStyleColor_BgActivated] = assetNode[NodeStyleColor_Border];
-			assetPin[PinStyleColor_BgInactivated] = assetNode[NodeStyleColor_Bg];
-			assetPin[PinStyleColor_Border] = assetNode[NodeStyleColor_Border];
-
-			parameterPin[PinStyleColor_BgActivated] = parameterNode[NodeStyleColor_Border];
-			parameterPin[PinStyleColor_BgInactivated] = parameterNode[NodeStyleColor_Bg];
-			parameterPin[PinStyleColor_Border] = parameterNode[NodeStyleColor_Border];
-
-			reactionPin[PinStyleColor_BgActivated] = reactionNode[NodeStyleColor_Border];
-			reactionPin[PinStyleColor_BgInactivated] = reactionNode[NodeStyleColor_Bg];
-			reactionPin[PinStyleColor_Border] = reactionNode[NodeStyleColor_Border];
-
-			solverPin[PinStyleColor_BgActivated] = solverNode[NodeStyleColor_Border];
-			solverPin[PinStyleColor_BgInactivated] = solverNode[NodeStyleColor_Bg];
-			solverPin[PinStyleColor_Border] = solverNode[NodeStyleColor_Border];
-			
-			speciesPin[PinStyleColor_BgActivated] = speciesNode[NodeStyleColor_Border];
-			speciesPin[PinStyleColor_BgInactivated] = speciesNode[NodeStyleColor_Bg];
-			speciesPin[PinStyleColor_Border] = speciesNode[NodeStyleColor_Border];
-
-		}
-
-		inline char* GetLinkStyleColorName(LinkStyleColor _linkStyleColorType)
-		{
-			switch (_linkStyleColorType)
-			{
-			case LinkStyleColor_BorderHovered:
-				return "LinkStyleColor_BorderHovered";
-			case LinkStyleColor_BorderSelected:
-				return "LinkStyleColor_BorderSelected";
-			}
-		}
-
-		inline char* GetNodeStyleColorName(NodeStyleColor _nodeStyleColorType)
-		{
-			switch (_nodeStyleColorType)
-			{
-			case NodeStyleColor_Bg:
-				return "NodeStyleColor_Bg";
-			case NodeStyleColor_Border:
-				return "NodeStyleColor_Border";
-			/*case NodeStyleColor_BorderHovered:
-				return "NodeStyleColor_BorderHovered";*/
-			/*case NodeStyleColor_BorderSelected:
-				return "NodeStyleColor_BorderSelected";*/
-			case NodeStyleColor_HeaderBg:
-				return "NodeStyleColor_HeaderBg";
-			case NodeStyleColor_HeaderActivated:
-				return "NodeStyleColor_HeaderActivated";
-			case NodeStyleColor_HeaderHovered:
-				return "NodeStyleColor_HeaderHovered";
-			}
-		}
+		NodeType_Default,
 		
-		inline char* GetPinStyleColorName(PinStyleColor _pinStyleColorType)
-		{
-			switch (_pinStyleColorType)
-			{
-			case PinStyleColor_BgActivated:
-				return "PinStyleColor_BgActivated";
-			case PinStyleColor_BgInactivated:
-				return "PinStyleColor_BgInactivated";
-			case PinStyleColor_Border:
-				return "PinStyleColor_Border";
-			}
-		}
+		NodeType_Asset,
+		NodeType_Parameter,
+		NodeType_Reaction,
+		NodeType_Solver,
+		NodeType_Species,
 
+		NodeType_Count
+	};
+
+	enum PinType
+	{
+		PinType_Default,
+
+		PinType_Asset,
+		PinType_Parameter,
+		PinType_Reaction,
+		PinType_Solver,
+		PinType_Species,
+
+		PinType_Count
+	};
+
+	enum NodeColorType
+	{
+		NodeColorType_Bg,
+		NodeColorType_Border,
+		//NodeColorType_BorderHovered,
+		//NodeColorType_BorderSelected,
+		NodeColorType_HeaderBg,
+		NodeColorType_HeaderActivated,
+		NodeColorType_HeaderHovered,
+
+		NodeColorType_Count
+	};
+
+	enum PinColorType
+	{
+		PinColorType_BgActivated,
+		PinColorType_BgInactivated,
+		PinColorType_Border,
+
+		PinColorType_Count
 	};
 
 	struct NodeEditorStyle
 	{
-		NodeEditorStyleColors colors;
+		float pinWidth;
 
-		NodeEditorStyle(ax::NodeEditor::Style& _defaultStyle) :
-			colors{ _defaultStyle }
+
+		ImVec4 nodeColors[NodeType_Count][NodeColorType_Count];
+		ImVec4 pinColors[PinType_Count][PinColorType_Count];
+
+		NodeEditorStyle(ax::NodeEditor::Style& _default)
 		{
+			pinWidth = 8.f;
+
+			nodeColors[NodeType_Default][NodeColorType_Bg] =				_default.Colors[ax::NodeEditor::StyleColor_NodeBg];
+			nodeColors[NodeType_Default][NodeColorType_Border] =			_default.Colors[ax::NodeEditor::StyleColor_NodeBorder];
+			//nodeColors[NodeType_Default][NodeColorType_BorderHovered] =		_default.Colors[ax::NodeEditor::StyleColor_HovNodeBorder];
+			//nodeColors[NodeType_Default][NodeColorType_BorderSelected] =	_default.Colors[ax::NodeEditor::StyleColor_SelNodeBorder];
+			nodeColors[NodeType_Default][NodeColorType_HeaderBg] =			_default.Colors[ax::NodeEditor::StyleColor_NodeBorder];
+			nodeColors[NodeType_Default][NodeColorType_HeaderActivated] =	_default.Colors[ax::NodeEditor::StyleColor_SelNodeBorder];
+			nodeColors[NodeType_Default][NodeColorType_HeaderHovered] =		_default.Colors[ax::NodeEditor::StyleColor_HovNodeBorder];
+			
+			nodeColors[NodeType_Asset][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Asset][NodeColorType_Border] = ImVec4(0.7f, 0.7f, 0.7f, 1.f);
+			//nodeColors[NodeType_Asset][NodeColorType_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
+			//nodeColors[NodeType_Asset][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			nodeColors[NodeType_Asset][NodeColorType_HeaderBg] = ImVec4(0.7f, 0.7f, 0.7f, 0.25f);
+			nodeColors[NodeType_Asset][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Asset][NodeColorType_HeaderHovered] =		ImVec4(0.7f, 0.7f, 0.7f, 0.5f);
+
+			nodeColors[NodeType_Parameter][NodeColorType_Bg] = _default.Colors[ax::NodeEditor::StyleColor_NodeBg];
+			nodeColors[NodeType_Parameter][NodeColorType_Border] = ImVec4(1.f, 0.f, 0.f, 1.f);
+			//nodeColors[NodeType_Parameter][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
+			//nodeColors[NodeType_Parameter][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			nodeColors[NodeType_Parameter][NodeColorType_HeaderBg] = ImVec4(1.f, 0.f, 0.f, 1.f);;
+			nodeColors[NodeType_Parameter][NodeColorType_HeaderActivated] = ImVec4(1.f, 0.f, 0.f, 1.f);;
+			nodeColors[NodeType_Parameter][NodeColorType_HeaderHovered] =	ImVec4(1.f, 0.f, 0.f, 1.f);;
+
+			nodeColors[NodeType_Reaction][NodeColorType_Bg] = _default.Colors[ax::NodeEditor::StyleColor_NodeBg];
+			nodeColors[NodeType_Reaction][NodeColorType_Border] = ImVec4(1.f, 0.f, 0.f, 1.f);
+			//nodeColors[NodeType_Reaction][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
+			//nodeColors[NodeType_Reaction][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			nodeColors[NodeType_Reaction][NodeColorType_HeaderBg] = ImVec4(1.f, 0.f, 0.f, 1.f);
+			nodeColors[NodeType_Reaction][NodeColorType_HeaderActivated] = ImVec4(1.f, 0.f, 0.f, 1.f);
+			nodeColors[NodeType_Reaction][NodeColorType_HeaderHovered] =	ImVec4(1.f, 0.f, 0.f, 1.f);
+
+			nodeColors[NodeType_Solver][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Solver][NodeColorType_Border] = ImVec4(1.f, 0.365f, 0.f, 1.f);
+			//nodeColors[NodeType_Solver][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
+			//nodeColors[NodeType_Solver][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			nodeColors[NodeType_Solver][NodeColorType_HeaderBg] = ImVec4(1.f, 0.365f, 0.f, 0.25f);
+			nodeColors[NodeType_Solver][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Solver][NodeColorType_HeaderHovered] =		ImVec4( 1.f, 0.365f,  0.f,  0.5f);
+
+			nodeColors[NodeType_Species][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Species][NodeColorType_Border] = ImVec4(1.f, 0.f, 0.f, 1.f);
+			//nodeColors[NodeType_Species][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);.f);
+			//nodeColors[NodeType_Species][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			nodeColors[NodeType_Species][NodeColorType_HeaderBg] = ImVec4(1.f, 0.f, 0.f, 0.25f);
+			nodeColors[NodeType_Species][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Species][NodeColorType_HeaderHovered] =		ImVec4( 1.f,  0.f,  0.f, 0.5f);
+
+			pinColors[PinType_Default][PinColorType_BgActivated] = nodeColors[NodeType_Default][NodeColorType_Border];
+			pinColors[PinType_Default][PinColorType_BgInactivated] = nodeColors[NodeType_Default][NodeColorType_Bg];
+			pinColors[PinType_Default][PinColorType_Border] = nodeColors[NodeType_Default][NodeColorType_Border];
+
+			pinColors[PinType_Asset][PinColorType_BgActivated] = nodeColors[NodeType_Asset][NodeColorType_Border];
+			pinColors[PinType_Asset][PinColorType_BgInactivated] = nodeColors[NodeType_Asset][NodeColorType_Bg];
+			pinColors[PinType_Asset][PinColorType_Border] = nodeColors[NodeType_Asset][NodeColorType_Border];
+
+			pinColors[PinType_Parameter][PinColorType_BgActivated] = nodeColors[NodeType_Parameter][NodeColorType_Border];
+			pinColors[PinType_Parameter][PinColorType_BgInactivated] = nodeColors[NodeType_Parameter][NodeColorType_Bg];
+			pinColors[PinType_Parameter][PinColorType_Border] = nodeColors[NodeType_Parameter][NodeColorType_Border];
+
+			pinColors[PinType_Reaction][PinColorType_BgActivated] = nodeColors[NodeType_Reaction][NodeColorType_Border];
+			pinColors[PinType_Reaction][PinColorType_BgInactivated] = nodeColors[NodeType_Reaction][NodeColorType_Bg];
+			pinColors[PinType_Reaction][PinColorType_Border] = nodeColors[NodeType_Reaction][NodeColorType_Border];
+
+			pinColors[PinType_Solver][PinColorType_BgActivated] = nodeColors[NodeType_Solver][NodeColorType_Border];
+			pinColors[PinType_Solver][PinColorType_BgInactivated] = nodeColors[NodeType_Solver][NodeColorType_Bg];
+			pinColors[PinType_Solver][PinColorType_Border] = nodeColors[NodeType_Solver][NodeColorType_Border];
+			
+			pinColors[PinType_Species][PinColorType_BgActivated] = nodeColors[NodeType_Species][NodeColorType_Border];
+			pinColors[PinType_Species][PinColorType_BgInactivated] = nodeColors[NodeType_Species][NodeColorType_Bg];
+			pinColors[PinType_Species][PinColorType_Border] = nodeColors[NodeType_Species][NodeColorType_Border];
 
 		}
-
 	};
 	
 #pragma endregion
@@ -496,4 +453,101 @@ namespace ECellEngine::Editor::Utility
 	};
 
 #pragma endregion
+
+#pragma region Data Global API
+
+	NodeEditorStyle* GetCurrentStyle();
+
+	ImVec4* GetNodeColors(NodeType _nodeType);
+
+	ImVec4* GetPinColors(PinType _nodeType);
+
+	/*inline char* GetLinkStyleColorName(LinkStyleColor _linkStyleColorType)
+	{
+		switch (_linkStyleColorType)
+		{
+		case LinkStyleColor_BorderHovered:
+			return "LinkStyleColor_BorderHovered";
+		case LinkStyleColor_BorderSelected:
+			return "LinkStyleColor_BorderSelected";
+		}
+	}*/
+
+	inline char* GetNodeColorTypeName(NodeColorType _nodeColorType)
+	{
+		switch (_nodeColorType)
+		{
+		case NodeColorType_Bg:
+			return "NodeColorType_Bg";
+		case NodeColorType_Border:
+			return "NodeColorType_Border";
+			/*case NodeColorType_BorderHovered:
+				return "NodeColorType_BorderHovered";*/
+				/*case NodeColorType_BorderSelected:
+					return "NodeColorType_BorderSelected";*/
+		case NodeColorType_HeaderBg:
+			return "NodeColorType_HeaderBg";
+		case NodeColorType_HeaderActivated:
+			return "NodeColorType_HeaderActivated";
+		case NodeColorType_HeaderHovered:
+			return "NodeColorType_HeaderHovered";
+		}
+	}
+
+	inline char* GetNodeTypeName(NodeType _nodeType)
+	{
+		switch (_nodeType)
+		{
+		case NodeType_Default:
+			return "NodeType_Default";
+		case NodeType_Asset:
+			return "NodeType_Asset";
+		case NodeType_Parameter:
+			return "NodeType_Parameter";
+		case NodeType_Reaction:
+			return "NodeType_Reaction";
+		case NodeType_Solver:
+			return "NodeType_Solver";
+		case NodeType_Species:
+			return "NodeType_Species";
+		}
+	}
+
+	inline char* GetPinTypeName(PinType _pinType)
+	{
+		switch (_pinType)
+		{
+		case PinType_Default:
+			return "PinType_Default";
+		case PinType_Asset:
+			return "PinType_Asset";
+		case PinType_Parameter:
+			return "PinType_Parameter";
+		case PinType_Reaction:
+			return "PinType_Reaction";
+		case PinType_Solver:
+			return "PinType_Solver";
+		case PinType_Species:
+			return "PinType_Species";
+		}
+	}
+
+	inline char* GetPinColorTypeName(PinColorType _pinColorType)
+	{
+		switch (_pinColorType)
+		{
+		case PinColorType_BgActivated:
+			return "PinColorType_BgActivated";
+		case PinColorType_BgInactivated:
+			return "PinColorType_BgInactivated";
+		case PinColorType_Border:
+			return "PinColorType_Border";
+		}
+	}
+
+	void SetCurrentStyle(NodeEditorStyle* _style);
+
+#pragma endregion
+
+
 }

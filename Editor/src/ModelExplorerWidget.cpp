@@ -331,7 +331,8 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
                     ImGui::EndCombo();
                 }
 
-                ECellEngine::Editor::Utility::NodeEditorStyle& nodeEditorStyle = nodeEditorStyles[currentEditorStyleIdx];
+                ECellEngine::Editor::Utility::SetCurrentStyle(&nodeEditorStyles[currentEditorStyleIdx]);
+
                 if (ImGui::CollapsingHeader("Colors"))
                 {
                     static ImGuiColorEditFlags alpha_flags = 0;
@@ -352,94 +353,24 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
 
                     if (ImGui::TreeNode("Nodes"))
                     {
-                        if (ImGui::TreeNode("Default Node"))
+                        for (int i = 0; i < ECellEngine::Editor::Utility::NodeType_Count; i++)
                         {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
+                            ECellEngine::Editor::Utility::NodeType nodeType = (ECellEngine::Editor::Utility::NodeType)i;
+                            if (ImGui::TreeNode(ECellEngine::Editor::Utility::GetNodeTypeName(nodeType)))
                             {
-                                const char* name = nodeEditorStyle.colors.GetNodeStyleColorName((ECellEngine::Editor::Utility::NodeStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.defaultNode[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
+                                ImVec4* colors = ECellEngine::Editor::Utility::GetNodeColors(nodeType);
+                                for (int j = 0; j < ECellEngine::Editor::Utility::NodeColorType_Count; j++)
+                                {
+                                    const char* name = ECellEngine::Editor::Utility::GetNodeColorTypeName((ECellEngine::Editor::Utility::NodeColorType)j);
+                                    ImGui::PushID(j);
+                                    ImGui::ColorEdit4("##color", &(colors+j)->x, ImGuiColorEditFlags_AlphaBar | alpha_flags);
+                                    ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                                    ImGui::TextUnformatted(name);
+                                    ImGui::PopID();
+                                }
+
+                                ImGui::TreePop();
                             }
-
-                            ImGui::TreePop();
-                        }
-
-                        if (ImGui::TreeNode("Asset Node"))
-                        {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
-                            {
-                                const char* name = nodeEditorStyle.colors.GetNodeStyleColorName((ECellEngine::Editor::Utility::NodeStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.assetNode[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
-                            }
-
-                            ImGui::TreePop();
-                        }
-
-                        if (ImGui::TreeNode("Parameter Node"))
-                        {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
-                            {
-                                const char* name = nodeEditorStyle.colors.GetNodeStyleColorName((ECellEngine::Editor::Utility::NodeStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.parameterNode[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
-                            }
-
-                            ImGui::TreePop();
-                        }
-
-                        if (ImGui::TreeNode("Reaction Node"))
-                        {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
-                            {
-                                const char* name = nodeEditorStyle.colors.GetNodeStyleColorName((ECellEngine::Editor::Utility::NodeStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.reactionNode[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
-                            }
-
-                            ImGui::TreePop();
-                        }
-
-                        if (ImGui::TreeNode("Solver Node"))
-                        {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
-                            {
-                                const char* name = nodeEditorStyle.colors.GetNodeStyleColorName((ECellEngine::Editor::Utility::NodeStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.solverNode[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
-                            }
-
-                            ImGui::TreePop();
-                        }
-
-                        if (ImGui::TreeNode("Species Node"))
-                        {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
-                            {
-                                const char* name = nodeEditorStyle.colors.GetNodeStyleColorName((ECellEngine::Editor::Utility::NodeStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.speciesNode[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
-                            }
-
-                            ImGui::TreePop();
                         }
 
                         ImGui::TreePop(); //Nodes
@@ -447,96 +378,24 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
 
                     if (ImGui::TreeNode("Pins"))
                     {
-                        if (ImGui::TreeNode("Default Pin"))
+                        for (int i = 0; i < ECellEngine::Editor::Utility::PinType_Count; i++)
                         {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
+                            ECellEngine::Editor::Utility::PinType pinType = (ECellEngine::Editor::Utility::PinType)i;
+                            if (ImGui::TreeNode(ECellEngine::Editor::Utility::GetPinTypeName(pinType)))
                             {
-                                const char* name = nodeEditorStyle.colors.GetPinStyleColorName((ECellEngine::Editor::Utility::PinStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.defaultPin[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
+                                ImVec4* colors = ECellEngine::Editor::Utility::GetPinColors(pinType);
+                                for (int j = 0; j < ECellEngine::Editor::Utility::PinColorType_Count; j++)
+                                {
+                                    const char* name = ECellEngine::Editor::Utility::GetPinColorTypeName((ECellEngine::Editor::Utility::PinColorType)j);
+                                    ImGui::PushID(j);
+                                    ImGui::ColorEdit4("##color", &(colors+j)->x, ImGuiColorEditFlags_AlphaBar | alpha_flags);
+                                    ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+                                    ImGui::TextUnformatted(name);
+                                    ImGui::PopID();
+                                }
+                                ImGui::TreePop();
                             }
-
-                            ImGui::TreePop();
                         }
-
-                        if (ImGui::TreeNode("Asset Pin"))
-                        {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
-                            {
-                                const char* name = nodeEditorStyle.colors.GetPinStyleColorName((ECellEngine::Editor::Utility::PinStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.assetPin[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
-                            }
-
-                            ImGui::TreePop();
-                        }
-
-                        if (ImGui::TreeNode("Parameter Pin"))
-                        {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
-                            {
-                                const char* name = nodeEditorStyle.colors.GetPinStyleColorName((ECellEngine::Editor::Utility::PinStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.parameterPin[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
-                            }
-
-                            ImGui::TreePop();
-                        }
-
-                        if (ImGui::TreeNode("Reaction Pin"))
-                        {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
-                            {
-                                const char* name = nodeEditorStyle.colors.GetPinStyleColorName((ECellEngine::Editor::Utility::PinStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.reactionPin[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
-                            }
-
-                            ImGui::TreePop();
-                        }
-
-                        if (ImGui::TreeNode("Solver Pin"))
-                        {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
-                            {
-                                const char* name = nodeEditorStyle.colors.GetPinStyleColorName((ECellEngine::Editor::Utility::PinStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.solverPin[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
-                            }
-
-                            ImGui::TreePop();
-                        }
-
-                        if (ImGui::TreeNode("Species Pin"))
-                        {
-                            for (int i = 0; i < ECellEngine::Editor::Utility::NodeStyleColor_Count; i++)
-                            {
-                                const char* name = nodeEditorStyle.colors.GetPinStyleColorName((ECellEngine::Editor::Utility::PinStyleColor)i);
-                                ImGui::PushID(i);
-                                ImGui::ColorEdit4("##color", (float*)&nodeEditorStyle.colors.speciesPin[i], ImGuiColorEditFlags_AlphaBar | alpha_flags);
-                                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-                                ImGui::TextUnformatted(name);
-                                ImGui::PopID();
-                            }
-
-                            ImGui::TreePop();
-                        }
-
                         ImGui::TreePop(); //Pins
                     }
                 }
