@@ -162,22 +162,48 @@ namespace ECellEngine::Editor::Utility
 
 		/*!
 		@brief Offsets the current position of the cursor (the drawer in ImGui)
-				so that a set of item to be drawn will be aligned on the right
-				side of a node.
-		@param _nodeWidth The width of the node for which we want to align some
-				items on the right.
+				so that a set of item to be drawn will be right-aligned at
+				@p _targetLength.
+		@param _targetLength The length at which we want to align some items on
+				the right.
 		@param _itemWidths The widths of the set of items we want to align on
 				the right.
 		@param _nbItems The number of items to align.
 		*/
-		inline static void AlignToRight(const float _nodeWidth, const float _itemWidths[], const std::size_t _nbItems)
+		inline static void AlignAllToRight(const float _currentX, const float _targetLength, const float _itemWidths[], const std::size_t _nbItems)
 		{
 			float offset = 0;
 			for (std::size_t i = 0; i < _nbItems; i++)
 			{
 				offset += _itemWidths[i];
 			}
-			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + _nodeWidth - offset);
+			ImGui::SetCursorPosX(_currentX + _targetLength - offset);
+		}
+
+		/*!
+		@brief Offsets the current position of the cursor (the drawer in ImGui)
+				so that the next item will be center-aligned on @p _targetLength.
+		@param _targetLength The length at which we want to align some items at
+				the center.
+		@param _itemWidth The width of the item we want to align at the center.
+		@param _nbItems The number of items to align.
+		*/
+		inline static void AlignToCenter(const float _currentX, const float _targetLength, const float _itemWidth)
+		{
+			ImGui::SetCursorPosX(_currentX + 0.5f * (_targetLength - _itemWidth));
+		}
+
+		/*!
+		@brief Offsets the current position of the cursor (the drawer in ImGui)
+				so that the next item will be right-aligned at @p _targetLength.
+		@param _targetLength The length at which we want to align some items on
+				the right.
+		@param _itemWidth The width of the item we want to align on the right.
+		@param _nbItems The number of items to align.
+		*/
+		inline static void AlignToRight(const float _currentX, const float _targetLength, const float _itemWidth)
+		{
+			ImGui::SetCursorPosX(_currentX + _targetLength - _itemWidth);
 		}
 
 		/*!
