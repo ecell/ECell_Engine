@@ -226,7 +226,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::size_t& _id
                     _links.push_back(LinkData(_id, inputPinId, outputPinId));
 
                     // Draw new link.
-                    ax::NodeEditor::Link(_links.back().id, _links.back().startId, _links.back().endId);
+                    //ax::NodeEditor::Link(_links.back().id, _links.back().startId, _links.back().endId);
+                    ECellEngine::Editor::Utility::NodeEditorDraw::Link(_links.back());
                 }
 
                 // You may choose to reject connection between these nodes
@@ -266,6 +267,17 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkDestruction(std::vector<E
     }
     ax::NodeEditor::EndDelete(); // Wrap up deletion action
 
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::Link(LinkData& linkInfo)
+{
+    if (ax::NodeEditor::Link(linkInfo.id, linkInfo.startIds[0], linkInfo.endIds[0])) { return; }
+
+    if (ax::NodeEditor::Link(linkInfo.id, linkInfo.startIds[0], linkInfo.endIds[1])) { return; }
+
+    if (ax::NodeEditor::Link(linkInfo.id, linkInfo.startIds[1], linkInfo.endIds[0])) { return; }
+
+    ax::NodeEditor::Link(linkInfo.id, linkInfo.startIds[1], linkInfo.endIds[1]);
 }
 #pragma endregion
 

@@ -258,13 +258,39 @@ namespace ECellEngine::Editor::Utility
 	struct LinkData
 	{
 		ax::NodeEditor::LinkId id;
-		ax::NodeEditor::PinId  startId; //start of link
-		ax::NodeEditor::PinId  endId; //target of link
+		ax::NodeEditor::PinId startIds[2];
+		ax::NodeEditor::PinId endIds[2];
 
 		LinkData(std::size_t& _linkId, ax::NodeEditor::PinId _startId, ax::NodeEditor::PinId _endId) :
-			id{ _linkId++ }, startId{ _startId }, endId{ _endId }
+			id{ _linkId++ }, startIds{ _startId, _startId }, endIds{ _endId, _endId }
 		{
 
+		}
+
+		/*!
+		@brief Sets the PinId @p _id as a candidate to be the start of the link
+				with a set @p _priority.
+		@param _id The new pin id to set as the start of this link.
+		@param _priority MUST be of value 0 or 1. It describes if this id should
+				be used as the first or second choice when trying to draw a link
+				from this ::LinKData
+		*/
+		inline void OverrideStartFallbackPin(ax::NodeEditor::PinId _id, unsigned short _priority)
+		{
+			startIds[_priority] = _id;
+		}
+
+		/*!
+		@brief Sets the PinId @p _id as a candidate to be the end of the link
+				with a set @p _priority.
+		@param _id The new pin id to set as the end of this link.
+		@param _priority MUST be of value 0 or 1. It describes if this id should
+				be used as the first or second choice when trying to draw a link
+				from this ::LinKData
+		*/
+		inline void OverrideEndFallbackPin(ax::NodeEditor::PinId _id, unsigned short _priority)
+		{
+			endIds[_priority] = _id;
 		}
 	};
 	

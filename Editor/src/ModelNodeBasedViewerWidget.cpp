@@ -77,7 +77,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
                     rootExplorer->GetDataState()->GetSpecies((*it).speciesNLB.data->at((*it).speciesNLB.doubleClickedItem))));
 
                 links.push_back(ECellEngine::Editor::Utility::LinkData(uniqueIdx, (*it).outputPins[0].id, speciesNodes.back().inputPins[1].id));
-                (*it).outputPins[0].isUsed = true;
+                links.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[0].id, 1);
             }
 
             (*it).speciesNLB.ResetUtilityState();
@@ -98,9 +98,9 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         }
 
         // Submit Links
-        for (ECellEngine::Editor::Utility::LinkData& linkInfo : links)
+        for (std::vector<ECellEngine::Editor::Utility::LinkData>::iterator it = links.begin(); it != links.end(); it++)
         {
-            ax::NodeEditor::Link(linkInfo.id, linkInfo.startId, linkInfo.endId);
+            ECellEngine::Editor::Utility::NodeEditorDraw::Link(*it);
         }
 
         // End of interaction with editor.

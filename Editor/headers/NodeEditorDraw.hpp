@@ -106,6 +106,15 @@ namespace ECellEngine::Editor::Utility
 #pragma endregion
 
 #pragma region Node Pins
+		
+		/*!
+		@brief Draws a Link in the node Editor.
+		@details Draws the first successful link according to the order (i.e.
+				 priority) of ids in ECellEngine::Editor::Utility::LinkData::startIds
+				 and ECellEngine::Editor::Utility::LinkData::endIds.
+		*/
+		static void Link(LinkData& linkInfo);
+		
 		/*!
 		@brief Draw a basic input pin symbolized by an arrow. 
 		@param _pinData The struct containing the information about the
@@ -130,7 +139,7 @@ namespace ECellEngine::Editor::Utility
 		@param _id The current value of the ID counter for links.
 		@param _links The current list of links.
 		*/
-		static void LinkCreation(int& _id, std::vector<ECellEngine::Editor::Utility::LinkData>& _links);
+		static void LinkCreation(std::size_t& _id, std::vector<ECellEngine::Editor::Utility::LinkData>& _links);
 
 		/*!
 		@brief The basic logic to destroy links between nodes.
