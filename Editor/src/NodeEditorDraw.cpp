@@ -72,18 +72,67 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name,
     ax::NodeEditor::EndNode();
     PopNodeStyle();
 }
-    ECellEngine::Editor::Utility::NodeEditorDraw::BeginColumn();
 
-    ECellEngine::Editor::Utility::NodeEditorDraw::NextColumn();
+void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo,
+    const ImVec4 _speciesNodeColors[], const ImVec4 _assetPinColors[],
+    const ImVec4 _parameterPinColors[],
+    const ImVec4 _reactionPinColors[], const ImVec4 _dataPinColors[])
+{
+    PushNodeStyle(_speciesNodeColors);
+    ax::NodeEditor::BeginNode(_speciesNodeInfo.id);
+    
+    const float headerSize = NodeHeader("Species:", _name, _speciesNodeColors);
+    const float startX = ImGui::GetCursorPosX();
+    const static float pinWidth = 8.f;
 
-    for (std::size_t i = 0; i < _solverNodeInfo.outputPins.size(); i++)
+    InputPin(_speciesNodeInfo.inputPins[0], _dataPinColors); ImGui::SameLine();
+    ImGui::BeginGroup();
+    if (NodeCollapsingHeader("Model Links", _speciesNodeInfo.utilityState, 0, ImVec2(200.f, 0.f)))
     {
-        ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(_solverNodeInfo.outputPins[i]);
-    }
+        const static float icpTextWidth = ImGui::CalcTextSize("In Computed Parameters").x;
+        const static float irTextWidth = ImGui::CalcTextSize("Is Reactant").x;
+        const static float ipTextWidth = ImGui::CalcTextSize("Is Product").x;
+        const static float iklTextWidth = ImGui::CalcTextSize("In Kinetic Law").x;
 
-    ECellEngine::Editor::Utility::NodeEditorDraw::EndColumn();
+        NodeText_In("Asset", startX, _speciesNodeInfo.inputPins[1], _assetPinColors);
+
+        NodeText_InOut("In Computed Parameters", icpTextWidth,
+            startX, headerSize, 8.f,
+            _speciesNodeInfo.inputPins[2], _speciesNodeInfo.outputPins[1], _parameterPinColors);
+
+        NodeText_InOut("Is Reactant", irTextWidth,
+            startX, headerSize, 8.f,
+            _speciesNodeInfo.inputPins[3], _speciesNodeInfo.outputPins[2], _reactionPinColors);
+
+        NodeText_InOut("Is Product", ipTextWidth,
+            startX, headerSize, 8.f,
+            _speciesNodeInfo.inputPins[4], _speciesNodeInfo.outputPins[3], _reactionPinColors);
+
+        NodeText_InOut("In Kinetic Law", iklTextWidth,
+            startX, headerSize, 8.f,
+            _speciesNodeInfo.inputPins[5], _speciesNodeInfo.outputPins[4], _reactionPinColors);
+    }
+    ImGui::EndGroup(); ImGui::SameLine(); AlignToRight(startX, headerSize, pinWidth);
+    OutputPin(_speciesNodeInfo.outputPins[0], _dataPinColors);
+
+    InputPin(_speciesNodeInfo.inputPins[6], _dataPinColors); ImGui::SameLine();
+    ImGui::BeginGroup();
+    if (NodeCollapsingHeader("Data Fields", _speciesNodeInfo.utilityState, 1, ImVec2(200.f, 0.f)))
+    {
+        const static float inputFieldWidth = ImGui::CalcTextSize("Quantity").x + 100.f; //100.0f is the default length for a field
+        float value = _speciesNodeInfo.data->Get();
+        if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &value,
+            inputFieldWidth, startX, headerSize, pinWidth,
+            _speciesNodeInfo.inputPins[7], _speciesNodeInfo.outputPins[6], _dataPinColors))
+        {
+            _speciesNodeInfo.data->Set(value);
+        }
+    }
+    ImGui::EndGroup(); ImGui::SameLine(); AlignToRight(startX, headerSize, pinWidth);
+    OutputPin(_speciesNodeInfo.outputPins[5], _dataPinColors);
 
     ax::NodeEditor::EndNode();
+    PopNodeStyle();
 }
 
 #pragma endregion
@@ -397,7 +446,6 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_InOut(const char* _l
     const ImVec4 _pinColors[])
 {
     ImGui::SetCursorPosX(_startX);
-
     InputPin(_inputPin, _pinColors); ImGui::SameLine();
 
     ImGui::AlignTextToFramePadding();

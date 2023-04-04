@@ -106,7 +106,11 @@ namespace ECellEngine::Editor::Utility
 		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo,
 			const ImVec4 _solverNodeColors[], const ImVec4 _assetPinColors[]);
 
-		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo);
+
+		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo,
+			const ImVec4 _speciesNodeColors[], const ImVec4 _assetPinColors[],
+			const ImVec4 _parameterPinColors[],
+			const ImVec4 _reactionPinColors[], const ImVec4 _dataPinColors[]);
 #pragma endregion
 
 #pragma region Node Pins

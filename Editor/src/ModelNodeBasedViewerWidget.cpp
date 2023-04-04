@@ -58,23 +58,45 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(ctxtIndex));
 
         // Start interaction with editor.
-        ax::NodeEditor::Begin("Model Exploration Space", ImVec2(0.0, 0.0f));
+        ax::NodeEditor::Begin("Model Exploration Space");
 
         //Checks for incomming Drag & Drop payloads
         //Relevant payloads are the references to assets or solvers loaded in
         //the simulation space.
         HandleSimuDataRefDrop();
-
+        ECellEngine::Editor::Utility::NodeEditorStyle* style = rootExplorer->GetNodeEditorStyle(styleIndex);
         for (std::vector<ECellEngine::Editor::Utility::AssetNodeData>::iterator it = assetNodes.begin(); it != assetNodes.end(); it++)
         {
             ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(rootExplorer->GetModelHierarchy()->GetAssetName(it->dataIdx),
-                *it);
+                *it, style->colors.assetNode, style->colors.solverPin,
+                style->colors.parameterPin, style->colors.reactionPin, style->colors.speciesPin);
+
+            if ((*it).speciesNLB.IsAnItemDoubleClicked())
+            {
+                speciesNodes.push_back(ECellEngine::Editor::Utility::SpeciesNodeData(
+                    uniqueIdx, (*it).speciesNLB.doubleClickedItem,
+                    rootExplorer->GetDataState()->GetSpecies((*it).speciesNLB.data->at((*it).speciesNLB.doubleClickedItem))));
+
+                links.push_back(ECellEngine::Editor::Utility::LinkData(uniqueIdx, (*it).outputPins[0].id, speciesNodes.back().inputPins[1].id));
+                (*it).outputPins[0].isUsed = true;
+            }
+
+            (*it).speciesNLB.ResetUtilityState();
+            (*it).simpleParametersNLB.ResetUtilityState();
+            (*it).computedParametersNLB.ResetUtilityState();
+            (*it).reactionsNLB.ResetUtilityState();
         }
 
         for (std::vector<ECellEngine::Editor::Utility::SolverNodeData>::iterator it = solverNodes.begin(); it != solverNodes.end(); it++)
         {
             ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(rootExplorer->GetModelHierarchy()->GetSolverName(it->dataIdx),
-                *it);
+                *it, style->colors.solverNode, style->colors.assetPin);
+        }
+
+        for (std::vector<ECellEngine::Editor::Utility::SpeciesNodeData>::iterator it = speciesNodes.begin(); it != speciesNodes.end(); it++)
+        {
+            ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode((*it).data->name.c_str(), (*it),
+                style->colors.speciesNode, style->colors.assetPin, style->colors.parameterPin, style->colors.reactionPin, style->colors.defaultPin);
         }
 
         // Submit Links

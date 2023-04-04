@@ -61,6 +61,8 @@ namespace ECellEngine::Editor
 		*/
 		std::vector<ECellEngine::Editor::Utility::AssetNodeData> assetNodes;
 
+		std::vector<ECellEngine::Editor::Utility::SpeciesNodeData> speciesNodes;
+
 		/*!
 		@brief The list of solver nodes.
 		@details It contains the information used to draw the nodes corresponding

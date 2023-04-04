@@ -417,7 +417,7 @@ namespace ECellEngine::Editor::Utility
 
 		ECellEngine::Solvers::Solver* data;
 
-		std::vector<NodePinData> outputPins;
+		NodePinData outputPin;
 
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
@@ -428,9 +428,72 @@ namespace ECellEngine::Editor::Utility
 			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
 			_nodeId++;
 
-			outputPins.push_back(NodePinData(_nodeId, "o"));
+			outputPin = NodePinData(_nodeId);
 		}
 
 	};
+
+	struct SpeciesNodeData 
+	{
+		/*!
+		@brief The ID of this node to in the Node Editor.
+		*/
+		ax::NodeEditor::NodeId id;
+
+		/*!
+		@brief The index of the data in its origin vector/array.
+		@details Used to retrieve all the information to be displayed within
+				 the node (e.g. name in one of the relevant vectors in
+				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
+				 solver data in ECellEngine::Core::Simulation).
+		*/
+		std::size_t dataIdx;
+
+		ECellEngine::Data::Species* data;
+
+		NodePinData inputPins[8];
+		NodePinData outputPins[7];
+
+		unsigned char utilityState = 0;
+
+		SpeciesNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::Species* _data) :
+			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		{
+			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f+ImGui::GetIO().MousePos.x, 0.f+ ImGui::GetIO().MousePos.y));
+			_nodeId++;
+
+			//Collapsing Header Model Links
+			inputPins[0] = NodePinData(_nodeId);
+			outputPins[0] = NodePinData(_nodeId);
+
+			//Asset
+			inputPins[1] = NodePinData(_nodeId);
+
+			//Computed parameters equation
+			inputPins[2] = NodePinData(_nodeId);
+			outputPins[1] = NodePinData(_nodeId);
+
+			//Reactions's Reactants
+			inputPins[3] = NodePinData(_nodeId);
+			outputPins[2] = NodePinData(_nodeId);
+
+			//Reaction's Products
+			inputPins[4] = NodePinData(_nodeId);
+			outputPins[3] = NodePinData(_nodeId);
+
+			//Reaction's Kinetic Law
+			inputPins[5] = NodePinData(_nodeId);
+			outputPins[4] = NodePinData(_nodeId);
+
+			//Collapsing Header Data Fields
+			inputPins[6] = NodePinData(_nodeId);
+			outputPins[5] = NodePinData(_nodeId);
+
+			//Quantity
+			inputPins[7] = NodePinData(_nodeId);
+			outputPins[6] = NodePinData(_nodeId);
+		}
+	};
+
 #pragma endregion
 }
