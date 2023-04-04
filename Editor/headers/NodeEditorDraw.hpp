@@ -32,12 +32,12 @@ namespace ECellEngine::Editor::Utility
 		*/
 		inline static void PushNodeStyle(const ImVec4 _colorSet[])
 		{
-			ax::NodeEditor::PushStyleColor(ax::NodeEditor::StyleColor_NodeBg, _colorSet[NodeStyleColor_Bg]);
-			ax::NodeEditor::PushStyleColor(ax::NodeEditor::StyleColor_NodeBorder, _colorSet[NodeStyleColor_Border]);
-			ImGui::PushStyleColor(ImGuiCol_Button, _colorSet[NodeStyleColor_Bg]);
-			ImGui::PushStyleColor(ImGuiCol_ButtonActive, _colorSet[NodeStyleColor_HeaderActivated]);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, _colorSet[NodeStyleColor_HeaderHovered]);
-			ImGui::PushStyleColor(ImGuiCol_Separator, _colorSet[NodeStyleColor_Border]);
+			ax::NodeEditor::PushStyleColor(ax::NodeEditor::StyleColor_NodeBg, _colorSet[NodeColorType_Bg]);
+			ax::NodeEditor::PushStyleColor(ax::NodeEditor::StyleColor_NodeBorder, _colorSet[NodeColorType_Border]);
+			ImGui::PushStyleColor(ImGuiCol_Button, _colorSet[NodeColorType_Bg]);
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, _colorSet[NodeColorType_HeaderActivated]);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, _colorSet[NodeColorType_HeaderHovered]);
+			ImGui::PushStyleColor(ImGuiCol_Separator, _colorSet[NodeColorType_Border]);
 		}
 
 		/*!
@@ -87,10 +87,7 @@ namespace ECellEngine::Editor::Utility
 		@param _speciesPinColors The set of colors to cutomize the species pin in
 				this node.
 		*/
-		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo,
-			const ImVec4 _assetNodeColors[], const ImVec4 _solverPinColors[],
-			const ImVec4 _parameterPinColors[],
-			const ImVec4 _reactionPinColors[], const ImVec4 _speciesPinColors[]);
+		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo);
 
 		/*!
 		@brief Draws a node to display and access the content of a
@@ -103,17 +100,21 @@ namespace ECellEngine::Editor::Utility
 		@param _assetPinColors The set of colors to cutomize the asset pin in
 				this node.
 		*/
-		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo,
-			const ImVec4 _solverNodeColors[], const ImVec4 _assetPinColors[]);
+		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo);
 
-
-		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo,
-			const ImVec4 _speciesNodeColors[], const ImVec4 _assetPinColors[],
-			const ImVec4 _parameterPinColors[],
-			const ImVec4 _reactionPinColors[], const ImVec4 _dataPinColors[]);
+		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo);
 #pragma endregion
 
 #pragma region Node Pins
+		
+		/*!
+		@brief Draws a Link in the node Editor.
+		@details Draws the first successful link according to the order (i.e.
+				 priority) of ids in ECellEngine::Editor::Utility::LinkData::startIds
+				 and ECellEngine::Editor::Utility::LinkData::endIds.
+		*/
+		static void Link(LinkData& linkInfo);
+		
 		/*!
 		@brief Draw a basic input pin symbolized by an arrow. 
 		@param _pinData The struct containing the information about the
@@ -138,7 +139,7 @@ namespace ECellEngine::Editor::Utility
 		@param _id The current value of the ID counter for links.
 		@param _links The current list of links.
 		*/
-		static void LinkCreation(int& _id, std::vector<ECellEngine::Editor::Utility::LinkData>& _links);
+		static void LinkCreation(std::size_t& _id, std::vector<ECellEngine::Editor::Utility::LinkData>& _links);
 
 		/*!
 		@brief The basic logic to destroy links between nodes.
