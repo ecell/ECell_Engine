@@ -459,6 +459,8 @@ enum PinType
 
 		unsigned char utilityState = 0;
 
+		std::size_t collapsingHeadersIds[4];
+
 		NodeListBoxStringData speciesNLB;
 		NodeListBoxStringData simpleParametersNLB;
 		NodeListBoxStringData computedParametersNLB;
@@ -478,6 +480,18 @@ enum PinType
 			outputPins[1] = NodePinData(GetMNBVCtxtNextId());
 			outputPins[2] = NodePinData(GetMNBVCtxtNextId());
 			outputPins[3] = NodePinData(GetMNBVCtxtNextId());
+
+			//Id to uniquely identify the collapsing header for the SPECIES of each asset node
+			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
+
+			//Id to uniquely identify the collapsing header for the SIMPLE PARAMETERS of each asset node
+			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
+
+			//Id to uniquely identify the collapsing header for the COMPUTED PARAMETERS of each asset node
+			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
+
+			//Id to uniquely identify the collapsing header for the REACTIONS of each asset node
+			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
 
 			//Initialize the list boxes data
 			speciesNLB.data = &data->GetAllSpecies();
@@ -550,10 +564,17 @@ enum PinType
 
 		unsigned char utilityState = 0;
 
+		std::size_t collapsingHeadersIds[2];
+
 		SpeciesNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::Species* _data) :
 			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f+ImGui::GetIO().MousePos.x, 0.f+ ImGui::GetIO().MousePos.y));
+
+			//Id to uniquely identify the collapsing header for the MODEL LINKS of each species node
+			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
+			//Id to uniquely identify the collapsing header for the DATA FIELDS of each species node
+			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
 
 			//Collapsing Header Model Links
 			inputPins[0] = NodePinData(GetMNBVCtxtNextId());

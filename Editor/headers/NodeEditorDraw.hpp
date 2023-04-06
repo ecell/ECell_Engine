@@ -68,7 +68,6 @@ namespace ECellEngine::Editor::Utility
 		}
 #pragma endregion
 
-
 #pragma region Nodes
 		/*!
 		@brief Draws a node to display and access the content of an
@@ -273,6 +272,8 @@ namespace ECellEngine::Editor::Utility
 				 creates a visual artifact: the node extends infinitely because
 				 in the Node Editor virtual area has not limits.
 		@param _label The text to display in the collapsing header.
+		@param _id Unique integer ID to identify the collapsing header. This is
+				mandatory to not mess up ImGui's internal identification system.
 		@param _utilityState The reference to the character containing the encoding
 				of the the open/close state of this header.
 		@param _stateBitPos The position of the bit in @p _utilityState that
@@ -286,8 +287,11 @@ namespace ECellEngine::Editor::Utility
 		@param _outputPin The pin data used for the output pin to draw.
 		@param _pinColors The set of colors to cutomize both pins.
 		@param _size The size of the button representing the collapsing header.
+		@param _hidePinsOnExpand A boolean to control whether the pins associated to
+				the collapsing header shall NOT be drawn when the collapsing header
+				is open (displaying the content bellowit).
 		*/
-		static bool NodeCollapsingHeader_InOut(const char* _label,
+		static bool NodeCollapsingHeader_InOut(const char* _label, const std::size_t _id,
 			unsigned char& _utilityState, const short _stateBitPos,
 			const float _startX, const float _drawLength, const float _pinWidth,
 			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
@@ -305,6 +309,8 @@ namespace ECellEngine::Editor::Utility
 				 creates a visual artifact: the node extends infinitely because
 				 in the Node Editor virtual area has not limits.
 		@param _label The text to display in the collapsing header.
+		@param _id Unique integer ID to identify the collapsing header. This is
+				mandatory to not mess up ImGui's internal identification system.
 		@param _utilityState The reference to the character containing the encoding
 				of the the open/close state of this header.
 		@param _stateBitPos The position of the bit in @p _utilityState that
@@ -317,8 +323,11 @@ namespace ECellEngine::Editor::Utility
 		@param _pin The pin data used for the output pin to draw.
 		@param _pinColors The set of colors to cutomize both pins.
 		@param _size The size of the button representing the collapsing header.
+		@param _hidePinsOnExpand A boolean to control whether the pins associated to
+				the collapsing header shall NOT be drawn when the collapsing header
+				is open (displaying the content bellowit).
 		*/
-		static bool NodeCollapsingHeader_Out(const char* _label,
+		static bool NodeCollapsingHeader_Out(const char* _label, const std::size_t _id,
 			unsigned char& _utilityState, const short _stateBitPos,
 			const float _startX, const float _drawLength, const float _pinWidth,
 			const NodePinData& _pin, const ImVec4 _pinColors[],

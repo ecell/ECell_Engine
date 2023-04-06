@@ -15,7 +15,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
     ImGui::SameLine(); ImGui::AlignTextToFramePadding(); ImGui::Text("Solver");
 
     // ----- String List Box and Pin to access the species of the asset -----
-    if (NodeCollapsingHeader_Out("Species", _assetNodeInfo.utilityState, 0,
+    if (NodeCollapsingHeader_Out("Species", _assetNodeInfo.collapsingHeadersIds[0],
+        _assetNodeInfo.utilityState, 0,
         startX, headerSize, pinWidth,
         _assetNodeInfo.outputPins[0], GetPinColors(PinType_Species),
         ImVec2(200, 0), false))
@@ -24,7 +25,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
     }
 
     // ----- String List Box and Pin to access the simple parameters of the asset -----
-    if (NodeCollapsingHeader_Out("Constant Parameters", _assetNodeInfo.utilityState, 1,
+    if (NodeCollapsingHeader_Out("Constant Parameters", _assetNodeInfo.collapsingHeadersIds[1],
+        _assetNodeInfo.utilityState, 1,
         startX, headerSize, pinWidth,
         _assetNodeInfo.outputPins[1], GetPinColors(PinType_Species),
         ImVec2(200, 0), false))
@@ -33,7 +35,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
     }
 
     // ----- String List Box and Pin to access the computed parameters of the asset -----
-    if (NodeCollapsingHeader_Out("Computed Parameters", _assetNodeInfo.utilityState, 2,
+    if (NodeCollapsingHeader_Out("Computed Parameters", _assetNodeInfo.collapsingHeadersIds[2],
+        _assetNodeInfo.utilityState, 2,
         startX, headerSize, pinWidth,
         _assetNodeInfo.outputPins[2], GetPinColors(PinType_Species),
         ImVec2(200, 0), false))
@@ -42,7 +45,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
     }
 
     // ----- String List Box and Pin to access the reactions of the asset -----
-    if (NodeCollapsingHeader_Out("Reactions", _assetNodeInfo.utilityState, 3,
+    if (NodeCollapsingHeader_Out("Reactions", _assetNodeInfo.collapsingHeadersIds[3],
+        _assetNodeInfo.utilityState, 3,
         startX, headerSize, pinWidth,
         _assetNodeInfo.outputPins[3], GetPinColors(PinType_Species),
         ImVec2(200, 0), false))
@@ -80,7 +84,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
     const float startX = ImGui::GetCursorPosX();
     const static float pinWidth = 8.f;
 
-    if (NodeCollapsingHeader_InOut("Model Links", _speciesNodeInfo.utilityState, 0,
+    if (NodeCollapsingHeader_InOut("Model Links", _speciesNodeInfo.collapsingHeadersIds[0],
+        _speciesNodeInfo.utilityState, 0,
         startX, headerSize, pinWidth,
         _speciesNodeInfo.inputPins[0], _speciesNodeInfo.outputPins[0], GetPinColors(PinType_Default),
         ImVec2(200, 0)))
@@ -109,7 +114,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
             _speciesNodeInfo.inputPins[5], _speciesNodeInfo.outputPins[4], GetPinColors(PinType_Reaction));
     }
 
-    if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.utilityState, 1,
+    if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.collapsingHeadersIds[1],
+        _speciesNodeInfo.utilityState, 1,
         startX, headerSize, pinWidth,
         _speciesNodeInfo.inputPins[6], _speciesNodeInfo.outputPins[5], GetPinColors(PinType_Default),
         ImVec2(200, 0)))
@@ -283,17 +289,19 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::Link(LinkData& linkInfo)
 
 #pragma region Custom Node Widgets
 
-bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_InOut(const char* _label,
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_InOut(const char* _label, const std::size_t _id,
     unsigned char& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength, const float _pinWidth,
     const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
     const ImVec2& _size, const bool _hidePinsOnExpand)
 {
     AlignToCenter(_startX, _drawLength, _size.x);
+    ImGui::PushID(_id);
     if (ImGui::Button(_label, _size))
     {
         _utilityState ^= 1 << _stateBitPos;
     }
+    ImGui::PopID();
 
     bool open = _utilityState >> _stateBitPos & 1;
 
@@ -309,17 +317,19 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_InOut(co
     return open;
 }
 
-bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_Out(const char* _label,
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_Out(const char* _label, const std::size_t _id,
     unsigned char& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength, const float _pinWidth,
     const NodePinData& _pin, const ImVec4 _pinColors[],
     const ImVec2& _size, const bool _hidePinsOnExpand)
 {
     AlignToCenter(_startX, _drawLength, _size.x);
+    ImGui::PushID(_id);
     if (ImGui::Button(_label, _size))
     {
         _utilityState ^= 1 << _stateBitPos;
     }
+    ImGui::PopID();
 
     bool open = _utilityState >> _stateBitPos & 1;
 
