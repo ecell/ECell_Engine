@@ -153,6 +153,119 @@ enum PinType
 	
 #pragma endregion
 
+#pragma region Data Global API
+
+	struct ModelNodeBasedViewerContext
+	{
+		std::size_t uniqueId;
+
+		NodeEditorStyle style;
+
+		ModelNodeBasedViewerContext() :
+			uniqueId{ 0 }
+		{
+
+		}
+
+	};
+
+	ModelNodeBasedViewerContext* GetCurrentMNBVContext();
+
+	NodeEditorStyle* GetMNBVSyle();
+
+	std::size_t& GetMNBVCtxtNextId();
+
+	ImVec4* GetNodeColors(NodeType _nodeType);
+
+	/*inline char* GetLinkStyleColorName(LinkStyleColor _linkStyleColorType)
+	{
+		switch (_linkStyleColorType)
+		{
+		case LinkStyleColor_BorderHovered:
+			return "LinkStyleColor_BorderHovered";
+		case LinkStyleColor_BorderSelected:
+			return "LinkStyleColor_BorderSelected";
+		}
+	}*/
+
+	inline char* GetNodeColorTypeName(NodeColorType _nodeColorType)
+	{
+		switch (_nodeColorType)
+		{
+		case NodeColorType_Bg:
+			return "NodeColorType_Bg";
+		case NodeColorType_Border:
+			return "NodeColorType_Border";
+			/*case NodeColorType_BorderHovered:
+				return "NodeColorType_BorderHovered";*/
+				/*case NodeColorType_BorderSelected:
+					return "NodeColorType_BorderSelected";*/
+		case NodeColorType_HeaderBg:
+			return "NodeColorType_HeaderBg";
+		case NodeColorType_HeaderActivated:
+			return "NodeColorType_HeaderActivated";
+		case NodeColorType_HeaderHovered:
+			return "NodeColorType_HeaderHovered";
+		}
+	}
+
+	inline char* GetNodeTypeName(NodeType _nodeType)
+	{
+		switch (_nodeType)
+		{
+		case NodeType_Default:
+			return "NodeType_Default";
+		case NodeType_Asset:
+			return "NodeType_Asset";
+		case NodeType_Parameter:
+			return "NodeType_Parameter";
+		case NodeType_Reaction:
+			return "NodeType_Reaction";
+		case NodeType_Solver:
+			return "NodeType_Solver";
+		case NodeType_Species:
+			return "NodeType_Species";
+		}
+	}
+
+	ImVec4* GetPinColors(PinType _nodeType);
+
+	inline char* GetPinColorTypeName(PinColorType _pinColorType)
+	{
+		switch (_pinColorType)
+		{
+		case PinColorType_BgActivated:
+			return "PinColorType_BgActivated";
+		case PinColorType_BgInactivated:
+			return "PinColorType_BgInactivated";
+		case PinColorType_Border:
+			return "PinColorType_Border";
+		}
+	}
+
+	inline char* GetPinTypeName(PinType _pinType)
+	{
+		switch (_pinType)
+		{
+		case PinType_Default:
+			return "PinType_Default";
+		case PinType_Asset:
+			return "PinType_Asset";
+		case PinType_Parameter:
+			return "PinType_Parameter";
+		case PinType_Reaction:
+			return "PinType_Reaction";
+		case PinType_Solver:
+			return "PinType_Solver";
+		case PinType_Species:
+			return "PinType_Species";
+		}
+	}
+
+	void SetCurrentMNBVContext(ModelNodeBasedViewerContext* _ctxt);
+
+#pragma endregion
+
 #pragma region Custom Node Widgets Data
 	/*!
 	@brief Information to display and interact with custom list boxes inside
@@ -262,7 +375,7 @@ enum PinType
 		ax::NodeEditor::PinId endIds[2];
 
 		LinkData(std::size_t& _linkId, ax::NodeEditor::PinId _startId, ax::NodeEditor::PinId _endId) :
-			id{ _linkId++ }, startIds{ _startId, _startId }, endIds{ _endId, _endId }
+			id{ _linkId }, startIds{ _startId, _startId }, endIds{ _endId, _endId }
 		{
 
 		}
@@ -315,7 +428,7 @@ enum PinType
 		@remarks @p _pinId is incremented immeditely after use.
 		*/
 		NodePinData(std::size_t& _pinId) :
-			id{ _pinId++ }
+			id{ _pinId }
 		{
 
 		}
@@ -358,14 +471,13 @@ enum PinType
 			id{ _nodeId }, dataIdx{ _dataIdx }, data{dynamic_cast<ECellEngine::Data::SBMLModule*>(_data)}
 		{
 			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
-			_nodeId++;
 
-			inputPin = NodePinData(_nodeId);
+			inputPin = NodePinData(GetMNBVCtxtNextId());
 
-			outputPins[0] = NodePinData(_nodeId);
-			outputPins[1] = NodePinData(_nodeId);
-			outputPins[2] = NodePinData(_nodeId);
-			outputPins[3] = NodePinData(_nodeId);
+			outputPins[0] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[1] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[2] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[3] = NodePinData(GetMNBVCtxtNextId());
 
 			//Initialize the list boxes data
 			speciesNLB.data = &data->GetAllSpecies();
@@ -409,9 +521,8 @@ enum PinType
 			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
-			_nodeId++;
 
-			outputPin = NodePinData(_nodeId);
+			outputPin = NodePinData(GetMNBVCtxtNextId());
 		}
 
 	};
@@ -443,145 +554,39 @@ enum PinType
 			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f+ImGui::GetIO().MousePos.x, 0.f+ ImGui::GetIO().MousePos.y));
-			_nodeId++;
 
 			//Collapsing Header Model Links
-			inputPins[0] = NodePinData(_nodeId);
-			outputPins[0] = NodePinData(_nodeId);
+			inputPins[0] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[0] = NodePinData(GetMNBVCtxtNextId());
 
 			//Asset
-			inputPins[1] = NodePinData(_nodeId);
+			inputPins[1] = NodePinData(GetMNBVCtxtNextId());
 
 			//Computed parameters equation
-			inputPins[2] = NodePinData(_nodeId);
-			outputPins[1] = NodePinData(_nodeId);
+			inputPins[2] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[1] = NodePinData(GetMNBVCtxtNextId());
 
 			//Reactions's Reactants
-			inputPins[3] = NodePinData(_nodeId);
-			outputPins[2] = NodePinData(_nodeId);
+			inputPins[3] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[2] = NodePinData(GetMNBVCtxtNextId());
 
 			//Reaction's Products
-			inputPins[4] = NodePinData(_nodeId);
-			outputPins[3] = NodePinData(_nodeId);
+			inputPins[4] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[3] = NodePinData(GetMNBVCtxtNextId());
 
 			//Reaction's Kinetic Law
-			inputPins[5] = NodePinData(_nodeId);
-			outputPins[4] = NodePinData(_nodeId);
+			inputPins[5] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[4] = NodePinData(GetMNBVCtxtNextId());
 
 			//Collapsing Header Data Fields
-			inputPins[6] = NodePinData(_nodeId);
-			outputPins[5] = NodePinData(_nodeId);
+			inputPins[6] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[5] = NodePinData(GetMNBVCtxtNextId());
 
 			//Quantity
-			inputPins[7] = NodePinData(_nodeId);
-			outputPins[6] = NodePinData(_nodeId);
+			inputPins[7] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[6] = NodePinData(GetMNBVCtxtNextId());
 		}
 	};
-
-#pragma endregion
-
-#pragma region Data Global API
-
-	struct ModelNodeBasedViewerContext
-	{
-		std::size_t uniqueId;
-
-		NodeEditorStyle style;
-
-	};
-
-	ModelNodeBasedViewerContext* GetCurrentMNBVContext();
-
-	ImVec4* GetNodeColors(NodeType _nodeType);
-
-	ImVec4* GetPinColors(PinType _nodeType);
-
-	/*inline char* GetLinkStyleColorName(LinkStyleColor _linkStyleColorType)
-	{
-		switch (_linkStyleColorType)
-		{
-		case LinkStyleColor_BorderHovered:
-			return "LinkStyleColor_BorderHovered";
-		case LinkStyleColor_BorderSelected:
-			return "LinkStyleColor_BorderSelected";
-		}
-	}*/
-
-	inline char* GetNodeColorTypeName(NodeColorType _nodeColorType)
-	{
-		switch (_nodeColorType)
-		{
-		case NodeColorType_Bg:
-			return "NodeColorType_Bg";
-		case NodeColorType_Border:
-			return "NodeColorType_Border";
-			/*case NodeColorType_BorderHovered:
-				return "NodeColorType_BorderHovered";*/
-				/*case NodeColorType_BorderSelected:
-					return "NodeColorType_BorderSelected";*/
-		case NodeColorType_HeaderBg:
-			return "NodeColorType_HeaderBg";
-		case NodeColorType_HeaderActivated:
-			return "NodeColorType_HeaderActivated";
-		case NodeColorType_HeaderHovered:
-			return "NodeColorType_HeaderHovered";
-		}
-	}
-
-	inline char* GetNodeTypeName(NodeType _nodeType)
-	{
-		switch (_nodeType)
-		{
-		case NodeType_Default:
-			return "NodeType_Default";
-		case NodeType_Asset:
-			return "NodeType_Asset";
-		case NodeType_Parameter:
-			return "NodeType_Parameter";
-		case NodeType_Reaction:
-			return "NodeType_Reaction";
-		case NodeType_Solver:
-			return "NodeType_Solver";
-		case NodeType_Species:
-			return "NodeType_Species";
-		}
-	}
-
-	inline char* GetPinTypeName(PinType _pinType)
-	{
-		switch (_pinType)
-		{
-		case PinType_Default:
-			return "PinType_Default";
-		case PinType_Asset:
-			return "PinType_Asset";
-		case PinType_Parameter:
-			return "PinType_Parameter";
-		case PinType_Reaction:
-			return "PinType_Reaction";
-		case PinType_Solver:
-			return "PinType_Solver";
-		case PinType_Species:
-			return "PinType_Species";
-		}
-	}
-
-	inline char* GetPinColorTypeName(PinColorType _pinColorType)
-	{
-		switch (_pinColorType)
-		{
-		case PinColorType_BgActivated:
-			return "PinColorType_BgActivated";
-		case PinColorType_BgInactivated:
-			return "PinColorType_BgInactivated";
-		case PinColorType_Border:
-			return "PinColorType_Border";
-		}
-	}
-
-	NodeEditorStyle* GetMNBVSyle();
-
-	void SetCurrentMNBVContext(ModelNodeBasedViewerContext* _ctxt);
 
 #pragma endregion
 

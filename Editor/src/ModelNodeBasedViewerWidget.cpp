@@ -9,13 +9,13 @@ ECellEngine::Editor::ModelNodeBasedViewerWidget::~ModelNodeBasedViewerWidget()
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::AddAssetNode(const std::size_t _dataIdx)
 {
     assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeData(
-        uniqueIdx, _dataIdx, editor.engine.GetSimulationsManager()->GetSimulation(0)->GetModule(_dataIdx).get()));
+        ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), _dataIdx, editor.engine.GetSimulationsManager()->GetSimulation(0)->GetModule(_dataIdx).get()));
 }
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::AddSolverNode(const std::size_t _dataIdx)
 {
     solverNodes.push_back(ECellEngine::Editor::Utility::SolverNodeData(
-        uniqueIdx, _dataIdx, editor.engine.GetSimulationsManager()->GetSimulation(0)->GetSolver(_dataIdx).get()));
+        ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), _dataIdx, editor.engine.GetSimulationsManager()->GetSimulation(0)->GetSolver(_dataIdx).get()));
 }
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::Awake()
@@ -56,6 +56,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
 
         ImGui::Separator();
         ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(neCtxtIdx));
+        ECellEngine::Editor::Utility::SetCurrentMNBVContext(rootExplorer->GetModelNodeBasedViewerContext(mnbvCtxIdx));
 
         // Start interaction with editor.
         ax::NodeEditor::Begin("Model Exploration Space");
@@ -64,7 +65,6 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         //Relevant payloads are the references to assets or solvers loaded in
         //the simulation space.
         HandleSimuDataRefDrop();
-        ECellEngine::Editor::Utility::SetCurrentMNBVContext(rootExplorer->GetModelNodeBasedViewerContext(mnbvCtxIdx));
         for (std::vector<ECellEngine::Editor::Utility::AssetNodeData>::iterator it = assetNodes.begin(); it != assetNodes.end(); it++)
         {
             ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(rootExplorer->GetModelHierarchy()->GetAssetName(it->dataIdx),
@@ -73,10 +73,10 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
             if ((*it).speciesNLB.IsAnItemDoubleClicked())
             {
                 speciesNodes.push_back(ECellEngine::Editor::Utility::SpeciesNodeData(
-                    uniqueIdx, (*it).speciesNLB.doubleClickedItem,
+                    ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), (*it).speciesNLB.doubleClickedItem,
                     rootExplorer->GetDataState()->GetSpecies((*it).speciesNLB.data->at((*it).speciesNLB.doubleClickedItem))));
 
-                links.push_back(ECellEngine::Editor::Utility::LinkData(uniqueIdx, (*it).outputPins[0].id, speciesNodes.back().inputPins[1].id));
+                links.push_back(ECellEngine::Editor::Utility::LinkData(ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), (*it).outputPins[0].id, speciesNodes.back().inputPins[1].id));
                 links.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[0].id, 1);
             }
 

@@ -52,8 +52,6 @@ namespace ECellEngine::Editor
 		*/
 		ModelExplorerWidget* rootExplorer;
 
-		std::size_t uniqueIdx = 0;
-
 		/*!
 		@brief The list of asset nodes.
 		@details It contains the information used to draw the nodes corresponding

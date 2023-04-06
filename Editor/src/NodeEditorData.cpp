@@ -13,6 +13,11 @@ ECellEngine::Editor::Utility::NodeEditorStyle* ECellEngine::Editor::Utility::Get
 	return &s_mnbvCtxt->style;
 }
 
+std::size_t& ECellEngine::Editor::Utility::GetMNBVCtxtNextId()
+{
+	return ++(s_mnbvCtxt->uniqueId);
+}
+
 ImVec4* ECellEngine::Editor::Utility::GetNodeColors(NodeType _nodeType)
 {
 	return s_mnbvCtxt->style.nodeColors[_nodeType];
