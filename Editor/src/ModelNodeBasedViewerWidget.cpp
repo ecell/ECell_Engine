@@ -3,7 +3,7 @@
 
 ECellEngine::Editor::ModelNodeBasedViewerWidget::~ModelNodeBasedViewerWidget()
 {
-    rootExplorer->RemoveNodeEditorContext(ctxtIndex);
+    rootExplorer->RemoveNodeEditorContext(neCtxtIdx);
 }
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::AddAssetNode(const std::size_t _dataIdx)
@@ -23,18 +23,18 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Awake()
     ax::NodeEditor::Config nodeConfig;
 
     //Create a new Editor context and add it to the list of all Editor contexts managed
-    //by the Model Explorer
+    //by the Model Explorer.
     rootExplorer->AddNodeEditorContext(ax::NodeEditor::CreateEditor(&nodeConfig));
-    ctxtIndex = rootExplorer->CountEditorContexts()-1;
+    neCtxtIdx = rootExplorer->CountEditorContexts() - 1;
 
     //Create the style data customized for the nodes specific to our use case.
-    rootExplorer->AddNodeEditorStyle(rootExplorer->GetNodeEditorContext(ctxtIndex));
-    styleIndex = rootExplorer->CountEditorStyles()-1;
+    rootExplorer->AddModelNodeBasedViewerContext();
+    mnbvCtxIdx = rootExplorer->CountModelNodeBasedViewerContext() - 1;
 
     //Updates global style values that we want to be applied to everything in our use case.
     //We don't use the Push/Pop API on purpose because we will not change those values in the
     //future.
-    ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(ctxtIndex));
+    ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(neCtxtIdx));
     ax::NodeEditor::Style& style = ax::NodeEditor::GetStyle();
     style.NodeRounding = 6; //instead of 12 by default.
     style.NodeBorderWidth = 3; //instead of 2 by default.
@@ -55,7 +55,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
 
         ImGui::Separator();
-        ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(ctxtIndex));
+        ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(neCtxtIdx));
 
         // Start interaction with editor.
         ax::NodeEditor::Begin("Model Exploration Space");
@@ -64,7 +64,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         //Relevant payloads are the references to assets or solvers loaded in
         //the simulation space.
         HandleSimuDataRefDrop();
-        ECellEngine::Editor::Utility::SetCurrentStyle(rootExplorer->GetNodeEditorStyle(styleIndex));
+        ECellEngine::Editor::Utility::SetCurrentMNBVContext(rootExplorer->GetModelNodeBasedViewerContext(mnbvCtxIdx));
         for (std::vector<ECellEngine::Editor::Utility::AssetNodeData>::iterator it = assetNodes.begin(); it != assetNodes.end(); it++)
         {
             ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(rootExplorer->GetModelHierarchy()->GetAssetName(it->dataIdx),
@@ -105,7 +105,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
 
         // End of interaction with editor.
         ax::NodeEditor::End();
-        ECellEngine::Editor::Utility::SetCurrentStyle(nullptr);
+        ECellEngine::Editor::Utility::SetCurrentMNBVContext(nullptr);
         ax::NodeEditor::SetCurrentEditor(nullptr);
 
         ImGui::End();

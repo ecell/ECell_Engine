@@ -6,41 +6,41 @@
 
 namespace ECellEngine::Editor::Utility
 {
-#pragma region Custom Color Style
+enum NodeType
+{
+	NodeType_Default,
+
+	NodeType_Asset,
+	NodeType_Parameter,
+	NodeType_Reaction,
+	NodeType_Solver,
+	NodeType_Species,
+
+	NodeType_Count
+};
+
+enum PinType
+{
+	PinType_Default,
+
+	PinType_Asset,
+	PinType_Parameter,
+	PinType_Reaction,
+	PinType_Solver,
+	PinType_Species,
+
+	PinType_Count
+};
+
+#pragma region Custom Style
 	
-	enum LinkStyleColor
+	/*enum LinkStyleColor
 	{
 		LinkStyleColor_BorderHovered,
 		LinkStyleColor_BorderSelected,
 
 		LinkStyleColor_Count
-	};
-	
-	enum NodeType
-	{
-		NodeType_Default,
-		
-		NodeType_Asset,
-		NodeType_Parameter,
-		NodeType_Reaction,
-		NodeType_Solver,
-		NodeType_Species,
-
-		NodeType_Count
-	};
-
-	enum PinType
-	{
-		PinType_Default,
-
-		PinType_Asset,
-		PinType_Parameter,
-		PinType_Reaction,
-		PinType_Solver,
-		PinType_Species,
-
-		PinType_Count
-	};
+	};*/
 
 	enum NodeColorType
 	{
@@ -72,17 +72,17 @@ namespace ECellEngine::Editor::Utility
 		ImVec4 nodeColors[NodeType_Count][NodeColorType_Count];
 		ImVec4 pinColors[PinType_Count][PinColorType_Count];
 
-		NodeEditorStyle(ax::NodeEditor::Style& _default)
+		NodeEditorStyle()
 		{
 			pinWidth = 8.f;
 
-			nodeColors[NodeType_Default][NodeColorType_Bg] =				_default.Colors[ax::NodeEditor::StyleColor_NodeBg];
-			nodeColors[NodeType_Default][NodeColorType_Border] =			_default.Colors[ax::NodeEditor::StyleColor_NodeBorder];
-			//nodeColors[NodeType_Default][NodeColorType_BorderHovered] =		_default.Colors[ax::NodeEditor::StyleColor_HovNodeBorder];
-			//nodeColors[NodeType_Default][NodeColorType_BorderSelected] =	_default.Colors[ax::NodeEditor::StyleColor_SelNodeBorder];
-			nodeColors[NodeType_Default][NodeColorType_HeaderBg] =			_default.Colors[ax::NodeEditor::StyleColor_NodeBorder];
-			nodeColors[NodeType_Default][NodeColorType_HeaderActivated] =	_default.Colors[ax::NodeEditor::StyleColor_SelNodeBorder];
-			nodeColors[NodeType_Default][NodeColorType_HeaderHovered] =		_default.Colors[ax::NodeEditor::StyleColor_HovNodeBorder];
+			nodeColors[NodeType_Default][NodeColorType_Bg] = ImVec4(0.125f, 0.125f, 0.125f, 0.784f);//ax::NodeEditor::StyleColor_NodeBg;
+			nodeColors[NodeType_Default][NodeColorType_Border] = ImVec4(1.000f, 1.000f, 1.000f, 0.376f);//ax::NodeEditor::StyleColor_NodeBorder;
+			//nodeColors[NodeType_Default][NodeColorType_BorderHovered] = ImVec4(0.196f, 0.690f, 1.000f, 1.000f);//ax::NodeEditor::StyleColor_HovNodeBorder;
+			//nodeColors[NodeType_Default][NodeColorType_BorderSelected] = ImVec4(1.000f, 0.690f, 0.196f, 1.000f);//ax::NodeEditor::StyleColor_SelNodeBorder;
+			nodeColors[NodeType_Default][NodeColorType_HeaderBg] = ImVec4(1.000f, 1.000f, 1.000f, 0.376f);//ax::NodeEditor::StyleColor_NodeBorder;
+			nodeColors[NodeType_Default][NodeColorType_HeaderActivated] = ImVec4(1.000f, 0.690f, 0.196f, 1.000f);//ax::NodeEditor::StyleColor_SelNodeBorder;
+			nodeColors[NodeType_Default][NodeColorType_HeaderHovered] = ImVec4(0.196f, 0.690f, 1.000f, 1.000f);//ax::NodeEditor::StyleColor_HovNodeBorder;
 			
 			nodeColors[NodeType_Asset][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Asset][NodeColorType_Border] = ImVec4(0.7f, 0.7f, 0.7f, 1.f);
@@ -92,7 +92,7 @@ namespace ECellEngine::Editor::Utility
 			nodeColors[NodeType_Asset][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Asset][NodeColorType_HeaderHovered] =		ImVec4(0.7f, 0.7f, 0.7f, 0.5f);
 
-			nodeColors[NodeType_Parameter][NodeColorType_Bg] = _default.Colors[ax::NodeEditor::StyleColor_NodeBg];
+			nodeColors[NodeType_Parameter][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Parameter][NodeColorType_Border] = ImVec4(1.f, 0.f, 0.f, 1.f);
 			//nodeColors[NodeType_Parameter][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
 			//nodeColors[NodeType_Parameter][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
@@ -100,7 +100,7 @@ namespace ECellEngine::Editor::Utility
 			nodeColors[NodeType_Parameter][NodeColorType_HeaderActivated] = ImVec4(1.f, 0.f, 0.f, 1.f);;
 			nodeColors[NodeType_Parameter][NodeColorType_HeaderHovered] =	ImVec4(1.f, 0.f, 0.f, 1.f);;
 
-			nodeColors[NodeType_Reaction][NodeColorType_Bg] = _default.Colors[ax::NodeEditor::StyleColor_NodeBg];
+			nodeColors[NodeType_Reaction][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Reaction][NodeColorType_Border] = ImVec4(1.f, 0.f, 0.f, 1.f);
 			//nodeColors[NodeType_Reaction][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
 			//nodeColors[NodeType_Reaction][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
@@ -248,7 +248,7 @@ namespace ECellEngine::Editor::Utility
 	};
 #pragma endregion
 
-#pragma region Node Pins Data
+#pragma region Node Pins & Links Data
 	/*!
 	@brief Information about connection between pins.
 	@details Note that connection (aka. link) has its own ID. This is useful
@@ -482,7 +482,15 @@ namespace ECellEngine::Editor::Utility
 
 #pragma region Data Global API
 
-	NodeEditorStyle* GetCurrentStyle();
+	struct ModelNodeBasedViewerContext
+	{
+		std::size_t uniqueId;
+
+		NodeEditorStyle style;
+
+	};
+
+	ModelNodeBasedViewerContext* GetCurrentMNBVContext();
 
 	ImVec4* GetNodeColors(NodeType _nodeType);
 
@@ -571,7 +579,9 @@ namespace ECellEngine::Editor::Utility
 		}
 	}
 
-	void SetCurrentStyle(NodeEditorStyle* _style);
+	NodeEditorStyle* GetMNBVSyle();
+
+	void SetCurrentMNBVContext(ModelNodeBasedViewerContext* _ctxt);
 
 #pragma endregion
 

@@ -28,16 +28,16 @@ namespace ECellEngine::Editor
 	private:
 
 		/*!
-		@brief The index of the Node Editor Context in ModelExplorerWidget::nodeEditorCtxts
+		@brief The index of the NodeEditorContext in ModelExplorerWidget::nodeEditorCtxts
 				that this model viewer is using.
 		*/
-		std::size_t ctxtIndex = 0;
+		std::size_t neCtxtIdx = 0;
 
 		/*!
-		@brief The index of the Node Editor Style in ModelExplorerWidget::nodeEditorStyles
-				that this model viewer is using.
+		@brief The index of the ModelNodeBasedViewerContext in
+				ModelExplorerWidget::mnbvCtxts that this model viewer is using.
 		*/
-		std::size_t styleIndex = 0;
+		std::size_t mnbvCtxIdx = 0;
 
 		/*!
 		@brief The logic to decide what to draw when the user drops (from a drag

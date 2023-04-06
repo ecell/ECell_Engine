@@ -315,23 +315,23 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
 
             if (ImGui::BeginTabItem("Node Editor Custom"))
             {
-                static int currentEditorStyleIdx = 0; // Here we store our selection data as an index.
-                const std::string combo_preview_value = std::to_string(currentEditorStyleIdx + 1);  // Pass in the preview value visible before opening the combo (it could be anything)
-                std::string combo_visualization_value = std::to_string(CountEditorStyles() + 1);
+                static int currentMNBVCtxtIdx = 0; // Here we store our selection data as an index.
+                const std::string combo_preview_value = std::to_string(currentMNBVCtxtIdx + 1);  // Pass in the preview value visible before opening the combo (it could be anything)
+                std::string combo_visualization_value = std::to_string(CountModelNodeBasedViewerContext() + 1);
                 if (ImGui::BeginCombo("Editor Style", combo_preview_value.c_str()))
                 {
-                    for (int n = 0; n < CountEditorStyles(); n++)
+                    for (int n = 0; n < CountModelNodeBasedViewerContext(); n++)
                     {
                         combo_visualization_value = std::to_string(n + 1);
                         if (ImGui::Selectable(combo_visualization_value.c_str()))
                         {
-                            currentEditorStyleIdx = n;
+                            currentMNBVCtxtIdx = n;
                         }
                     }
                     ImGui::EndCombo();
                 }
 
-                ECellEngine::Editor::Utility::SetCurrentStyle(&nodeEditorStyles[currentEditorStyleIdx]);
+                ECellEngine::Editor::Utility::SetCurrentMNBVContext(&mnbvCtxts[currentMNBVCtxtIdx]);
 
                 if (ImGui::CollapsingHeader("Colors"))
                 {

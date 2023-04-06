@@ -84,9 +84,11 @@ namespace ECellEngine::Editor
 		std::vector<ax::NodeEditor::EditorContext*> nodeEditorCtxts;
 
 		/*!
-		@brief The list of node editor styles used in this Model Explorer.
+		@brief The list of model node-based viewer contexts used in this
+				Model Explorer.
+		@see ECellEngine::Editor::Utility::ModelNodeBasedViewerContext
 		*/
-		std::vector<ECellEngine::Editor::Utility::NodeEditorStyle> nodeEditorStyles;
+		std::vector<ECellEngine::Editor::Utility::ModelNodeBasedViewerContext> mnbvCtxts;
 
 		/*!
 		@brief The list of model viewers opened to explore the data added
@@ -147,13 +149,12 @@ namespace ECellEngine::Editor
 		}
 
 		/*!
-		@brief Adds a new ECellEngine::Editor::Utility::NodeEditorStyle() to
+		@brief Adds a new ECellEngine::Editor::Utility::ModelNodeBasedViewerContext() to
 				::nodeEditorCtxts.
 		*/
-		inline void AddNodeEditorStyle(ax::NodeEditor::EditorContext* _ctxt)
+		inline void AddModelNodeBasedViewerContext()
 		{
-			ax::NodeEditor::SetCurrentEditor(_ctxt);
-			nodeEditorStyles.push_back(ECellEngine::Editor::Utility::NodeEditorStyle(ax::NodeEditor::GetStyle()));
+			mnbvCtxts.push_back(ECellEngine::Editor::Utility::ModelNodeBasedViewerContext());
 		}
 
 		/*!
@@ -165,11 +166,11 @@ namespace ECellEngine::Editor
 		}
 
 		/*!
-		@brief Gets the size of ::nodeEditorStyles
+		@brief Gets the size of ::mnbvCtxts
 		*/
-		inline std::size_t CountEditorStyles()
+		inline std::size_t CountModelNodeBasedViewerContext()
 		{
-			return nodeEditorStyles.size();
+			return mnbvCtxts.size();
 		}
 
 		/*!
@@ -184,7 +185,7 @@ namespace ECellEngine::Editor
 		/*!
 		@brief Retrieves the pointer to ::modelHierarchy
 		*/
-		inline ModelHierarchyWidget* GetModelHierarchy() noexcept 
+		inline ModelHierarchyWidget* GetModelHierarchy() noexcept
 		{
 			return &modelHierarchy;
 		}
@@ -211,12 +212,12 @@ namespace ECellEngine::Editor
 
 		/*!
 		@brief Retrieves the pointer to the node editor style data at index
-				@p _idx in ::nodeEditorStyles.
-		@param _idx The index of the style struct to retrieve in ::nodeEditorStyles.
+				@p _idx in ::mnbvCtxts.
+		@param _idx The index of the style struct to retrieve in ::mnbvCtxts.
 		*/
-		inline ECellEngine::Editor::Utility::NodeEditorStyle* GetNodeEditorStyle(std::size_t _idx)
+		inline ECellEngine::Editor::Utility::ModelNodeBasedViewerContext* GetModelNodeBasedViewerContext(std::size_t _idx)
 		{
-			return &nodeEditorStyles[_idx];
+			return &mnbvCtxts[_idx];
 		}
 
 		/*!
@@ -224,7 +225,7 @@ namespace ECellEngine::Editor
 				model explorer.
 		@remarks Needs an access to ::editor which class is forward declared
 				 so we cannot inline this function and it must be defined in
-				 the .cpp. 
+				 the .cpp.
 		*/
 		void SetDataState(std::size_t _simuIdx);
 
@@ -239,6 +240,7 @@ namespace ECellEngine::Editor
 		{
 			if (_idx >= nodeEditorCtxts.size())
 			{
+				ECellEngine::Logging::Logger::GetSingleton().LogError("Tried to destroy a NodeEditorContext at an index beyond the size of current list.");
 				return;
 			}
 
@@ -248,18 +250,19 @@ namespace ECellEngine::Editor
 
 		/*!
 		@brief Erases the node editor styles struct stored a index @p
-				_idx in ::nodeEditorStyles.
+				_idx in ::mnbvCtxts.
 		@param _idx The index of the style struct to erase from
-				::nodeEditorStyles.
-		@remarks Checks that @p _idx is not out of bounds of ::nodeEditorStyles.
+				::mnbvCtxts.
+		@remarks Checks that @p _idx is not out of bounds of ::mnbvCtxts.
 		*/
-		inline void RemoveNodeEditorStyle(std::size_t _idx)
+		inline void RemoveModelNodeBasedViewerContext(std::size_t _idx)
 		{
-			if (_idx >= nodeEditorStyles.size())
+			if (_idx >= mnbvCtxts.size())
 			{
+				ECellEngine::Logging::Logger::GetSingleton().LogError("Tried to destroy a ModelNodeBasedViewerContext at an index beyond the size of current list.");
 				return;
 			}
-			nodeEditorStyles.erase(nodeEditorStyles.begin() + _idx);
+			mnbvCtxts.erase(mnbvCtxts.begin() + _idx);
 		}
 
 		void Awake() override;
