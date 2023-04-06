@@ -304,6 +304,16 @@ enum PinType
 		*/
 		std::size_t cursor = 0;
 
+		std::size_t scrollBarID;
+
+		NodeListBoxStringData() = default;
+
+		NodeListBoxStringData(const std::vector<std::string>* _data,  std::size_t _scrollBarId) :
+			data{_data}, cursor{ _data->size()}, scrollBarID{_scrollBarId}
+		{
+
+		}
+
 		inline bool IsAnItemHovered() noexcept
 		{
 			return (utilityState >> 0) & 1;
@@ -494,17 +504,10 @@ enum PinType
 			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
 
 			//Initialize the list boxes data
-			speciesNLB.data = &data->GetAllSpecies();
-			speciesNLB.cursor = speciesNLB.data->size();
-
-			simpleParametersNLB.data = &data->GetAllSimpleParameter();
-			simpleParametersNLB.cursor = simpleParametersNLB.data->size();
-
-			computedParametersNLB.data = &data->GetAllComputedParameter();
-			computedParametersNLB.cursor = computedParametersNLB.data->size();
-
-			reactionsNLB.data = &data->GetAllReaction();
-			reactionsNLB.cursor = reactionsNLB.data->size();
+			speciesNLB = { &data->GetAllSpecies(), GetMNBVCtxtNextId()};
+			simpleParametersNLB = { &data->GetAllSpecies(), GetMNBVCtxtNextId()};
+			computedParametersNLB = { &data->GetAllSpecies(), GetMNBVCtxtNextId()};
+			reactionsNLB = { &data->GetAllSpecies(), GetMNBVCtxtNextId()};
 		}
 	};
 

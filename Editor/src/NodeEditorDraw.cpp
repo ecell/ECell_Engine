@@ -21,7 +21,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.outputPins[0], GetPinColors(PinType_Species),
         ImVec2(200, 0), false))
     {
-        NodeStringListBox("1", _assetNodeInfo.speciesNLB, GetPinDrawOffset());
+        NodeStringListBox(_assetNodeInfo.speciesNLB, GetPinDrawOffset());
     }
 
     // ----- String List Box and Pin to access the simple parameters of the asset -----
@@ -31,7 +31,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.outputPins[1], GetPinColors(PinType_Species),
         ImVec2(200, 0), false))
     {
-        NodeStringListBox("2", _assetNodeInfo.simpleParametersNLB, GetPinDrawOffset());
+        NodeStringListBox(_assetNodeInfo.simpleParametersNLB, GetPinDrawOffset());
     }
 
     // ----- String List Box and Pin to access the computed parameters of the asset -----
@@ -41,7 +41,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.outputPins[2], GetPinColors(PinType_Species),
         ImVec2(200, 0), false))
     {
-        NodeStringListBox("3", _assetNodeInfo.computedParametersNLB, GetPinDrawOffset());
+        NodeStringListBox(_assetNodeInfo.computedParametersNLB, GetPinDrawOffset());
     }
 
     // ----- String List Box and Pin to access the reactions of the asset -----
@@ -51,7 +51,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.outputPins[3], GetPinColors(PinType_Species),
         ImVec2(200, 0), false))
     {
-        NodeStringListBox("4", _assetNodeInfo.reactionsNLB, GetPinDrawOffset());
+        NodeStringListBox(_assetNodeInfo.reactionsNLB, GetPinDrawOffset());
     }
 
     ax::NodeEditor::EndNode();
@@ -426,7 +426,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const ch
     return edited;
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char* _id, NodeListBoxStringData& _lbsData,
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData& _lbsData,
     const float _xOffset, const float _widgetWidth, const short _itemViewHeight)
 {
     ImGuiStyle& style = ImGui::GetStyle();
@@ -472,7 +472,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(const char*
     ImGui::SameLine();
 
     //The vertical slider to control the list of items
-    ImGui::PushID(_id);
+    ImGui::PushID(_lbsData.scrollBarID);
     PushScrollBarStyle(style);
     ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 40);
     ImGui::VSliderInt("##VertSliderInt", ImVec2(style.ScrollbarSize, _itemViewHeight * ImGui::GetTextLineHeightWithSpacing()),

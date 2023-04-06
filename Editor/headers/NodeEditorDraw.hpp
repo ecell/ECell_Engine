@@ -384,9 +384,6 @@ namespace ECellEngine::Editor::Utility
 		@brief Custom list box to display strings in nodes.
 		@details This intends to reproduce ImGui::ListBox which is not
 				 readily compatible with the node editor.
-		@param _id A char-based label to uniquelly identify the scroll bar
-				of the list box. This is relevant in the case that multiple
-				scroll bars are drawn in the same node.
 		@param _lbsData The data struct contianing the items to draw.
 		@param _xOffset An offset to manage the X offset of the drawing start
 				position of the listbox.
@@ -395,7 +392,7 @@ namespace ECellEngine::Editor::Utility
 		@param _itemViewHeight The number of items to display in the list box.
 		@see It is using ::NodeScrollBar to control the scrolling of the items.
 		*/
-		static void NodeStringListBox(const char* _id, NodeListBoxStringData& _lbsData,
+		static void NodeStringListBox(NodeListBoxStringData& _lbsData,
 			const float _xOffset = 0.f,
 			const float _widgetWidth = 200.f, const short _itemViewHeight = 7);
 
