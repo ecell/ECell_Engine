@@ -53,12 +53,26 @@ namespace ECellEngine::Editor
 		ModelExplorerWidget* rootExplorer;
 
 		/*!
-		@brief The list of asset nodes.
+		@brief The list of asset nodes in this viewer.
 		@details It contains the information used to draw the nodes corresponding
 				 to each asset imported in the current simulation space.
 		*/
 		std::vector<ECellEngine::Editor::Utility::AssetNodeData> assetNodes;
 
+		/*!
+		@brief The list of simple parameter nodes in this viewer.
+		@details It contains the information used to draw the nodes corresponding
+				 to each simple parameter of various assets imported in the current
+				 simulation space.
+		*/
+		std::vector<ECellEngine::Editor::Utility::SimpleParameterNodeData> simpleParameterNodes;
+
+		/*!
+		@brief The list of species nodes in this viewer.
+		@details It contains the information used to draw the nodes corresponding
+				 to each species of various assets imported in the current
+				 simulation space.
+		*/
 		std::vector<ECellEngine::Editor::Utility::SpeciesNodeData> speciesNodes;
 
 		/*!

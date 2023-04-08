@@ -70,20 +70,30 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
             ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(rootExplorer->GetModelHierarchy()->GetAssetName(it->dataIdx),
                 *it);
 
-            if ((*it).speciesNLB.IsAnItemDoubleClicked())
+            if (it->speciesNLB.IsAnItemDoubleClicked())
             {
                 speciesNodes.push_back(ECellEngine::Editor::Utility::SpeciesNodeData(
-                    ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), (*it).speciesNLB.doubleClickedItem,
-                    rootExplorer->GetDataState()->GetSpecies((*it).speciesNLB.data->at((*it).speciesNLB.doubleClickedItem))));
+                    ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->speciesNLB.doubleClickedItem,
+                    rootExplorer->GetDataState()->GetSpecies(it->speciesNLB.data->at(it->speciesNLB.doubleClickedItem))));
 
-                links.push_back(ECellEngine::Editor::Utility::LinkData(ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), (*it).outputPins[0].id, speciesNodes.back().inputPins[1].id));
+                links.push_back(ECellEngine::Editor::Utility::LinkData(ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->outputPins[0].id, speciesNodes.back().inputPins[1].id));
                 links.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[0].id, 1);
             }
 
-            (*it).speciesNLB.ResetUtilityState();
-            (*it).simpleParametersNLB.ResetUtilityState();
-            (*it).computedParametersNLB.ResetUtilityState();
-            (*it).reactionsNLB.ResetUtilityState();
+            if (it->simpleParametersNLB.IsAnItemDoubleClicked())
+            {
+                simpleParameterNodes.push_back(ECellEngine::Editor::Utility::SimpleParameterNodeData(
+                    ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->simpleParametersNLB.doubleClickedItem,
+                    rootExplorer->GetDataState()->GetSimpleParameter(it->simpleParametersNLB.data->at(it->simpleParametersNLB.doubleClickedItem))));
+
+                links.push_back(ECellEngine::Editor::Utility::LinkData(ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->outputPins[1].id, simpleParameterNodes.back().inputPins[1].id));
+                links.back().OverrideEndFallbackPin(simpleParameterNodes.back().inputPins[0].id, 1);
+            }
+
+            it->speciesNLB.ResetUtilityState();
+            it->simpleParametersNLB.ResetUtilityState();
+            it->computedParametersNLB.ResetUtilityState();
+            it->reactionsNLB.ResetUtilityState();
         }
 
         for (std::vector<ECellEngine::Editor::Utility::SolverNodeData>::iterator it = solverNodes.begin(); it != solverNodes.end(); it++)
@@ -95,6 +105,11 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         for (std::vector<ECellEngine::Editor::Utility::SpeciesNodeData>::iterator it = speciesNodes.begin(); it != speciesNodes.end(); it++)
         {
             ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode((*it).data->name.c_str(), *it);
+        }
+
+        for (std::vector<ECellEngine::Editor::Utility::SimpleParameterNodeData>::iterator it = simpleParameterNodes.begin(); it != simpleParameterNodes.end(); it++)
+        {
+            ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode((*it).data->name.c_str(), *it);
         }
 
         // Submit Links

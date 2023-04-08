@@ -102,6 +102,8 @@ namespace ECellEngine::Editor::Utility
 		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo);
 
 		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo);
+
+		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
 #pragma endregion
 
 #pragma region Node Pins

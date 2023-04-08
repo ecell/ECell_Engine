@@ -93,12 +93,12 @@ enum PinType
 			nodeColors[NodeType_Asset][NodeColorType_HeaderHovered] =		ImVec4(0.7f, 0.7f, 0.7f, 0.5f);
 
 			nodeColors[NodeType_Parameter][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Parameter][NodeColorType_Border] = ImVec4(1.f, 0.f, 0.f, 1.f);
+			nodeColors[NodeType_Parameter][NodeColorType_Border] = ImVec4(0.05f, 0.463f, 0.297f, 1.f);
 			//nodeColors[NodeType_Parameter][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
 			//nodeColors[NodeType_Parameter][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Parameter][NodeColorType_HeaderBg] = ImVec4(1.f, 0.f, 0.f, 1.f);;
-			nodeColors[NodeType_Parameter][NodeColorType_HeaderActivated] = ImVec4(1.f, 0.f, 0.f, 1.f);;
-			nodeColors[NodeType_Parameter][NodeColorType_HeaderHovered] =	ImVec4(1.f, 0.f, 0.f, 1.f);;
+			nodeColors[NodeType_Parameter][NodeColorType_HeaderBg] = ImVec4(0.05f, 0.463f, 0.297f, 0.25f);;
+			nodeColors[NodeType_Parameter][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);;
+			nodeColors[NodeType_Parameter][NodeColorType_HeaderHovered] =	ImVec4(0.05f, 0.463f, 0.297f, 0.5f);;
 
 			nodeColors[NodeType_Reaction][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Reaction][NodeColorType_Border] = ImVec4(1.f, 0.f, 0.f, 1.f);
@@ -274,7 +274,7 @@ enum PinType
 	*/
 	struct NodeListBoxStringData
 	{
-		const std::vector<std::string>* data;
+		const std::vector<std::string>* data = nullptr;
 		/*!
 		@brief 1-byte char to encode states of the widget
 		@details Bit 0 encodes the hovering of an item this frame.
@@ -304,7 +304,7 @@ enum PinType
 		*/
 		std::size_t cursor = 0;
 
-		std::size_t scrollBarID;
+		std::size_t scrollBarID = 0;
 
 		NodeListBoxStringData() = default;
 
@@ -484,30 +484,96 @@ enum PinType
 		{
 			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
 
+			//Solver
 			inputPin = NodePinData(GetMNBVCtxtNextId());
 
-			outputPins[0] = NodePinData(GetMNBVCtxtNextId());
-			outputPins[1] = NodePinData(GetMNBVCtxtNextId());
-			outputPins[2] = NodePinData(GetMNBVCtxtNextId());
-			outputPins[3] = NodePinData(GetMNBVCtxtNextId());
-
-			//Id to uniquely identify the collapsing header for the SPECIES of each asset node
+			//Species Collapsing header
 			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
+			outputPins[0] = NodePinData(GetMNBVCtxtNextId());
 
-			//Id to uniquely identify the collapsing header for the SIMPLE PARAMETERS of each asset node
+			//Simple Parameters Collapsing header
 			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
+			outputPins[1] = NodePinData(GetMNBVCtxtNextId());
 
-			//Id to uniquely identify the collapsing header for the COMPUTED PARAMETERS of each asset node
+			//Computed Parameters Collapsing header
 			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
+			outputPins[2] = NodePinData(GetMNBVCtxtNextId());
 
-			//Id to uniquely identify the collapsing header for the REACTIONS of each asset node
+			//Reactions Collapsing header
 			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
+			outputPins[3] = NodePinData(GetMNBVCtxtNextId());
 
 			//Initialize the list boxes data
 			speciesNLB = { &data->GetAllSpecies(), GetMNBVCtxtNextId()};
-			simpleParametersNLB = { &data->GetAllSpecies(), GetMNBVCtxtNextId()};
-			computedParametersNLB = { &data->GetAllSpecies(), GetMNBVCtxtNextId()};
-			reactionsNLB = { &data->GetAllSpecies(), GetMNBVCtxtNextId()};
+			simpleParametersNLB = { &data->GetAllSimpleParameter(), GetMNBVCtxtNextId()};
+			computedParametersNLB = { &data->GetAllComputedParameter(), GetMNBVCtxtNextId()};
+			reactionsNLB = { &data->GetAllReaction(), GetMNBVCtxtNextId()};
+		}
+	};
+
+	struct SimpleParameterNodeData
+	{
+		/*!
+		@brief The ID of this node to in the Node Editor.
+		*/
+		ax::NodeEditor::NodeId id;
+
+		/*!
+		@brief The index of the data in its origin vector/array.
+		@details Used to retrieve all the information to be displayed within
+				 the node (e.g. name in one of the relevant vectors in
+				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
+				 solver data in ECellEngine::Core::Simulation).
+		*/
+		std::size_t dataIdx;
+
+		ECellEngine::Data::SimpleParameter* data;
+
+		NodePinData inputPins[6];
+		NodePinData outputPins[5];
+
+		unsigned char utilityState = 0;
+
+		std::size_t collapsingHeadersIds[4];
+
+		NodeListBoxStringData nslbData[2];
+
+		/*!
+		@remarks @p _nodeId is incremented immediately after use.
+		*/
+		SimpleParameterNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::SimpleParameter* _data) :
+			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		{
+			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
+
+			//ModelLinks Collapsing header
+			inputPins[0] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[0] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
+
+			//Asset
+			inputPins[1] = NodePinData(GetMNBVCtxtNextId());
+
+			//Computed Parameters section
+			inputPins[2] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[1] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
+			//lbsData[0] = { /*list of computed parameters where this one appears*/, GetMNBVCtxtNextId()}
+
+			//Kinetic Laws section
+			inputPins[3] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[2] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
+			//lbsData[1] = { /*list of kinetic laws where this one appears*/, GetMNBVCtxtNextId()}
+			
+			//Data Fields collapsing header
+			inputPins[4] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[3] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
+			
+			//Value Float field
+			inputPins[5] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[4] = NodePinData(GetMNBVCtxtNextId());
 		}
 	};
 
