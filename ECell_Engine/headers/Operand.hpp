@@ -8,7 +8,6 @@ namespace ECellEngine::Maths
     {
         const std::string name;
 
-    public:
         Operand(std::string _name) :
             name{_name}
         {
