@@ -66,6 +66,7 @@ enum PinType
 
 	struct NodeEditorStyle
 	{
+		float nodeCenterAreaMinWidth;
 		float pinWidth;
 
 
@@ -75,6 +76,7 @@ enum PinType
 		NodeEditorStyle()
 		{
 			pinWidth = 8.f;
+			nodeCenterAreaMinWidth = 200.f;
 
 			nodeColors[NodeType_Default][NodeColorType_Bg] = ImVec4(0.125f, 0.125f, 0.125f, 0.784f);//ax::NodeEditor::StyleColor_NodeBg;
 			nodeColors[NodeType_Default][NodeColorType_Border] = ImVec4(1.000f, 1.000f, 1.000f, 0.376f);//ax::NodeEditor::StyleColor_NodeBorder;

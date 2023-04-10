@@ -249,6 +249,11 @@ namespace ECellEngine::Editor::Utility
 			return 8.f + ImGui::GetStyle().ItemSpacing.x;
 		}
 
+		inline static float GetNodeCenterAreaWidth(const float _headerWidth)
+		{
+			return std::max(GetMNBVSyle()->nodeCenterAreaMinWidth, _headerWidth - 2 * GetMNBVSyle()->pinWidth - 2 * ImGui::GetStyle().ItemSpacing.x);
+		}
+
 		/*!
 		@brief To start a new column after one has already been opened.
 		@details Effectively closes the group started in ::BeginColumn and
