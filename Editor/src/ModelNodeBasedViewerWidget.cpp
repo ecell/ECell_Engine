@@ -103,10 +103,35 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
                 links.back().OverrideEndFallbackPin(computedParameterNodes.back().inputPins[0].id, 1);
             }
 
+            //If double click on computed parameter selectable in the list box, spawn the corresponding computed parameter node
+            if (it->reactionsNLB.IsAnItemDoubleClicked())
+            {
+                reactionNodes.emplace_back(ECellEngine::Editor::Utility::ReactionNodeData(
+                    ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->reactionsNLB.doubleClickedItem,
+                    rootExplorer->GetDataState()->GetReaction(it->reactionsNLB.data->at(it->reactionsNLB.doubleClickedItem))));
+
+                links.emplace_back(ECellEngine::Editor::Utility::LinkData(ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->outputPins[2].id, reactionNodes.back().inputPins[1].id));
+                links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[0].id, 1);
+            }
+
             it->speciesNLB.ResetUtilityState();
             it->simpleParametersNLB.ResetUtilityState();
             it->computedParametersNLB.ResetUtilityState();
             it->reactionsNLB.ResetUtilityState();
+        }
+        for (std::vector<ECellEngine::Editor::Utility::ComputedParameterNodeData>::iterator it = computedParameterNodes.begin(); it != computedParameterNodes.end(); it++)
+        {
+            ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode((*it).data->name.c_str(), *it);
+        }
+
+        for (std::vector<ECellEngine::Editor::Utility::ReactionNodeData>::iterator it = reactionNodes.begin(); it != reactionNodes.end(); it++)
+        {
+            ECellEngine::Editor::Utility::NodeEditorDraw::ReactionNode((*it).data->name.c_str(), *it);
+        }
+
+        for (std::vector<ECellEngine::Editor::Utility::SimpleParameterNodeData>::iterator it = simpleParameterNodes.begin(); it != simpleParameterNodes.end(); it++)
+        {
+            ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode((*it).data->name.c_str(), *it);
         }
 
         for (std::vector<ECellEngine::Editor::Utility::SolverNodeData>::iterator it = solverNodes.begin(); it != solverNodes.end(); it++)
@@ -118,16 +143,6 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         for (std::vector<ECellEngine::Editor::Utility::SpeciesNodeData>::iterator it = speciesNodes.begin(); it != speciesNodes.end(); it++)
         {
             ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode((*it).data->name.c_str(), *it);
-        }
-
-        for (std::vector<ECellEngine::Editor::Utility::ComputedParameterNodeData>::iterator it = computedParameterNodes.begin(); it != computedParameterNodes.end(); it++)
-        {
-            ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode((*it).data->name.c_str(), *it);
-        }
-
-        for (std::vector<ECellEngine::Editor::Utility::SimpleParameterNodeData>::iterator it = simpleParameterNodes.begin(); it != simpleParameterNodes.end(); it++)
-        {
-            ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode((*it).data->name.c_str(), *it);
         }
 
         // Submit Links

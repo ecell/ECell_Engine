@@ -90,6 +90,8 @@ namespace ECellEngine::Editor::Utility
 
 		static void ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo);
 		
+		static void ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo);
+
 		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
 		/*!
 		@brief Draws a node to display and access the content of a

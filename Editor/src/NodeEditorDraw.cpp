@@ -150,6 +150,94 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(const c
     PopNodeStyle();
 }
 
+void ECellEngine::Editor::Utility::NodeEditorDraw::ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo)
+{
+    PushNodeStyle(GetNodeColors(NodeType_Reaction));
+    ax::NodeEditor::BeginNode(_reactionNodeInfo.id);
+
+    const float headerWidth = NodeHeader("Reaction:", _name, GetNodeColors(NodeType_Reaction));
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+    const float startX = ImGui::GetCursorPosX();
+
+    if (NodeCollapsingHeader_InOut("Model Links", _reactionNodeInfo.collapsingHeadersIds[0],
+        _reactionNodeInfo.utilityState, 0,
+        startX, headerWidth,
+        _reactionNodeInfo.inputPins[0], _reactionNodeInfo.outputPins[0], GetPinColors(PinType_Default),
+        ImVec2(itemsWidth, 0.f)))
+    {
+
+        NodeText_In("Asset", startX, _reactionNodeInfo.inputPins[1], GetPinColors(PinType_Asset));
+
+        if (NodeCollapsingHeader_InOut("Reactants", _reactionNodeInfo.collapsingHeadersIds[1],
+            _reactionNodeInfo.utilityState, 1,
+            startX, headerWidth,
+            _reactionNodeInfo.inputPins[2], _reactionNodeInfo.outputPins[1], GetPinColors(PinType_Species),
+            ImVec2(itemsWidth, 0.f), false))
+        {
+            NodeStringListBox(_reactionNodeInfo.nslbData[0], startX, headerWidth, itemsWidth);
+        }
+
+        if (NodeCollapsingHeader_InOut("Products", _reactionNodeInfo.collapsingHeadersIds[2],
+            _reactionNodeInfo.utilityState, 2,
+            startX, headerWidth,
+            _reactionNodeInfo.inputPins[3], _reactionNodeInfo.outputPins[2], GetPinColors(PinType_Species),
+            ImVec2(itemsWidth, 0.f), false))
+        {
+            NodeStringListBox(_reactionNodeInfo.nslbData[1], startX, headerWidth, itemsWidth);
+        }
+    }
+
+    NodeHorizontalSeparator(headerWidth);
+
+    if (NodeCollapsingHeader_InOut("Kinetic Law", _reactionNodeInfo.collapsingHeadersIds[3],
+        _reactionNodeInfo.utilityState, 3,
+        startX, headerWidth,
+        _reactionNodeInfo.inputPins[4], _reactionNodeInfo.outputPins[3], GetPinColors(PinType_Default),
+        ImVec2(itemsWidth, 0)))
+    {
+
+        if (NodeCollapsingHeader_InOut("Operands", _reactionNodeInfo.collapsingHeadersIds[4],
+            _reactionNodeInfo.utilityState, 4,
+            startX, headerWidth,
+            _reactionNodeInfo.inputPins[5], _reactionNodeInfo.outputPins[4], GetPinColors(PinType_Default),
+            ImVec2(itemsWidth, 0.f)))
+        {
+            if (_reactionNodeInfo.nslbData[2].data->size())
+            {
+                const float spTextWidth = ImGui::CalcTextSize("Species").x;
+                NodeText_InOut("Species", spTextWidth, startX, headerWidth,
+                    _reactionNodeInfo.inputPins[6], _reactionNodeInfo.outputPins[5], GetPinColors(PinType_Species));
+                NodeStringListBox(_reactionNodeInfo.nslbData[2], startX, headerWidth, itemsWidth);
+            }
+
+            if (_reactionNodeInfo.nslbData[3].data->size())
+            {
+                const float sparamTextWidth = ImGui::CalcTextSize("Simple Parameters").x;
+                NodeText_InOut("Simple Parameters", sparamTextWidth, startX, headerWidth,
+                    _reactionNodeInfo.inputPins[7], _reactionNodeInfo.outputPins[6], GetPinColors(PinType_Parameter));
+                NodeStringListBox(_reactionNodeInfo.nslbData[3], startX, headerWidth, itemsWidth);
+            }
+
+            if (_reactionNodeInfo.nslbData[4].data->size())
+            {
+                const float cparaTextWidth = ImGui::CalcTextSize("Computed Parameters").x;
+                NodeText_InOut("Computed Parameters", cparaTextWidth, startX, headerWidth,
+                    _reactionNodeInfo.inputPins[8], _reactionNodeInfo.outputPins[7], GetPinColors(PinType_Parameter));
+                NodeStringListBox(_reactionNodeInfo.nslbData[4], startX, headerWidth, itemsWidth);
+            }
+        }
+
+        float value = _reactionNodeInfo.data->GetKineticLawValue();
+        NodeInputFloat_InOut("Value", _reactionNodeInfo.id.Get(), &value,
+            itemsWidth, startX, headerWidth,
+            _reactionNodeInfo.inputPins[9], _reactionNodeInfo.outputPins[8], GetPinColors(PinType_Default),
+            ImGuiInputTextFlags_ReadOnly);
+    }
+
+    ax::NodeEditor::EndNode();
+    PopNodeStyle();
+}
+
 void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo)
 {
     PushNodeStyle(GetNodeColors(NodeType_Parameter));

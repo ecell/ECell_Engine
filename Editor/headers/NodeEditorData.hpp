@@ -103,12 +103,12 @@ enum PinType
 			nodeColors[NodeType_Parameter][NodeColorType_HeaderHovered] =	ImVec4(0.05f, 0.463f, 0.297f, 0.5f);;
 
 			nodeColors[NodeType_Reaction][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Reaction][NodeColorType_Border] = ImVec4(1.f, 0.f, 0.f, 1.f);
+			nodeColors[NodeType_Reaction][NodeColorType_Border] = ImVec4(0.141f, 0.391f, 0.485f, 1.f);
 			//nodeColors[NodeType_Reaction][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
 			//nodeColors[NodeType_Reaction][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Reaction][NodeColorType_HeaderBg] = ImVec4(1.f, 0.f, 0.f, 1.f);
+			nodeColors[NodeType_Reaction][NodeColorType_HeaderBg] = ImVec4(0.141f, 0.391f, 0.485f, 1.f);
 			nodeColors[NodeType_Reaction][NodeColorType_HeaderActivated] = ImVec4(1.f, 0.f, 0.f, 1.f);
-			nodeColors[NodeType_Reaction][NodeColorType_HeaderHovered] =	ImVec4(1.f, 0.f, 0.f, 1.f);
+			nodeColors[NodeType_Reaction][NodeColorType_HeaderHovered] =	ImVec4(0.141f, 0.391f, 0.485f, 1.f);
 
 			nodeColors[NodeType_Solver][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Solver][NodeColorType_Border] = ImVec4(1.f, 0.365f, 0.f, 1.f);
@@ -643,6 +643,141 @@ enum PinType
 			
 			//Value Float string of the computation of the formula
 			//The user cannot directly change the value of the result
+			inputPins[9] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[8] = NodePinData(GetMNBVCtxtNextId());
+		}
+	};
+
+	struct ReactionNodeData
+	{
+		/*!
+		@brief The ID of this node to in the Node Editor.
+		*/
+		ax::NodeEditor::NodeId id;
+
+		/*!
+		@brief The index of the data in its origin vector/array.
+		@details Used to retrieve all the information to be displayed within
+				 the node (e.g. name in one of the relevant vectors in
+				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
+				 solver data in ECellEngine::Core::Simulation).
+		*/
+		std::size_t dataIdx;
+
+		ECellEngine::Data::Reaction* data;
+
+		NodePinData inputPins[10];
+		NodePinData outputPins[9];
+
+		unsigned char utilityState = 0;
+
+		std::size_t collapsingHeadersIds[5];
+
+		/*!
+		@biref The array of of list box data that are potentially displayed in
+				this node.
+		@details At index 0 we find the list box with the links to the reactants
+				 species of this reaction.
+
+				 At index 1 we find the list box with the links to the products
+				 species of this reaction.
+
+				 At index 2 we find the list box with the links to species that
+				 are involved (as quantities) in the computation of the kinetic
+				 law.
+
+				 At index 3 we find the list box with the links to simple
+				 parameters that are involved (as values) in the computation
+				 of the kinetic law.
+
+				 At index 4 we find the list box with the links to computed
+				 parameters that are involved (as values) in the computation
+				 of the kinetic law.
+		*/
+		NodeListBoxStringData nslbData[5];
+		std::vector<std::string> speciesOperands;
+		std::vector<std::string> simpleParametersOperands;
+		std::vector<std::string> computedParametersOperands;
+
+		ReactionNodeData(const ReactionNodeData& _cpnd) :
+			id{ _cpnd.id }, dataIdx{ _cpnd.dataIdx }, data{ _cpnd.data },
+			inputPins{ _cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
+					  _cpnd.inputPins[3] , _cpnd.inputPins[4] , _cpnd.inputPins[5],
+					  _cpnd.inputPins[6] , _cpnd.inputPins[7] , _cpnd.inputPins[8], _cpnd.inputPins[9] },
+			outputPins{ _cpnd.outputPins[0], _cpnd.outputPins[1] , _cpnd.outputPins[2] ,
+					  _cpnd.outputPins[3] , _cpnd.outputPins[4] , _cpnd.outputPins[5],
+					  _cpnd.outputPins[6] , _cpnd.outputPins[7] , _cpnd.outputPins[8] },
+			utilityState{ _cpnd.utilityState },
+			collapsingHeadersIds{ _cpnd.collapsingHeadersIds[0], _cpnd.collapsingHeadersIds[1] , _cpnd.collapsingHeadersIds[2] ,
+					  _cpnd.collapsingHeadersIds[3] , _cpnd.collapsingHeadersIds[4] },
+			nslbData{ _cpnd.nslbData[0], _cpnd.nslbData[1] , _cpnd.nslbData[2] ,
+					  _cpnd.nslbData[3] , _cpnd.nslbData[4] },
+			speciesOperands{ _cpnd.speciesOperands },
+			simpleParametersOperands{ _cpnd.simpleParametersOperands },
+			computedParametersOperands{ _cpnd.computedParametersOperands }
+		{
+			nslbData[2].data = &speciesOperands;
+			nslbData[3].data = &simpleParametersOperands;
+			nslbData[4].data = &computedParametersOperands;
+		}
+
+		/*!
+		@remarks @p _nodeId is incremented immediately after use.
+		*/
+		ReactionNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::Reaction* _data) :
+			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		{
+			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
+
+			//ModelLinks Collapsing header
+			inputPins[0] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[0] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
+
+			//Asset
+			inputPins[1] = NodePinData(GetMNBVCtxtNextId());
+
+			//Reactants section
+			inputPins[2] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[1] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
+			nslbData[0] = { &_data->GetReactants() , GetMNBVCtxtNextId() };
+
+			//Products section
+			inputPins[3] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[2] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
+			nslbData[1] = { &data->GetProducts(), GetMNBVCtxtNextId() };
+
+			//Kinetic Law collapsing header
+			inputPins[4] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[3] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
+
+			//Kinetic Law Operands collapsing header
+			inputPins[5] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[4] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[4] = GetMNBVCtxtNextId();
+
+			//Node String List Box for Species Operands, from Kinetic Law
+			inputPins[6] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[5] = NodePinData(GetMNBVCtxtNextId());
+			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);
+			nslbData[2] = { &speciesOperands, GetMNBVCtxtNextId() };
+
+			//Node String List Box for Simple Parameter Operands, from Kinetic Law
+			inputPins[7] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[6] = NodePinData(GetMNBVCtxtNextId());
+			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::SimpleParameter>(simpleParametersOperands);
+			nslbData[3] = { &simpleParametersOperands, GetMNBVCtxtNextId() };
+
+			//Node String List Box for Computed Parameter Operands, from Kinetic Law
+			inputPins[8] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[7] = NodePinData(GetMNBVCtxtNextId());
+			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::ComputedParameter>(computedParametersOperands);
+			nslbData[4] = { &computedParametersOperands, GetMNBVCtxtNextId() };
+
+			//Kinetic Law Value Float field (must be Read Only)
 			inputPins[9] = NodePinData(GetMNBVCtxtNextId());
 			outputPins[8] = NodePinData(GetMNBVCtxtNextId());
 		}

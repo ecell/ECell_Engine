@@ -68,6 +68,14 @@ namespace ECellEngine::Editor
 		std::vector<ECellEngine::Editor::Utility::ComputedParameterNodeData> computedParameterNodes;
 		
 		/*!
+		@brief The list of reaction nodes in this viewer.
+		@details It contains the information used to draw the nodes corresponding
+				 to each reaction of various assets imported in the current
+				 simulation space.
+		*/
+		std::vector<ECellEngine::Editor::Utility::ReactionNodeData> reactionNodes;
+
+		/*!
 		@brief The list of simple parameter nodes in this viewer.
 		@details It contains the information used to draw the nodes corresponding
 				 to each simple parameter of various assets imported in the current
