@@ -21,7 +21,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.outputPins[0], GetPinColors(PinType_Species),
         ImVec2(200, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.speciesNLB, GetPinDrawOffset());
+        NodeStringListBox(_assetNodeInfo.speciesNLB, startX, headerWidth);
     }
 
     // ----- String List Box and Pin to access the simple parameters of the asset -----
@@ -31,7 +31,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.outputPins[1], GetPinColors(PinType_Parameter),
         ImVec2(200, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.simpleParametersNLB, GetPinDrawOffset());
+        NodeStringListBox(_assetNodeInfo.simpleParametersNLB, startX, headerWidth);
     }
 
     // ----- String List Box and Pin to access the computed parameters of the asset -----
@@ -41,7 +41,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.outputPins[2], GetPinColors(PinType_Parameter),
         ImVec2(200, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.computedParametersNLB, GetPinDrawOffset());
+        NodeStringListBox(_assetNodeInfo.computedParametersNLB, startX, headerWidth);
     }
 
     // ----- String List Box and Pin to access the reactions of the asset -----
@@ -51,7 +51,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.outputPins[3], GetPinColors(PinType_Reaction),
         ImVec2(200, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.reactionsNLB, GetPinDrawOffset());
+        NodeStringListBox(_assetNodeInfo.reactionsNLB, startX, headerWidth);
     }
 
     ax::NodeEditor::EndNode();
@@ -484,33 +484,52 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const ch
     return edited;
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData& _lbsData,
-    const float _xOffset, const float _widgetWidth, const short _itemViewHeight)
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData& _nslbData,
+    const float _startX, const float _drawLength,
+    const float _widgetWidth, const unsigned short _itemViewHeight)
 {
     ImGuiStyle& style = ImGui::GetStyle();
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + _xOffset);
+    AlignToCenter(_startX, _drawLength, _widgetWidth);
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f,0.f));
+
     ImGui::BeginGroup();
+    const unsigned short nbItems = _nslbData.data->size();
+    const unsigned short actualViewHeight = std::min(_itemViewHeight, nbItems);
+    const bool hasScrollBar = nbItems > _itemViewHeight;
+    
+    const ImVec2 startPos = ImGui::GetCursorPos();
+
+    //Delimiter
+    const ImVec4 NodeFramePadding = ImVec4(4,4,2,2);
+    ImRect bb(
+        startPos.x,
+        startPos.y,
+        startPos.x + _widgetWidth,
+        startPos.y + actualViewHeight * ImGui::GetTextLineHeightWithSpacing() + NodeFramePadding.z + NodeFramePadding.w);//includes top and bottom padding
+    ImGui::GetWindowDrawList()->AddRect(bb.Min, bb.Max, ImColor(ImGui::GetStyleColorVec4(ImGuiCol_TableBorderStrong)));
 
     //The list of items to display
     ImGui::BeginGroup();
-    const float itemSize = _widgetWidth - style.ScrollbarSize - style.ItemSpacing.x;
+    const float itemWidth = _widgetWidth - hasScrollBar * style.ScrollbarSize - NodeFramePadding.x - NodeFramePadding.y;//includes left and right
     const char* itemString;
-    for (int n = _lbsData.cursor; n > _lbsData.cursor - _itemViewHeight; n--)
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + NodeFramePadding.z);//Top Padding
+    for (int n = _nslbData.cursor; n > _nslbData.cursor - actualViewHeight; n--)
     {
-        itemString = _lbsData.data->at(_lbsData.data->size() - n).c_str();
-        if (ImGui::Selectable(itemString, false, ImGuiSelectableFlags_None, ImVec2(itemSize, 0)))
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + NodeFramePadding.x);//Left Padding
+
+        itemString = _nslbData.data->at(nbItems - n).c_str();
+        if (ImGui::Selectable(itemString, false, ImGuiSelectableFlags_None, ImVec2(itemWidth, 0)))
         {
-            _lbsData.selectedItem = _lbsData.data->size() - n;
-            _lbsData.SetItemClicked();
+            _nslbData.selectedItem = nbItems - n;
+            _nslbData.SetItemClicked();
         }
 
         if (ImGui::IsItemHovered())
         {
-            _lbsData.hoveredItem = _lbsData.data->size() - n;
-            _lbsData.SetItemHovered();
+            _nslbData.hoveredItem = nbItems - n;
+            _nslbData.SetItemHovered();
 
-            if (ImGui::CalcTextSize(itemString).x > itemSize)
+            if (ImGui::CalcTextSize(itemString).x > itemWidth)
             {
                 ax::NodeEditor::Suspend();
                 ImGui::SetTooltip("%s", itemString);
@@ -519,34 +538,43 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
 
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
             {
-                _lbsData.doubleClickedItem = _lbsData.data->size() - n;
-                _lbsData.SetItemDoubleClicked();
+                _nslbData.doubleClickedItem = nbItems - n;
+                _nslbData.SetItemDoubleClicked();
             }
         }
-
     }
     ImGui::EndGroup();
 
     ImGui::SameLine();
 
     //The vertical slider to control the list of items
-    ImGui::PushID(_lbsData.scrollBarID);
-    PushScrollBarStyle(style);
-    ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 40);
-    ImGui::VSliderInt("##VertSliderInt", ImVec2(style.ScrollbarSize, _itemViewHeight * ImGui::GetTextLineHeightWithSpacing()),
-                        (int*)&_lbsData.cursor, _itemViewHeight, _lbsData.data->size(), "", ImGuiSliderFlags_None);
-    if (ImGui::IsItemHovered())
+    //We draw it only if there are more items than the _itemViewHeight
+    if (hasScrollBar)
     {
-        _lbsData.SetScrollBarHovered();
-    }
-    if (ImGui::IsItemActive())
-    {
-        _lbsData.SetScrollBarActivated();
-    }
-    ImGui::PopStyleVar(2); //poping ImGuiStyleVar_GrabMinSize & ImGuiStyleVar_ItemSpacing
-    PopScrollBarStyle(); //poping after PushScrollBarStyle(style);
-    ImGui::PopID();
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + NodeFramePadding.z);//TopPadding
 
+        //No need to do the right padding because it's included in the
+        //reduced size of the selectable items in the list box.
+
+        ImGui::PushID(_nslbData.scrollBarID);
+        PushScrollBarStyle(style);
+        ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 40);
+        ImGui::VSliderInt("##VertSliderInt", ImVec2(style.ScrollbarSize, actualViewHeight * ImGui::GetTextLineHeightWithSpacing()),
+            (int*)&_nslbData.cursor, actualViewHeight, nbItems, "", ImGuiSliderFlags_None);
+        if (ImGui::IsItemHovered())
+        {
+            _nslbData.SetScrollBarHovered();
+        }
+        if (ImGui::IsItemActive())
+        {
+            _nslbData.SetScrollBarActivated();
+        }
+        ImGui::PopStyleVar(); //poping ImGuiStyleVar_GrabMinSize
+        PopScrollBarStyle(); //poping after PushScrollBarStyle(style);
+        ImGui::PopID();
+    }
+
+    ImGui::PopStyleVar(); //poping ImGuiStyleVar_ItemSpacing
     ImGui::EndGroup();
 }
 

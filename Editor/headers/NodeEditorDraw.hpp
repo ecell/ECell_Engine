@@ -388,17 +388,19 @@ namespace ECellEngine::Editor::Utility
 		@brief Custom list box to display strings in nodes.
 		@details This intends to reproduce ImGui::ListBox which is not
 				 readily compatible with the node editor.
-		@param _lbsData The data struct contianing the items to draw.
-		@param _xOffset An offset to manage the X offset of the drawing start
-				position of the listbox.
+		@param _nslbData The data struct containing the items to draw.
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The width of the space where the list box is drawn.
+				Used for alignment calculations.
 		@param _widgetWidth The width of the whole list box (scroll bar
 				included) in pixels.
 		@param _itemViewHeight The number of items to display in the list box.
 		@see It is using ::NodeScrollBar to control the scrolling of the items.
 		*/
-		static void NodeStringListBox(NodeListBoxStringData& _lbsData,
-			const float _xOffset = 0.f,
-			const float _widgetWidth = 200.f, const short _itemViewHeight = 7);
+		static void NodeStringListBox(NodeListBoxStringData& _nslbData,
+			const float _startX, const float _drawLength, const float _widgetWidth = 200.f,
+			const unsigned short _itemViewHeight = 7);
 
 		/*!
 		@brief Draws a Text label with an input pin.
