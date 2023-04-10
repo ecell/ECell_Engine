@@ -107,7 +107,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(const c
         ImVec2(itemsWidth, 0)))
     {
 
-        if (NodeCollapsingHeader_InOut("Operands", _parameterNodeInfo.collapsingHeadersIds[1],
+        if (NodeCollapsingHeader_InOut("Operands", _parameterNodeInfo.collapsingHeadersIds[4],
             _parameterNodeInfo.utilityState, 4,
             startX, headerWidth,
             _parameterNodeInfo.inputPins[5], _parameterNodeInfo.outputPins[4], GetPinColors(PinType_Default),
