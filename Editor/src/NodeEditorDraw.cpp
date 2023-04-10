@@ -122,7 +122,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const cha
         float value = _parameterNodeInfo.data->Get();
         if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &value,
             inputFieldWidth, startX, headerWidth,
-            _parameterNodeInfo.inputPins[5], _parameterNodeInfo.outputPins[4], GetPinColors(PinType_Default)))
+            _parameterNodeInfo.inputPins[5], _parameterNodeInfo.outputPins[4], GetPinColors(PinType_Default),
+            ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _parameterNodeInfo.data->Set(value);
         }
@@ -196,7 +197,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
         float value = _speciesNodeInfo.data->Get();
         if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &value,
             inputFieldWidth, startX, headerSize,
-            _speciesNodeInfo.inputPins[7], _speciesNodeInfo.outputPins[6], GetPinColors(PinType_Default)))
+            _speciesNodeInfo.inputPins[7], _speciesNodeInfo.outputPins[6], GetPinColors(PinType_Default),
+            ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _speciesNodeInfo.data->Set(value);
         }
@@ -470,7 +472,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const
 
 bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* valueBuffer,
     const float _inputFieldWidth, const float _startX, const float _drawLength,
-    const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[])
+    const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
+    const ImGuiInputTextFlags _flags)
 {
     ImGui::SetCursorPosX(_startX);
 
@@ -480,9 +483,9 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const ch
     ImGui::AlignTextToFramePadding(); AlignToCenter(_startX, _drawLength, _inputFieldWidth);
     
     ImGui::Text(_label); ImGui::SameLine();
-    ImGui::SetNextItemWidth(100.f);
-    bool edited = ImGui::InputFloat("##quantity", valueBuffer, 0.f, 0.f, "%.3f", ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CharsScientific);
-    if (ImGui::IsItemActive())
+    ImGui::SetNextItemWidth(_inputFieldWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x);
+    bool edited = ImGui::InputFloat("##quantity", valueBuffer, 0.f, 0.f, "%.3f", _flags);
+    if (ImGui::IsItemActive() && (_flags & ImGuiInputTextFlags_EnterReturnsTrue))
     {
         ax::NodeEditor::Suspend();
         ImGui::SetTooltip("Press ENTER to confirm.");

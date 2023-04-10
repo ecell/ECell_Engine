@@ -376,10 +376,12 @@ namespace ECellEngine::Editor::Utility
 		@param _inputPin The pin data used for the input pin to draw.
 		@param _outputPin The pin data used for the output pin to draw.
 		@param _pinColors The set of colors to cutomize both pins.
+		@param _flags Input
 		*/
 		static bool NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* _valueBuffer, 
 			const float _inputFieldWidth, const float _startX, const float _drawLength,
-			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[]);
+			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
+			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_None);
 
 		/*!
 		@brief Custom list box to display strings in nodes.
