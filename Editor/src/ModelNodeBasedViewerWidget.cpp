@@ -70,24 +70,37 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
             ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(rootExplorer->GetModelHierarchy()->GetAssetName(it->dataIdx),
                 *it);
 
+            //If double click on species selectable in the list box, spawn the corresponding species node
             if (it->speciesNLB.IsAnItemDoubleClicked())
             {
-                speciesNodes.push_back(ECellEngine::Editor::Utility::SpeciesNodeData(
+                speciesNodes.emplace_back(ECellEngine::Editor::Utility::SpeciesNodeData(
                     ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->speciesNLB.doubleClickedItem,
                     rootExplorer->GetDataState()->GetSpecies(it->speciesNLB.data->at(it->speciesNLB.doubleClickedItem))));
 
-                links.push_back(ECellEngine::Editor::Utility::LinkData(ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->outputPins[0].id, speciesNodes.back().inputPins[1].id));
+                links.emplace_back(ECellEngine::Editor::Utility::LinkData(ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->outputPins[0].id, speciesNodes.back().inputPins[1].id));
                 links.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[0].id, 1);
             }
 
+            //If double click on simple parameter selectable in the list box, spawn the corresponding simple parameter node
             if (it->simpleParametersNLB.IsAnItemDoubleClicked())
             {
-                simpleParameterNodes.push_back(ECellEngine::Editor::Utility::SimpleParameterNodeData(
+                simpleParameterNodes.emplace_back(ECellEngine::Editor::Utility::SimpleParameterNodeData(
                     ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->simpleParametersNLB.doubleClickedItem,
                     rootExplorer->GetDataState()->GetSimpleParameter(it->simpleParametersNLB.data->at(it->simpleParametersNLB.doubleClickedItem))));
 
-                links.push_back(ECellEngine::Editor::Utility::LinkData(ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->outputPins[1].id, simpleParameterNodes.back().inputPins[1].id));
+                links.emplace_back(ECellEngine::Editor::Utility::LinkData(ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->outputPins[1].id, simpleParameterNodes.back().inputPins[1].id));
                 links.back().OverrideEndFallbackPin(simpleParameterNodes.back().inputPins[0].id, 1);
+            }
+
+            //If double click on computed parameter selectable in the list box, spawn the corresponding computed parameter node
+            if (it->computedParametersNLB.IsAnItemDoubleClicked())
+            {
+                computedParameterNodes.emplace_back(ECellEngine::Editor::Utility::ComputedParameterNodeData(
+                    ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->computedParametersNLB.doubleClickedItem,
+                    rootExplorer->GetDataState()->GetComputedParameter(it->computedParametersNLB.data->at(it->computedParametersNLB.doubleClickedItem))));
+
+                links.emplace_back(ECellEngine::Editor::Utility::LinkData(ECellEngine::Editor::Utility::GetMNBVCtxtNextId(), it->outputPins[2].id, computedParameterNodes.back().inputPins[1].id));
+                links.back().OverrideEndFallbackPin(computedParameterNodes.back().inputPins[0].id, 1);
             }
 
             it->speciesNLB.ResetUtilityState();
@@ -105,6 +118,11 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         for (std::vector<ECellEngine::Editor::Utility::SpeciesNodeData>::iterator it = speciesNodes.begin(); it != speciesNodes.end(); it++)
         {
             ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode((*it).data->name.c_str(), *it);
+        }
+
+        for (std::vector<ECellEngine::Editor::Utility::ComputedParameterNodeData>::iterator it = computedParameterNodes.begin(); it != computedParameterNodes.end(); it++)
+        {
+            ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode((*it).data->name.c_str(), *it);
         }
 
         for (std::vector<ECellEngine::Editor::Utility::SimpleParameterNodeData>::iterator it = simpleParameterNodes.begin(); it != simpleParameterNodes.end(); it++)

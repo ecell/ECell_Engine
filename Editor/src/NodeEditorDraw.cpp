@@ -58,17 +58,92 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
 
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo)
+void ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo)
 {
-    PushNodeStyle(GetNodeColors(NodeType_Solver));
-    ax::NodeEditor::BeginNode(_solverNodeInfo.id);
+    PushNodeStyle(GetNodeColors(NodeType_Parameter));
+    ax::NodeEditor::BeginNode(_parameterNodeInfo.id);
 
-    const float headerWidth = NodeHeader("Solver:", _name, GetNodeColors(NodeType_Solver));
-    const float labelWidth = ImGui::CalcTextSize("Target Asset").x;
+    const float headerWidth = NodeHeader("Computed Parameter:", _name, GetNodeColors(NodeType_Parameter));
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+    const float startX = ImGui::GetCursorPosX();
 
-    NodeText_Out("Target Asset", labelWidth,
-        ImGui::GetCursorPosX(), headerWidth, 8.f, ImGui::GetStyle().ItemSpacing.x,
-        _solverNodeInfo.outputPin, GetPinColors(PinType_Asset));
+    if (NodeCollapsingHeader_InOut("Model Links", _parameterNodeInfo.collapsingHeadersIds[0],
+        _parameterNodeInfo.utilityState, 0,
+        startX, headerWidth,
+        _parameterNodeInfo.inputPins[0], _parameterNodeInfo.outputPins[0], GetPinColors(PinType_Default),
+        ImVec2(itemsWidth, 0.f)))
+    {
+
+        NodeText_In("Asset", startX, _parameterNodeInfo.inputPins[1], GetPinColors(PinType_Asset));
+
+        if (NodeCollapsingHeader_InOut("Computed Parameters", _parameterNodeInfo.collapsingHeadersIds[1],
+            _parameterNodeInfo.utilityState, 1,
+            startX, headerWidth,
+            _parameterNodeInfo.inputPins[2], _parameterNodeInfo.outputPins[1], GetPinColors(PinType_Parameter),
+            ImVec2(itemsWidth, 0.f), false))
+        {
+            //NodeStringListBox(_parameterNodeInfo.nslbData[0], GetPinDrawOffset(), 200.f, 0);
+            ImGui::Text("A List box will be here.");
+        }
+
+        if (NodeCollapsingHeader_InOut("Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[2],
+            _parameterNodeInfo.utilityState, 2,
+            startX, headerWidth,
+            _parameterNodeInfo.inputPins[3], _parameterNodeInfo.outputPins[2], GetPinColors(PinType_Parameter),
+            ImVec2(itemsWidth, 0.f), false))
+        {
+            //NodeStringListBox(_parameterNodeInfo.nslbData[0], GetPinDrawOffset(), 200.f, 0);
+            ImGui::Text("A List box will be here.");
+        }
+    }
+
+    NodeHorizontalSeparator(headerWidth);
+
+    if (NodeCollapsingHeader_InOut("Data Fields", _parameterNodeInfo.collapsingHeadersIds[3],
+        _parameterNodeInfo.utilityState, 3,
+        startX, headerWidth,
+        _parameterNodeInfo.inputPins[4], _parameterNodeInfo.outputPins[3], GetPinColors(PinType_Default),
+        ImVec2(itemsWidth, 0)))
+    {
+
+        if (NodeCollapsingHeader_InOut("Operands", _parameterNodeInfo.collapsingHeadersIds[1],
+            _parameterNodeInfo.utilityState, 4,
+            startX, headerWidth,
+            _parameterNodeInfo.inputPins[5], _parameterNodeInfo.outputPins[4], GetPinColors(PinType_Default),
+            ImVec2(itemsWidth, 0.f)))
+        {
+            if (_parameterNodeInfo.nslbData[2].data->size())
+            {
+                const float spTextWidth = ImGui::CalcTextSize("Species").x;
+                NodeText_InOut("Species", spTextWidth, startX, headerWidth,
+                    _parameterNodeInfo.inputPins[6], _parameterNodeInfo.outputPins[5], GetPinColors(PinType_Species));
+                NodeStringListBox(_parameterNodeInfo.nslbData[2], startX, headerWidth, itemsWidth);
+            }
+
+            if (_parameterNodeInfo.nslbData[3].data->size())
+            {
+                const float sparamTextWidth = ImGui::CalcTextSize("Simple Parameters").x;
+                NodeText_InOut("Simple Parameters", sparamTextWidth, startX, headerWidth,
+                    _parameterNodeInfo.inputPins[7], _parameterNodeInfo.outputPins[6], GetPinColors(PinType_Parameter));
+                NodeStringListBox(_parameterNodeInfo.nslbData[3], startX, headerWidth, itemsWidth);
+            }
+
+            if (_parameterNodeInfo.nslbData[4].data->size())
+            {
+                const float cparaTextWidth = ImGui::CalcTextSize("Computed Parameters").x;
+                NodeText_InOut("Computed Parameters", cparaTextWidth, startX, headerWidth,
+                    _parameterNodeInfo.inputPins[8], _parameterNodeInfo.outputPins[7], GetPinColors(PinType_Parameter));
+                NodeStringListBox(_parameterNodeInfo.nslbData[4], startX, headerWidth, itemsWidth);
+            }
+        }
+
+        //const static float inputFieldWidth = headerWidth -  + ImGui::GetStyle().ItemSpacing.x; //100.0f is the default length for a field
+        float value = _parameterNodeInfo.data->Get();
+        NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &value,
+            itemsWidth, startX, headerWidth,
+            _parameterNodeInfo.inputPins[9], _parameterNodeInfo.outputPins[8], GetPinColors(PinType_Default),
+            ImGuiInputTextFlags_ReadOnly);
+    }
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
@@ -507,7 +582,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
 {
     ImGuiStyle& style = ImGui::GetStyle();
     AlignToCenter(_startX, _drawLength, _widgetWidth);
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f,0.f));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
 
     ImGui::BeginGroup();
     const unsigned short nbItems = _nslbData.data->size();
@@ -517,7 +592,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
     const ImVec2 startPos = ImGui::GetCursorPos();
 
     //Delimiter
-    const ImVec4 NodeFramePadding = ImVec4(4,4,2,2);
+    const ImVec4 NodeFramePadding = ImVec4(4, 4, 2, 2);
     ImRect bb(
         startPos.x,
         startPos.y,

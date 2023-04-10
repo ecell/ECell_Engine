@@ -60,6 +60,14 @@ namespace ECellEngine::Editor
 		std::vector<ECellEngine::Editor::Utility::AssetNodeData> assetNodes;
 
 		/*!
+		@brief The list of computed parameter nodes in this viewer.
+		@details It contains the information used to draw the nodes corresponding
+				 to each computed parameter of various assets imported in the current
+				 simulation space.
+		*/
+		std::vector<ECellEngine::Editor::Utility::ComputedParameterNodeData> computedParameterNodes;
+		
+		/*!
 		@brief The list of simple parameter nodes in this viewer.
 		@details It contains the information used to draw the nodes corresponding
 				 to each simple parameter of various assets imported in the current

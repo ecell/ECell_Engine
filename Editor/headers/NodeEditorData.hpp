@@ -513,6 +513,141 @@ enum PinType
 		}
 	};
 
+	struct ComputedParameterNodeData
+	{
+		/*!
+		@brief The ID of this node to in the Node Editor.
+		*/
+		ax::NodeEditor::NodeId id;
+
+		/*!
+		@brief The index of the data in its origin vector/array.
+		@details Used to retrieve all the information to be displayed within
+				 the node (e.g. name in one of the relevant vectors in
+				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
+				 solver data in ECellEngine::Core::Simulation).
+		*/
+		std::size_t dataIdx;
+
+		ECellEngine::Data::ComputedParameter* data;
+
+		NodePinData inputPins[10];
+		NodePinData outputPins[9];
+
+		unsigned char utilityState = 0;
+
+		std::size_t collapsingHeadersIds[5];
+
+		/*!
+		@biref The array of of list box data that are potentially displayed in
+				this node.
+		@details At index 0 we find the list box with the links to other computed
+				 parameters where this computed parameter is also found.
+
+				 At index 1 we find the list box with the links to reaction's
+				 kinetic laws where this computed parameter is found.
+
+				 At index 2 we find the list box with the links to species that
+				 are involved (as quantities) in the computation of this parameter.
+
+				 At index 3 we find the list box with the links to simple 
+				 parameters that are involved (as values) in the computation of
+				 this parameter.
+
+				 At index 4 we find the list box with the links to computed
+				 parameters that are involved (as values) in the computation of
+				 this parameter.
+		*/
+		NodeListBoxStringData nslbData[5];
+		std::vector<std::string> speciesOperands;
+		std::vector<std::string> simpleParametersOperands;
+		std::vector<std::string> computedParametersOperands;
+
+		ComputedParameterNodeData(const ComputedParameterNodeData& _cpnd):
+			id{_cpnd.id}, dataIdx{_cpnd.dataIdx}, data{_cpnd.data},
+			inputPins{_cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
+					  _cpnd.inputPins[3] , _cpnd.inputPins[4] , _cpnd.inputPins[5],
+					  _cpnd.inputPins[6] , _cpnd.inputPins[7] , _cpnd.inputPins[8], _cpnd.inputPins[9] },
+			outputPins{ _cpnd.outputPins[0], _cpnd.outputPins[1] , _cpnd.outputPins[2] ,
+					  _cpnd.outputPins[3] , _cpnd.outputPins[4] , _cpnd.outputPins[5],
+					  _cpnd.outputPins[6] , _cpnd.outputPins[7] , _cpnd.outputPins[8] },
+			utilityState{_cpnd.utilityState},
+			collapsingHeadersIds{ _cpnd.collapsingHeadersIds[0], _cpnd.collapsingHeadersIds[1] , _cpnd.collapsingHeadersIds[2] ,
+					  _cpnd.collapsingHeadersIds[3] , _cpnd.collapsingHeadersIds[4] },
+			nslbData{ _cpnd.nslbData[0], _cpnd.nslbData[1] , _cpnd.nslbData[2] ,
+					  _cpnd.nslbData[3] , _cpnd.nslbData[4] },
+			speciesOperands{_cpnd.speciesOperands },
+			simpleParametersOperands{_cpnd.simpleParametersOperands},
+			computedParametersOperands{ _cpnd.computedParametersOperands }
+		{
+			nslbData[2].data = &speciesOperands;
+			nslbData[3].data = &simpleParametersOperands;
+			nslbData[4].data = &computedParametersOperands;
+		}
+
+		/*!
+		@remarks @p _nodeId is incremented immediately after use.
+		*/
+		ComputedParameterNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::ComputedParameter* _data) :
+			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		{
+			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
+
+			//ModelLinks Collapsing header
+			inputPins[0] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[0] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
+
+			//Asset
+			inputPins[1] = NodePinData(GetMNBVCtxtNextId());
+
+			//Computed Parameters section
+			inputPins[2] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[1] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
+			//lbsData[0] = { /*list of computed parameters where this one appears*/, GetMNBVCtxtNextId()}
+
+			//Kinetic Laws section
+			inputPins[3] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[2] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
+			//lbsData[1] = { /*list of kinetic laws where this one appears*/, GetMNBVCtxtNextId()}
+
+			//Data Fields collapsing header
+			inputPins[4] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[3] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
+
+			//Equation Operands collapsing header
+			inputPins[5] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[4] = NodePinData(GetMNBVCtxtNextId());
+			collapsingHeadersIds[4] = GetMNBVCtxtNextId();
+
+			//Node String List Box for Species Operands
+			inputPins[6] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[5] = NodePinData(GetMNBVCtxtNextId());
+			_data->GetOperation().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);
+			nslbData[2] = { &speciesOperands, GetMNBVCtxtNextId() };
+			
+			//Node String List Box for Simple Parameter Operands
+			inputPins[7] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[6] = NodePinData(GetMNBVCtxtNextId());
+			_data->GetOperation().GetOperandsNames<ECellEngine::Data::SimpleParameter>(simpleParametersOperands);
+			nslbData[3] = { &simpleParametersOperands, GetMNBVCtxtNextId() };
+			
+			//Node String List Box for Computed Parameter Operands
+			inputPins[8] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[7] = NodePinData(GetMNBVCtxtNextId());
+			_data->GetOperation().GetOperandsNames<ECellEngine::Data::ComputedParameter>(computedParametersOperands);
+			nslbData[4] = { &computedParametersOperands, GetMNBVCtxtNextId() };
+			
+			//Value Float string of the computation of the formula
+			//The user cannot directly change the value of the result
+			inputPins[9] = NodePinData(GetMNBVCtxtNextId());
+			outputPins[8] = NodePinData(GetMNBVCtxtNextId());
+		}
+	};
+
 	struct SimpleParameterNodeData
 	{
 		/*!

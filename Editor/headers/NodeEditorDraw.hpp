@@ -88,6 +88,9 @@ namespace ECellEngine::Editor::Utility
 		*/
 		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo);
 
+		static void ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo);
+		
+		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
 		/*!
 		@brief Draws a node to display and access the content of a
 				ECellEngine::Solvers::Solver.
@@ -103,7 +106,6 @@ namespace ECellEngine::Editor::Utility
 
 		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo);
 
-		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
 #pragma endregion
 
 #pragma region Node Pins
