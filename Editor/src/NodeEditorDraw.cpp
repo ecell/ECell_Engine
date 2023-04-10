@@ -465,7 +465,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_InOut(co
         ImGui::SameLine(); ImGui::SetCursorPosX(_startX);
         InputPin(_inputPin, _pinColors);
 
-        ImGui::SameLine(); AlignToRight(_startX, _drawLength, GetMNBVSyle()->pinWidth);
+        ImGui::SameLine(); AlignToRight(_startX, _drawLength, GetMNBVStyle()->pinWidth);
         OutputPin(_outputPin, _pinColors);
     }
 
@@ -491,7 +491,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_Out(cons
     if (!open || !_hidePinsOnExpand)
     {
         ImGui::SameLine();
-        AlignToRight(_startX, _drawLength, GetMNBVSyle()->pinWidth);
+        AlignToRight(_startX, _drawLength, GetMNBVStyle()->pinWidth);
         OutputPin(_pin, _pinColors);
     }
 
@@ -577,7 +577,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const ch
 
     ImGui::SameLine();
     
-    AlignToRight(_startX, _drawLength, GetMNBVSyle()->pinWidth);
+    AlignToRight(_startX, _drawLength, GetMNBVStyle()->pinWidth);
     OutputPin(_outputPin, _pinColors);
 
     return edited;
@@ -703,7 +703,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_InOut(const char* _l
     
     ImGui::SameLine();
 
-    AlignToRight(_startX, _drawLength, GetMNBVSyle()->pinWidth);
+    AlignToRight(_startX, _drawLength, GetMNBVStyle()->pinWidth);
     OutputPin(_outputPin, _pinColors);
 }
 
@@ -711,7 +711,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_Out(const char* _lab
     const float _startX, const float _drawLength, const float itemSpacingX,
     const NodePinData& _pin, const ImVec4 _pinColors[])
 {
-    AlignToRight(_startX, _drawLength - GetMNBVSyle()->pinWidth - itemSpacingX, _labelWidth);
+    AlignToRight(_startX, _drawLength - GetMNBVStyle()->pinWidth - itemSpacingX, _labelWidth);
     ImGui::AlignTextToFramePadding();
     ImGui::Text(_label);
 

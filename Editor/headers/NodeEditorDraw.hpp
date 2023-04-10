@@ -165,7 +165,7 @@ namespace ECellEngine::Editor::Utility
 		*/
 		inline static void ApplyPinDrawOffset()
 		{
-			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 8.f + ImGui::GetStyle().ItemSpacing.x);
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + GetMNBVStyle()->pinWidth + ImGui::GetStyle().ItemSpacing.x);
 		}
 
 		/*!
@@ -248,12 +248,12 @@ namespace ECellEngine::Editor::Utility
 		*/
 		inline static float GetPinDrawOffset()
 		{
-			return 8.f + ImGui::GetStyle().ItemSpacing.x;
+			return GetMNBVStyle()->pinWidth + ImGui::GetStyle().ItemSpacing.x;
 		}
 
 		inline static float GetNodeCenterAreaWidth(const float _headerWidth)
 		{
-			return std::max(GetMNBVSyle()->nodeCenterAreaMinWidth, _headerWidth - 2 * GetMNBVSyle()->pinWidth - 2 * ImGui::GetStyle().ItemSpacing.x);
+			return std::max(GetMNBVStyle()->nodeCenterAreaMinWidth, _headerWidth - 2 * GetMNBVStyle()->pinWidth - 2 * ImGui::GetStyle().ItemSpacing.x);
 		}
 
 		/*!

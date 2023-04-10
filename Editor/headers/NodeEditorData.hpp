@@ -173,7 +173,7 @@ enum PinType
 
 	ModelNodeBasedViewerContext* GetCurrentMNBVContext();
 
-	NodeEditorStyle* GetMNBVSyle();
+	NodeEditorStyle* GetMNBVStyle();
 
 	std::size_t& GetMNBVCtxtNextId();
 

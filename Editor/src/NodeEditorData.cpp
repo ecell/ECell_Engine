@@ -8,7 +8,7 @@ ECellEngine::Editor::Utility::ModelNodeBasedViewerContext* ECellEngine::Editor::
 	return s_mnbvCtxt;
 }
 
-ECellEngine::Editor::Utility::NodeEditorStyle* ECellEngine::Editor::Utility::GetMNBVSyle()
+ECellEngine::Editor::Utility::NodeEditorStyle* ECellEngine::Editor::Utility::GetMNBVStyle()
 {
 	return &s_mnbvCtxt->style;
 }
