@@ -80,16 +80,16 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
         nbReactants = reaction->getNumReactants();
         nbProducts = reaction->getNumProducts();
 
-        reactants.resize(nbReactants);
+        reactants.reserve(nbReactants);
         for (unsigned int j = 0; j < nbReactants; j++)
         {
-            reactants.push_back(reaction->getReactant(j)->getId());
+            reactants.push_back(_docIdsToDataStateNames[reaction->getReactant(j)->getSpecies()]);
         }
 
-        products.resize(nbProducts);
+        products.reserve(nbProducts);
         for (unsigned int j = 0; j < nbProducts; j++)
         {
-            products.push_back(reaction->getProduct(j)->getId());
+            products.push_back(_docIdsToDataStateNames[reaction->getProduct(j)->getSpecies()]);
         }
 
         astNode = reaction->getKineticLaw()->getMath();
