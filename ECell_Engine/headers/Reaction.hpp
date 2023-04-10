@@ -13,13 +13,15 @@ namespace ECellEngine::Data
 	struct Reaction
 	{
 	private:
-		const std::string name;
 		const std::vector<std::string> products;
 		const std::vector<std::string> reactants;
-		float kineticLawValueCache;
+
+		float kineticLawValueCache = 0;
 		Operation kineticLaw;
 
 	public:
+		const std::string name;
+
 		Reaction(const std::string _name,
 				 const std::vector<std::string> _products,
 				 const std::vector<std::string> _reactants,
