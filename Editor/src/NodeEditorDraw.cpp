@@ -7,6 +7,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
     ax::NodeEditor::BeginNode(_assetNodeInfo.id);
 
     const float headerWidth = NodeHeader("Asset:", _name, GetNodeColors(NodeType_Asset));
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
     // ----- Pin and Text to connect the solver to the asset -----
@@ -18,9 +19,9 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.utilityState, 0,
         startX, headerWidth,
         _assetNodeInfo.outputPins[0], GetPinColors(PinType_Species),
-        ImVec2(200, 0), false))
+        ImVec2(itemsWidth, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.speciesNLB, startX, headerWidth);
+        NodeStringListBox(_assetNodeInfo.speciesNLB, startX, headerWidth, itemsWidth);
     }
 
     // ----- String List Box and Pin to access the simple parameters of the asset -----
@@ -28,9 +29,9 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.utilityState, 1,
         startX, headerWidth,
         _assetNodeInfo.outputPins[1], GetPinColors(PinType_Parameter),
-        ImVec2(200, 0), false))
+        ImVec2(itemsWidth, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.simpleParametersNLB, startX, headerWidth);
+        NodeStringListBox(_assetNodeInfo.simpleParametersNLB, startX, headerWidth, itemsWidth);
     }
 
     // ----- String List Box and Pin to access the computed parameters of the asset -----
@@ -38,9 +39,9 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.utilityState, 2,
         startX, headerWidth,
         _assetNodeInfo.outputPins[2], GetPinColors(PinType_Parameter),
-        ImVec2(200, 0), false))
+        ImVec2(itemsWidth, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.computedParametersNLB, startX, headerWidth);
+        NodeStringListBox(_assetNodeInfo.computedParametersNLB, startX, headerWidth, itemsWidth);
     }
 
     // ----- String List Box and Pin to access the reactions of the asset -----
@@ -48,9 +49,9 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.utilityState, 3,
         startX, headerWidth,
         _assetNodeInfo.outputPins[3], GetPinColors(PinType_Reaction),
-        ImVec2(200, 0), false))
+        ImVec2(itemsWidth, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.reactionsNLB, startX, headerWidth);
+        NodeStringListBox(_assetNodeInfo.reactionsNLB, startX, headerWidth, itemsWidth);
     }
 
     ax::NodeEditor::EndNode();
@@ -155,13 +156,14 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const cha
     ax::NodeEditor::BeginNode(_parameterNodeInfo.id);
 
     const float headerWidth = NodeHeader("Simple Parameter:", _name, GetNodeColors(NodeType_Parameter));
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
     if (NodeCollapsingHeader_InOut("Model Links", _parameterNodeInfo.collapsingHeadersIds[0],
         _parameterNodeInfo.utilityState, 0,
         startX, headerWidth,
         _parameterNodeInfo.inputPins[0], _parameterNodeInfo.outputPins[0], GetPinColors(PinType_Default),
-        ImVec2(200.f, 0.f)))
+        ImVec2(itemsWidth, 0.f)))
     {
 
         NodeText_In("Asset", startX, _parameterNodeInfo.inputPins[1], GetPinColors(PinType_Asset));
@@ -170,9 +172,9 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const cha
             _parameterNodeInfo.utilityState, 1,
             startX, headerWidth,
             _parameterNodeInfo.inputPins[2], _parameterNodeInfo.outputPins[1], GetPinColors(PinType_Parameter),
-            ImVec2(200.f, 0.f), false))
+            ImVec2(itemsWidth, 0.f), false))
         {
-            //NodeStringListBox(_parameterNodeInfo.nslbData[0], GetPinDrawOffset(), 200.f, 0);
+            //NodeStringListBox(_parameterNodeInfo.nslbData[0], GetPinDrawOffset(), itemsWidth, 0);
             ImGui::Text("A List box will be here.");
         }
 
@@ -180,23 +182,24 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const cha
             _parameterNodeInfo.utilityState, 2,
             startX, headerWidth,
             _parameterNodeInfo.inputPins[3], _parameterNodeInfo.outputPins[2], GetPinColors(PinType_Parameter),
-            ImVec2(200.f, 0.f), false))
+            ImVec2(itemsWidth, 0.f), false))
         {
-            //NodeStringListBox(_parameterNodeInfo.nslbData[0], GetPinDrawOffset(), 200.f, 0);
+            //NodeStringListBox(_parameterNodeInfo.nslbData[0], GetPinDrawOffset(), itemsWidth, 0);
             ImGui::Text("A List box will be here.");
         }
     }
+
+    NodeHorizontalSeparator(headerWidth);
 
     if (NodeCollapsingHeader_InOut("Data Fields", _parameterNodeInfo.collapsingHeadersIds[3],
         _parameterNodeInfo.utilityState, 3,
         startX, headerWidth,
         _parameterNodeInfo.inputPins[4], _parameterNodeInfo.outputPins[3], GetPinColors(PinType_Default),
-        ImVec2(200, 0)))
+        ImVec2(itemsWidth, 0)))
     {
-        const static float inputFieldWidth = ImGui::CalcTextSize("Value").x + 100.f + ImGui::GetStyle().ItemSpacing.x; //100.0f is the default length for a field
         float value = _parameterNodeInfo.data->Get();
         if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &value,
-            inputFieldWidth, startX, headerWidth,
+            itemsWidth, startX, headerWidth,
             _parameterNodeInfo.inputPins[5], _parameterNodeInfo.outputPins[4], GetPinColors(PinType_Default),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
@@ -214,6 +217,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name,
     ax::NodeEditor::BeginNode(_solverNodeInfo.id);
 
     const float headerWidth = NodeHeader("Solver:", _name, GetNodeColors(NodeType_Solver));
+    //const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float labelWidth = ImGui::CalcTextSize("Target Asset").x;
 
     NodeText_Out("Target Asset", labelWidth,
@@ -230,13 +234,14 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
     ax::NodeEditor::BeginNode(_speciesNodeInfo.id);
     
     const float headerSize = NodeHeader("Species:", _name, GetNodeColors(NodeType_Species));
+    const float itemsWidth = GetNodeCenterAreaWidth(headerSize);
     const float startX = ImGui::GetCursorPosX();
 
     if (NodeCollapsingHeader_InOut("Model Links", _speciesNodeInfo.collapsingHeadersIds[0],
         _speciesNodeInfo.utilityState, 0,
         startX, headerSize,
         _speciesNodeInfo.inputPins[0], _speciesNodeInfo.outputPins[0], GetPinColors(PinType_Default),
-        ImVec2(200, 0)))
+        ImVec2(itemsWidth, 0)))
     {
         const static float icpTextWidth = ImGui::CalcTextSize("In Computed Parameters").x;
         const static float irTextWidth = ImGui::CalcTextSize("Is Reactant").x;
@@ -262,16 +267,17 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
             _speciesNodeInfo.inputPins[5], _speciesNodeInfo.outputPins[4], GetPinColors(PinType_Reaction));
     }
 
+    NodeHorizontalSeparator(headerSize);
+
     if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.collapsingHeadersIds[1],
         _speciesNodeInfo.utilityState, 1,
         startX, headerSize,
         _speciesNodeInfo.inputPins[6], _speciesNodeInfo.outputPins[5], GetPinColors(PinType_Default),
-        ImVec2(200, 0)))
+        ImVec2(itemsWidth, 0)))
     {
-        const static float inputFieldWidth = ImGui::CalcTextSize("Quantity").x + 100.f + ImGui::GetStyle().ItemSpacing.x; //100.0f is the default length for a field
         float value = _speciesNodeInfo.data->Get();
         if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &value,
-            inputFieldWidth, startX, headerSize,
+            itemsWidth, startX, headerSize,
             _speciesNodeInfo.inputPins[7], _speciesNodeInfo.outputPins[6], GetPinColors(PinType_Default),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
@@ -537,11 +543,12 @@ float ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const float _width, const float _thickness)
 {
     //ItemAdd and ImRect are part of imgui_internal.hpp
-    const ImRect bb(ImGui::GetCursorScreenPos(), ImVec2(ImGui::GetCursorScreenPos().x + _width, ImGui::GetCursorScreenPos().y + _thickness));
+    const ImVec2 startPos = ImGui::GetCursorPos();
+    const ImRect bb(startPos.x, startPos.y, startPos.x + _width, startPos.y);
     if (ImGui::ItemAdd(bb, 0))
     {
         ImGui::ItemSize(ImVec2(0.0f, _thickness));
-        ImGui::GetWindowDrawList()->AddLine(bb.Min, ImVec2(bb.Max.x, bb.Min.y), ImColor(ImGui::GetStyleColorVec4(ImGuiCol_Separator)));
+        ImGui::GetWindowDrawList()->AddLine(bb.Min, bb.Max, ImColor(ImGui::GetStyleColorVec4(ImGuiCol_Separator)), _thickness);
     }
 }
 
