@@ -390,9 +390,9 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(const NodePinData& _
     const ImVec2 endPos = ImVec2(startPos.x + _size, startPos.y + _size);
 
     const ImRect bb(startPos, endPos);
+    ax::NodeEditor::PinRect(bb.Min, bb.Max);
     if (ImGui::ItemAdd(bb, 0))
     {
-        ax::NodeEditor::PinRect(bb.Min, bb.Max);
         PinColorType bgColor = PinColorType_BgInactivated;
         if (_pinData.isUsed || ImGui::IsItemHovered())
         {
@@ -423,9 +423,9 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(const NodePinData& 
     const ImVec2 endPos = ImVec2(startPos.x + _size, startPos.y + _size);
 
     const ImRect bb(startPos, endPos);
+    ax::NodeEditor::PinRect(bb.Min, bb.Max);
     if (ImGui::ItemAdd(bb, 0))
     {
-        ax::NodeEditor::PinRect(bb.Min, bb.Max);
         PinColorType bgColor = PinColorType_BgInactivated;
         if (_pinData.isUsed || ImGui::IsItemHovered())
         {
