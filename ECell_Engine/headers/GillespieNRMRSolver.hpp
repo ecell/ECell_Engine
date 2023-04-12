@@ -30,8 +30,8 @@ namespace ECellEngine::Solvers
 		void SolveForward(const float& targetTime);
 	
 	public:
-		GillespieNRMRSolver(ECellEngine::Data::DataState& _dataState) :
-			BiochemicalSolver(_dataState)
+		GillespieNRMRSolver(ECellEngine::Data::DataState& _dataState, char* name = "NewGillespieNRMRSolver") :
+			BiochemicalSolver(_dataState, "NewGillespieNRMRSolver")
 		{
 			
 		}
