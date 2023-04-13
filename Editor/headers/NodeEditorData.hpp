@@ -124,8 +124,8 @@ namespace ECellEngine::Editor::Utility
 		ax::NodeEditor::PinId startIds[2];
 		ax::NodeEditor::PinId endIds[2];
 
-		LinkData(std::size_t& _linkId, ax::NodeEditor::PinId _startId, ax::NodeEditor::PinId _endId) :
-			id{ _linkId }, startIds{ _startId, _startId }, endIds{ _endId, _endId }
+		LinkData(ax::NodeEditor::PinId _startId, ax::NodeEditor::PinId _endId) :
+			id{ GetMNBVCtxtNextId()}, startIds{_startId, _startId}, endIds{_endId, _endId}
 		{
 
 		}
@@ -200,7 +200,7 @@ namespace ECellEngine::Editor::Utility
 				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
 				 solver data in ECellEngine::Core::Simulation).
 		*/
-		std::size_t dataIdx;
+		//std::size_t dataIdx;
 
 		ECellEngine::Data::SBMLModule* data;
 
@@ -219,10 +219,10 @@ namespace ECellEngine::Editor::Utility
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		AssetNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::Module* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{dynamic_cast<ECellEngine::Data::SBMLModule*>(_data)}
+		AssetNodeData(ECellEngine::Data::Module* _data) :
+			id{ GetMNBVCtxtNextId() }, data{dynamic_cast<ECellEngine::Data::SBMLModule*>(_data)}
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
+			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
 			//Solver
 			inputPin = NodePinData(GetMNBVCtxtNextId());
@@ -265,7 +265,7 @@ namespace ECellEngine::Editor::Utility
 				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
 				 solver data in ECellEngine::Core::Simulation).
 		*/
-		std::size_t dataIdx;
+		//std::size_t dataIdx;
 
 		ECellEngine::Data::ComputedParameter* data;
 
@@ -302,7 +302,7 @@ namespace ECellEngine::Editor::Utility
 		std::vector<std::string> computedParametersOperands;
 
 		ComputedParameterNodeData(const ComputedParameterNodeData& _cpnd):
-			id{_cpnd.id}, dataIdx{_cpnd.dataIdx}, data{_cpnd.data},
+			id{_cpnd.id}, data{_cpnd.data},
 			inputPins{_cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
 					  _cpnd.inputPins[3] , _cpnd.inputPins[4] , _cpnd.inputPins[5],
 					  _cpnd.inputPins[6] , _cpnd.inputPins[7] , _cpnd.inputPins[8], _cpnd.inputPins[9] },
@@ -326,10 +326,10 @@ namespace ECellEngine::Editor::Utility
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		ComputedParameterNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::ComputedParameter* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		ComputedParameterNodeData(ECellEngine::Data::ComputedParameter* _data) :
+			id{ GetMNBVCtxtNextId() }, data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
+			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			//ModelLinks Collapsing header
 			inputPins[0] = NodePinData(GetMNBVCtxtNextId());
@@ -400,7 +400,7 @@ namespace ECellEngine::Editor::Utility
 				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
 				 solver data in ECellEngine::Core::Simulation).
 		*/
-		std::size_t dataIdx;
+		//std::size_t dataIdx;
 
 		ECellEngine::Data::Reaction* data;
 
@@ -438,7 +438,7 @@ namespace ECellEngine::Editor::Utility
 		std::vector<std::string> computedParametersOperands;
 
 		ReactionNodeData(const ReactionNodeData& _cpnd) :
-			id{ _cpnd.id }, dataIdx{ _cpnd.dataIdx }, data{ _cpnd.data },
+			id{ _cpnd.id }, data{ _cpnd.data },
 			inputPins{ _cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
 					  _cpnd.inputPins[3] , _cpnd.inputPins[4] , _cpnd.inputPins[5],
 					  _cpnd.inputPins[6] , _cpnd.inputPins[7] , _cpnd.inputPins[8], _cpnd.inputPins[9] },
@@ -462,10 +462,10 @@ namespace ECellEngine::Editor::Utility
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		ReactionNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::Reaction* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		ReactionNodeData(ECellEngine::Data::Reaction* _data) :
+			id{ GetMNBVCtxtNextId() },  data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
+			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			//ModelLinks Collapsing header
 			inputPins[0] = NodePinData(GetMNBVCtxtNextId());
@@ -551,10 +551,10 @@ namespace ECellEngine::Editor::Utility
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		SimpleParameterNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::SimpleParameter* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		SimpleParameterNodeData(ECellEngine::Data::SimpleParameter* _data) :
+			id{ GetMNBVCtxtNextId() }, data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
+			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			//ModelLinks Collapsing header
 			inputPins[0] = NodePinData(GetMNBVCtxtNextId());
@@ -601,7 +601,7 @@ namespace ECellEngine::Editor::Utility
 				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
 				 solver data in ECellEngine::Core::Simulation).
 		*/
-		std::size_t dataIdx;
+		//std::size_t dataIdx;
 
 		ECellEngine::Solvers::Solver* data;
 
@@ -610,17 +610,17 @@ namespace ECellEngine::Editor::Utility
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		SolverNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Solvers::Solver* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		SolverNodeData(ECellEngine::Solvers::Solver* _data) :
+			id{ GetMNBVCtxtNextId() }, data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
+			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
 			outputPin = NodePinData(GetMNBVCtxtNextId());
 		}
 
 	};
 
-	struct SpeciesNodeData 
+	struct SpeciesNodeData
 	{
 		/*!
 		@brief The ID of this node to in the Node Editor.
@@ -634,7 +634,7 @@ namespace ECellEngine::Editor::Utility
 				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
 				 solver data in ECellEngine::Core::Simulation).
 		*/
-		std::size_t dataIdx;
+		//std::size_t dataIdx;
 
 		ECellEngine::Data::Species* data;
 
@@ -645,10 +645,10 @@ namespace ECellEngine::Editor::Utility
 
 		std::size_t collapsingHeadersIds[2];
 
-		SpeciesNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::Species* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		SpeciesNodeData(ECellEngine::Data::Species* _data) :
+			id{ GetMNBVCtxtNextId() }, data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f+ImGui::GetIO().MousePos.x, 0.f+ ImGui::GetIO().MousePos.y));
+			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f+ImGui::GetIO().MousePos.x, 0.f+ ImGui::GetIO().MousePos.y));
 
 			//Id to uniquely identify the collapsing header for the MODEL LINKS of each species node
 			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
@@ -689,6 +689,4 @@ namespace ECellEngine::Editor::Utility
 	};
 
 #pragma endregion
-
-
 }
