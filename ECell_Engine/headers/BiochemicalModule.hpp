@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "BinaryOperatedVector.hpp"
 #include "BiochemicalSolver.hpp"
 #include "Module.hpp"
 
@@ -13,10 +14,11 @@ namespace ECellEngine::Data
 		std::vector<std::string> reactions;
 		std::vector<std::string> simpleParameters;
 		std::vector<std::string> species;
+		//BinaryOperatedStrVector species;
 
 	public:
-		BiochemicalModule(DataState& _dataState) :
-			Module(_dataState)
+		BiochemicalModule(DataState& _dataState, char* _name = "NewBioChemicalAsset") :
+			Module(_dataState, _name)
 		{
 
 		}
@@ -76,6 +78,7 @@ namespace ECellEngine::Data
 			if (dataState.AddSpecies(_speciesName, _quantity))
 			{
 				species.push_back(_speciesName);
+				//species.sortedInsert(_speciesName);
 			}
 		}
 

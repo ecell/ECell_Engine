@@ -7,6 +7,7 @@
 #include "Logger.hpp"
 #include "ModelHierarchyWidget.hpp"
 #include "ModelNodeBasedViewerWidget.hpp"
+#include "ModelNodeBasedViewerContext.hpp"
 #include "Widget.hpp"
 
 namespace ECellEngine::Editor
@@ -133,7 +134,7 @@ namespace ECellEngine::Editor
 
 	public:
 		ModelExplorerWidget(Editor& _editor) :
-			Widget(_editor), modelHierarchy(_editor, this)
+			Widget(_editor), modelHierarchy(_editor)
 		{
 			mnbViewers.push_back(ModelNodeBasedViewerWidget(editor, this));
 		}

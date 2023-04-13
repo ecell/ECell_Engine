@@ -1,273 +1,10 @@
 #pragma once
 #include "imgui_node_editor.h"
 
-#include "SBMLModule.hpp"
-
+#include "ModelNodeBasedViewerGlobal.hpp"
 
 namespace ECellEngine::Editor::Utility
 {
-enum NodeType
-{
-	NodeType_Default,
-
-	NodeType_Asset,
-	NodeType_Parameter,
-	NodeType_Reaction,
-	NodeType_Solver,
-	NodeType_Species,
-
-	NodeType_Count
-};
-
-enum PinType
-{
-	PinType_Default,
-
-	PinType_Asset,
-	PinType_Parameter,
-	PinType_Reaction,
-	PinType_Solver,
-	PinType_Species,
-
-	PinType_Count
-};
-
-#pragma region Custom Style
-	
-	/*enum LinkStyleColor
-	{
-		LinkStyleColor_BorderHovered,
-		LinkStyleColor_BorderSelected,
-
-		LinkStyleColor_Count
-	};*/
-
-	enum NodeColorType
-	{
-		NodeColorType_Bg,
-		NodeColorType_Border,
-		//NodeColorType_BorderHovered,
-		//NodeColorType_BorderSelected,
-		NodeColorType_HeaderBg,
-		NodeColorType_HeaderActivated,
-		NodeColorType_HeaderHovered,
-
-		NodeColorType_Count
-	};
-
-	enum PinColorType
-	{
-		PinColorType_BgActivated,
-		PinColorType_BgInactivated,
-		PinColorType_Border,
-
-		PinColorType_Count
-	};
-
-	struct NodeEditorStyle
-	{
-		float nodeCenterAreaMinWidth;
-		float pinWidth;
-
-
-		ImVec4 nodeColors[NodeType_Count][NodeColorType_Count];
-		ImVec4 pinColors[PinType_Count][PinColorType_Count];
-
-		NodeEditorStyle()
-		{
-			pinWidth = 8.f;
-			nodeCenterAreaMinWidth = 200.f;
-
-			nodeColors[NodeType_Default][NodeColorType_Bg] = ImVec4(0.125f, 0.125f, 0.125f, 0.784f);//ax::NodeEditor::StyleColor_NodeBg;
-			nodeColors[NodeType_Default][NodeColorType_Border] = ImVec4(1.000f, 1.000f, 1.000f, 0.376f);//ax::NodeEditor::StyleColor_NodeBorder;
-			//nodeColors[NodeType_Default][NodeColorType_BorderHovered] = ImVec4(0.196f, 0.690f, 1.000f, 1.000f);//ax::NodeEditor::StyleColor_HovNodeBorder;
-			//nodeColors[NodeType_Default][NodeColorType_BorderSelected] = ImVec4(1.000f, 0.690f, 0.196f, 1.000f);//ax::NodeEditor::StyleColor_SelNodeBorder;
-			nodeColors[NodeType_Default][NodeColorType_HeaderBg] = ImVec4(1.000f, 1.000f, 1.000f, 0.376f);//ax::NodeEditor::StyleColor_NodeBorder;
-			nodeColors[NodeType_Default][NodeColorType_HeaderActivated] = ImVec4(1.000f, 0.690f, 0.196f, 1.000f);//ax::NodeEditor::StyleColor_SelNodeBorder;
-			nodeColors[NodeType_Default][NodeColorType_HeaderHovered] = ImVec4(0.196f, 0.690f, 1.000f, 1.000f);//ax::NodeEditor::StyleColor_HovNodeBorder;
-			
-			nodeColors[NodeType_Asset][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Asset][NodeColorType_Border] = ImVec4(0.7f, 0.7f, 0.7f, 1.f);
-			//nodeColors[NodeType_Asset][NodeColorType_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
-			//nodeColors[NodeType_Asset][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Asset][NodeColorType_HeaderBg] = ImVec4(0.7f, 0.7f, 0.7f, 0.25f);
-			nodeColors[NodeType_Asset][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Asset][NodeColorType_HeaderHovered] =		ImVec4(0.7f, 0.7f, 0.7f, 0.5f);
-
-			nodeColors[NodeType_Parameter][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Parameter][NodeColorType_Border] = ImVec4(0.05f, 0.463f, 0.297f, 1.f);
-			//nodeColors[NodeType_Parameter][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
-			//nodeColors[NodeType_Parameter][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Parameter][NodeColorType_HeaderBg] = ImVec4(0.05f, 0.463f, 0.297f, 0.25f);;
-			nodeColors[NodeType_Parameter][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);;
-			nodeColors[NodeType_Parameter][NodeColorType_HeaderHovered] =	ImVec4(0.05f, 0.463f, 0.297f, 0.5f);;
-
-			nodeColors[NodeType_Reaction][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Reaction][NodeColorType_Border] = ImVec4(0.141f, 0.391f, 0.485f, 1.f);
-			//nodeColors[NodeType_Reaction][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
-			//nodeColors[NodeType_Reaction][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Reaction][NodeColorType_HeaderBg] = ImVec4(0.141f, 0.391f, 0.485f, 1.f);
-			nodeColors[NodeType_Reaction][NodeColorType_HeaderActivated] = ImVec4(1.f, 0.f, 0.f, 1.f);
-			nodeColors[NodeType_Reaction][NodeColorType_HeaderHovered] =	ImVec4(0.141f, 0.391f, 0.485f, 1.f);
-
-			nodeColors[NodeType_Solver][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Solver][NodeColorType_Border] = ImVec4(1.f, 0.365f, 0.f, 1.f);
-			//nodeColors[NodeType_Solver][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
-			//nodeColors[NodeType_Solver][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Solver][NodeColorType_HeaderBg] = ImVec4(1.f, 0.365f, 0.f, 0.25f);
-			nodeColors[NodeType_Solver][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Solver][NodeColorType_HeaderHovered] =		ImVec4( 1.f, 0.365f,  0.f,  0.5f);
-
-			nodeColors[NodeType_Species][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Species][NodeColorType_Border] = ImVec4(1.f, 0.f, 0.f, 1.f);
-			//nodeColors[NodeType_Species][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);.f);
-			//nodeColors[NodeType_Species][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Species][NodeColorType_HeaderBg] = ImVec4(1.f, 0.f, 0.f, 0.25f);
-			nodeColors[NodeType_Species][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Species][NodeColorType_HeaderHovered] =		ImVec4( 1.f,  0.f,  0.f, 0.5f);
-
-			pinColors[PinType_Default][PinColorType_BgActivated] = nodeColors[NodeType_Default][NodeColorType_Border];
-			pinColors[PinType_Default][PinColorType_BgInactivated] = nodeColors[NodeType_Default][NodeColorType_Bg];
-			pinColors[PinType_Default][PinColorType_Border] = nodeColors[NodeType_Default][NodeColorType_Border];
-
-			pinColors[PinType_Asset][PinColorType_BgActivated] = nodeColors[NodeType_Asset][NodeColorType_Border];
-			pinColors[PinType_Asset][PinColorType_BgInactivated] = nodeColors[NodeType_Asset][NodeColorType_Bg];
-			pinColors[PinType_Asset][PinColorType_Border] = nodeColors[NodeType_Asset][NodeColorType_Border];
-
-			pinColors[PinType_Parameter][PinColorType_BgActivated] = nodeColors[NodeType_Parameter][NodeColorType_Border];
-			pinColors[PinType_Parameter][PinColorType_BgInactivated] = nodeColors[NodeType_Parameter][NodeColorType_Bg];
-			pinColors[PinType_Parameter][PinColorType_Border] = nodeColors[NodeType_Parameter][NodeColorType_Border];
-
-			pinColors[PinType_Reaction][PinColorType_BgActivated] = nodeColors[NodeType_Reaction][NodeColorType_Border];
-			pinColors[PinType_Reaction][PinColorType_BgInactivated] = nodeColors[NodeType_Reaction][NodeColorType_Bg];
-			pinColors[PinType_Reaction][PinColorType_Border] = nodeColors[NodeType_Reaction][NodeColorType_Border];
-
-			pinColors[PinType_Solver][PinColorType_BgActivated] = nodeColors[NodeType_Solver][NodeColorType_Border];
-			pinColors[PinType_Solver][PinColorType_BgInactivated] = nodeColors[NodeType_Solver][NodeColorType_Bg];
-			pinColors[PinType_Solver][PinColorType_Border] = nodeColors[NodeType_Solver][NodeColorType_Border];
-			
-			pinColors[PinType_Species][PinColorType_BgActivated] = nodeColors[NodeType_Species][NodeColorType_Border];
-			pinColors[PinType_Species][PinColorType_BgInactivated] = nodeColors[NodeType_Species][NodeColorType_Bg];
-			pinColors[PinType_Species][PinColorType_Border] = nodeColors[NodeType_Species][NodeColorType_Border];
-
-		}
-	};
-	
-#pragma endregion
-
-#pragma region Data Global API
-
-	struct ModelNodeBasedViewerContext
-	{
-		std::size_t uniqueId;
-
-		NodeEditorStyle style;
-
-		ModelNodeBasedViewerContext() :
-			uniqueId{ 0 }
-		{
-
-		}
-
-	};
-
-	ModelNodeBasedViewerContext* GetCurrentMNBVContext();
-
-	NodeEditorStyle* GetMNBVStyle();
-
-	std::size_t& GetMNBVCtxtNextId();
-
-	ImVec4* GetNodeColors(NodeType _nodeType);
-
-	/*inline char* GetLinkStyleColorName(LinkStyleColor _linkStyleColorType)
-	{
-		switch (_linkStyleColorType)
-		{
-		case LinkStyleColor_BorderHovered:
-			return "LinkStyleColor_BorderHovered";
-		case LinkStyleColor_BorderSelected:
-			return "LinkStyleColor_BorderSelected";
-		}
-	}*/
-
-	inline char* GetNodeColorTypeName(NodeColorType _nodeColorType)
-	{
-		switch (_nodeColorType)
-		{
-		case NodeColorType_Bg:
-			return "NodeColorType_Bg";
-		case NodeColorType_Border:
-			return "NodeColorType_Border";
-			/*case NodeColorType_BorderHovered:
-				return "NodeColorType_BorderHovered";*/
-				/*case NodeColorType_BorderSelected:
-					return "NodeColorType_BorderSelected";*/
-		case NodeColorType_HeaderBg:
-			return "NodeColorType_HeaderBg";
-		case NodeColorType_HeaderActivated:
-			return "NodeColorType_HeaderActivated";
-		case NodeColorType_HeaderHovered:
-			return "NodeColorType_HeaderHovered";
-		}
-	}
-
-	inline char* GetNodeTypeName(NodeType _nodeType)
-	{
-		switch (_nodeType)
-		{
-		case NodeType_Default:
-			return "NodeType_Default";
-		case NodeType_Asset:
-			return "NodeType_Asset";
-		case NodeType_Parameter:
-			return "NodeType_Parameter";
-		case NodeType_Reaction:
-			return "NodeType_Reaction";
-		case NodeType_Solver:
-			return "NodeType_Solver";
-		case NodeType_Species:
-			return "NodeType_Species";
-		}
-	}
-
-	ImVec4* GetPinColors(PinType _nodeType);
-
-	inline char* GetPinColorTypeName(PinColorType _pinColorType)
-	{
-		switch (_pinColorType)
-		{
-		case PinColorType_BgActivated:
-			return "PinColorType_BgActivated";
-		case PinColorType_BgInactivated:
-			return "PinColorType_BgInactivated";
-		case PinColorType_Border:
-			return "PinColorType_Border";
-		}
-	}
-
-	inline char* GetPinTypeName(PinType _pinType)
-	{
-		switch (_pinType)
-		{
-		case PinType_Default:
-			return "PinType_Default";
-		case PinType_Asset:
-			return "PinType_Asset";
-		case PinType_Parameter:
-			return "PinType_Parameter";
-		case PinType_Reaction:
-			return "PinType_Reaction";
-		case PinType_Solver:
-			return "PinType_Solver";
-		case PinType_Species:
-			return "PinType_Species";
-		}
-	}
-
-	void SetCurrentMNBVContext(ModelNodeBasedViewerContext* _ctxt);
-
-#pragma endregion
-
 #pragma region Custom Node Widgets Data
 	/*!
 	@brief Information to display and interact with custom list boxes inside
@@ -386,8 +123,8 @@ enum PinType
 		ax::NodeEditor::PinId startIds[2];
 		ax::NodeEditor::PinId endIds[2];
 
-		LinkData(std::size_t& _linkId, ax::NodeEditor::PinId _startId, ax::NodeEditor::PinId _endId) :
-			id{ _linkId }, startIds{ _startId, _startId }, endIds{ _endId, _endId }
+		LinkData(ax::NodeEditor::PinId _startId, ax::NodeEditor::PinId _endId) :
+			id{ GetMNBVCtxtNextId()}, startIds{_startId, _startId}, endIds{_endId, _endId}
 		{
 
 		}
@@ -462,7 +199,7 @@ enum PinType
 				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
 				 solver data in ECellEngine::Core::Simulation).
 		*/
-		std::size_t dataIdx;
+		//std::size_t dataIdx;
 
 		ECellEngine::Data::SBMLModule* data;
 
@@ -481,10 +218,10 @@ enum PinType
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		AssetNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::Module* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{dynamic_cast<ECellEngine::Data::SBMLModule*>(_data)}
+		AssetNodeData(ECellEngine::Data::Module* _data) :
+			id{ GetMNBVCtxtNextId() }, data{dynamic_cast<ECellEngine::Data::SBMLModule*>(_data)}
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
+			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
 			//Solver
 			inputPin = NodePinData(GetMNBVCtxtNextId());
@@ -527,7 +264,7 @@ enum PinType
 				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
 				 solver data in ECellEngine::Core::Simulation).
 		*/
-		std::size_t dataIdx;
+		//std::size_t dataIdx;
 
 		ECellEngine::Data::ComputedParameter* data;
 
@@ -564,7 +301,7 @@ enum PinType
 		std::vector<std::string> computedParametersOperands;
 
 		ComputedParameterNodeData(const ComputedParameterNodeData& _cpnd):
-			id{_cpnd.id}, dataIdx{_cpnd.dataIdx}, data{_cpnd.data},
+			id{_cpnd.id}, data{_cpnd.data},
 			inputPins{_cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
 					  _cpnd.inputPins[3] , _cpnd.inputPins[4] , _cpnd.inputPins[5],
 					  _cpnd.inputPins[6] , _cpnd.inputPins[7] , _cpnd.inputPins[8], _cpnd.inputPins[9] },
@@ -588,10 +325,10 @@ enum PinType
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		ComputedParameterNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::ComputedParameter* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		ComputedParameterNodeData(ECellEngine::Data::ComputedParameter* _data) :
+			id{ GetMNBVCtxtNextId() }, data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
+			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			//ModelLinks Collapsing header
 			inputPins[0] = NodePinData(GetMNBVCtxtNextId());
@@ -662,7 +399,7 @@ enum PinType
 				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
 				 solver data in ECellEngine::Core::Simulation).
 		*/
-		std::size_t dataIdx;
+		//std::size_t dataIdx;
 
 		ECellEngine::Data::Reaction* data;
 
@@ -700,7 +437,7 @@ enum PinType
 		std::vector<std::string> computedParametersOperands;
 
 		ReactionNodeData(const ReactionNodeData& _cpnd) :
-			id{ _cpnd.id }, dataIdx{ _cpnd.dataIdx }, data{ _cpnd.data },
+			id{ _cpnd.id }, data{ _cpnd.data },
 			inputPins{ _cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
 					  _cpnd.inputPins[3] , _cpnd.inputPins[4] , _cpnd.inputPins[5],
 					  _cpnd.inputPins[6] , _cpnd.inputPins[7] , _cpnd.inputPins[8], _cpnd.inputPins[9] },
@@ -724,10 +461,10 @@ enum PinType
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		ReactionNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::Reaction* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		ReactionNodeData(ECellEngine::Data::Reaction* _data) :
+			id{ GetMNBVCtxtNextId() },  data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
+			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			//ModelLinks Collapsing header
 			inputPins[0] = NodePinData(GetMNBVCtxtNextId());
@@ -813,10 +550,10 @@ enum PinType
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		SimpleParameterNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::SimpleParameter* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		SimpleParameterNodeData(ECellEngine::Data::SimpleParameter* _data) :
+			id{ GetMNBVCtxtNextId() }, data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
+			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			//ModelLinks Collapsing header
 			inputPins[0] = NodePinData(GetMNBVCtxtNextId());
@@ -863,7 +600,7 @@ enum PinType
 				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
 				 solver data in ECellEngine::Core::Simulation).
 		*/
-		std::size_t dataIdx;
+		//std::size_t dataIdx;
 
 		ECellEngine::Solvers::Solver* data;
 
@@ -872,17 +609,17 @@ enum PinType
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		SolverNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Solvers::Solver* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		SolverNodeData(ECellEngine::Solvers::Solver* _data) :
+			id{ GetMNBVCtxtNextId() }, data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImGui::GetIO().MousePos);
+			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
 			outputPin = NodePinData(GetMNBVCtxtNextId());
 		}
 
 	};
 
-	struct SpeciesNodeData 
+	struct SpeciesNodeData
 	{
 		/*!
 		@brief The ID of this node to in the Node Editor.
@@ -896,7 +633,7 @@ enum PinType
 				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
 				 solver data in ECellEngine::Core::Simulation).
 		*/
-		std::size_t dataIdx;
+		//std::size_t dataIdx;
 
 		ECellEngine::Data::Species* data;
 
@@ -907,10 +644,10 @@ enum PinType
 
 		std::size_t collapsingHeadersIds[2];
 
-		SpeciesNodeData(std::size_t& _nodeId, std::size_t _dataIdx, ECellEngine::Data::Species* _data) :
-			id{ _nodeId }, dataIdx{ _dataIdx }, data{ _data }
+		SpeciesNodeData(ECellEngine::Data::Species* _data) :
+			id{ GetMNBVCtxtNextId() }, data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(_nodeId, ImVec2(300.f+ImGui::GetIO().MousePos.x, 0.f+ ImGui::GetIO().MousePos.y));
+			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f+ImGui::GetIO().MousePos.x, 0.f+ ImGui::GetIO().MousePos.y));
 
 			//Id to uniquely identify the collapsing header for the MODEL LINKS of each species node
 			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
@@ -951,6 +688,4 @@ enum PinType
 	};
 
 #pragma endregion
-
-
 }

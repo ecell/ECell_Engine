@@ -12,8 +12,8 @@ namespace ECellEngine::Data
 	private:
 		std::vector<std::string> computedParameters;
 	public:
-		SBMLModule(DataState& _dataState) :
-			BiochemicalModule(_dataState)
+		SBMLModule(DataState& _dataState, char* _name = "NewSBMLAsset") :
+			BiochemicalModule(_dataState, _name)
 		{
 			
 		}
