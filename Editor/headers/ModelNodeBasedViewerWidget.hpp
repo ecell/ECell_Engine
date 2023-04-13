@@ -50,55 +50,7 @@ namespace ECellEngine::Editor
 		/*!
 		@brief The reference to the parent window.
 		*/
-		ModelExplorerWidget* rootExplorer;
-
-		/*!
-		@brief The list of asset nodes in this viewer.
-		@details It contains the information used to draw the nodes corresponding
-				 to each asset imported in the current simulation space.
-		*/
-		std::vector<ECellEngine::Editor::Utility::AssetNodeData> assetNodes;
-
-		/*!
-		@brief The list of computed parameter nodes in this viewer.
-		@details It contains the information used to draw the nodes corresponding
-				 to each computed parameter of various assets imported in the current
-				 simulation space.
-		*/
-		std::vector<ECellEngine::Editor::Utility::ComputedParameterNodeData> computedParameterNodes;
-		
-		/*!
-		@brief The list of reaction nodes in this viewer.
-		@details It contains the information used to draw the nodes corresponding
-				 to each reaction of various assets imported in the current
-				 simulation space.
-		*/
-		std::vector<ECellEngine::Editor::Utility::ReactionNodeData> reactionNodes;
-
-		/*!
-		@brief The list of simple parameter nodes in this viewer.
-		@details It contains the information used to draw the nodes corresponding
-				 to each simple parameter of various assets imported in the current
-				 simulation space.
-		*/
-		std::vector<ECellEngine::Editor::Utility::SimpleParameterNodeData> simpleParameterNodes;
-
-		/*!
-		@brief The list of species nodes in this viewer.
-		@details It contains the information used to draw the nodes corresponding
-				 to each species of various assets imported in the current
-				 simulation space.
-		*/
-		std::vector<ECellEngine::Editor::Utility::SpeciesNodeData> speciesNodes;
-
-		/*!
-		@brief The list of solver nodes.
-		@details It contains the information used to draw the nodes corresponding
-				 to each solvers imported in the current simulation space.
-		*/
-		std::vector<ECellEngine::Editor::Utility::SolverNodeData> solverNodes;
-
-		std::vector<ECellEngine::Editor::Utility::LinkData> links;// List of live links. It is dynamic unless you want to create read-only view over nodes.
+		ModelExplorerWidget* rootExplorer;		
 
 		ModelNodeBasedViewerWidget(Editor& _editor, ModelExplorerWidget* _rootExplorer) :
 			Widget(_editor), rootExplorer{ _rootExplorer }
@@ -112,29 +64,10 @@ namespace ECellEngine::Editor
 		*/
 		~ModelNodeBasedViewerWidget();
 
-		/*!
-		@brief Adds an ECellEngine::Editor::Utility::AssetNodeInfo in ::assetNodes.
-		@details It has for consequence to draw an asset node in the editor.
-		*/
-		void AddAssetNode(const std::size_t _dataIdx);
-
-		/*!
-		@brief Adds an ECellEngine::Editor::Utility::SolverNodeInfo in ::solverNodes.
-		@details It has for consequence to draw a solver node in the editor.
-		*/
-		void AddSolverNode(const std::size_t _dataIdx);
-
 		void Awake() override;
 
 		void Draw() override;
 
-		/*!
-		@brief Removes as asset node from ::assetNodes
-		@param _idx The index of the node to erase from ::assetNodes.
-		*/
-		inline void RemoveAssetNode(const std::size_t _idx)
-		{
-			assetNodes.erase(assetNodes.begin() + _idx);
-		}
+		
 	};
 }

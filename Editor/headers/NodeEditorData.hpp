@@ -1,8 +1,7 @@
 #pragma once
 #include "imgui_node_editor.h"
 
-#include "SBMLModule.hpp"
-
+#include "ModelNodeBasedViewerGlobal.hpp"
 
 namespace ECellEngine::Editor::Utility
 {

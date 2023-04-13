@@ -7,6 +7,7 @@
 #include "Logger.hpp"
 #include "ModelHierarchyWidget.hpp"
 #include "ModelNodeBasedViewerWidget.hpp"
+#include "ModelNodeBasedViewerContext.hpp"
 #include "Widget.hpp"
 
 namespace ECellEngine::Editor

@@ -9,7 +9,10 @@
 #include "Gillespie_NRM_R.hpp"
 #include "SimulationLoop.hpp"
 #include "CommandsManager.hpp"
+
 #include "Widget.hpp"
+
+#include "ModelNodeBasedViewerGlobal.hpp"
 
 using namespace ECellEngine::Core;
 using namespace ECellEngine::IO;
