@@ -133,7 +133,7 @@ namespace ECellEngine::Editor
 
 	public:
 		ModelExplorerWidget(Editor& _editor) :
-			Widget(_editor), modelHierarchy(_editor, this)
+			Widget(_editor), modelHierarchy(_editor)
 		{
 			mnbViewers.push_back(ModelNodeBasedViewerWidget(editor, this));
 		}

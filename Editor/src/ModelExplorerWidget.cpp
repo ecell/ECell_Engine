@@ -86,7 +86,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawAddSolverPopup()
                 addSolverCommandArray[2] = "GillespieNRMRSolver";
                 editor.engine.GetCommandsManager()->interpretCommand(addSolverCommandArray);
 
-                modelHierarchy.AddSolverName("Gillespie Next Reaction Method");
+                //modelHierarchy.AddSolverName("Gillespie Next Reaction Method");
 
                 SwitchState(1); //Marks the Add Solver popup as closed
             }
@@ -122,7 +122,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawImportAssetPopup()
             editor.engine.GetCommandsManager()->interpretCommand(addModuleCommandArray);
 
             /*TODO: Check that the module was correctly imported before drawing.*/
-            modelHierarchy.AddAssetName(assetNameBuffer);
+            //modelHierarchy.AddAssetName(assetNameBuffer);
 
             SwitchState(0); //Marks the Import Asset popup as closed
         }

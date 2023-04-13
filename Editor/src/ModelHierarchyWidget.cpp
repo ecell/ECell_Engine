@@ -1,4 +1,10 @@
 #include "ModelExplorerWidget.hpp"//forward declaration
+#include "Editor.hpp"
+
+void ECellEngine::Editor::ModelHierarchyWidget::Awake()
+{
+	SetSimulation(0);
+}
 
 void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 {
@@ -8,13 +14,13 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 		if (ImGui::TreeNode("Assets"))
 		{
 			//Display the list of loaded assets
-			for (std::size_t idx = 0; idx < assetNames.size(); idx++)
+			for (std::size_t idx = 0; idx < simulation->GetModules().size(); idx++)
 			{
 				//Id fro Drag & Drop
 				ImGui::PushID(dragableID);
 				
 				//Leaf Node to display the name of the asset.
-				ImGui::TreeNodeEx(assetNames[idx], leafNodeFlags);
+				ImGui::TreeNodeEx(simulation->GetModule(idx)->GetName(), leafNodeFlags);
 
 				// The Asset name can be draged.
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
@@ -24,7 +30,7 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 
 					// Display preview (could be anything, e.g. when dragging an image we could decide to display
 					// the filename and a small preview of the image, etc.)
-					ImGui::Text(assetNames[idx]);
+					ImGui::Text(simulation->GetModule(idx)->GetName());
 					ImGui::EndDragDropSource();
 				}
 
@@ -41,13 +47,13 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 		if (ImGui::TreeNode("Solvers"))
 		{
 			//Display the list of loaded solvers
-			for (std::size_t idx = 0; idx < solverNames.size(); idx++)
+			for (std::size_t idx = 0; idx < simulation->GetSolvers().size(); idx++)
 			{
 				//Id fro Drag & Drop
 				ImGui::PushID(dragableID);
 
 				//Leaf Node to display the name of the asset.
-				ImGui::TreeNodeEx(solverNames[idx], leafNodeFlags);
+				ImGui::TreeNodeEx(simulation->GetSolver(idx)->GetName(), leafNodeFlags);
 
 				// The Asset name can be draged.
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
@@ -57,7 +63,7 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 
 					// Display preview (could be anything, e.g. when dragging an image we could decide to display
 					// the filename and a small preview of the image, etc.)
-					ImGui::Text(solverNames[idx]);
+					ImGui::Text(simulation->GetSolver(idx)->GetName());
 					ImGui::EndDragDropSource();
 				}
 
@@ -73,4 +79,9 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 
 		ImGui::End();
 	}
+}
+
+void ECellEngine::Editor::ModelHierarchyWidget::SetSimulation(std::size_t _simulationIndex)
+{
+	simulation = editor.engine.GetSimulationsManager()->GetSimulation(_simulationIndex);
 }
