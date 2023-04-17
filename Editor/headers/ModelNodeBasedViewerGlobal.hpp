@@ -114,6 +114,8 @@ namespace ECellEngine::Editor::Utility
 		}
 	}
 
+	bool IsDynamicLinkAuthorized(PinType _startPinType, PinType _endPinType);
+
 	/*!
 	@brief Removes as asset node from ModelNodeBasedViewerContext::assetNodes
 	@param _idx The index of the node to erase from ModelNodeBasedViewerContext::assetNodes.

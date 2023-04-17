@@ -135,6 +135,11 @@ std::size_t& ECellEngine::Editor::Utility::GetMNBVCtxtNextId()
     return ++(s_mnbvCtxt->uniqueId);
 }
 
+bool ECellEngine::Editor::Utility::IsDynamicLinkAuthorized(PinType _startPinType, PinType _endPinType)
+{
+    return s_mnbvCtxt->authorizedDynamicLinks[_startPinType][_endPinType];
+}
+
 void ECellEngine::Editor::Utility::AddAssetNode(ECellEngine::Data::Module* _module)
 {
     s_mnbvCtxt->assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeData(_module));

@@ -418,8 +418,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::vector<ECel
     // Handle creation action, returns true if editor want to create new object (node or link)
     if (ax::NodeEditor::BeginCreate())
     {
-        ax::NodeEditor::PinId inputPinId, outputPinId;
-        if (ax::NodeEditor::QueryNewLink(&inputPinId, &outputPinId))
+        ax::NodeEditor::PinId startPinId, endPinId;
+        if (ax::NodeEditor::QueryNewLink(&startPinId, &endPinId))
         {
             // QueryNewLink returns true if editor want to create new link between pins.
             //
@@ -429,26 +429,54 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::vector<ECel
             // Link always goes from input to output. User may choose to drag
             // link from output pin or input pin. This determine which pin ids
             // are valid and which are not:
-            //   * input valid, output invalid - user started to drag new ling from input pin
-            //   * input invalid, output valid - user started to drag new ling from output pin
+            //   * input valid, output invalid - user started to drag new link from input pin
+            //   * input invalid, output valid - user started to drag new link from output pin
             //   * input valid, output valid   - user dragged link over other pin, can be validated
 
-            if (inputPinId && outputPinId) // both are valid, let's accept link
+            if (startPinId && endPinId) // both are valid, let's accept link
             {
-                // ax::NodeEditor::AcceptNewItem() return true when user release mouse button.
-                if (ax::NodeEditor::AcceptNewItem())
-                {
-                    // Since we accepted new link, lets add one to our list of links.
-                    _links.push_back(LinkData(_id, inputPinId, outputPinId));
+                NodePinData* startPin = FindNodePinInAll((std::size_t)startPinId);
+                NodePinData* endPin = FindNodePinInAll((std::size_t)endPinId);
 
-                    // Draw new link.
-                    //ax::NodeEditor::Link(_links.back().id, _links.back().startId, _links.back().endId);
-                    ECellEngine::Editor::Utility::NodeEditorDraw::Link(_links.back());
+                //The start pin of a link is the output of a node
+                if (startPin->kind == ax::NodeEditor::PinKind::Input)
+                {
+                    std::swap(startPin, endPin);
+                    std::swap(startPinId, endPinId);
                 }
 
-                // You may choose to reject connection between these nodes
-                // by calling ax::NodeEditor::RejectNewItem(). This will allow editor to give
-                // visual feedback by changing link thickness and color.
+                if (startPin == endPin)
+                {
+                    ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 2.0f);
+                    ax::NodeEditor::Suspend;
+                    ImGui::SetTooltip("You cannot connect a pin to itself.");
+                    ax::NodeEditor::Resume;
+                }
+                else if (startPin->kind == endPin->kind)
+                {
+                    ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 2.0f);
+                    ax::NodeEditor::Suspend;
+                    ImGui::SetTooltip("You cannot connect an input pin to another input pin\nor output pin to another ouput pin.");
+                    ax::NodeEditor::Resume;
+                }
+                else if (!IsDynamicLinkAuthorized(startPin->type, endPin->type))
+                {
+                    ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 2.0f);
+                    ax::NodeEditor::Suspend;
+                    ImGui::SetTooltip("You cannot connect a pin of type &s to a pin of type &s", GetPinTypeName(startPin->type), GetPinTypeName(endPin->type));
+                    ax::NodeEditor::Resume;
+                }
+                else
+                {
+                    ax::NodeEditor::RejectNewItem(ImVec4(0.0f, 1.f, 0.f, 1.0f), 2.0f);
+
+                    // ax::NodeEditor::AcceptNewItem() return true when user release mouse button.
+                    if (ax::NodeEditor::AcceptNewItem())
+                    {
+                        // Since we accepted new link, lets add one to our list of links.
+                        _links.push_back(LinkData(startPinId, endPinId));
+                    }
+                }
             }
         }
     }

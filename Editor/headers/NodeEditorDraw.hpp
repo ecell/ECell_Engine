@@ -123,10 +123,9 @@ namespace ECellEngine::Editor::Utility
 		/*!
 		@brief The basic logic to create links between input and output
 				pins of nodes.
-		@param _id The current value of the ID counter for links.
 		@param _links The current list of links.
 		*/
-		static void LinkCreation(std::size_t& _id, std::vector<ECellEngine::Editor::Utility::LinkData>& _links);
+		static void LinkCreation(std::vector<ECellEngine::Editor::Utility::LinkData>& _links);
 
 		/*!
 		@brief The basic logic to destroy links between nodes.
