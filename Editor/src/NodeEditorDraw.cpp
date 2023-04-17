@@ -11,7 +11,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
     const float startX = ImGui::GetCursorPosX();
 
     // ----- Pin and Text to connect the solver to the asset -----
-    InputPin(_assetNodeInfo.inputPin, GetPinColors(PinType_Solver));
+    Pin(_assetNodeInfo.inputPins[0], GetPinColors(PinType_Solver));
     ImGui::SameLine(); ImGui::AlignTextToFramePadding(); ImGui::Text("Solver");
 
     // ----- String List Box and Pin to access the species of the asset -----
@@ -310,7 +310,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name,
 
     NodeText_Out("Target Asset", labelWidth,
         ImGui::GetCursorPosX(), headerWidth, ImGui::GetStyle().ItemSpacing.x,
-        _solverNodeInfo.outputPin, GetPinColors(PinType_Asset));
+        _solverNodeInfo.outputPins[0], GetPinColors(PinType_Asset));
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
