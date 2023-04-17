@@ -380,14 +380,14 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
 #pragma endregion
 
 #pragma region Node Pins
-void ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(const NodePinData& _pinData, const ImVec4 _pinColors[], const float _size)
+void ECellEngine::Editor::Utility::NodeEditorDraw::Pin(const NodePinData& _pinData, const ImVec4 _pinColors[])
 {
-    ax::NodeEditor::BeginPin(_pinData.id, ax::NodeEditor::PinKind::Input);
+    ax::NodeEditor::BeginPin(_pinData.id, _pinData.kind);
 
     //We center on the Y axis the start position of the cursor relatively to texts within buttons in ImGui
     //We chose buttons as reference as they are used extensively in nodes.
     const ImVec2 startPos = ImVec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y + 0.5f * ImGui::GetTextLineHeight());
-    const ImVec2 endPos = ImVec2(startPos.x + _size, startPos.y + _size);
+    const ImVec2 endPos = ImVec2(startPos.x + GetMNBVStyle()->pinWidth, startPos.y + GetMNBVStyle()->pinWidth);
 
     const ImRect bb(startPos, endPos);
     ax::NodeEditor::PinRect(bb.Min, bb.Max);
@@ -413,40 +413,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::InputPin(const NodePinData& _
     ax::NodeEditor::EndPin();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::OutputPin(const NodePinData& _pinData, const ImVec4 _pinColors[], const float _size)
-{
-    ax::NodeEditor::BeginPin(_pinData.id, ax::NodeEditor::PinKind::Output);
-
-    //We center on the Y axis the start position of the cursor relatively to texts within buttons in ImGui
-    //We chose buttons as reference as they are used extensively in nodes.
-    const ImVec2 startPos = ImVec2(ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y + 0.5f * ImGui::GetTextLineHeight());
-    const ImVec2 endPos = ImVec2(startPos.x + _size, startPos.y + _size);
-
-    const ImRect bb(startPos, endPos);
-    ax::NodeEditor::PinRect(bb.Min, bb.Max);
-    if (ImGui::ItemAdd(bb, 0))
-    {
-        PinColorType bgColor = PinColorType_BgInactivated;
-        if (_pinData.isUsed || ImGui::IsItemHovered())
-        {
-            bgColor = PinColorType_BgActivated;
-        }
-
-        //Drawing the center of the pin
-        ImGui::GetWindowDrawList()->AddRectFilled(bb.Min, bb.Max, ImColor(_pinColors[bgColor]));
-        //Going back to start position
-        ImGui::SetCursorPos(startPos);
-        //Drawing the border of the pin on top of the center.
-        ImGui::GetWindowDrawList()->AddRect(bb.Min, bb.Max, ImColor(_pinColors[PinColorType_Border]));
-
-        // We set the cursor here to where it already is trigger the automatic addition of the Nodepadding.z (right side)
-        // after the outpin. Normally, there is no reason to have anything on the right side of an outpin within a node.
-        ImGui::SetCursorPosX(endPos.x);
-    }
-    ax::NodeEditor::EndPin();
-}
-
-void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::size_t& _id, std::vector<ECellEngine::Editor::Utility::LinkData>& _links)
+void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::vector<ECellEngine::Editor::Utility::LinkData>& _links)
 {
     // Handle creation action, returns true if editor want to create new object (node or link)
     if (ax::NodeEditor::BeginCreate())
@@ -515,7 +482,6 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkDestruction(std::vector<E
         }
     }
     ax::NodeEditor::EndDelete(); // Wrap up deletion action
-
 }
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::Link(LinkData& linkInfo)
@@ -551,10 +517,10 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_InOut(co
     if (!open || !_hidePinsOnExpand)
     {
         ImGui::SameLine(); ImGui::SetCursorPosX(_startX);
-        InputPin(_inputPin, _pinColors);
+        Pin(_inputPin, _pinColors);
 
         ImGui::SameLine(); AlignToRight(_startX, _drawLength, GetMNBVStyle()->pinWidth);
-        OutputPin(_outputPin, _pinColors);
+        Pin(_outputPin, _pinColors);
     }
 
     return open;
@@ -580,7 +546,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_Out(cons
     {
         ImGui::SameLine();
         AlignToRight(_startX, _drawLength, GetMNBVStyle()->pinWidth);
-        OutputPin(_pin, _pinColors);
+        Pin(_pin, _pinColors);
     }
 
     return open;
@@ -647,7 +613,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const ch
 {
     ImGui::SetCursorPosX(_startX);
 
-    InputPin(_inputPin, _pinColors); ImGui::SameLine();
+    Pin(_inputPin, _pinColors); ImGui::SameLine();
 
     ImGui::PushID(_id);
     ImGui::AlignTextToFramePadding(); AlignToCenter(_startX, _drawLength, _inputFieldWidth);
@@ -666,7 +632,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const ch
     ImGui::SameLine();
     
     AlignToRight(_startX, _drawLength, GetMNBVStyle()->pinWidth);
-    OutputPin(_outputPin, _pinColors);
+    Pin(_outputPin, _pinColors);
 
     return edited;
 }
@@ -769,7 +735,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_In(const char* _labe
     const NodePinData& _pin, const ImVec4 _pinColors[])
 {
     ImGui::SetCursorPosX(_startX);
-    InputPin(_pin, _pinColors);
+    Pin(_pin, _pinColors);
 
     ImGui::SameLine();
 
@@ -783,7 +749,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_InOut(const char* _l
     const ImVec4 _pinColors[])
 {
     ImGui::SetCursorPosX(_startX);
-    InputPin(_inputPin, _pinColors); ImGui::SameLine();
+    Pin(_inputPin, _pinColors); ImGui::SameLine();
 
     ImGui::AlignTextToFramePadding();
     AlignToCenter(_startX, _drawLength, _labelWidth);
@@ -792,7 +758,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_InOut(const char* _l
     ImGui::SameLine();
 
     AlignToRight(_startX, _drawLength, GetMNBVStyle()->pinWidth);
-    OutputPin(_outputPin, _pinColors);
+    Pin(_outputPin, _pinColors);
 }
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_Out(const char* _label, const float _labelWidth,
@@ -805,7 +771,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_Out(const char* _lab
 
     ImGui::SameLine();
 
-    OutputPin(_pin, _pinColors);
+    Pin(_pin, _pinColors);
 }
 
 #pragma endregion
