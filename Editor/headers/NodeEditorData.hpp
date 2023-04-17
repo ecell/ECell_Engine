@@ -185,26 +185,52 @@ namespace ECellEngine::Editor::Utility
 		{
 
 		}
+		inline operator std::size_t() { return (std::size_t)id; }
+
+		friend inline bool operator==(const NodePinData& lhs, const NodePinData& rhs) { (std::size_t)lhs.id == (std::size_t)rhs.id; }
+		friend inline bool operator!=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs == rhs); }
+
+		friend inline bool operator< (const NodePinData& lhs, const NodePinData& rhs) { (std::size_t)lhs.id < (std::size_t)rhs.id; }
+		friend inline bool operator> (const NodePinData& lhs, const NodePinData& rhs) { return rhs < lhs; }
+		friend inline bool operator<=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs > rhs); }
+		friend inline bool operator>=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs < rhs); }
 	};
 #pragma endregion
 
 #pragma region Nodes Data
-	struct AssetNodeData
+
+	struct NodeData
 	{
 		/*!
 		@brief The ID of this node to in the Node Editor.
 		*/
 		ax::NodeEditor::NodeId id;
 
-		/*!
-		@brief The index of the data in its origin vector/array.
-		@details Used to retrieve all the information to be displayed within
-				 the node (e.g. name in one of the relevant vectors in
-				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
-				 solver data in ECellEngine::Core::Simulation).
-		*/
-		//std::size_t dataIdx;
+		NodeData() :
+			id{ GetMNBVCtxtNextId() }
+		{
 
+		}
+
+		NodeData(const NodeData& _nd) :
+			id{ _nd.id }
+		{
+
+		}
+
+		inline operator std::size_t() { return (std::size_t)id; }
+
+		friend inline bool operator==(const NodeData& lhs, const NodeData& rhs) { (std::size_t)lhs.id == (std::size_t)rhs.id; }
+		friend inline bool operator!=(const NodeData& lhs, const NodeData& rhs) { return !(lhs == rhs); }
+
+		friend inline bool operator< (const NodeData& lhs, const NodeData& rhs) { (std::size_t)lhs.id < (std::size_t)rhs.id; }
+		friend inline bool operator> (const NodeData& lhs, const NodeData& rhs) { return rhs < lhs; }
+		friend inline bool operator<=(const NodeData& lhs, const NodeData& rhs) { return !(lhs > rhs); }
+		friend inline bool operator>=(const NodeData& lhs, const NodeData& rhs) { return !(lhs < rhs); }
+	};
+
+	struct AssetNodeData : public NodeData
+	{
 		ECellEngine::Data::SBMLModule* data;
 
 		NodePinData inputPins[1];
@@ -223,7 +249,7 @@ namespace ECellEngine::Editor::Utility
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		AssetNodeData(ECellEngine::Data::Module* _data) :
-			id{ GetMNBVCtxtNextId() }, data{dynamic_cast<ECellEngine::Data::SBMLModule*>(_data)}
+			NodeData(), data{dynamic_cast<ECellEngine::Data::SBMLModule*>(_data)}
 		{
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
@@ -254,21 +280,12 @@ namespace ECellEngine::Editor::Utility
 		}
 	};
 
-	struct ComputedParameterNodeData
+	struct ComputedParameterNodeData : public NodeData
 	{
 		/*!
 		@brief The ID of this node to in the Node Editor.
 		*/
-		ax::NodeEditor::NodeId id;
-
-		/*!
-		@brief The index of the data in its origin vector/array.
-		@details Used to retrieve all the information to be displayed within
-				 the node (e.g. name in one of the relevant vectors in
-				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
-				 solver data in ECellEngine::Core::Simulation).
-		*/
-		//std::size_t dataIdx;
+		//ax::NodeEditor::NodeId id;
 
 		ECellEngine::Data::ComputedParameter* data;
 
@@ -305,7 +322,7 @@ namespace ECellEngine::Editor::Utility
 		std::vector<std::string> computedParametersOperands;
 
 		ComputedParameterNodeData(const ComputedParameterNodeData& _cpnd):
-			id{_cpnd.id}, data{_cpnd.data},
+			NodeData(_cpnd), data{_cpnd.data},
 			inputPins{_cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
 					  _cpnd.inputPins[3] , _cpnd.inputPins[4] , _cpnd.inputPins[5],
 					  _cpnd.inputPins[6] , _cpnd.inputPins[7] , _cpnd.inputPins[8], _cpnd.inputPins[9] },
@@ -330,7 +347,7 @@ namespace ECellEngine::Editor::Utility
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		ComputedParameterNodeData(ECellEngine::Data::ComputedParameter* _data) :
-			id{ GetMNBVCtxtNextId() }, data{ _data }
+			NodeData(), data{_data}
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -389,21 +406,12 @@ namespace ECellEngine::Editor::Utility
 		}
 	};
 
-	struct ReactionNodeData
+	struct ReactionNodeData : public NodeData
 	{
 		/*!
 		@brief The ID of this node to in the Node Editor.
 		*/
-		ax::NodeEditor::NodeId id;
-
-		/*!
-		@brief The index of the data in its origin vector/array.
-		@details Used to retrieve all the information to be displayed within
-				 the node (e.g. name in one of the relevant vectors in
-				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
-				 solver data in ECellEngine::Core::Simulation).
-		*/
-		//std::size_t dataIdx;
+		//ax::NodeEditor::NodeId id;
 
 		ECellEngine::Data::Reaction* data;
 
@@ -440,22 +448,22 @@ namespace ECellEngine::Editor::Utility
 		std::vector<std::string> simpleParametersOperands;
 		std::vector<std::string> computedParametersOperands;
 
-		ReactionNodeData(const ReactionNodeData& _cpnd) :
-			id{ _cpnd.id }, data{ _cpnd.data },
-			inputPins{ _cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
-					  _cpnd.inputPins[3] , _cpnd.inputPins[4] , _cpnd.inputPins[5],
-					  _cpnd.inputPins[6] , _cpnd.inputPins[7] , _cpnd.inputPins[8], _cpnd.inputPins[9] },
-			outputPins{ _cpnd.outputPins[0], _cpnd.outputPins[1] , _cpnd.outputPins[2] ,
-					  _cpnd.outputPins[3] , _cpnd.outputPins[4] , _cpnd.outputPins[5],
-					  _cpnd.outputPins[6] , _cpnd.outputPins[7] , _cpnd.outputPins[8] },
-			utilityState{ _cpnd.utilityState },
-			collapsingHeadersIds{ _cpnd.collapsingHeadersIds[0], _cpnd.collapsingHeadersIds[1] , _cpnd.collapsingHeadersIds[2] ,
-					  _cpnd.collapsingHeadersIds[3] , _cpnd.collapsingHeadersIds[4] },
-			nslbData{ _cpnd.nslbData[0], _cpnd.nslbData[1] , _cpnd.nslbData[2] ,
-					  _cpnd.nslbData[3] , _cpnd.nslbData[4] },
-			speciesOperands{ _cpnd.speciesOperands },
-			simpleParametersOperands{ _cpnd.simpleParametersOperands },
-			computedParametersOperands{ _cpnd.computedParametersOperands }
+		ReactionNodeData(const ReactionNodeData& _rnd) :
+			NodeData(_rnd), data{_rnd.data},
+			inputPins{ _rnd.inputPins[0], _rnd.inputPins[1] , _rnd.inputPins[2] ,
+					  _rnd.inputPins[3] , _rnd.inputPins[4] , _rnd.inputPins[5],
+					  _rnd.inputPins[6] , _rnd.inputPins[7] , _rnd.inputPins[8], _rnd.inputPins[9] },
+			outputPins{ _rnd.outputPins[0], _rnd.outputPins[1] , _rnd.outputPins[2] ,
+					  _rnd.outputPins[3] , _rnd.outputPins[4] , _rnd.outputPins[5],
+					  _rnd.outputPins[6] , _rnd.outputPins[7] , _rnd.outputPins[8] },
+			utilityState{ _rnd.utilityState },
+			collapsingHeadersIds{ _rnd.collapsingHeadersIds[0], _rnd.collapsingHeadersIds[1] , _rnd.collapsingHeadersIds[2] ,
+					  _rnd.collapsingHeadersIds[3] , _rnd.collapsingHeadersIds[4] },
+			nslbData{ _rnd.nslbData[0], _rnd.nslbData[1] , _rnd.nslbData[2] ,
+					  _rnd.nslbData[3] , _rnd.nslbData[4] },
+			speciesOperands{ _rnd.speciesOperands },
+			simpleParametersOperands{ _rnd.simpleParametersOperands },
+			computedParametersOperands{ _rnd.computedParametersOperands }
 		{
 			nslbData[2].data = &speciesOperands;
 			nslbData[3].data = &simpleParametersOperands;
@@ -466,7 +474,7 @@ namespace ECellEngine::Editor::Utility
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		ReactionNodeData(ECellEngine::Data::Reaction* _data) :
-			id{ GetMNBVCtxtNextId() }, data{ _data }
+			NodeData(), data{_data}
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -524,21 +532,12 @@ namespace ECellEngine::Editor::Utility
 		}
 	};
 
-	struct SimpleParameterNodeData
+	struct SimpleParameterNodeData : public NodeData
 	{
 		/*!
 		@brief The ID of this node to in the Node Editor.
 		*/
-		ax::NodeEditor::NodeId id;
-
-		/*!
-		@brief The index of the data in its origin vector/array.
-		@details Used to retrieve all the information to be displayed within
-				 the node (e.g. name in one of the relevant vectors in
-				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
-				 solver data in ECellEngine::Core::Simulation).
-		*/
-		std::size_t dataIdx;
+		//ax::NodeEditor::NodeId id;
 
 		ECellEngine::Data::SimpleParameter* data;
 
@@ -555,7 +554,7 @@ namespace ECellEngine::Editor::Utility
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		SimpleParameterNodeData(ECellEngine::Data::SimpleParameter* _data) :
-			id{ GetMNBVCtxtNextId() }, data{ _data }
+			NodeData(), data{_data}
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -590,21 +589,12 @@ namespace ECellEngine::Editor::Utility
 		}
 	};
 
-	struct SolverNodeData
+	struct SolverNodeData : public NodeData
 	{
 		/*!
 		@brief The ID of this node to in the Node Editor.
 		*/
-		ax::NodeEditor::NodeId id;
-
-		/*!
-		@brief The index of the data in its origin vector/array.
-		@details Used to retrieve all the information to be displayed within
-				 the node (e.g. name in one of the relevant vectors in
-				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
-				 solver data in ECellEngine::Core::Simulation).
-		*/
-		//std::size_t dataIdx;
+		//ax::NodeEditor::NodeId id;
 
 		ECellEngine::Solvers::Solver* data;
 
@@ -615,33 +605,23 @@ namespace ECellEngine::Editor::Utility
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		SolverNodeData(ECellEngine::Solvers::Solver* _data) :
-			id{ GetMNBVCtxtNextId() }, data{ _data }
+			NodeData(), data{_data}
 		{
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
 			//Not used for now but added for homogeneity
 			inputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Solver);
 
-			outputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Solver);
+			outputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Solver);
 		}
-
 	};
 
-	struct SpeciesNodeData
+	struct SpeciesNodeData : public NodeData
 	{
 		/*!
 		@brief The ID of this node to in the Node Editor.
 		*/
-		ax::NodeEditor::NodeId id;
-
-		/*!
-		@brief The index of the data in its origin vector/array.
-		@details Used to retrieve all the information to be displayed within
-				 the node (e.g. name in one of the relevant vectors in
-				 ECellEngine::Editor::ModelHierarchyWidget, the actual asset or
-				 solver data in ECellEngine::Core::Simulation).
-		*/
-		//std::size_t dataIdx;
+		//ax::NodeEditor::NodeId id;
 
 		ECellEngine::Data::Species* data;
 
@@ -653,7 +633,7 @@ namespace ECellEngine::Editor::Utility
 		std::size_t collapsingHeadersIds[2];
 
 		SpeciesNodeData(ECellEngine::Data::Species* _data) :
-			id{ GetMNBVCtxtNextId() }, data{ _data }
+			NodeData(), data{_data}
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f+ImGui::GetIO().MousePos.x, 0.f+ ImGui::GetIO().MousePos.y));
 

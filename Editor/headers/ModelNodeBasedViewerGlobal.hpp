@@ -1,11 +1,15 @@
 #pragma once
 
+#include "BinaryOperatedVector.hpp"
 #include "SBMLModule.hpp" //eventually includes DataState.hpp
 #include "NodeEditorStyle.hpp"
 
 namespace ECellEngine::Editor::Utility
 {
-	struct ModelNodeBasedViewerContext;//forward declaration
+	//forward declaration
+	struct ModelNodeBasedViewerContext;
+	struct NodePinData;
+	struct NodeData;
 
 	/*!
 	@brief Adds an ECellEngine::Editor::Utility::AssetNodeInfo in
@@ -24,6 +28,11 @@ namespace ECellEngine::Editor::Utility
 	@details It has for consequence to draw a solver node in the editor.
 	*/
 	void AddSolverNode(ECellEngine::Solvers::Solver* _simulationSource);
+
+	NodePinData* FindNodePinInAll(const std::size_t _id);
+
+	template<class ForwardIt>
+	NodePinData* FindNodePinIn(const std::size_t _id, ForwardIt _first, ForwardIt _last);
 
 	NodeEditorStyle* GetMNBVStyle();
 

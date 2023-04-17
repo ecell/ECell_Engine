@@ -45,6 +45,13 @@ namespace ECellEngine::Editor::Utility
 				 simulation space.
 		*/
 		std::vector<ECellEngine::Editor::Utility::SimpleParameterNodeData> simpleParameterNodes;
+		
+		/*!
+		@brief The list of solver nodes.
+		@details It contains the information used to draw the nodes corresponding
+				 to each solvers imported in the current simulation space.
+		*/
+		std::vector<ECellEngine::Editor::Utility::SolverNodeData> solverNodes;
 
 		/*!
 		@brief The list of species nodes in this viewer.
@@ -53,13 +60,6 @@ namespace ECellEngine::Editor::Utility
 				 simulation space.
 		*/
 		std::vector<ECellEngine::Editor::Utility::SpeciesNodeData> speciesNodes;
-
-		/*!
-		@brief The list of solver nodes.
-		@details It contains the information used to draw the nodes corresponding
-				 to each solvers imported in the current simulation space.
-		*/
-		std::vector<ECellEngine::Editor::Utility::SolverNodeData> solverNodes;
 
 		std::vector<ECellEngine::Editor::Utility::LinkData> links;// List of live links. It is dynamic unless you want to create read-only view over nodes.
 
