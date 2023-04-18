@@ -468,10 +468,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::vector<ECel
                 }
                 else
                 {
-                    ax::NodeEditor::RejectNewItem(ImVec4(0.0f, 1.f, 0.f, 1.0f), 2.0f);
-
                     // ax::NodeEditor::AcceptNewItem() return true when user release mouse button.
-                    if (ax::NodeEditor::AcceptNewItem())
+                    if (ax::NodeEditor::AcceptNewItem(ImVec4(0.0f, 1.f, 0.f, 1.0f), 2.0f))
                     {
                         // Since we accepted new link, lets add one to our list of links.
                         _links.push_back(LinkData(startPinId, endPinId));
