@@ -63,7 +63,7 @@ namespace ECellEngine::Editor::Utility
 
 		std::vector<ECellEngine::Editor::Utility::LinkData> links;// List of live links. It is dynamic unless you want to create read-only view over nodes.
 
-		bool authorizedDynamicLinks[PinType_Count][PinType_Count];
+		bool authorizedDynamicLinks[PinType_Count][PinType_Count]{};
 
 		ModelNodeBasedViewerContext() :
 			uniqueId{ 0 }
