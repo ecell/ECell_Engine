@@ -463,7 +463,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::vector<ECel
                 {
                     ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 2.0f);
                     ax::NodeEditor::Suspend;
-                    ImGui::SetTooltip("You cannot connect a pin of type &s to a pin of type &s", GetPinTypeName(startPin->type), GetPinTypeName(endPin->type));
+                    ImGui::SetTooltip("You cannot connect a pin of type %s to a pin of type %s", GetPinTypeName(startPin->type), GetPinTypeName(endPin->type));
                     ax::NodeEditor::Resume;
                 }
                 else
