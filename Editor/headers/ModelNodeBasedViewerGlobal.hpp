@@ -111,6 +111,8 @@ namespace ECellEngine::Editor::Utility
 			return "PinType_Solver";
 		case PinType_Species:
 			return "PinType_Species";
+		case PinType_ValueFloat:
+			return "PinType_ValueFloat";
 		}
 	}
 

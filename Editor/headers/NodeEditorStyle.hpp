@@ -24,6 +24,7 @@ namespace ECellEngine::Editor::Utility
 		PinType_Reaction,
 		PinType_Solver,
 		PinType_Species,
+		PinType_ValueFloat,
 
 		PinType_Count
 	};
