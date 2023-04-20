@@ -473,6 +473,10 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::vector<ECel
                     {
                         // Since we accepted new link, lets add one to our list of links.
                         _links.push_back(LinkData(startPinId, endPinId));
+
+                        NodeOutputPinData* outputPin = static_cast<NodeOutputPinData*>(startPin);
+                        NodeInputPinData* inputPin = static_cast<NodeInputPinData*>(endPin);
+                        outputPin->AddSubscriber(inputPin);
                     }
                 }
             }

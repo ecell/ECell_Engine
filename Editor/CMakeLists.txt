@@ -32,6 +32,7 @@ add_executable( ECellEngineEditor
 "src/ModelNodeBasedViewerContext.cpp"
 "src/ModelNodeBasedViewerGlobal.cpp"
 "src/ModelNodeBasedViewerWidget.cpp"
+"src/NodeEditorData.cpp"
 "src/NodeEditorDraw.cpp"
 "src/OptionsWidget.cpp"
 "src/SimulationFlowControlWidget.cpp"
