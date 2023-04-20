@@ -61,7 +61,7 @@ namespace ECellEngine::Editor::Utility
 		*/
 		std::vector<ECellEngine::Editor::Utility::SpeciesNodeData> speciesNodes;
 
-		std::vector<ECellEngine::Editor::Utility::LinkData> links;// List of live links. It is dynamic unless you want to create read-only view over nodes.
+		std::vector<ECellEngine::Editor::Utility::LinkData> links;
 
 		bool authorizedDynamicLinks[PinType_Count][PinType_Count]{};
 
