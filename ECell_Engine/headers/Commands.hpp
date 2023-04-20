@@ -348,7 +348,7 @@ namespace ECellEngine::IO
 		/*
 		@brief Executes the code to play a simulation.
 		@param _args The arguments of the command. At position [0] is always the
-				name of the command ("playSimulation"). Then, for this command, come
+				name of the command ("stopSimulation"). Then, for this command, come
 				[1] the index of the target simulation in the SimulationsManager's
 				playing simulation list.
 		*/
@@ -369,7 +369,7 @@ namespace ECellEngine::IO
 		/*
 		@brief Executes the code to play a simulation.
 		@param _args The arguments of the command. At position [0] is always the
-				name of the command ("playSimulation"). Then, for this command, come
+				name of the command ("tryAttachSolver"). Then, for this command, come
 				[1] the index of the target simulation in the SimulationsManager's
 				simulation list; [2] is the name of the solver in the Simulation's
 				solvers list; [3] is the name of the module in the Simulation's
