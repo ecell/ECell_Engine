@@ -18,17 +18,17 @@ namespace ECellEngine::Editor::Utility
 	@details It has for consequence to draw an asset node in the editor.
 	*/
 	void AddAssetNode(ECellEngine::Data::Module* _simulationSource);
-
-	void CurrentMNBVContextDraw(ECellEngine::Data::DataState* _dataState);
-
-	ModelNodeBasedViewerContext* GetCurrentMNBVContext();
-
+	
 	/*!
 	@brief Adds an ECellEngine::Editor::Utility::SolverNodeInfo in
 			ModelNodeBasedViewerContext::solverNodes.
 	@details It has for consequence to draw a solver node in the editor.
 	*/
 	void AddSolverNode(ECellEngine::Solvers::Solver* _simulationSource);
+
+	void CurrentMNBVContextDraw(ECellEngine::Data::DataState* _dataState);
+
+	ModelNodeBasedViewerContext* GetCurrentMNBVContext();
 
 	NodeData* FindNodeInAll(const std::size_t _id);
 

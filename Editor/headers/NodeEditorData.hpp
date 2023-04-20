@@ -668,16 +668,16 @@ namespace ECellEngine::Editor::Utility
 
 		NodeListBoxStringData nslbData[2];
 
-		SimpleParameterNodeData(const SimpleParameterNodeData& _rnd) :
-			NodeData(_rnd), data{ _rnd.data },
-			inputPins{ _rnd.inputPins[0], _rnd.inputPins[1] , _rnd.inputPins[2] ,
-					  _rnd.inputPins[3] , _rnd.inputPins[4] , _rnd.inputPins[5]},
-			outputPins{ _rnd.outputPins[0], _rnd.outputPins[1] , _rnd.outputPins[2] ,
-					  _rnd.outputPins[3] , _rnd.outputPins[4]},
-			utilityState{ _rnd.utilityState },
-			collapsingHeadersIds{ _rnd.collapsingHeadersIds[0], _rnd.collapsingHeadersIds[1] , _rnd.collapsingHeadersIds[2] ,
-					  _rnd.collapsingHeadersIds[3]},
-			nslbData{ _rnd.nslbData[0], _rnd.nslbData[1]}
+		SimpleParameterNodeData(const SimpleParameterNodeData& _sprnd) :
+			NodeData(_sprnd), data{ _sprnd.data },
+			inputPins{ _sprnd.inputPins[0], _sprnd.inputPins[1] , _sprnd.inputPins[2] ,
+					  _sprnd.inputPins[3] , _sprnd.inputPins[4] , _sprnd.inputPins[5]},
+			outputPins{ _sprnd.outputPins[0], _sprnd.outputPins[1] , _sprnd.outputPins[2] ,
+					  _sprnd.outputPins[3] , _sprnd.outputPins[4]},
+			utilityState{ _sprnd.utilityState },
+			collapsingHeadersIds{ _sprnd.collapsingHeadersIds[0], _sprnd.collapsingHeadersIds[1] , _sprnd.collapsingHeadersIds[2] ,
+					  _sprnd.collapsingHeadersIds[3]},
+			nslbData{ _sprnd.nslbData[0], _sprnd.nslbData[1]}
 		{
 			inputPins[0].node = this;
 			inputPins[1].node = this;
@@ -749,13 +749,12 @@ namespace ECellEngine::Editor::Utility
 		NodeInputPinData inputPins[1];
 		NodeOutputPinData outputPins[1];
 
-		SolverNodeData(const SolverNodeData& _rnd) :
-			NodeData(_rnd), data{ _rnd.data },
-			inputPins{ _rnd.inputPins[0]},
-			outputPins{ _rnd.outputPins[0]}
+		SolverNodeData(const SolverNodeData& _slvnd) :
+			NodeData(_slvnd), data{ _slvnd.data },
+			inputPins{ _slvnd.inputPins[0]},
+			outputPins{ _slvnd.outputPins[0]}
 		{
 			inputPins[0].node = this;
-
 			outputPins[0].node = this;
 		}
 
