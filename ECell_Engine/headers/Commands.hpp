@@ -371,8 +371,8 @@ namespace ECellEngine::IO
 		@param _args The arguments of the command. At position [0] is always the
 				name of the command ("playSimulation"). Then, for this command, come
 				[1] the index of the target simulation in the SimulationsManager's
-				simulation list; [2] is the index of the solver in the Simulation's
-				solvers list; [3] is the index of the module in the Simulation's
+				simulation list; [2] is the name of the solver in the Simulation's
+				solvers list; [3] is the name of the module in the Simulation's
 				modules list.
 
 		*/

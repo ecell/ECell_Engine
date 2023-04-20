@@ -18,6 +18,54 @@ void ECellEngine::Core::Simulation::AddSolver(const std::string& _solverClassNam
 	}
 }
 
+ECellEngine::Data::Module* ECellEngine::Core::Simulation::FindModule(const char* _moduleName)
+{
+	for (std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator it = modules.begin(); it != modules.end(); ++it)
+	{
+		if (it->get()->GetName() == _moduleName)
+		{
+			return it->get();
+		}
+	}
+	return nullptr;
+}
+
+const std::size_t ECellEngine::Core::Simulation::FindModuleIdx(const char* _moduleName)
+{
+	for (std::size_t i = 0; i<modules.size(); ++i)
+	{
+		if (modules[i].get()->GetName() == _moduleName)
+		{
+			return i;
+		}
+	}
+	return SIZE_MAX;
+}
+
+ECellEngine::Solvers::Solver* ECellEngine::Core::Simulation::FindSolver(const char* _solverName)
+{
+	for (std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator it = solvers.begin(); it != solvers.end(); ++it)
+	{
+		if (it->get()->GetName() == _solverName)
+		{
+			return it->get();
+		}
+	}
+	return nullptr;
+}
+
+const std::size_t ECellEngine::Core::Simulation::FindSolverIdx(const char* _solverName)
+{
+	for (std::size_t i = 0; i < solvers.size(); ++i)
+	{
+		if (solvers[i].get()->GetName() == _solverName)
+		{
+			return i;
+		}
+	}
+	return SIZE_MAX;
+}
+
 const std::pair<std::pair<bool, std::size_t>, std::pair<bool, std::size_t>>
 	ECellEngine::Core::Simulation::ScanModuleToSolverTable(const std::size_t& _moduleIdx, const std::size_t& _solverIdx)
 {
