@@ -1,6 +1,7 @@
 #pragma once
 #include "imgui_node_editor.h"
 
+#include "BinaryOperatedVector.hpp"
 #include "ModelNodeBasedViewerGlobal.hpp"
 
 namespace ECellEngine::Editor::Utility
@@ -110,7 +111,7 @@ namespace ECellEngine::Editor::Utility
 	};
 #pragma endregion
 
-#pragma region Node Pins & Links Data
+#pragma region Base Node, Pin & Link
 	/*!
 	@brief Information about connection between pins.
 	@details Note that connection (aka. link) has its own ID. This is useful
@@ -124,10 +125,20 @@ namespace ECellEngine::Editor::Utility
 		ax::NodeEditor::PinId endIds[2];
 
 		LinkData(ax::NodeEditor::PinId _startId, ax::NodeEditor::PinId _endId) :
-			id{ GetMNBVCtxtNextId()}, startIds{_startId, _startId}, endIds{_endId, _endId}
+			id{ GetMNBVCtxtNextId() }, startIds{_startId, _startId}, endIds{_endId, _endId}
 		{
 
 		}
+
+		inline operator std::size_t() { return (std::size_t)id; }
+
+		friend inline bool operator==(const LinkData& lhs, const LinkData& rhs) { (std::size_t)lhs.id == (std::size_t)rhs.id; }
+		friend inline bool operator!=(const LinkData& lhs, const LinkData& rhs) { return !(lhs == rhs); }
+
+		friend inline bool operator< (const LinkData& lhs, const LinkData& rhs) { (std::size_t)lhs.id < (std::size_t)rhs.id; }
+		friend inline bool operator> (const LinkData& lhs, const LinkData& rhs) { return rhs < lhs; }
+		friend inline bool operator<=(const LinkData& lhs, const LinkData& rhs) { return !(lhs > rhs); }
+		friend inline bool operator>=(const LinkData& lhs, const LinkData& rhs) { return !(lhs < rhs); }
 
 		/*!
 		@brief Sets the PinId @p _id as a candidate to be the start of the link
@@ -155,49 +166,6 @@ namespace ECellEngine::Editor::Utility
 			endIds[_priority] = _id;
 		}
 	};
-	
-	/*
-	@brief Information about a pin to draw in a node.
-	*/
-	struct NodePinData
-	{
-		/*!
-		@brief The id of this pin to be identifiable in the node editor.
-		*/
-		ax::NodeEditor::PinId id = 0;
-
-		ax::NodeEditor::PinKind kind = ax::NodeEditor::PinKind::Input;
-
-		PinType type = PinType_Default;
-
-		/*!
-		@brief Whether a link is connected to the pin.
-		*/
-		bool isUsed = false;
-
-		NodePinData() = default;
-
-		/*!
-		@remarks @p _pinId is incremented immeditely after use.
-		*/
-		NodePinData(std::size_t& _pinId, ax::NodeEditor::PinKind _kind, PinType _type) :
-			id{ _pinId }, kind{_kind}, type{_type}
-		{
-
-		}
-		inline operator std::size_t() { return (std::size_t)id; }
-
-		friend inline bool operator==(const NodePinData& lhs, const NodePinData& rhs) { (std::size_t)lhs.id == (std::size_t)rhs.id; }
-		friend inline bool operator!=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs == rhs); }
-
-		friend inline bool operator< (const NodePinData& lhs, const NodePinData& rhs) { (std::size_t)lhs.id < (std::size_t)rhs.id; }
-		friend inline bool operator> (const NodePinData& lhs, const NodePinData& rhs) { return rhs < lhs; }
-		friend inline bool operator<=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs > rhs); }
-		friend inline bool operator>=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs < rhs); }
-	};
-#pragma endregion
-
-#pragma region Nodes Data
 
 	struct NodeData
 	{
@@ -227,14 +195,114 @@ namespace ECellEngine::Editor::Utility
 		friend inline bool operator> (const NodeData& lhs, const NodeData& rhs) { return rhs < lhs; }
 		friend inline bool operator<=(const NodeData& lhs, const NodeData& rhs) { return !(lhs > rhs); }
 		friend inline bool operator>=(const NodeData& lhs, const NodeData& rhs) { return !(lhs < rhs); }
+
+		virtual void InputUpdate(std::size_t & _nodeInputPinId, char* _data) = 0;
+
+		virtual void InputUpdate(std::size_t & _nodeInputPinId, float _data) = 0;
+
+		virtual void OutputUpdate(std::size_t& _nodeOutputPinId) = 0;
 	};
+
+	/*
+	@brief Information about a pin to draw in a node.
+	*/
+	struct NodePinData
+	{
+		/*!
+		@brief The id of this pin to be identifiable in the node editor.
+		*/
+		ax::NodeEditor::PinId id = 0;
+
+		ax::NodeEditor::PinKind kind = ax::NodeEditor::PinKind::Input;
+
+		PinType type = PinType_Default;
+
+		NodeData* node = nullptr;
+
+		/*!
+		@brief Whether a link is connected to the pin.
+		*/
+		bool isUsed = false;
+
+		NodePinData() = default;
+
+		/*!
+		@remarks @p _pinId is incremented immeditely after use.
+		*/
+		NodePinData(std::size_t& _pinId, ax::NodeEditor::PinKind _kind, PinType _type, NodeData* _node) :
+			id{ _pinId }, kind{ _kind }, type { _type }, node{ _node }
+		{
+
+		}
+
+		inline operator std::size_t() { return (std::size_t)id; }
+
+		friend inline bool operator==(const NodePinData& lhs, const NodePinData& rhs) { (std::size_t)lhs.id == (std::size_t)rhs.id; }
+		friend inline bool operator!=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs == rhs); }
+
+		friend inline bool operator< (const NodePinData& lhs, const NodePinData& rhs) { (std::size_t)lhs.id < (std::size_t)rhs.id; }
+		friend inline bool operator> (const NodePinData& lhs, const NodePinData& rhs) { return rhs < lhs; }
+		friend inline bool operator<=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs > rhs); }
+		friend inline bool operator>=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs < rhs); }
+	};
+#pragma endregion
+
+#pragma region Derived Pin Data
+	struct NodeInputPinData : public NodePinData
+	{
+		NodeInputPinData() = default;
+
+		NodeInputPinData(std::size_t& _pinId, PinType _type, NodeData* _node):
+			NodePinData( _pinId, ax::NodeEditor::PinKind::Input, _type, _node)
+		{
+
+		}
+
+		template<class Data>
+		inline void Receive(Data _data)
+		{
+			node->InputUpdate((std::size_t&)id, _data);
+		}
+	};
+
+	struct NodeOutputPinData : public NodePinData
+	{
+		std::vector<NodeInputPinData*> subscribers;
+		
+		NodeOutputPinData() = default;
+
+		NodeOutputPinData(std::size_t& _pinId, PinType _type, NodeData* _node):
+			NodePinData( _pinId, ax::NodeEditor::PinKind::Output, _type, _node)
+		{
+
+		}
+
+		inline void AddSubscriber(NodeInputPinData* _newSubscriber)
+		{
+			subscribers.push_back(_newSubscriber);
+			node->OutputUpdate((std::size_t&)id);
+		}
+
+		template<class Data>
+		inline void Broadcast(Data _data)
+		{
+			for (std::vector<NodeInputPinData*>::iterator it = subscribers.begin(); it != subscribers.end(); ++it)
+			{
+				(*it)->Receive(_data);
+			}
+		}
+	};
+
+#pragma endregion
+
+#pragma region Derived Nodes Data
 
 	struct AssetNodeData : public NodeData
 	{
 		ECellEngine::Data::SBMLModule* data;
 
-		NodePinData inputPins[1];
-		NodePinData outputPins[4];
+		NodeInputPinData inputPins[1];
+		NodeOutputPinData outputPins[4];
 
 		unsigned char utilityState = 0;
 
@@ -245,6 +313,25 @@ namespace ECellEngine::Editor::Utility
 		NodeListBoxStringData computedParametersNLB;
 		NodeListBoxStringData reactionsNLB;
 
+		AssetNodeData(const AssetNodeData& _and) :
+			NodeData(_and), data{ _and.data },
+			inputPins{ _and.inputPins[0] },
+			outputPins{ _and.outputPins[0], _and.outputPins[1] , _and.outputPins[2] ,
+					  _and.outputPins[3] },
+			utilityState{ _and.utilityState },
+			collapsingHeadersIds{ _and.collapsingHeadersIds[0], _and.collapsingHeadersIds[1] , _and.collapsingHeadersIds[2] ,
+					  _and.collapsingHeadersIds[3] },
+			speciesNLB{ _and.speciesNLB }, simpleParametersNLB{ _and.simpleParametersNLB },
+			computedParametersNLB{ _and.computedParametersNLB }, reactionsNLB{ _and.reactionsNLB }
+		{
+			inputPins[0].node = this;
+
+			outputPins[0].node = this;
+			outputPins[1].node = this;
+			outputPins[2].node = this;
+			outputPins[3].node = this;
+		}
+
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
@@ -253,31 +340,31 @@ namespace ECellEngine::Editor::Utility
 		{
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
-			//Solver
-			inputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Solver);
-
-			//Species Collapsing header
-			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
-			outputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Species);
-
-			//Simple Parameters Collapsing header
-			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
-			outputPins[1] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Parameter);
-
-			//Computed Parameters Collapsing header
-			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
-			outputPins[2] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Parameter);
-
-			//Reactions Collapsing header
-			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
-			outputPins[3] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Reaction);
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);//Solver
+			
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Species Collapsing header
+			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameters Collapsing header
+			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters Collapsing header
+			outputPins[3] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Reaction, this);//Reactions Collapsing header
+			
+			collapsingHeadersIds[0] = GetMNBVCtxtNextId();//Species Collapsing header
+			collapsingHeadersIds[1] = GetMNBVCtxtNextId();//Simple Parameters Collapsing header
+			collapsingHeadersIds[2] = GetMNBVCtxtNextId();//Computed Parameters Collapsing header
+			collapsingHeadersIds[3] = GetMNBVCtxtNextId();//Reactions Collapsing header
 
 			//Initialize the list boxes data
 			speciesNLB = { &data->GetAllSpecies(), GetMNBVCtxtNextId() };
 			simpleParametersNLB = { &data->GetAllSimpleParameter(), GetMNBVCtxtNextId() };
 			computedParametersNLB = { &data->GetAllComputedParameter(), GetMNBVCtxtNextId() };
 			reactionsNLB = { &data->GetAllReaction(), GetMNBVCtxtNextId() };
+
 		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override;
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {}
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};
 
 	struct ComputedParameterNodeData : public NodeData
@@ -289,8 +376,8 @@ namespace ECellEngine::Editor::Utility
 
 		ECellEngine::Data::ComputedParameter* data;
 
-		NodePinData inputPins[10];
-		NodePinData outputPins[9];
+		NodeInputPinData inputPins[10];
+		NodeOutputPinData outputPins[9];
 
 		unsigned char utilityState = 0;
 
@@ -350,60 +437,66 @@ namespace ECellEngine::Editor::Utility
 			NodeData(), data{_data}
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
-
+			
 			//ModelLinks Collapsing header
-			inputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Default);
-			outputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Default);
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
 
 			//Asset
-			inputPins[1] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Parameter);
+			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 
 			//Computed Parameters section
-			inputPins[2] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Parameter);
-			outputPins[1] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Parameter);
+			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
+			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
 			//lbsData[0] = { /*list of computed parameters where this one appears*/, GetMNBVCtxtNextId()}
 
 			//Kinetic Laws section
-			inputPins[3] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Parameter);
-			outputPins[2] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Parameter);
+			inputPins[3] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
+			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
 			//lbsData[1] = { /*list of kinetic laws where this one appears*/, GetMNBVCtxtNextId()}
 
 			//Data Fields collapsing header
-			inputPins[4] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Default);
-			outputPins[3] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Default);
+			inputPins[4] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
+			outputPins[3] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
 
 			//Equation Operands collapsing header
-			inputPins[5] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Default);
-			outputPins[4] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Default);
+			inputPins[5] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
+			outputPins[4] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 			collapsingHeadersIds[4] = GetMNBVCtxtNextId();
 
 			//Node String List Box for Species Operands
-			inputPins[6] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Species);
-			outputPins[5] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Species);
+			inputPins[6] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
+			outputPins[5] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);
 			nslbData[2] = { &speciesOperands, GetMNBVCtxtNextId() };
 			
 			//Node String List Box for Simple Parameter Operands
-			inputPins[7] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Parameter);
-			outputPins[6] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Parameter);
+			inputPins[7] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
+			outputPins[6] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::SimpleParameter>(simpleParametersOperands);
 			nslbData[3] = { &simpleParametersOperands, GetMNBVCtxtNextId() };
 			
 			//Node String List Box for Computed Parameter Operands
-			inputPins[8] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Parameter);
-			outputPins[7] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Parameter);
+			inputPins[8] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
+			outputPins[7] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::ComputedParameter>(computedParametersOperands);
 			nslbData[4] = { &computedParametersOperands, GetMNBVCtxtNextId() };
 			
 			//Value Float string of the computation of the formula
 			//The user cannot directly change the value of the result
-			inputPins[9] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_ValueFloat);
-			outputPins[8] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_ValueFloat);
+			inputPins[9] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
+			outputPins[8] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};
 
 	struct ReactionNodeData : public NodeData
@@ -415,8 +508,8 @@ namespace ECellEngine::Editor::Utility
 
 		ECellEngine::Data::Reaction* data;
 
-		NodePinData inputPins[10];
-		NodePinData outputPins[9];
+		NodeInputPinData inputPins[10];
+		NodeOutputPinData outputPins[9];
 
 		unsigned char utilityState = 0;
 
@@ -468,6 +561,25 @@ namespace ECellEngine::Editor::Utility
 			nslbData[2].data = &speciesOperands;
 			nslbData[3].data = &simpleParametersOperands;
 			nslbData[4].data = &computedParametersOperands;
+
+			inputPins[0].node = this;
+			inputPins[1].node = this;
+			inputPins[2].node = this;
+			inputPins[3].node = this;
+			inputPins[4].node = this;
+			inputPins[5].node = this;
+			inputPins[6].node = this;
+			inputPins[7].node = this;
+			inputPins[8].node = this;
+
+			outputPins[0].node = this;
+			outputPins[1].node = this;
+			outputPins[2].node = this;
+			outputPins[4].node = this;
+			outputPins[5].node = this;
+			outputPins[6].node = this;
+			outputPins[7].node = this;
+			outputPins[8].node = this;
 		}
 
 		/*!
@@ -479,57 +591,63 @@ namespace ECellEngine::Editor::Utility
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			//ModelLinks Collapsing header
-			inputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Default);
-			outputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Default);
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
 
 			//Asset
-			inputPins[1] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Reaction);
+			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Reaction, this);
 
 			//Reactants section
-			inputPins[2] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Species);
-			outputPins[1] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Species);
+			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
+			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
 			nslbData[0] = { &_data->GetReactants() , GetMNBVCtxtNextId() };
 
 			//Products section
-			inputPins[3] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Species);
-			outputPins[2] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Species);
+			inputPins[3] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
+			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
 			nslbData[1] = { &data->GetProducts(), GetMNBVCtxtNextId() };
 
 			//Kinetic Law collapsing header
-			inputPins[4] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Default);
-			outputPins[3] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Default);
+			inputPins[4] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
+			outputPins[3] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
 
 			//Kinetic Law Operands collapsing header
-			inputPins[5] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Default);
-			outputPins[4] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Default);
+			inputPins[5] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
+			outputPins[4] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 			collapsingHeadersIds[4] = GetMNBVCtxtNextId();
 
 			//Node String List Box for Species Operands, from Kinetic Law
-			inputPins[6] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Species);
-			outputPins[5] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Species);
+			inputPins[6] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
+			outputPins[5] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);
 			nslbData[2] = { &speciesOperands, GetMNBVCtxtNextId() };
 
 			//Node String List Box for Simple Parameter Operands, from Kinetic Law
-			inputPins[7] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Parameter);
-			outputPins[6] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Parameter);
+			inputPins[7] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
+			outputPins[6] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::SimpleParameter>(simpleParametersOperands);
 			nslbData[3] = { &simpleParametersOperands, GetMNBVCtxtNextId() };
 
 			//Node String List Box for Computed Parameter Operands, from Kinetic Law
-			inputPins[8] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Parameter);
-			outputPins[7] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Parameter);
+			inputPins[8] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
+			outputPins[7] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::ComputedParameter>(computedParametersOperands);
 			nslbData[4] = { &computedParametersOperands, GetMNBVCtxtNextId() };
 
 			//Kinetic Law Value Float field (must be Read Only)
-			inputPins[9] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_ValueFloat);
-			outputPins[8] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_ValueFloat);
+			inputPins[9] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
+			outputPins[8] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {}
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};
 
 	struct SimpleParameterNodeData : public NodeData
@@ -541,14 +659,38 @@ namespace ECellEngine::Editor::Utility
 
 		ECellEngine::Data::SimpleParameter* data;
 
-		NodePinData inputPins[6];
-		NodePinData outputPins[5];
+		NodeInputPinData inputPins[6];
+		NodeOutputPinData outputPins[5];
 
 		unsigned char utilityState = 0;
 
 		std::size_t collapsingHeadersIds[4];
 
 		NodeListBoxStringData nslbData[2];
+
+		SimpleParameterNodeData(const SimpleParameterNodeData& _rnd) :
+			NodeData(_rnd), data{ _rnd.data },
+			inputPins{ _rnd.inputPins[0], _rnd.inputPins[1] , _rnd.inputPins[2] ,
+					  _rnd.inputPins[3] , _rnd.inputPins[4] , _rnd.inputPins[5]},
+			outputPins{ _rnd.outputPins[0], _rnd.outputPins[1] , _rnd.outputPins[2] ,
+					  _rnd.outputPins[3] , _rnd.outputPins[4]},
+			utilityState{ _rnd.utilityState },
+			collapsingHeadersIds{ _rnd.collapsingHeadersIds[0], _rnd.collapsingHeadersIds[1] , _rnd.collapsingHeadersIds[2] ,
+					  _rnd.collapsingHeadersIds[3]},
+			nslbData{ _rnd.nslbData[0], _rnd.nslbData[1]}
+		{
+			inputPins[0].node = this;
+			inputPins[1].node = this;
+			inputPins[2].node = this;
+			inputPins[3].node = this;
+			inputPins[4].node = this;
+			inputPins[5].node = this;
+
+			outputPins[0].node = this;
+			outputPins[1].node = this;
+			outputPins[2].node = this;
+			outputPins[4].node = this;
+		}
 
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
@@ -559,34 +701,40 @@ namespace ECellEngine::Editor::Utility
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			//ModelLinks Collapsing header
-			inputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Default);
-			outputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Default);
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
 
 			//Asset
-			inputPins[1] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Parameter);
+			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 
 			//Computed Parameters section
-			inputPins[2] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Parameter);
-			outputPins[1] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Parameter);
+			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
+			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
 			//lbsData[0] = { /*list of computed parameters where this one appears*/, GetMNBVCtxtNextId()}
 
 			//Kinetic Laws section
-			inputPins[3] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Parameter);
-			outputPins[2] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Parameter);
+			inputPins[3] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
+			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
 			//lbsData[1] = { /*list of kinetic laws where this one appears*/, GetMNBVCtxtNextId()}
 			
 			//Data Fields collapsing header
-			inputPins[4] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Default);
-			outputPins[3] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Default);
+			inputPins[4] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
+			outputPins[3] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
 			
 			//Value Float field
-			inputPins[5] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_ValueFloat);
-			outputPins[4] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_ValueFloat);
+			inputPins[5] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
+			outputPins[4] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};
 
 	struct SolverNodeData : public NodeData
@@ -598,8 +746,18 @@ namespace ECellEngine::Editor::Utility
 
 		ECellEngine::Solvers::Solver* data;
 
-		NodePinData inputPins[1];
-		NodePinData outputPins[1];
+		NodeInputPinData inputPins[1];
+		NodeOutputPinData outputPins[1];
+
+		SolverNodeData(const SolverNodeData& _rnd) :
+			NodeData(_rnd), data{ _rnd.data },
+			inputPins{ _rnd.inputPins[0]},
+			outputPins{ _rnd.outputPins[0]}
+		{
+			inputPins[0].node = this;
+
+			outputPins[0].node = this;
+		}
 
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
@@ -610,10 +768,17 @@ namespace ECellEngine::Editor::Utility
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
 			//Not used for now but added for homogeneity
-			inputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Solver);
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);
 
-			outputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Solver);
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);
+
 		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {}
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};
 
 	struct SpeciesNodeData : public NodeData
@@ -625,12 +790,40 @@ namespace ECellEngine::Editor::Utility
 
 		ECellEngine::Data::Species* data;
 
-		NodePinData inputPins[8];
-		NodePinData outputPins[7];
+		NodeInputPinData inputPins[8];
+		NodeOutputPinData outputPins[7];
 
 		unsigned char utilityState = 0;
 
 		std::size_t collapsingHeadersIds[2];
+
+		SpeciesNodeData(const SpeciesNodeData& _rnd) :
+			NodeData(_rnd), data{ _rnd.data },
+			inputPins{ _rnd.inputPins[0], _rnd.inputPins[1] , _rnd.inputPins[2] ,
+					  _rnd.inputPins[3] , _rnd.inputPins[4] , _rnd.inputPins[5],
+					  _rnd.inputPins[6] , _rnd.inputPins[7]},
+			outputPins{ _rnd.outputPins[0], _rnd.outputPins[1] , _rnd.outputPins[2] ,
+					  _rnd.outputPins[3] , _rnd.outputPins[4] , _rnd.outputPins[5],
+					  _rnd.outputPins[6]},
+			utilityState{ _rnd.utilityState },
+			collapsingHeadersIds{ _rnd.collapsingHeadersIds[0], _rnd.collapsingHeadersIds[1]}
+		{
+			inputPins[0].node = this;
+			inputPins[1].node = this;
+			inputPins[2].node = this;
+			inputPins[3].node = this;
+			inputPins[4].node = this;
+			inputPins[5].node = this;
+			inputPins[6].node = this;
+			inputPins[7].node = this;
+
+			outputPins[0].node = this;
+			outputPins[1].node = this;
+			outputPins[2].node = this;
+			outputPins[4].node = this;
+			outputPins[5].node = this;
+			outputPins[6].node = this;
+		}
 
 		SpeciesNodeData(ECellEngine::Data::Species* _data) :
 			NodeData(), data{_data}
@@ -643,36 +836,42 @@ namespace ECellEngine::Editor::Utility
 			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
 
 			//Collapsing Header Model Links
-			inputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Default);
-			outputPins[0] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Default);
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 
 			//Asset
-			inputPins[1] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Species);
+			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 
 			//Computed parameters equation
-			inputPins[2] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Species);
-			outputPins[1] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Species);
+			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
+			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 
 			//Reactions's Reactants
-			inputPins[3] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Species);
-			outputPins[2] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Species);
+			inputPins[3] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
+			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 
 			//Reaction's Products
-			inputPins[4] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Species);
-			outputPins[3] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Species);
+			inputPins[4] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
+			outputPins[3] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 
 			//Reaction's Kinetic Law
-			inputPins[5] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Species);
-			outputPins[4] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Species);
+			inputPins[5] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
+			outputPins[4] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 
 			//Collapsing Header Data Fields
-			inputPins[6] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_Default);
-			outputPins[5] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_Default);
+			inputPins[6] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
+			outputPins[5] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 
 			//Quantity
-			inputPins[7] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Input, PinType_ValueFloat);
-			outputPins[6] = NodePinData(GetMNBVCtxtNextId(), ax::NodeEditor::PinKind::Output, PinType_ValueFloat);
+			inputPins[7] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
+			outputPins[6] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};
 
 #pragma endregion

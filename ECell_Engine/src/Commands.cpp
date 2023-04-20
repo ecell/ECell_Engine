@@ -205,7 +205,9 @@ void ECellEngine::IO::StopSimulationCommand::execute(const std::vector<std::stri
 
 void ECellEngine::IO::TryAttachSolverToModuleCommand::execute(const std::vector<std::string>& _args)
 {
-	receiver->GetSimulation(std::stoi(_args[1]))->TryAttachSolverToModule(std::stoi(_args[2]), std::stoi(_args[3]));
+	std::size_t moduleIdx = receiver->GetSimulation(std::stoi(_args[1]))->FindModuleIdx(_args[3].c_str());
+	std::size_t solverIdx = receiver->GetSimulation(std::stoi(_args[1]))->FindSolverIdx(_args[2].c_str());
+	receiver->GetSimulation(std::stoi(_args[1]))->TryAttachSolverToModule(solverIdx, moduleIdx);
 }
 
 #pragma endregion

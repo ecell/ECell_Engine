@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BinaryOperatedVector.hpp"
+#include "CommandsManager.hpp"
 #include "SBMLModule.hpp" //eventually includes DataState.hpp
 #include "NodeEditorStyle.hpp"
 
@@ -28,6 +29,11 @@ namespace ECellEngine::Editor::Utility
 	@details It has for consequence to draw a solver node in the editor.
 	*/
 	void AddSolverNode(ECellEngine::Solvers::Solver* _simulationSource);
+
+	NodeData* FindNodeInAll(const std::size_t _id);
+
+	template<class ForwardIt>
+	NodeData* FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last);
 
 	NodePinData* FindNodePinInAll(const std::size_t _id);
 
@@ -118,6 +124,8 @@ namespace ECellEngine::Editor::Utility
 
 	bool IsDynamicLinkAuthorized(PinType _startPinType, PinType _endPinType);
 
+	void QueueEngineTASToMCmd(const char* _moduleName, const char* _solverName);
+
 	/*!
 	@brief Removes as asset node from ModelNodeBasedViewerContext::assetNodes
 	@param _idx The index of the node to erase from ModelNodeBasedViewerContext::assetNodes.
@@ -125,5 +133,7 @@ namespace ECellEngine::Editor::Utility
 	void RemoveAssetNode(const std::size_t _idx);
 
 	void SetCurrentMNBVContext(ModelNodeBasedViewerContext* _ctxt);
+
+	void SendEngineTASToMCmd(const char* _simuIdx, CommandsManager* _cmdsManager);
 }
 

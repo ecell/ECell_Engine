@@ -15,6 +15,7 @@ namespace ECellEngine::Editor::Utility
 
 		ECellEngine::Editor::Utility::NodeEditorStyle style;
 
+#pragma region Nodes Lists
 		/*!
 		@brief The list of asset nodes in this viewer.
 		@details It contains the information used to draw the nodes corresponding
@@ -60,13 +61,29 @@ namespace ECellEngine::Editor::Utility
 				 simulation space.
 		*/
 		std::vector<ECellEngine::Editor::Utility::SpeciesNodeData> speciesNodes;
+#pragma endregion
 
-		std::vector<ECellEngine::Editor::Utility::LinkData> links;// List of live links. It is dynamic unless you want to create read-only view over nodes.
+		std::vector<ECellEngine::Editor::Utility::LinkData> links;
 
 		bool authorizedDynamicLinks[PinType_Count][PinType_Count]{};
 
+		struct EngineTASToMCmdParameter
+		{
+			const char* moduleName;
+			const char* solverName;
+
+			EngineTASToMCmdParameter(const char* _moduleName, const char* _solverName) :
+				moduleName{_moduleName}, solverName{ _solverName }
+			{
+
+			}
+		};
+
+		unsigned short countTASToMCmds;
+		std::vector<EngineTASToMCmdParameter> TASToMCmds;
+
 		ModelNodeBasedViewerContext() :
-			uniqueId{ 0 }
+			uniqueId{ 0 }, countTASToMCmds{ 0 }
 		{
 			authorizedDynamicLinks[PinType_Solver][PinType_Solver] = true;
 		}

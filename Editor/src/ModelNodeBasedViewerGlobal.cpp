@@ -2,9 +2,79 @@
 
 static ECellEngine::Editor::Utility::ModelNodeBasedViewerContext* s_mnbvCtxt = nullptr;
 
+void ECellEngine::Editor::Utility::AddAssetNode(ECellEngine::Data::Module* _module)
+{
+    s_mnbvCtxt->assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeData(_module));
+}
+
+void ECellEngine::Editor::Utility::AddSolverNode(ECellEngine::Solvers::Solver* _solver)
+{
+    s_mnbvCtxt->solverNodes.push_back(ECellEngine::Editor::Utility::SolverNodeData(_solver));
+}
+
 void ECellEngine::Editor::Utility::CurrentMNBVContextDraw(ECellEngine::Data::DataState* _dataState)
 {
     s_mnbvCtxt->Draw(_dataState);
+}
+
+ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeInAll(const std::size_t _id)
+{
+    NodeData* itND = nullptr;
+
+    //Search in the list of Asset Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Computed Parameter Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->computedParameterNodes.begin(), s_mnbvCtxt->computedParameterNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Reaction Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->reactionNodes.begin(), s_mnbvCtxt->reactionNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Simple Parameter Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->simpleParameterNodes.begin(), s_mnbvCtxt->simpleParameterNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Solver Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->solverNodes.begin(), s_mnbvCtxt->solverNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Species Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->speciesNodes.begin(), s_mnbvCtxt->speciesNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    return nullptr;
+}
+
+template<class ForwardIt>
+ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
+{
+    if (_first != _last)
+    {   
+        return &*ECellEngine::Data::BinaryOperation::LowerBound(_first, _last, _id);
+ 
+    }
+    return nullptr;
 }
 
 ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNodePinInAll(const std::size_t _id)
@@ -140,18 +210,24 @@ bool ECellEngine::Editor::Utility::IsDynamicLinkAuthorized(PinType _startPinType
     return s_mnbvCtxt->authorizedDynamicLinks[_startPinType][_endPinType];
 }
 
-void ECellEngine::Editor::Utility::AddAssetNode(ECellEngine::Data::Module* _module)
+void ECellEngine::Editor::Utility::QueueEngineTASToMCmd(const char* _moduleName, const char* _solverName)
 {
-    s_mnbvCtxt->assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeData(_module));
-}
-
-void ECellEngine::Editor::Utility::AddSolverNode(ECellEngine::Solvers::Solver* _solver)
-{
-    s_mnbvCtxt->solverNodes.push_back(ECellEngine::Editor::Utility::SolverNodeData(_solver));
+    s_mnbvCtxt->TASToMCmds.insert(s_mnbvCtxt->TASToMCmds.begin(),
+        ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::EngineTASToMCmdParameter(_moduleName, _solverName));
+    s_mnbvCtxt->countTASToMCmds++;
 }
 
 void ECellEngine::Editor::Utility::RemoveAssetNode(const std::size_t _idx)
 {
     auto it = s_mnbvCtxt->assetNodes.begin() + _idx;
     s_mnbvCtxt->assetNodes.erase(it);
+}
+
+void ECellEngine::Editor::Utility::SendEngineTASToMCmd(const char* _simuIdx, CommandsManager* _cmdsManager)
+{
+    while (s_mnbvCtxt->countTASToMCmds > 0)
+    {
+        _cmdsManager->interpretCommand({ "tryAttachSolver", _simuIdx, s_mnbvCtxt->TASToMCmds.back().solverName, s_mnbvCtxt->TASToMCmds.back().moduleName });
+        s_mnbvCtxt->countTASToMCmds--;
+    }
 }

@@ -38,6 +38,10 @@ namespace ECellEngine::Core
 
 		/*!
 		@brief The list of imported assets.
+		@warning For the search API ::FindModuleIdx(const char* _moduleName) to
+				 work accordingly, the number of module in this list must be less
+				 or equal to SIZE_MAX-1 (the highest value of std::size_t). This
+				 is: modules.size <= SIZE_MAX-1
 		*/
 		std::vector<std::shared_ptr<ECellEngine::Data::Module>> modules;
 		
@@ -45,6 +49,10 @@ namespace ECellEngine::Core
 		@brief The list of added solvers in the simulation space.
 		@remarks A solver added to a simulation but not attached to any solver
 				 will have no impact on the simulation.
+		@warning For the search API ::FindSolverIdx(const char* _solverName) to
+				 work accordingly, the number of solver in this list must be less
+				 or equal to SIZE_MAX-1 (the highest value of std::size_t). This
+				 is: solvers.size <= SIZE_MAX-1
 		*/
 		std::vector<std::shared_ptr<Solver>> solvers;
 
@@ -136,6 +144,52 @@ namespace ECellEngine::Core
 		{
 			return solvers;
 		}
+
+		/*
+		@brief Finds the module which name matches the argument @p _moduleName.
+		@details Implements a naïve linear search from the start of the list
+				 towards the end.
+		@param _moduleName the name of the module to look for.
+		@returns The pointer to the first encounterd module which name matches
+				 the argument @p _moduleName. Returns @a nullptr if no match
+				 was found.
+		*/
+		ECellEngine::Data::Module* FindModule(const char* _moduleName);
+
+		/*
+		@brief Finds the index of the module which name matches the argument
+				@p _moduleName.
+		@details Implements a naïve linear search from the start of the list
+				 towards the end.
+		@param _moduleName the name of the module which index to look for.
+		@returns The index of the first encounterd module which name matches
+				 the argument @p _moduleName. Returns @a SIZE_MAX if no match
+				 was found.
+		*/
+		const std::size_t FindModuleIdx(const char* _moduleName);
+
+		/*
+		@brief Finds the solver which name matches the argument @p _solverName.
+		@details Implements a naïve linear search from the start of the list
+				 towards the end.
+		@param _solverName the name of the solver to look for.
+		@returns The pointer to the first encounterd solver which name matches
+				 the argument @p _solverName. Returns @a nullptr if no match
+				 was found.
+		*/
+		ECellEngine::Solvers::Solver* FindSolver(const char* _solverName);
+
+		/*
+		@brief Finds the index of the solver which name matches the argument
+				@p _solverName.
+		@details Implements a naïve linear search from the start of the list
+				 towards the end.
+		@param _solverName the name of the solver which index to look for.
+		@returns The index of the first encounterd solver which name matches
+				 the argument @p _solverName. Returns @a SIZE_MAX if no match
+				 was found.
+		*/
+		const std::size_t FindSolverIdx(const char* _solverName);
 
 		/*!
 		@brief Removes (destroy) the module at position @p _idx in ::modules
