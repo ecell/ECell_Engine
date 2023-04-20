@@ -22,7 +22,7 @@ ECellEngine::Data::Module* ECellEngine::Core::Simulation::FindModule(const char*
 {
 	for (std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator it = modules.begin(); it != modules.end(); ++it)
 	{
-		if (it->get()->GetName() == _moduleName)
+		if (std::strcmp(it->get()->GetName(), _moduleName) == 0)
 		{
 			return it->get();
 		}
@@ -34,7 +34,7 @@ const std::size_t ECellEngine::Core::Simulation::FindModuleIdx(const char* _modu
 {
 	for (std::size_t i = 0; i<modules.size(); ++i)
 	{
-		if (modules[i].get()->GetName() == _moduleName)
+		if (std::strcmp(modules[i].get()->GetName(), _moduleName) == 0)
 		{
 			return i;
 		}
@@ -46,7 +46,7 @@ ECellEngine::Solvers::Solver* ECellEngine::Core::Simulation::FindSolver(const ch
 {
 	for (std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator it = solvers.begin(); it != solvers.end(); ++it)
 	{
-		if (it->get()->GetName() == _solverName)
+		if (std::strcmp(it->get()->GetName(), _solverName) == 0)
 		{
 			return it->get();
 		}
@@ -58,7 +58,7 @@ const std::size_t ECellEngine::Core::Simulation::FindSolverIdx(const char* _solv
 {
 	for (std::size_t i = 0; i < solvers.size(); ++i)
 	{
-		if (solvers[i].get()->GetName() == _solverName)
+		if (std::strcmp(solvers[i].get()->GetName(), _solverName) == 0)
 		{
 			return i;
 		}
