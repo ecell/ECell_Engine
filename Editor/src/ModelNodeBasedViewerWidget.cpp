@@ -58,6 +58,8 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
 
         ECellEngine::Editor::Utility::CurrentMNBVContextDraw(dataState);
 
+        ECellEngine::Editor::Utility::SendEngineTASToMCmd("0", editor.engine.GetCommandsManager());
+
         // End of interaction with editor.
         ax::NodeEditor::End();
         ECellEngine::Editor::Utility::SetCurrentMNBVContext(nullptr);

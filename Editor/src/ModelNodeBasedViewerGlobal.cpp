@@ -2,6 +2,16 @@
 
 static ECellEngine::Editor::Utility::ModelNodeBasedViewerContext* s_mnbvCtxt = nullptr;
 
+void ECellEngine::Editor::Utility::AddAssetNode(ECellEngine::Data::Module* _module)
+{
+    s_mnbvCtxt->assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeData(_module));
+}
+
+void ECellEngine::Editor::Utility::AddSolverNode(ECellEngine::Solvers::Solver* _solver)
+{
+    s_mnbvCtxt->solverNodes.push_back(ECellEngine::Editor::Utility::SolverNodeData(_solver));
+}
+
 void ECellEngine::Editor::Utility::CurrentMNBVContextDraw(ECellEngine::Data::DataState* _dataState)
 {
     s_mnbvCtxt->Draw(_dataState);
@@ -200,18 +210,24 @@ bool ECellEngine::Editor::Utility::IsDynamicLinkAuthorized(PinType _startPinType
     return s_mnbvCtxt->authorizedDynamicLinks[_startPinType][_endPinType];
 }
 
-void ECellEngine::Editor::Utility::AddAssetNode(ECellEngine::Data::Module* _module)
+void ECellEngine::Editor::Utility::QueueEngineTASToMCmd(const char* _moduleName, const char* _solverName)
 {
-    s_mnbvCtxt->assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeData(_module));
-}
-
-void ECellEngine::Editor::Utility::AddSolverNode(ECellEngine::Solvers::Solver* _solver)
-{
-    s_mnbvCtxt->solverNodes.push_back(ECellEngine::Editor::Utility::SolverNodeData(_solver));
+    s_mnbvCtxt->TASToMCmds.insert(s_mnbvCtxt->TASToMCmds.begin(),
+        ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::EngineTASToMCmdParameter(_moduleName, _solverName));
+    s_mnbvCtxt->countTASToMCmds++;
 }
 
 void ECellEngine::Editor::Utility::RemoveAssetNode(const std::size_t _idx)
 {
     auto it = s_mnbvCtxt->assetNodes.begin() + _idx;
     s_mnbvCtxt->assetNodes.erase(it);
+}
+
+void ECellEngine::Editor::Utility::SendEngineTASToMCmd(const char* _simuIdx, CommandsManager* _cmdsManager)
+{
+    while (s_mnbvCtxt->countTASToMCmds > 0)
+    {
+        _cmdsManager->interpretCommand({ "tryAttachSolver", _simuIdx, s_mnbvCtxt->TASToMCmds.back().solverName, s_mnbvCtxt->TASToMCmds.back().moduleName });
+        s_mnbvCtxt->countTASToMCmds--;
+    }
 }
