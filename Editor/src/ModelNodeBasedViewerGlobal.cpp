@@ -7,6 +7,66 @@ void ECellEngine::Editor::Utility::CurrentMNBVContextDraw(ECellEngine::Data::Dat
     s_mnbvCtxt->Draw(_dataState);
 }
 
+ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeInAll(const std::size_t _id)
+{
+    NodeData* itND = nullptr;
+
+    //Search in the list of Asset Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Computed Parameter Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->computedParameterNodes.begin(), s_mnbvCtxt->computedParameterNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Reaction Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->reactionNodes.begin(), s_mnbvCtxt->reactionNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Simple Parameter Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->simpleParameterNodes.begin(), s_mnbvCtxt->simpleParameterNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Solver Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->solverNodes.begin(), s_mnbvCtxt->solverNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Species Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->speciesNodes.begin(), s_mnbvCtxt->speciesNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    return nullptr;
+}
+
+template<class ForwardIt>
+ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
+{
+    if (_first != _last)
+    {   
+        return &*ECellEngine::Data::BinaryOperation::LowerBound(_first, _last, _id);
+ 
+    }
+    return nullptr;
+}
+
 ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNodePinInAll(const std::size_t _id)
 {
     NodePinData* itNPD = nullptr;

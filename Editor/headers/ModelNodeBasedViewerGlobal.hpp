@@ -29,6 +29,11 @@ namespace ECellEngine::Editor::Utility
 	*/
 	void AddSolverNode(ECellEngine::Solvers::Solver* _simulationSource);
 
+	NodeData* FindNodeInAll(const std::size_t _id);
+
+	template<class ForwardIt>
+	NodeData* FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last);
+
 	NodePinData* FindNodePinInAll(const std::size_t _id);
 
 	template<class ForwardIt>
