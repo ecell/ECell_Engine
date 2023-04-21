@@ -294,7 +294,7 @@ bool ECellEngine::IO::TryAttachSolverToModuleCommand::execute(const std::vector<
 		return false;
 	}
 
-	if (std::stoi(_args[1]) >= receiver->CountPlayingSimulations())
+	if (std::stoi(_args[1]) >= receiver->CountSimulations())
 	{
 		ECellEngine::Logging::Logger::GetSingleton().LogError("TryAttachSolverToModuleCommand Failed: Tried to access a simulation that does not exist.");
 		return false;
