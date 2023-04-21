@@ -201,7 +201,6 @@ void ECellEngine::Editor::Utility::SetCurrentMNBVContext(ECellEngine::Editor::Ut
 
 std::size_t& ECellEngine::Editor::Utility::GetMNBVCtxtNextId()
 {
-    ECellEngine::Logging::Logger::GetSingleton().LogDebug("GetMNBVCtxtNextId: " + std::to_string(s_mnbvCtxt->uniqueId));
     return ++(s_mnbvCtxt->uniqueId);
 }
 
