@@ -19,6 +19,6 @@ namespace ECellEngine::IO
 		}
 
 	public:
-		virtual void execute(const std::vector<std::string>& _args) override = 0;
+		virtual bool execute(const std::vector<std::string>& _args) override = 0;
 	};
 }

@@ -54,8 +54,10 @@ namespace ECellEngine::IO
 				it if found.
 		@param _cmdSplit The command content. The first element should be the
 					command's name.
+		@return True if the interpretation and execution of the command succeeds.
+				False, otherwise.
 		*/
-		void interpretCommand(std::vector<std::string> const& _cmdSplit);
+		bool interpretCommand(std::vector<std::string> const& _cmdSplit);
 
 		/*
 		@brief Adds @p _command to the register.

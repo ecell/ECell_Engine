@@ -38,7 +38,8 @@ namespace ECellEngine::IO
 		@param[in] _args The arguments of the command. By default _args[0] is the
 					name of the command. So the actual arguments are store from index
 					1 onward.
+		@return True if the execution succeeds. False, otherwise.
 		*/
-		virtual void execute(const std::vector<std::string>& _args) = 0;
+		virtual bool execute(const std::vector<std::string>& _args) = 0;
 	};
 }

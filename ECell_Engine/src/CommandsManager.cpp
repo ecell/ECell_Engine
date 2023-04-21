@@ -1,6 +1,6 @@
 #include "CommandsManager.hpp"
 
-void ECellEngine::IO::CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit)
+bool ECellEngine::IO::CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit)
 {
 	std::shared_ptr<Command> matchingCommand = tryGetRegisteredCommand(_cmdSplit[0]);
 	std::string msg = "Command: ";
@@ -12,12 +12,13 @@ void ECellEngine::IO::CommandsManager::interpretCommand(std::vector<std::string>
 			msg += " " + _cmdSplit[i];
 		}
 		ECellEngine::Logging::Logger::GetSingleton().LogTrace(msg);
-		matchingCommand->execute(_cmdSplit);
+		return matchingCommand->execute(_cmdSplit);
 	}
 	else
 	{
 		msg += _cmdSplit[0] +  " doesn't exist!";
 		ECellEngine::Logging::Logger::GetSingleton().LogError(msg);
+		return false;
 	}
 }
 

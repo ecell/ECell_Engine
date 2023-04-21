@@ -226,7 +226,7 @@ namespace ECellEngine::IO
 				[1] the index of the target simulation in the SimulationsManager's
 				simulation list; [2] the path as a string pointing to the module's file.
 		*/
-		void execute(const std::vector<std::string>& _args) override;
+		bool execute(const std::vector<std::string>& _args) override;
 	};
 
 	/*
@@ -247,7 +247,7 @@ namespace ECellEngine::IO
 				[1] the index of the target simulation in the SimulationsManager's
 				simulation list; [2] the name of the kind of solver we wish to add.
 		*/
-		void execute(const std::vector<std::string>& _args) override;
+		bool execute(const std::vector<std::string>& _args) override;
 	};
 	
 	/*
@@ -268,7 +268,7 @@ namespace ECellEngine::IO
 				[1] the index of the target simulation in the SimulationsManager's
 				playing simulation list.
 		*/
-		void execute(const std::vector<std::string>& _args) override;
+		bool execute(const std::vector<std::string>& _args) override;
 	};
 	
 	/*
@@ -289,7 +289,7 @@ namespace ECellEngine::IO
 				[1] the index of the target simulation in the SimulationsManager's
 				simulation list.
 		*/
-		void execute(const std::vector<std::string>& _args) override;
+		bool execute(const std::vector<std::string>& _args) override;
 	};
 
 	/*
@@ -310,7 +310,7 @@ namespace ECellEngine::IO
 				come [1] the index of the target simulation in the SimulationsManager's
 				simulation list; [2] the delta time as a float of the step we wish to take.
 		*/
-		void execute(const std::vector<std::string>& _args) override;
+		bool execute(const std::vector<std::string>& _args) override;
 	};
 
 	/*
@@ -331,7 +331,7 @@ namespace ECellEngine::IO
 				come [1] the index of the target simulation in the SimulationsManager's
 				simulation list; [2] the delta time as a float of the step we wish to take.
 		*/
-		void execute(const std::vector<std::string>& _args) override;
+		bool execute(const std::vector<std::string>& _args) override;
 	};
 
 	/*
@@ -352,7 +352,7 @@ namespace ECellEngine::IO
 				[1] the index of the target simulation in the SimulationsManager's
 				playing simulation list.
 		*/
-		void execute(const std::vector<std::string>& _args) override;
+		bool execute(const std::vector<std::string>& _args) override;
 	};
 
 	/*
@@ -376,7 +376,7 @@ namespace ECellEngine::IO
 				modules list.
 
 		*/
-		void execute(const std::vector<std::string>& _args) override;
+		bool execute(const std::vector<std::string>& _args) override;
 	};
 
 #pragma endregion
