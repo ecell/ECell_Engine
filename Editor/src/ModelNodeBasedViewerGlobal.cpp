@@ -189,9 +189,9 @@ ImVec4* ECellEngine::Editor::Utility::GetNodeColors(NodeType _nodeType)
     return s_mnbvCtxt->style.nodeColors[_nodeType];
 }
 
-ImVec4* ECellEngine::Editor::Utility::GetPinColors(PinType _nodeType)
+ImVec4* ECellEngine::Editor::Utility::GetPinColors(PinType _pinType)
 {
-    return s_mnbvCtxt->style.pinColors[_nodeType];
+    return s_mnbvCtxt->style.pinColors[_pinType];
 }
 
 void ECellEngine::Editor::Utility::SetCurrentMNBVContext(ECellEngine::Editor::Utility::ModelNodeBasedViewerContext* _ctxt)

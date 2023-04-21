@@ -1,7 +1,16 @@
 #pragma once
 
+/*!
+@file NodeEditorStyle.hpp
+@brief Enums and data to encode the style of each ECellEngine::Editor::Utility::ModelNodeBasedViewerContext.
+*/
+
 namespace ECellEngine::Editor::Utility
 {
+	/*!
+	@brief The various type of nodes that can be exist in a 
+			ECellEngine::Editor::Utility::ModelNodeBasedViewerWidget.
+	*/
 	enum NodeType
 	{
 		NodeType_Default,
@@ -15,6 +24,10 @@ namespace ECellEngine::Editor::Utility
 		NodeType_Count
 	};
 
+	/*!
+	@brief The various type of pins that can be exist in a
+			ECellEngine::Editor::Utility::ModelNodeBasedViewerWidget.
+	*/
 	enum PinType
 	{
 		PinType_Default,
@@ -29,6 +42,10 @@ namespace ECellEngine::Editor::Utility
 		PinType_Count
 	};
 
+	/*!
+	@brief Identifiers for the different aspect of a node which color can be
+			customized.
+	*/
 	enum NodeColorType
 	{
 		NodeColorType_Bg,
@@ -42,6 +59,10 @@ namespace ECellEngine::Editor::Utility
 		NodeColorType_Count
 	};
 
+	/*!
+	@brief Identifiers for the different aspect of a pin which color can be
+			customized.
+	*/
 	enum PinColorType
 	{
 		PinColorType_BgActivated,
@@ -51,12 +72,33 @@ namespace ECellEngine::Editor::Utility
 		PinColorType_Count
 	};
 
+	/*!
+	@brief The data struct to store the styling variables and colors that are
+			used to customize the visuals of the elements in a
+			ECellEngine::Editor::Utility::ModelNodeBasedViewerContext.
+	*/
 	struct NodeEditorStyle
 	{
+		/*!
+		@brief The minimal width of the area of a node that is in-between
+				the input and output pins.
+		@details This indirectly regulates the minimal width of a node.
+		*/
 		float nodeCenterAreaMinWidth;
+
+		/*!
+		@brief The width of the graphic item representing a node pin.
+		*/
 		float pinWidth;
 
+		/*!
+		@brief The matrix to store all color sets for all node types.
+		*/
 		ImVec4 nodeColors[NodeType_Count][NodeColorType_Count];
+
+		/*!
+		@brief The matrix to store all color sets for all pin types.
+		*/
 		ImVec4 pinColors[PinType_Count][PinColorType_Count];
 
 		NodeEditorStyle()
