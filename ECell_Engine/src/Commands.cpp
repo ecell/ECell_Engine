@@ -180,12 +180,42 @@ void ECellEngine::IO::AddSolverCommand::execute(const std::vector<std::string>& 
 
 void ECellEngine::IO::PauseSimulationCommand::execute(const std::vector<std::string>& _args)
 {
-	receiver->PauseSimulation(std::stoi(_args[1]));
+	if (receiver->CountPlayingSimulations() == 0)
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogError("PauseSimulationCommand Failed: There is no simulation currently playing.");
+		return;
+	}
+
+	if (std::stoi(_args[1]) >= receiver->CountPlayingSimulations())
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogError("PauseSimulationCommand Failed: Tried to pause a simulation that is not playing.");
+		return;
+	}
+	
+	if (std::stoi(_args[1]) < receiver->CountPlayingSimulations())
+	{
+		receiver->PauseSimulation(std::stoi(_args[1]));
+	}
 }
 
 void ECellEngine::IO::PlaySimulationCommand::execute(const std::vector<std::string>& _args)
 {
-	receiver->PlaySimulation(std::stoi(_args[1]));
+	if (receiver->CountSimulations() == 0)
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogError("PlaySimulationCommand Failed: There is no simulation currently currently managed.");
+		return;
+	}
+
+	if (std::stoi(_args[1]) >= receiver->CountSimulations())
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogError("PlaySimulationCommand Failed: Tried to play a simulation that does not exist.");
+		return;
+	}
+
+	if (std::stoi(_args[1]) < receiver->CountSimulation())
+	{
+		receiver->PlaySimulation(std::stoi(_args[1]));
+	}
 }
 
 void ECellEngine::IO::StepSimulationBackwardCommand::execute(const std::vector<std::string>& _args)
@@ -200,7 +230,23 @@ void ECellEngine::IO::StepSimulationForwardCommand::execute(const std::vector<st
 
 void ECellEngine::IO::StopSimulationCommand::execute(const std::vector<std::string>& _args)
 {
-	receiver->StopSimulation(std::stoi(_args[1]));
+
+	if (receiver->CountPlayingSimulations() == 0)
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogError("StopSimulationCommand Failed: There is no simulation currently playing.");
+		return;
+	}
+
+	if (std::stoi(_args[1]) >= receiver->CountPlayingSimulations())
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogError("StopSimulationCommand Failed: Tried to stop a simulation that is not playing.");
+		return;
+	}
+
+	if (std::stoi(_args[1]) < receiver->CountPlayingSimulations())
+	{
+		receiver->StopSimulation(std::stoi(_args[1]));
+	}
 }
 
 void ECellEngine::IO::TryAttachSolverToModuleCommand::execute(const std::vector<std::string>& _args)
