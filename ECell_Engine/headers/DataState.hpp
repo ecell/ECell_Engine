@@ -41,27 +41,27 @@ namespace ECellEngine::Data
 			return operandsToOperations;
 		}
 
-		inline Reaction* GetReaction(const std::string _reactionName)
+		inline Reaction* GetReaction(const std::string& _reactionName)
 		{
 			return reactions.at(_reactionName).get();
 		}
 
-		inline ComputedParameter* GetComputedParameter(const std::string _parameterName)
+		inline ComputedParameter* GetComputedParameter(const std::string& _parameterName)
 		{
 			return computedParameters.at(_parameterName).get();
 		}
 
-		inline SimpleParameter* GetSimpleParameter(const std::string _parameterName)
+		inline SimpleParameter* GetSimpleParameter(const std::string& _parameterName)
 		{
 			return simpleParameters.at(_parameterName).get();
 		}
 
-		inline Species* GetSpecies(const std::string _speciesName)
+		inline Species* GetSpecies(const std::string& _speciesName)
 		{
 			return species.at(_speciesName).get();
 		}
 
-		inline bool AddReaction(const std::string _reactionName,
+		inline bool AddReaction(const std::string& _reactionName,
 								const std::vector<std::string> _products,
 								const std::vector<std::string> _reactants,
 								const Operation _kineticLaw)
@@ -69,17 +69,17 @@ namespace ECellEngine::Data
 			return reactions.emplace(_reactionName, std::make_shared<Reaction>(_reactionName, _products, _reactants, _kineticLaw)).second;
 		}
 		
-		inline bool AddComputedParameter(const std::string _parameterName, const Operation _parameterOp)
+		inline bool AddComputedParameter(const std::string& _parameterName, const Operation _parameterOp)
 		{
 			return computedParameters.emplace(_parameterName, std::make_shared<ComputedParameter>(_parameterName, _parameterOp)).second;
 		}
 
-		inline bool AddSimpleParameter(const std::string _parameterName, const float _value)
+		inline bool AddSimpleParameter(const std::string& _parameterName, const float _value)
 		{
 			return simpleParameters.emplace(_parameterName, std::make_shared<SimpleParameter>(_parameterName, _value)).second;
 		}
 		
-		inline bool AddSpecies(const std::string _speciesName, const float _quantity)
+		inline bool AddSpecies(const std::string& _speciesName, const float _quantity)
 		{
 			return species.emplace(_speciesName, std::make_shared<Species>(_speciesName, _quantity)).second;
 		}

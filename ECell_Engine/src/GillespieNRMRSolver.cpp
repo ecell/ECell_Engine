@@ -95,61 +95,43 @@ void ECellEngine::Solvers::GillespieNRMRSolver::SolveForward(const float& _targe
 {
 	//step 2 & 3
 	std::pair<int, float> muTau = tauIMH.GetRoot();
-	//std::cout << "Before loop | (target time, t): (" << _targetTime << ", " << t << ")." << std::endl;
+	float a_new, a_old, tau_new, tau_old;
+	std::string reactionName = module->GetReaction(muTau.first);
 	while (muTau.second < _targetTime)
 	{
-		//std::cout << std::endl;
-		//std::cout << itmh;
-
-		//std::cout << "Tau Before:" << muTau.second << " a Before:" << propensities[muTau.first] << std::endl;
-		//std::cout << "Quantities Before: ";
-		//for (int q : quantities){std::cout << q << " ";}
-		//std::cout << std::endl;
-		//std::cout << "Firing Rule number: " << muTau.first << " at time: " << muTau.second << std::endl;
-		//step 4
-		//std::cout << "astEvaluator address " << this->astEvaluator << std::endl;
-		//std::cout << "astEvaluator formulaNodes has " << astEvaluator->getNbNodes() << " nodes" << std::endl;
-		//std::cout << "&itmh: " << &itmh << " nodes" << std::endl;
-		//std::cout << "&tauTable: " << &tauTable << " nodes" << std::endl;
-		//int test = 0;
-
-		ApplyForward(module->GetReaction(muTau.first));
+		ApplyForward(reactionName);
 		//ManageTrace();
-		trace.push_back(muTau.first);
+		//trace.push_back(muTau.first);
 		//traceBlockSize++;
 		//traceSize++;
 
-		//std::cout << "Quantities After: ";
-		//for (int q : quantities) { std::cout << q << " "; }
-		//std::cout << std::endl;
-
 		//step 5.c: To avoid an "if" in the for loop
 		//we update tau of the current reaction here.
-
-		float a_new = ComputeReactionPropensity(module->GetReaction(muTau.first));
-		float new_tau = rng.Exponential(a_new) + muTau.second;
-		//std::cout << "We computed values for step n+1 (Tau, a): (" << new_tau << ", " << a_new << ")" << std::endl;
-		tauIMH.SetValueInRoot(new_tau);
+		a_new = dataState.GetReaction(reactionName)->ComputeKineticLaw();//compute reaction propensity
+		tau_new = rng.Exponential(a_new) + muTau.second;
+		tauIMH.SetValueInRoot(tau_new);
 		tauIMH.UpdateHeapFromRoot();
 
 		auto depReactions = reactionsDependanceGraph.equal_range(muTau.first);
 		//step 5 (*it is alpha in the algorithm)
 		for (auto it = depReactions.first; it != depReactions.second; ++it)
 		{
-			//std::cout << "Updating dependency: " << *it << std::endl;
-			float a_old = dataState.GetReaction(module->GetReaction((*it).second))->GetKineticLawValue();
-			float tau_old = tauIMH.GetValueAtIndex((*it).second);
+			reactionName = module->GetReaction(it->second);
+			a_old = dataState.GetReaction(reactionName)->GetKineticLawValue();
+			tau_old = tauIMH.GetValueAtIndex(it->second);
 
 			//Step 5.a
-			a_new = ComputeReactionPropensity(module->GetReaction((*it).second));
+			a_new = dataState.GetReaction(reactionName)->ComputeKineticLaw();//compute reaction propensity
 
 			//Step 5.b
-			new_tau = (a_old / a_new) * (tau_old - muTau.second) + muTau.second; //muTau.second is current time
-			tauIMH.SetValueAtIndex((*it).second, new_tau);
-			tauIMH.UpdateHeapFrom((*it).second, tau_old);
+			tau_new = (a_old / a_new) * (tau_old - muTau.second) + muTau.second; //muTau.second is current time
+			tauIMH.SetValueAtIndex(it->second, tau_new);
+			tauIMH.UpdateHeapFrom(it->second, tau_old);
 		}
+
 		//we actualize step 2 & 3
 		muTau = tauIMH.GetRoot();
+		reactionName = module->GetReaction(muTau.first);
 	}
 }
 
