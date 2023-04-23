@@ -13,8 +13,8 @@ namespace ECellEngine::Data
 	struct Reaction
 	{
 	private:
-		const std::vector<std::string> products;
-		const std::vector<std::string> reactants;
+		std::vector<std::string> products;
+		std::vector<std::string> reactants;
 
 		float kineticLawValueCache = 0;
 		Operation kineticLaw;
@@ -47,14 +47,14 @@ namespace ECellEngine::Data
 			return kineticLawValueCache;
 		}
 
-		inline const std::vector<std::string>& GetProducts() const noexcept
+		inline const std::vector<std::string>* GetProducts() noexcept
 		{
-			return products;
+			return &products;
 		}
 		
-		inline const std::vector<std::string>& GetReactants() const noexcept
+		inline const std::vector<std::string>* GetReactants() noexcept
 		{
-			return reactants;
+			return &reactants;
 		}
 	};
 }

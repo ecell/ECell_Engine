@@ -3,15 +3,15 @@
 
 void ECellEngine::Solvers::GillespieNRMRSolver::ApplyBackward(const std::string& _reactionName)
 {
-	ECellEngine::Data::Reaction reaction = *dataState.GetReaction(_reactionName);
+	ECellEngine::Data::Reaction* reaction = dataState.GetReaction(_reactionName);
 	//Decrementing quantities of all Products by 1
-	for (std::vector<std::string>::const_iterator it = reaction.GetProducts().begin(); it != reaction.GetProducts().end(); it++)
+	for (std::vector<std::string>::const_iterator it = reaction->GetProducts()->begin(); it != reaction->GetProducts()->end(); it++)
 	{
 		dataState.GetSpecies(*it)->Decrement(1.f);
 	}
 
-	//Incrementing quantities of all reactans by 1
-	for (std::vector<std::string>::const_iterator it = reaction.GetReactants().begin(); it != reaction.GetReactants().end(); it++)
+	//Incrementing quantities of all reactants by 1
+	for (std::vector<std::string>::const_iterator it = reaction->GetReactants()->begin(); it != reaction->GetReactants()->end(); it++)
 	{
 		dataState.GetSpecies(*it)->Increment(1.f);
 	}
@@ -19,15 +19,16 @@ void ECellEngine::Solvers::GillespieNRMRSolver::ApplyBackward(const std::string&
 
 void ECellEngine::Solvers::GillespieNRMRSolver::ApplyForward(const std::string& _reactionName)
 {
-	ECellEngine::Data::Reaction reaction = *dataState.GetReaction(_reactionName);
-	//Decrementing quantities of all reactans by 1
-	for (std::vector<std::string>::const_iterator it = reaction.GetReactants().begin(); it != reaction.GetReactants().end(); it++)
+	ECellEngine::Data::Reaction* reaction = dataState.GetReaction(_reactionName);
+	
+	//Decrementing quantities of all reactants by 1
+	for (std::vector<std::string>::const_iterator it = reaction->GetReactants()->begin(); it != reaction->GetReactants()->end(); it++)
 	{
 		dataState.GetSpecies(*it)->Decrement(1.f);
 	}
 
 	//Incrementing quantities of all products by 1
-	for (std::vector<std::string>::const_iterator it = reaction.GetProducts().begin(); it != reaction.GetProducts().end(); it++)
+	for (std::vector<std::string>::const_iterator it = reaction->GetProducts()->begin(); it != reaction->GetProducts()->end(); it++)
 	{
 		dataState.GetSpecies(*it)->Increment(1.f);
 	}
@@ -45,26 +46,34 @@ void ECellEngine::Solvers::GillespieNRMRSolver::BuildDependancyGraph(const std::
 	}
 
 	idx = 0;
-	std::vector<std::string> species;
+	const std::vector<std::string>* species;
 	for (std::vector<std::string>::const_iterator itReactions = _reactions.begin(); itReactions != _reactions.end(); itReactions++)
 	{
 		species = dataState.GetReaction(*itReactions)->GetProducts();
-		for (std::vector<std::string>::iterator itSpecies = species.begin(); itSpecies != species.end(); itSpecies++)
+		for (std::vector<std::string>::const_iterator itSpecies = species->begin(); itSpecies != species->end(); itSpecies++)
 		{
 			auto reactionLinks = dataState.GetOperandsToOperations().equal_range(*itSpecies);
 			for (auto itDependantReaction = reactionLinks.first; itDependantReaction != reactionLinks.second; itDependantReaction++)
 			{
-				reactionsDependanceGraph.emplace(idx, nameToIdx.at((*itDependantReaction).second));
+				auto s1 = nameToIdx.find((*itDependantReaction).second);
+				if (s1 != nameToIdx.end())
+				{
+					reactionsDependanceGraph.emplace(idx, s1->second);
+				}
 			}
 		}
 		
 		species = dataState.GetReaction(*itReactions)->GetReactants();
-		for (std::vector<std::string>::iterator itSpecies = species.begin(); itSpecies != species.end(); itSpecies++)
+		for (std::vector<std::string>::const_iterator itSpecies = species->begin(); itSpecies != species->end(); itSpecies++)
 		{
 			auto reactionLinks = dataState.GetOperandsToOperations().equal_range(*itSpecies);
 			for (auto itDependantReaction = reactionLinks.first; itDependantReaction != reactionLinks.second; itDependantReaction++)
 			{
-				reactionsDependanceGraph.emplace(idx, nameToIdx.at((*itDependantReaction).second));
+				auto s1 = nameToIdx.find((*itDependantReaction).second);
+				if (s1 != nameToIdx.end())
+				{
+					reactionsDependanceGraph.emplace(idx, s1->second);
+				}
 			}
 		}
 

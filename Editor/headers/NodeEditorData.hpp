@@ -602,13 +602,13 @@ namespace ECellEngine::Editor::Utility
 			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
-			nslbData[0] = { &_data->GetReactants() , GetMNBVCtxtNextId() };
+			nslbData[0] = { _data->GetReactants() , GetMNBVCtxtNextId() };
 
 			//Products section
 			inputPins[3] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
-			nslbData[1] = { &data->GetProducts(), GetMNBVCtxtNextId() };
+			nslbData[1] = { data->GetProducts(), GetMNBVCtxtNextId() };
 
 			//Kinetic Law collapsing header
 			inputPins[4] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
