@@ -57,7 +57,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(ECellEngine::Data
                 Operation root = ASTNodeToOperation(astNode, rule->getVariable(), _dataState, _docIdsToDataStateNames);
                 _sbmlModule.AddComputedParameters(rule->getVariable(), root);
             }
-
+            _dataState.GetComputedParameter(rule->getVariable())->ComputeOperation();
             _docIdsToDataStateNames[rule->getVariable()] = rule->getVariable();
         }
     }
