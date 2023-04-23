@@ -126,7 +126,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::SolveForward(const float& _targe
 
 		auto depReactions = reactionsDependanceGraph.equal_range(muTau.first);
 		//step 5 (*it is alpha in the algorithm)
-		for (auto it = reactionsDependanceGraph.begin(); it != reactionsDependanceGraph.end(); ++it)
+		for (auto it = depReactions.first; it != depReactions.second; ++it)
 		{
 			//std::cout << "Updating dependency: " << *it << std::endl;
 			float a_old = dataState.GetReaction(module->GetReaction((*it).second))->GetKineticLawValue();
