@@ -174,6 +174,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
                 //that has already been added to the data state. So we add an Operand
                 //directly in the pOP and we find the reference in the data state.
                 pOP->AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(cNode->getName())->second));
+                _dataState.LinkOperandToOperation(_docIdsToDataStateNames.find(cNode->getName())->second, _rootName);
                 nodesStack.pop_back();
             }            
         }

@@ -61,7 +61,6 @@ namespace ECellEngine::Data
 			if (dataState.AddReaction(_reactionName, _products, _reactants, _kineticLaw))
 			{
 				reactions.push_back(_reactionName);
-				dataState.LinkSpeciesWithKineticLaw(_reactionName);
 			}
 		}
 

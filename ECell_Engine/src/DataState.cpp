@@ -54,23 +54,3 @@ void ECellEngine::Data::DataState::ClearSpecies(const std::vector<std::string>& 
 		species.erase(*it);
 	}
 }
-
-void ECellEngine::Data::DataState::LinkSpeciesWithKineticLaw(const std::string& _reactionName)
-{
-	std::vector<std::string> speciesInOperation{ _reactionName };
-	reactions.at(_reactionName).get()->GetKineticLaw().GetOperandsNames<Species>(speciesInOperation);
-	for (std::vector<std::string>::iterator it = speciesInOperation.begin(); it != speciesInOperation.end(); it++)
-	{
-		operandsToOperations.emplace(*it, _reactionName);
-	}
-}
-
-void ECellEngine::Data::DataState::LinkParametersWithComputedParameters(const std::string& _computedParameterName)
-{
-	std::vector<std::string> parametersInKineticLaw{ _computedParameterName };
-	computedParameters.at(_computedParameterName).get()->GetOperation().GetOperandsNames<Parameter>(parametersInKineticLaw);
-	for (std::vector<std::string>::iterator it = parametersInKineticLaw.begin(); it != parametersInKineticLaw.end(); it++)
-	{
-		operandsToOperations.emplace(*it, _computedParameterName);
-	}
-}

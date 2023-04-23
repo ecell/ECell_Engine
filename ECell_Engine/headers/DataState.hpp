@@ -97,10 +97,9 @@ namespace ECellEngine::Data
 		
 		void ClearSpecies(const std::vector<std::string>& _speciesNames);
 
-		void LinkParametersWithComputedParameters(const std::string& _computedParameterName);
-
-		void LinkSpeciesWithKineticLaw(const std::string& _reactionName);
-
-
+		inline void LinkOperandToOperation(const std::string& _operandName, const std::string& _operationName)
+		{
+			operandsToOperations.emplace(_operandName, _operationName);
+		}
 	};
 }
