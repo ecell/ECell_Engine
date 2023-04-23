@@ -14,27 +14,16 @@ namespace ECellEngine::Solvers
 	class Solver
 	{
 	private:
-		float time;
 		char* name;
 
 	protected:
 		ECellEngine::Data::DataState& dataState;
 
-		inline void SetTime(const float _newTime) noexcept
-		{
-			time = _newTime;
-		}
-
 	public:
 		Solver(ECellEngine::Data::DataState& _dataState, char* _name = "NewSolver") :
 			dataState{ _dataState }, name{_name}
 		{
-			time = 0;
-		}
 
-		inline const float GetTime() noexcept
-		{
-			return time;
 		}
 
 		inline char* GetName() noexcept

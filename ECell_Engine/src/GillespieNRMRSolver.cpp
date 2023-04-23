@@ -105,7 +105,6 @@ void ECellEngine::Solvers::GillespieNRMRSolver::SolveForward(const float& _targe
 		//int test = 0;
 
 		ApplyForward(module->GetReaction(muTau.first));
-		SetTime(muTau.second);
 		//ManageTrace();
 		trace.push_back(muTau.first);
 		//traceBlockSize++;
@@ -136,7 +135,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::SolveForward(const float& _targe
 			a_new = ComputeReactionPropensity(module->GetReaction((*it).second));
 
 			//Step 5.b
-			new_tau = (a_old / a_new) * (tau_old - GetTime()) + GetTime();
+			new_tau = (a_old / a_new) * (tau_old - muTau.second) + muTau.second; //muTau.second is current time
 			tauIMH.SetValueAtIndex((*it).second, new_tau);
 			tauIMH.UpdateHeapFrom((*it).second, tau_old);
 		}
