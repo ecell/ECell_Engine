@@ -147,7 +147,7 @@ namespace ECellEngine::Core
 
 		/*
 		@brief Finds the module which name matches the argument @p _moduleName.
-		@details Implements a naïve linear search from the start of the list
+		@details Implements a naive linear search from the start of the list
 				 towards the end.
 		@param _moduleName the name of the module to look for.
 		@returns The pointer to the first encounterd module which name matches
@@ -159,7 +159,7 @@ namespace ECellEngine::Core
 		/*
 		@brief Finds the index of the module which name matches the argument
 				@p _moduleName.
-		@details Implements a naïve linear search from the start of the list
+		@details Implements a naive linear search from the start of the list
 				 towards the end.
 		@param _moduleName the name of the module which index to look for.
 		@returns The index of the first encounterd module which name matches
@@ -170,7 +170,7 @@ namespace ECellEngine::Core
 
 		/*
 		@brief Finds the solver which name matches the argument @p _solverName.
-		@details Implements a naïve linear search from the start of the list
+		@details Implements a naive linear search from the start of the list
 				 towards the end.
 		@param _solverName the name of the solver to look for.
 		@returns The pointer to the first encounterd solver which name matches
@@ -182,7 +182,7 @@ namespace ECellEngine::Core
 		/*
 		@brief Finds the index of the solver which name matches the argument
 				@p _solverName.
-		@details Implements a naïve linear search from the start of the list
+		@details Implements a naive linear search from the start of the list
 				 towards the end.
 		@param _solverName the name of the solver which index to look for.
 		@returns The index of the first encounterd solver which name matches

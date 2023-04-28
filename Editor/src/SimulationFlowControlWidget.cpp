@@ -6,10 +6,10 @@ void ECellEngine::Editor::SimulationFlowControlWidget::DrawSimulationControls()
     static bool isPlaying = false;
     static ImVec4 simuStateColor = ImVec4(0.191f, 0.845f, 0.249f, 1.000f);
 
-    ImGui::Text("This is the base of the Simulation Flow Controls.");
+    //ImGui::Text("This is the base of the Simulation Flow Controls.");
     
-    //ImGui::PushStyleColor(ImGuiCol_Button, simuStateColor);
-    //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
+    ImGui::PushStyleColor(ImGuiCol_Button, simuStateColor);
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
     //if (*simuState == SimulationState::isPlaying)
     //{
     //    ImGui::BeginDisabled();
@@ -18,11 +18,14 @@ void ECellEngine::Editor::SimulationFlowControlWidget::DrawSimulationControls()
     //                     //because the value of *simuState changes inside the potentially disabled region.
     //}
 
-    //if (ImGui::Button("Play"))
-    //{
-    //    engineCmdsManager->interpretCommand(playCommandArray);
-    //    simuStateColor = ImVec4(0.902f, 0.272f, 0.070f, 1.000f);
-    //}
+    if (ImGui::Button("Play"))
+    {
+        if (editor.engine.GetCommandsManager()->interpretCommand(playCommandArray))
+        {
+            simuStateColor = ImVec4(0.902f, 0.272f, 0.070f, 1.000f);
+            isPlaying = true;
+        }
+    }
     //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1));
     //ImGui::InputFloat("Step time", &stepTime, 0.001f, 0.0f, "%e");
     //ImGui::PopStyleColor(1);
@@ -39,44 +42,48 @@ void ECellEngine::Editor::SimulationFlowControlWidget::DrawSimulationControls()
     //    engineCmdsManager->interpretCommand(stepForwardCommandArray);
     //}
 
-    //if (isPlaying)
-    //{
-    //    ImGui::EndDisabled();
-    //    ImGui::SameLine();
+    if (isPlaying)
+    {
+        //ImGui::EndDisabled();
+        ImGui::SameLine();
 
-    //    if (*simuDirection == 1)
-    //    {
-    //        if (ImGui::Button("Backward"))
-    //        {
-    //            engineCmdsManager->interpretCommand(goBackwardCommandArray);
-    //        }
-    //    }
-    //    else
-    //    {
-    //        if (ImGui::Button("Forward"))
-    //        {
-    //            engineCmdsManager->interpretCommand(goForwardCommandArray);
-    //        }
-    //    }
+        /*if (*simuDirection == 1)
+        {
+            if (ImGui::Button("Backward"))
+            {
+                editor.engine->GetCommandsManager()->interpretCommand(goBackwardCommandArray);
+            }
+        }
+        else
+        {
+            if (ImGui::Button("Forward"))
+            {
+                editor.engine->GetCommandsManager()->interpretCommand(goForwardCommandArray);
+            }
+        }*/
 
-    //    if (ImGui::Button("Pause"))
-    //    {
-    //        engineCmdsManager->interpretCommand(pauseCommandArray);
-    //        isPlaying = false;
-    //        simuStateColor = ImVec4(1.000f, 0.794f, 0.000f, 1.000f);
-    //    }
+        if (ImGui::Button("Pause"))
+        {
+            if (editor.engine.GetCommandsManager()->interpretCommand(pauseCommandArray))
+            {
+                isPlaying = false;
+                simuStateColor = ImVec4(1.000f, 0.794f, 0.000f, 1.000f);
+            }
+        }
 
-    //    ImGui::SameLine();
+        ImGui::SameLine();
 
-    //    if (ImGui::Button("Stop"))
-    //    {
-    //        engineCmdsManager->interpretCommand(stopCommandArray);
-    //        isPlaying = false;
-    //        simuStateColor = ImVec4(0.191f, 0.845f, 0.249f, 1.000f);
-    //    }
-    //}
+        if (ImGui::Button("Stop"))
+        {
+            if (editor.engine.GetCommandsManager()->interpretCommand(stopCommandArray))
+            {
+                isPlaying = false;
+                simuStateColor = ImVec4(0.191f, 0.845f, 0.249f, 1.000f);
+            }
+        }
+    }
 
-    //ImGui::PopStyleColor(2);
+    ImGui::PopStyleColor(2);
 
 }
 
@@ -90,4 +97,10 @@ void ECellEngine::Editor::SimulationFlowControlWidget::Draw()
     DrawSimulationControls();
 
     ImGui::End();
+}
+
+void ECellEngine::Editor::SimulationFlowControlWidget::SetSimulation(std::size_t _simuIdx)
+{
+    std::to_chars(simuIdxAsChar, simuIdxAsChar + 8, _simuIdx);
+    simulation = editor.engine.GetSimulationsManager()->GetSimulation(_simuIdx);
 }
