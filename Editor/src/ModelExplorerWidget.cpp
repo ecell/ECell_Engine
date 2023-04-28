@@ -84,9 +84,10 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawAddSolverPopup()
             if (ImGui::MenuItem("Gillespie Next Reaction Method"))
             {
                 addSolverCommandArray[2] = "GillespieNRMRSolver";
-                editor.engine.GetCommandsManager()->interpretCommand(addSolverCommandArray);
-
-                //modelHierarchy.AddSolverName("Gillespie Next Reaction Method");
+                if (editor.engine.GetCommandsManager()->interpretCommand(addSolverCommandArray))
+                {
+                    editor.engine.GetSimulationsManager()->GetSimulation(0)->GetSolvers().back().get()->SetName("Gillespie Next Reaction Method");
+                }
 
                 SwitchState(1); //Marks the Add Solver popup as closed
             }
@@ -119,7 +120,10 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawImportAssetPopup()
         if (ImGui::Button("Import"))
         {
             addModuleCommandArray[2] = assetPathBuffer;
-            editor.engine.GetCommandsManager()->interpretCommand(addModuleCommandArray);
+            if (editor.engine.GetCommandsManager()->interpretCommand(addModuleCommandArray))
+            {
+                editor.engine.GetSimulationsManager()->GetSimulation(0)->GetModules().back().get()->SetName(assetNameBuffer);
+            }
 
             /*TODO: Check that the module was correctly imported before drawing.*/
             //modelHierarchy.AddAssetName(assetNameBuffer);
