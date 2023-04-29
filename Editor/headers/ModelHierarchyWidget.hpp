@@ -23,6 +23,9 @@ namespace ECellEngine::Editor
 	{
 	private:
 
+		bool renamingInProgress = false;
+		short renamingIdx = 0;
+
 		ECellEngine::Core::Simulation* simulation = nullptr;
 
 		/*!

@@ -115,7 +115,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawImportAssetPopup()
     if (ImGui::Begin("Import Asset From File", NULL, popupWindowFlags))
     {
         ImGui::InputText("File Path", assetPathBuffer, 256);
-        ImGui::InputText("Name to Display", assetNameBuffer, 256);
+        ImGui::InputText("Name to Display", assetNameBuffer, 64);
 
         if (ImGui::Button("Import"))
         {

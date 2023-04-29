@@ -46,7 +46,7 @@ namespace ECellEngine::Editor
 		@brief A char array to hold the name of the asset node to be drawn in the
 				editor and that matches the imported asset.
 		*/
-		char assetNameBuffer[256] = "p53_L3V2_mod2.xml";
+		char assetNameBuffer[64] = "p53_L3V2_mod2.xml";
 
 		/*!
 		  @brief Flags for the model explorer window.

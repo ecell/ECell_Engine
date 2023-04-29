@@ -19,8 +19,38 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 				//Id fro Drag & Drop
 				ImGui::PushID(dragableID);
 				
-				//Leaf Node to display the name of the asset.
-				ImGui::TreeNodeEx(simulation->GetModule(idx)->GetName(), leafNodeFlags);
+				//If users is trying to rename this asset.
+				if (renamingInProgress && renamingIdx == dragableID)
+				{
+					static char valueBuffer[64] = "";
+					std::strcpy(valueBuffer, simulation->GetModule(idx)->GetName());
+					if (ImGui::InputText("##name", valueBuffer, 64, ImGuiInputTextFlags_EnterReturnsTrue))
+					{
+						ECellEngine::Logging::Logger::GetSingleton().LogDebug("Set Asset Name");
+						simulation->GetModule(idx)->SetName(valueBuffer);
+						renamingInProgress = false;
+					}
+					if (ImGui::IsItemActive())
+					{
+						ImGui::SetTooltip("Press ENTER to confirm.");
+					}
+				}
+				else//no renaming in progress for this item.
+				{
+					//Leaf Node to display the name of the asset.
+					ImGui::TreeNodeEx(simulation->GetModule(idx)->GetName(), leafNodeFlags);
+					if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+					{
+						renamingInProgress = true;
+						renamingIdx = dragableID;
+					}
+				}
+				
+				//Stops renaming if user clicks outside of the input frame
+				if (renamingInProgress && !ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+				{
+					renamingInProgress = false;
+				}
 
 				// The Asset name can be draged.
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
