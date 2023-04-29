@@ -10,23 +10,22 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 {
 	if (ImGui::Begin("Model Hierarchy"))
 	{
+		static char valueBuffer[64] = "";
 		short dragableID = 0;
 		if (ImGui::TreeNode("Assets"))
 		{
 			//Display the list of loaded assets
 			for (std::size_t idx = 0; idx < simulation->GetModules().size(); idx++)
 			{
-				//Id fro Drag & Drop
+				//Id from Drag & Drop
 				ImGui::PushID(dragableID);
 				
 				//If users is trying to rename this asset.
 				if (renamingInProgress && renamingIdx == dragableID)
 				{
-					static char valueBuffer[64] = "";
 					std::strcpy(valueBuffer, simulation->GetModule(idx)->GetName());
 					if (ImGui::InputText("##name", valueBuffer, 64, ImGuiInputTextFlags_EnterReturnsTrue))
 					{
-						ECellEngine::Logging::Logger::GetSingleton().LogDebug("Set Asset Name");
 						simulation->GetModule(idx)->SetName(valueBuffer);
 						renamingInProgress = false;
 					}
@@ -78,11 +77,38 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 			//Display the list of loaded solvers
 			for (std::size_t idx = 0; idx < simulation->GetSolvers().size(); idx++)
 			{
-				//Id fro Drag & Drop
+				//Id from Drag & Drop
 				ImGui::PushID(dragableID);
 
-				//Leaf Node to display the name of the asset.
-				ImGui::TreeNodeEx(simulation->GetSolver(idx)->GetName(), leafNodeFlags);
+				//If users is trying to rename this solver.
+				if (renamingInProgress && renamingIdx == dragableID)
+				{
+					std::strcpy(valueBuffer, simulation->GetSolver(idx)->GetName());
+					if (ImGui::InputText("##name", valueBuffer, 64, ImGuiInputTextFlags_EnterReturnsTrue))
+					{
+						simulation->GetSolver(idx)->SetName(valueBuffer);
+						renamingInProgress = false;
+					}
+					if (ImGui::IsItemActive())
+					{
+						ImGui::SetTooltip("Press ENTER to confirm.");
+					}
+					//Stops renaming if user clicks outside of the input frame
+					if (!ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+					{
+						renamingInProgress = false;
+					}
+				}
+				else//no renaming in progress for this item.
+				{
+					//Leaf Node to display the name of the solver.
+					ImGui::TreeNodeEx(simulation->GetSolver(idx)->GetName(), leafNodeFlags);
+					if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+					{
+						renamingInProgress = true;
+						renamingIdx = dragableID;
+					}
+				}
 
 				// The Asset name can be draged.
 				if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
