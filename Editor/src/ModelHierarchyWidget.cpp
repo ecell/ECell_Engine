@@ -34,6 +34,11 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 					{
 						ImGui::SetTooltip("Press ENTER to confirm.");
 					}
+					//Stops renaming if user clicks outside of the input frame
+					if (!ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+					{
+						renamingInProgress = false;
+					}
 				}
 				else//no renaming in progress for this item.
 				{
@@ -44,12 +49,6 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 						renamingInProgress = true;
 						renamingIdx = dragableID;
 					}
-				}
-				
-				//Stops renaming if user clicks outside of the input frame
-				if (renamingInProgress && !ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-				{
-					renamingInProgress = false;
 				}
 
 				// The Asset name can be draged.
