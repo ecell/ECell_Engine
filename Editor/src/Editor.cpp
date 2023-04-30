@@ -61,12 +61,12 @@ void ECellEngine::Editor::Editor::Start()
 void ECellEngine::Editor::Editor::Stop()
 {
     engine.Stop();
+    
+    // Cleanup
+    backend.CleanUp();
 
     ImPlot::DestroyContext();
     ImGui::DestroyContext();
-
-    // Cleanup
-    backend.CleanUp();
 }
 
 void ECellEngine::Editor::Editor::Update()
