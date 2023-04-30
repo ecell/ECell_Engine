@@ -132,10 +132,10 @@ namespace ECellEngine::Editor::Utility
 
 		inline operator std::size_t() { return (std::size_t)id; }
 
-		friend inline bool operator==(const LinkData& lhs, const LinkData& rhs) { (std::size_t)lhs.id == (std::size_t)rhs.id; }
+		friend inline bool operator==(const LinkData& lhs, const LinkData& rhs) { return (std::size_t)lhs.id == (std::size_t)rhs.id; }
 		friend inline bool operator!=(const LinkData& lhs, const LinkData& rhs) { return !(lhs == rhs); }
 
-		friend inline bool operator< (const LinkData& lhs, const LinkData& rhs) { (std::size_t)lhs.id < (std::size_t)rhs.id; }
+		friend inline bool operator< (const LinkData& lhs, const LinkData& rhs) { return (std::size_t)lhs.id < (std::size_t)rhs.id; }
 		friend inline bool operator> (const LinkData& lhs, const LinkData& rhs) { return rhs < lhs; }
 		friend inline bool operator<=(const LinkData& lhs, const LinkData& rhs) { return !(lhs > rhs); }
 		friend inline bool operator>=(const LinkData& lhs, const LinkData& rhs) { return !(lhs < rhs); }
@@ -188,10 +188,10 @@ namespace ECellEngine::Editor::Utility
 
 		inline operator std::size_t() { return (std::size_t)id; }
 
-		friend inline bool operator==(const NodeData& lhs, const NodeData& rhs) { (std::size_t)lhs.id == (std::size_t)rhs.id; }
+		friend inline bool operator==(const NodeData& lhs, const NodeData& rhs) { return (std::size_t)lhs.id == (std::size_t)rhs.id; }
 		friend inline bool operator!=(const NodeData& lhs, const NodeData& rhs) { return !(lhs == rhs); }
 
-		friend inline bool operator< (const NodeData& lhs, const NodeData& rhs) { (std::size_t)lhs.id < (std::size_t)rhs.id; }
+		friend inline bool operator< (const NodeData& lhs, const NodeData& rhs) { return (std::size_t)lhs.id < (std::size_t)rhs.id; }
 		friend inline bool operator> (const NodeData& lhs, const NodeData& rhs) { return rhs < lhs; }
 		friend inline bool operator<=(const NodeData& lhs, const NodeData& rhs) { return !(lhs > rhs); }
 		friend inline bool operator>=(const NodeData& lhs, const NodeData& rhs) { return !(lhs < rhs); }
@@ -237,10 +237,10 @@ namespace ECellEngine::Editor::Utility
 
 		inline operator std::size_t() { return (std::size_t)id; }
 
-		friend inline bool operator==(const NodePinData& lhs, const NodePinData& rhs) { (std::size_t)lhs.id == (std::size_t)rhs.id; }
+		friend inline bool operator==(const NodePinData& lhs, const NodePinData& rhs) { return (std::size_t)lhs.id == (std::size_t)rhs.id; }
 		friend inline bool operator!=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs == rhs); }
 
-		friend inline bool operator< (const NodePinData& lhs, const NodePinData& rhs) { (std::size_t)lhs.id < (std::size_t)rhs.id; }
+		friend inline bool operator< (const NodePinData& lhs, const NodePinData& rhs) { return (std::size_t)lhs.id < (std::size_t)rhs.id; }
 		friend inline bool operator> (const NodePinData& lhs, const NodePinData& rhs) { return rhs < lhs; }
 		friend inline bool operator<=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs > rhs); }
 		friend inline bool operator>=(const NodePinData& lhs, const NodePinData& rhs) { return !(lhs < rhs); }

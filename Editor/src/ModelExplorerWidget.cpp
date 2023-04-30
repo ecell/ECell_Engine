@@ -36,7 +36,7 @@ void ECellEngine::Editor::ModelExplorerWidget::Draw()
     {
         if (!wasdocked)
         {
-            ImGui::DockBuilderSetNodeSize(ImGui::GetWindowDockID(), ImVec2(ImGui::GetMainViewport()->Size.x, (float)ImGui::GetMainViewport()->Size.y * 0.95));
+            ImGui::DockBuilderSetNodeSize(ImGui::GetWindowDockID(), ImVec2(ImGui::GetMainViewport()->Size.x, (float)ImGui::GetMainViewport()->Size.y * 0.95f));
             wasdocked = true;
         }
     }

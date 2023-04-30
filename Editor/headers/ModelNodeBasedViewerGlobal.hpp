@@ -173,6 +173,8 @@ namespace ECellEngine::Editor::Utility
 			return "NodeColorType_HeaderActivated";
 		case NodeColorType_HeaderHovered:
 			return "NodeColorType_HeaderHovered";
+		default:
+			return "Unknown NodeColorType";
 		}
 	}
 
@@ -197,6 +199,8 @@ namespace ECellEngine::Editor::Utility
 			return "NodeType_Solver";
 		case NodeType_Species:
 			return "NodeType_Species";
+		default:
+			return "Unknown NodeType";
 		}
 	}
 
@@ -226,6 +230,8 @@ namespace ECellEngine::Editor::Utility
 			return "PinColorType_BgInactivated";
 		case PinColorType_Border:
 			return "PinColorType_Border";
+		default:
+			return "Unknown PinColorType";
 		}
 	}
 
@@ -252,6 +258,8 @@ namespace ECellEngine::Editor::Utility
 			return "PinType_Species";
 		case PinType_ValueFloat:
 			return "PinType_ValueFloat";
+		default:
+			return "Unknown PinType";
 		}
 	}
 

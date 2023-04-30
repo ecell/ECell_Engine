@@ -137,7 +137,7 @@ ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNod
     {
         ForwardIt it = _last;
         it--;
-        unsigned short nbpins = std::size(it->outputPins);
+        unsigned short nbpins = (unsigned short)std::size(it->outputPins);
 
         //If the target id is lower than the highest id of interest
         //INFO: by convention when creating a NodeData, we finish by an output pin and not an input pin.
@@ -162,7 +162,7 @@ ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNod
                 }
                 
                 //We search the target id within the input pins
-                nbpins = std::size(it->inputPins);
+                nbpins = (unsigned short)std::size(it->inputPins);
                 itNPD = ECellEngine::Data::BinaryOperation::LowerBound((*it).inputPins, (*it).inputPins + nbpins, _id);
                 if (*itNPD == _id)
                 {

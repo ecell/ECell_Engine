@@ -448,23 +448,23 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::vector<ECel
                 if (startPin == endPin)
                 {
                     ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 2.0f);
-                    ax::NodeEditor::Suspend;
+                    ax::NodeEditor::Suspend();
                     ImGui::SetTooltip("You cannot connect a pin to itself.");
-                    ax::NodeEditor::Resume;
+                    ax::NodeEditor::Resume();
                 }
                 else if (startPin->kind == endPin->kind)
                 {
                     ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 2.0f);
-                    ax::NodeEditor::Suspend;
+                    ax::NodeEditor::Suspend();
                     ImGui::SetTooltip("You cannot connect an input pin to another input pin\nor output pin to another ouput pin.");
-                    ax::NodeEditor::Resume;
+                    ax::NodeEditor::Resume();
                 }
                 else if (!IsDynamicLinkAuthorized(startPin->type, endPin->type))
                 {
                     ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 2.0f);
-                    ax::NodeEditor::Suspend;
+                    ax::NodeEditor::Suspend();
                     ImGui::SetTooltip("You cannot connect a pin of type %s to a pin of type %s", GetPinTypeName(startPin->type), GetPinTypeName(endPin->type));
-                    ax::NodeEditor::Resume;
+                    ax::NodeEditor::Resume();
                 }
                 else
                 {
@@ -535,7 +535,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_InOut(co
     const ImVec2& _size, const bool _hidePinsOnExpand)
 {
     AlignToCenter(_startX, _drawLength, _size.x);
-    ImGui::PushID(_id);
+    ImGui::PushID((int)_id);
     if (ImGui::Button(_label, _size))
     {
         _utilityState ^= 1 << _stateBitPos;
@@ -563,7 +563,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_Out(cons
     const ImVec2& _size, const bool _hidePinsOnExpand)
 {
     AlignToCenter(_startX, _drawLength, _size.x);
-    ImGui::PushID(_id);
+    ImGui::PushID((int)_id);
     if (ImGui::Button(_label, _size))
     {
         _utilityState ^= 1 << _stateBitPos;
@@ -645,7 +645,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const ch
 
     Pin(_inputPin, _pinColors); ImGui::SameLine();
 
-    ImGui::PushID(_id);
+    ImGui::PushID((int)_id);
     ImGui::AlignTextToFramePadding(); AlignToCenter(_startX, _drawLength, _inputFieldWidth);
     
     ImGui::Text(_label); ImGui::SameLine();
@@ -676,7 +676,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
 
     ImGui::BeginGroup();
-    const unsigned short nbItems = _nslbData.data->size();
+    const unsigned short nbItems = (const unsigned short)_nslbData.data->size();
     const unsigned short actualViewHeight = std::min(_itemViewHeight, nbItems);
     const bool hasScrollBar = nbItems > _itemViewHeight;
     
@@ -696,7 +696,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
     const float itemWidth = _widgetWidth - hasScrollBar * style.ScrollbarSize - NodeFramePadding.x - NodeFramePadding.y;//includes left and right
     const char* itemString;
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + NodeFramePadding.z);//Top Padding
-    for (int n = _nslbData.cursor; n > _nslbData.cursor - actualViewHeight; n--)
+    for (std::size_t n = _nslbData.cursor; n > _nslbData.cursor - actualViewHeight; n--)
     {
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + NodeFramePadding.x);//Left Padding
 
@@ -739,7 +739,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
         //No need to do the right padding because it's included in the
         //reduced size of the selectable items in the list box.
 
-        ImGui::PushID(_nslbData.scrollBarID);
+        ImGui::PushID((int)_nslbData.scrollBarID);
         PushScrollBarStyle(style);
         ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 40);
         ImGui::VSliderInt("##VertSliderInt", ImVec2(style.ScrollbarSize, actualViewHeight * ImGui::GetTextLineHeightWithSpacing()),
