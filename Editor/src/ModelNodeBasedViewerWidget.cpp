@@ -30,8 +30,20 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Awake()
     style.SelectedNodeBorderWidth = 6; //instead of 3 by default.
     style.PinBorderWidth = 3; //instead of 0 by default.
     style.PinRounding = 0; //instead of 4 by default.
-    ax::NodeEditor::SetCurrentEditor(nullptr);
 
+    //BUGFIX: Cycle through the canvas once to give it the opportunity to initialize its size.
+    //This is work-around for a badly understood bug.
+    //If the ax::NodeEditor::Begin()/ax::NodeEditor::End is not implemented in this Awake function,
+    //the ax::NodeEditor::Begin("Model Exploration Space") in the ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
+    //fails. It apparently comes from the initialization cycle (Begin/End call) for the ImGuiEx::Canvas in
+    //ax::NodeEditor::EditorContext::Begin(). The Begin of the Canvas exits early because the Canvas is detected to be clipped.
+    //So, as Begin didn't finish, the ASSERT in the End() of the Canvas that checks whether Begin finished correctly is broken.
+    //Strangely, calling ax::NodeEditor::Begin()/ax::NodeEditor::End here (Awake) doesn't raise any issue and even fixes the issue
+    //in the Draw function.
+    ax::NodeEditor::Begin("Model Exploration Space");
+    ax::NodeEditor::End();
+
+    ax::NodeEditor::SetCurrentEditor(nullptr);
 }
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
@@ -67,7 +79,6 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
 
         ImGui::End();
     }
-    
 }
 
 void ECellEngine::Editor::ModelNodeBasedViewerWidget::HandleSimuDataRefDrop()
