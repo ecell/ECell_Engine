@@ -272,6 +272,9 @@ EditorContext* CreateEditor(const Config* config = nullptr);
 void DestroyEditor(EditorContext* ctx);
 const Config& GetConfig(EditorContext* ctx = nullptr);
 
+void SuspendNavigation();
+void ResumeNavigation();
+
 Style& GetStyle();
 const char* GetStyleColorName(StyleColor colorIndex);
 

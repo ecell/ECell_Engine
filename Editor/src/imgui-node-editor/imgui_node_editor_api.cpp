@@ -93,6 +93,16 @@ ax::NodeEditor::EditorContext* ax::NodeEditor::GetCurrentEditor()
     return reinterpret_cast<ax::NodeEditor::EditorContext*>(s_Editor);
 }
 
+void ax::NodeEditor::SuspendNavigation()
+{
+    s_Editor->SuspendNavigation();
+}
+
+void ax::NodeEditor::ResumeNavigation()
+{
+    s_Editor->ResumeNavigation();
+}
+
 ax::NodeEditor::Style& ax::NodeEditor::GetStyle()
 {
     return s_Editor->GetStyle();
