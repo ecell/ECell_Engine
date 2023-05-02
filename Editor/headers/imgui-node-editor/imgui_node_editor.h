@@ -272,9 +272,6 @@ EditorContext* CreateEditor(const Config* config = nullptr);
 void DestroyEditor(EditorContext* ctx);
 const Config& GetConfig(EditorContext* ctx = nullptr);
 
-void SuspendNavigation();
-void ResumeNavigation();
-
 Style& GetStyle();
 const char* GetStyleColorName(StyleColor colorIndex);
 
@@ -370,6 +367,9 @@ int BreakLinks(PinId pinId); // Break all links connected to this pin
 
 void NavigateToContent(float duration = -1);
 void NavigateToSelection(bool zoomIn = false, float duration = -1);
+
+void SuspendNavigation();
+void ResumeNavigation();
 
 bool ShowNodeContextMenu(NodeId* nodeId);
 bool ShowPinContextMenu(PinId* pinId);

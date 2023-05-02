@@ -759,6 +759,25 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
 
     ImGui::PopStyleVar(); //poping ImGuiStyleVar_ItemSpacing
     ImGui::EndGroup();
+
+    if (_nslbData.IsAnItemHovered() || _nslbData.IsScrollBarHovered())
+    {
+        ax::NodeEditor::SuspendNavigation();
+        if (ImGui::GetIO().MouseWheel != 0)
+        {
+            _nslbData.cursor += ImGui::GetIO().MouseWheel;
+            if (_nslbData.cursor < actualViewHeight)
+            {
+                _nslbData.cursor = actualViewHeight;
+            }
+
+            if (nbItems < _nslbData.cursor)
+            {
+                _nslbData.cursor = nbItems;
+            }
+        }
+        ax::NodeEditor::ResumeNavigation();
+    }
 }
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_In(const char* _label, const float _startX,
