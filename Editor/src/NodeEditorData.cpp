@@ -33,6 +33,11 @@ void ECellEngine::Editor::Utility::AssetNodeData::OutputUpdate(std::size_t& _nod
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("AssetNodeData::OutputUpdate");
 }
 
+void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t& _nodeInputId, float _data)
+{
+	ECellEngine::Logging::Logger::GetSingleton().LogDebug("LinePlotNodeData::InputUpdate; data=" + std::to_string(_data));
+}
+
 void ECellEngine::Editor::Utility::ComputedParameterNodeData::InputUpdate(std::size_t& _nodeInputPinId, float _data)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ComputedParameterNodeData::InputUpdate; data=" + std::to_string(_data));

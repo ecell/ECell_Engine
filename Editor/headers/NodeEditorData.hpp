@@ -3,6 +3,7 @@
 
 #include "BinaryOperatedVector.hpp"
 #include "ModelNodeBasedViewerGlobal.hpp"
+#include "PlotUtility.hpp"
 
 namespace ECellEngine::Editor::Utility
 {
@@ -384,7 +385,7 @@ namespace ECellEngine::Editor::Utility
 		std::size_t collapsingHeadersIds[5];
 
 		/*!
-		@biref The array of of list box data that are potentially displayed in
+		@brief The array of of list box data that are potentially displayed in
 				this node.
 		@details At index 0 we find the list box with the links to other computed
 				 parameters where this computed parameter is also found.
@@ -499,6 +500,41 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};
 
+	struct LinePlotNodeData : public NodeData
+	{
+		char* name = "Line Plot";
+
+		ScrollingBuffer dataPoints;
+		
+		NodeInputPinData inputPins[3];
+		NodeInputPinData outputPins[1];//not used
+
+		unsigned char utilityState = 0;
+
+		std::size_t collapsingHeadersIds[2];
+
+		LinePlotNodeData(int _maxNbDataPoints, ImVec2 _position) :
+			NodeData(), dataPoints{ _maxNbDataPoints }
+		{
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Plot Collapsing Header
+			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//X
+			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Y
+
+			collapsingHeadersIds[0] = GetMNBVCtxtNextId();//Parameters Collapsing header
+			collapsingHeadersIds[1] = GetMNBVCtxtNextId();//Plot Collapsing Header
+
+			dataPoints.AddPoint(0, 0);
+		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {};
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override {};
+	};
+
 	struct ReactionNodeData : public NodeData
 	{
 		/*!
@@ -516,7 +552,7 @@ namespace ECellEngine::Editor::Utility
 		std::size_t collapsingHeadersIds[5];
 
 		/*!
-		@biref The array of of list box data that are potentially displayed in
+		@brief The array of of list box data that are potentially displayed in
 				this node.
 		@details At index 0 we find the list box with the links to the reactants
 				 species of this reaction.
