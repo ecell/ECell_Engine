@@ -242,9 +242,9 @@ namespace ECellEngine::Editor::Utility
 			return GetMNBVStyle()->pinWidth + ImGui::GetStyle().ItemSpacing.x;
 		}
 
-		inline static float GetNodeCenterAreaWidth(const float _headerWidth)
+		inline static float GetNodeCenterAreaWidth(const float _headerWidth, const short _nbPins = 2)
 		{
-			return std::max(GetMNBVStyle()->nodeCenterAreaMinWidth, _headerWidth - 2 * GetMNBVStyle()->pinWidth - 2 * ImGui::GetStyle().ItemSpacing.x);
+			return std::max(GetMNBVStyle()->nodeCenterAreaMinWidth, _headerWidth - _nbPins * GetMNBVStyle()->pinWidth - _nbPins * ImGui::GetStyle().ItemSpacing.x);
 		}
 
 		/*!
@@ -321,10 +321,10 @@ namespace ECellEngine::Editor::Utility
 		@param _drawLength The distance where to draw the output pin relatively
 				to @p _startX. Used for alignment calculations.
 		@param _pin The pin data used for the output pin to draw.
-		@param _pinColors The set of colors to cutomize both pins.
+		@param _pinColors The set of colors to cutomize the output pins.
 		@param _size The size of the button representing the collapsing header.
-		@param _hidePinsOnExpand A boolean to control whether the pins associated to
-				the collapsing header shall NOT be drawn when the collapsing header
+		@param _hidePinsOnExpand A boolean to control whether the output pin associated
+				to the collapsing header shall NOT be drawn when the collapsing header
 				is open (displaying the content bellowit).
 		*/
 		static bool NodeCollapsingHeader_Out(const char* _label, const std::size_t _id,
@@ -342,10 +342,14 @@ namespace ECellEngine::Editor::Utility
 		@param _width The minimal width of the header. The header may be bigger than
 				this width if the string @p _type + @p _name is bigger.
 		@param _height The height of the header. It is counted in number of lines.
+		@param _nbPins Number of sides of the node that has pins. Enter 0 if the
+				node has no pins on the input nor output side. Enter 1 if the node
+				has pins on the input side or the output side. Enter 2 if the node
+				has pins on the input side and ouput side.
 		@returns The final width of the header.
 		*/
 		static float NodeHeader(const char* _type, const char* _name, const ImVec4 _colorSet[],
-			const float _width = 200.f, const short _height = 1);
+			const float _width = 200.f, const short _height = 1, const short _nbPins = 2);
 
 		/*!
 		@brief Draws a horizontal line of a set width and thickness.
@@ -438,6 +442,8 @@ namespace ECellEngine::Editor::Utility
 				done. Typically the left side of the node.
 		@param _drawLength The distance where to draw the output pin relatively
 				to @p _startX. Used for alignment calculations.
+		@param _itemSpacingX The spacing to respect between the text and the
+				output pin. Used for alignement calculations.
 		@param _pin The pin data used for the output pin to draw.
 		@param _pinColors The set of colors to cutomize the output pin.
 		*/

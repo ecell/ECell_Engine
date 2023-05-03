@@ -583,13 +583,13 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_Out(cons
 }
 
 float ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type, const char* _name,
-    const ImVec4 _colorSet[], const float _width, const short _height)
+    const ImVec4 _colorSet[], const float _width, const short _height, const short _nbPins)
 {
     const float titleSize = ImGui::CalcTextSize(_type).x + ImGui::CalcTextSize(_name).x + ImGui::GetStyle().ItemSpacing.x;
     
     const ImVec2 startPos = ImGui::GetCursorScreenPos();
     const ImVec2 endPos = ImVec2(
-        startPos.x + std::max(_width + 2.f * GetPinDrawOffset(), titleSize + 2.f * ImGui::GetStyle().FramePadding.x),
+        startPos.x + std::max(_width + _nbPins * GetPinDrawOffset(), titleSize + _nbPins * ImGui::GetStyle().FramePadding.x),
         startPos.y + ImGui::GetTextLineHeightWithSpacing()
     );
 
