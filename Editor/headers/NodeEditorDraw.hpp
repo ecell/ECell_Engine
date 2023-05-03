@@ -264,6 +264,66 @@ namespace ECellEngine::Editor::Utility
 
 #pragma region Custom Node Widget
 		/*!
+		@brief Custom collapsing header for nodes with no pins.
+		@details The collapsing header is a button that changes the value of the
+				@p utilityState. The button is drawn at the center of the node.
+		@remarks This intends to reproduce ImGui::CollapsingHeader but without
+				 relying on ImGui's tree nodes API. Because it is not possible
+				 (as of ImGui 1.89) to control the width of a tree node which
+				 creates a visual artifact: the node extends infinitely because
+				 in the Node Editor virtual area has not limits.
+		@param _label The text to display in the collapsing header.
+		@param _id Unique integer ID to identify the collapsing header. This is
+				mandatory to not mess up ImGui's internal identification system.
+		@param _utilityState The reference to the character containing the encoding
+				of the the open/close state of this header.
+		@param _stateBitPos The position of the bit in @p _utilityState that
+				encodes the open/close state of this header
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _size The size of the button representing the collapsing header.
+		*/
+		static bool NodeCollapsingHeader(const char* _label, const std::size_t _id,
+			unsigned char& _utilityState, const short _stateBitPos,
+			const float _startX, const float _drawLength,
+			const ImVec2& _size = ImVec2(0, 0));
+
+		/*!
+		@brief Custom collapsing header for nodes with an input pin.
+		@details The collapsing header is a button that changes the value of the
+				@p utilityState. The button is drawn at the center of the node.
+		@remarks This intends to reproduce ImGui::CollapsingHeader but without
+				 relying on ImGui's tree nodes API. Because it is not possible
+				 (as of ImGui 1.89) to control the width of a tree node which
+				 creates a visual artifact: the node extends infinitely because
+				 in the Node Editor virtual area has not limits.
+		@param _label The text to display in the collapsing header.
+		@param _id Unique integer ID to identify the collapsing header. This is
+				mandatory to not mess up ImGui's internal identification system.
+		@param _utilityState The reference to the character containing the encoding
+				of the the open/close state of this header.
+		@param _stateBitPos The position of the bit in @p _utilityState that
+				encodes the open/close state of this header
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _pin The pin data used for the output pin to draw.
+		@param _pinColors The set of colors to cutomize the input pins.
+		@param _size The size of the button representing the collapsing header.
+		@param _hidePinsOnExpand A boolean to control whether the input pin associated
+				to the collapsing header shall NOT be drawn when the collapsing header
+				is open (displaying the content bellowit).
+		*/
+		static bool NodeCollapsingHeader_In(const char* _label, const std::size_t _id,
+			unsigned char& _utilityState, const short _stateBitPos,
+			const float _startX, const float _drawLength,
+			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
+		
+		/*!
 		@brief Custom collapsing header for nodes with an input pin and output
 				pin.
 		@details The collapsing header is a button that changes the value of the
@@ -413,6 +473,20 @@ namespace ECellEngine::Editor::Utility
 		@param _pinColors The set of colors to cutomize the input pin.
 		*/
 		static void NodeText_In(const char* _label, const float _startX,
+			const NodePinData& _pin, const ImVec4 _pinColors[]);
+
+		/*!
+		@brief Draws a Text Label with an input pin.
+		@details Aligns the Text label to the left of the node (input side).
+		@param _label The text label to display.
+		@param _labelWidth The width of the text label to display.
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _pin The pin data used for the input pin to draw.
+		@param _pinColors The set of colors to cutomize the input pin.
+		*/
+		static void NodeText_In(const char* _label, const float _labelWidth,
+			const float _startX,
 			const NodePinData& _pin, const ImVec4 _pinColors[]);
 
 		/*!

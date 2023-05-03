@@ -528,6 +528,47 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::Link(LinkData& linkInfo)
 
 #pragma region Custom Node Widgets
 
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader(const char* _label, const std::size_t _id,
+    unsigned char& _utilityState, const short _stateBitPos,
+    const float _startX, const float _drawLength,
+    const ImVec2& _size)
+{
+    AlignToCenter(_startX, _drawLength, _size.x);
+    ImGui::PushID((int)_id);
+    if (ImGui::Button(_label, _size))
+    {
+        _utilityState ^= 1 << _stateBitPos;
+    }
+    ImGui::PopID();
+
+    return _utilityState >> _stateBitPos & 1;
+}
+
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_In(const char* _label, const std::size_t _id,
+    unsigned char& _utilityState, const short _stateBitPos,
+    const float _startX, const float _drawLength,
+    const NodePinData& _pin, const ImVec4 _pinColors[],
+    const ImVec2& _size, const bool _hidePinsOnExpand)
+{
+    AlignToRight(_startX, _drawLength, _size.x);
+    ImGui::PushID((int)_id);
+    if (ImGui::Button(_label, _size))
+    {
+        _utilityState ^= 1 << _stateBitPos;
+    }
+    ImGui::PopID();
+
+    bool open = _utilityState >> _stateBitPos & 1;
+
+    if (!open || !_hidePinsOnExpand)
+    {
+        ImGui::SameLine(); ImGui::SetCursorPosX(_startX);
+        Pin(_pin, _pinColors);
+    }
+
+    return open;
+}
+
 bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_InOut(const char* _label, const std::size_t _id,
     unsigned char& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength,
@@ -787,6 +828,17 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_In(const char* _labe
     Pin(_pin, _pinColors);
 
     ImGui::SameLine();
+
+    ImGui::AlignTextToFramePadding();
+    ImGui::Text(_label);
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_In(const char* _label, const float _labelWidth,
+    const float _startX,
+    const NodePinData& _pin, const ImVec4 _pinColors[])
+{
+    ImGui::SetCursorPosX(_startX);
+    Pin(_pin, _pinColors); ImGui::SameLine();
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text(_label);
