@@ -51,6 +51,7 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
         it->computedParametersNLB.ResetUtilityState();
         it->reactionsNLB.ResetUtilityState();
     }
+    
     for (std::vector< ECellEngine::Editor::Utility::ComputedParameterNodeData>::iterator it = computedParameterNodes.begin(); it != computedParameterNodes.end(); it++)
     {
         ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(it->data->name.c_str(), *it);
@@ -71,7 +72,6 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
         ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(it->data->GetName(), *it);
     }
 
-
     for (std::vector< ECellEngine::Editor::Utility::SpeciesNodeData>::iterator it = speciesNodes.begin(); it != speciesNodes.end(); it++)
     {
         ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(it->data->name.c_str(), *it);
@@ -79,7 +79,6 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
 
     ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(links);
 
-    // Submit Links
     for (std::vector< ECellEngine::Editor::Utility::LinkData>::iterator it = links.begin(); it != links.end(); it++)
     {
         ECellEngine::Editor::Utility::NodeEditorDraw::Link(*it);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "imgui_internal.h"
-#include "NodeEditorData.hpp"
+#include "NodeEditorData.hpp" //also include "implot.h"
 
 #include "Logger.hpp"
 
@@ -438,12 +438,38 @@ namespace ECellEngine::Editor::Utility
 		@param _inputPin The pin data used for the input pin to draw.
 		@param _outputPin The pin data used for the output pin to draw.
 		@param _pinColors The set of colors to cutomize both pins.
-		@param _flags Input
+		@param _flags Flags to customize the behaviour of the input field.
+				Note that not every ImGuiInputTextFlags have an effect on
+				ImGui InputFloat widget.
 		*/
 		static bool NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* _valueBuffer, 
 			const float _inputFieldWidth, const float _startX, const float _drawLength,
 			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
 			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_None);
+
+		/*!
+		@brief Draw an input field for text inputs. Contrary to other node
+				inputs (e.g. NodeInputFloat_XXX) the assignment of the buffer
+				value to the target value is handled in the function.
+		@details Aligns the InputField text label and the Input Field body
+				to the center of the node.
+		@param _label The text label of the Input Field to display.
+		@param _buffer The buffer char array where to store the input value.
+		@param _bufferSize The byte size of the buffer char array.
+		@param _inputFieldWidth The total width of the input field (text label
+				and body).
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _flags Flags to customize the behaviour of the input field. Default
+				to the flag @a _EnterReturnsTrue so users have to press enter for
+				the buffer value to be assigned to the target.
+		*/
+		static bool NodeInputText(const char* _label, char* _target, char* _buffer,
+			const std::size_t _bufferSize, 
+			const float _inputFieldWidth, const float _startX, const float _drawLength,
+			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_EnterReturnsTrue);
 
 		/*!
 		@brief Custom list box to display strings in nodes.

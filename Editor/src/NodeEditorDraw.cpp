@@ -677,6 +677,40 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const
     }
 }
 
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputText(const char* _label, char* _target, char* _buffer,
+    const std::size_t _bufferSize, const float _inputFieldWidth, const float _startX, const float _drawLength,
+    const ImGuiInputTextFlags _flags)
+{
+    std::size_t targetLen = std::strlen(_target);
+    std::memcpy(_buffer, _target, targetLen);
+    if (targetLen < _bufferSize)
+    {
+        _buffer[targetLen] = '\0';
+    }
+    AlignToCenter(_startX, _drawLength, _inputFieldWidth);
+    ImGui::SetNextItemWidth(_inputFieldWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x);
+    if (ImGui::InputText(_label, _buffer, _bufferSize, _flags))
+    {
+        //std::memset(_target, '\0', std::max(targetLen, std::strlen(_buffer)));
+        std::size_t bufferLen = std::strlen(_buffer);
+        std::memcpy(_target, _buffer, bufferLen);
+        if (bufferLen < _bufferSize)
+        {
+            _target[bufferLen] = '\0';
+        }
+
+        return true;
+    }
+    if (ImGui::IsItemActive() && (_flags & ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        ax::NodeEditor::Suspend();
+        ImGui::SetTooltip("Press ENTER to confirm.");
+        ax::NodeEditor::Resume();
+    }
+
+    return false;
+}
+
 bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* valueBuffer,
     const float _inputFieldWidth, const float _startX, const float _drawLength,
     const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
