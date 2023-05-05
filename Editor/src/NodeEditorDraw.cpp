@@ -528,6 +528,58 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::Link(LinkData& linkInfo)
 
 #pragma region Custom Node Widgets
 
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip)
+{
+    ImGui::CheckboxFlags(_label, _flags, _flag);
+    if (_tooltip)
+    {
+        if (ImGui::IsItemHovered())
+        {
+            ax::NodeEditor::Suspend();
+            ImGui::SetTooltip(_tooltip);
+            ax::NodeEditor::Resume();
+        }
+    }
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeAllImPlotAxisFlags(ImPlotFlags* _flags)
+{
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoLabel", _flags, ImPlotAxisFlags_NoLabel, "The axis label will not be displayed (axis labels also hidden if the supplied string name is NULL).");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoGridLines", _flags, ImPlotAxisFlags_NoGridLines, "No grid lines will be displayed.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoTickMarks", _flags, ImPlotAxisFlags_NoTickMarks, "No tick marks will be displayed.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoTickLabels", _flags, ImPlotAxisFlags_NoTickLabels, "No text labels will be displayed.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoInitialFit", _flags, ImPlotAxisFlags_NoInitialFit, "Axis will not be initially fit to data extents on the first rendered frame.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoMenus", _flags, ImPlotAxisFlags_NoMenus, "The user will not be able to open context menus with right-click.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_Opposite", _flags, ImPlotAxisFlags_Opposite, "Axis ticks and labels will be rendered on conventionally opposite side (i.e, right or top).");
+    NodeCheckBoxFlag("ImPlotAxisFlags_Foreground", _flags, ImPlotAxisFlags_Foreground, "Grid lines will be displayed in the foreground (i.e. on top of data) in stead of the background.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_LogScale", _flags, ImPlotAxisFlags_LogScale, "A logartithmic (base 10) axis scale will be used (mutually exclusive with ImPlotAxisFlags_Time).");
+    NodeCheckBoxFlag("ImPlotAxisFlags_Time", _flags, ImPlotAxisFlags_Time, "Axis will display date/time formatted labels (mutually exclusive with ImPlotAxisFlags_LogScale).");
+    NodeCheckBoxFlag("ImPlotAxisFlags_Invert", _flags, ImPlotAxisFlags_Invert, "The axis will be inverted.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_AutoFit", _flags, ImPlotAxisFlags_AutoFit, "Axis will be auto-fitting to data extents.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_RangeFit", _flags, ImPlotAxisFlags_RangeFit, "Axis will only fit points if the point is in the visible range of the **orthogonal** axis.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_LockMin", _flags, ImPlotAxisFlags_LockMin, "The axis minimum value will be locked when panning/zooming.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_LockMax", _flags, ImPlotAxisFlags_LockMax, "The axis maximum value will be locked when panning/zooming.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_Lock", _flags, ImPlotAxisFlags_Lock, "ImPlotAxisFlags_LockMin | ImPlotAxisFlags_LockMax,");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoDecorations", _flags, ImPlotAxisFlags_NoDecorations, "ImPlotAxisFlags_NoLabel | ImPlotAxisFlags_NoGridLines | ImPlotAxisFlags_NoTickMarks | ImPlotAxisFlags_NoTickLabels,");
+    NodeCheckBoxFlag("ImPlotAxisFlags_AuxDefault", _flags, ImPlotAxisFlags_AuxDefault, "ImPlotAxisFlags_NoGridLines | ImPlotAxisFlags_Opposite");
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeAllImPlotFlags(ImPlotFlags* _flags)
+{
+    NodeCheckBoxFlag("ImPlotFlags_NoTitle", _flags, ImPlotFlags_NoTitle, "The plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MyPlot\").");
+    NodeCheckBoxFlag("ImPlotFlags_NoLegend", _flags, ImPlotFlags_NoLegend, "The legend will not be displayed.");
+    NodeCheckBoxFlag("ImPlotFlags_NoMouseText", _flags, ImPlotFlags_NoMouseText, "The mouse position, in plot coordinates, will not be displayed inside of the plot.");
+    NodeCheckBoxFlag("ImPlotFlags_NoInputs", _flags, ImPlotFlags_NoInputs, "The user will not be able to interact with the plot.");
+    NodeCheckBoxFlag("ImPlotFlags_NoMenus", _flags, ImPlotFlags_NoMenus, "The user will not be able to open context menus.");
+    NodeCheckBoxFlag("ImPlotFlags_NoBoxSelect", _flags, ImPlotFlags_NoBoxSelect, "The user will not be able to box-select.");
+    NodeCheckBoxFlag("ImPlotFlags_NoChild", _flags, ImPlotFlags_NoChild, "A child window region will not be used to capture mouse scroll (can boost performance for single ImGui window applications).");
+    NodeCheckBoxFlag("ImPlotFlags_NoFrame", _flags, ImPlotFlags_NoFrame, "The ImGui frame will not be rendered.");
+    NodeCheckBoxFlag("ImPlotFlags_Equal", _flags, ImPlotFlags_Equal, "X and Y axes pairs will be constrained to have the same units/pixel.");
+    NodeCheckBoxFlag("ImPlotFlags_Crosshairs", _flags, ImPlotFlags_Crosshairs, "The default mouse cursor will be replaced with a crosshair when hovered.");
+    NodeCheckBoxFlag("ImPlotFlags_AntiAliased", _flags, ImPlotFlags_AntiAliased, "Plot items will be software anti-aliased (not recommended for high density plots, prefer MSAA).");
+    NodeCheckBoxFlag("ImPlotFlags_CanvasOnly", _flags, ImPlotFlags_CanvasOnly, "ImPlotFlags_NoTitle | ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText");
+}
+
 bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader(const char* _label, const std::size_t _id,
     unsigned char& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength,

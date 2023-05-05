@@ -263,6 +263,38 @@ namespace ECellEngine::Editor::Utility
 #pragma endregion
 
 #pragma region Custom Node Widget
+
+		/*!
+		@brief Draws a checkbox to change the value of flags.
+		@details Wrapper around ImGui::CheckBoxFlags(const char* _label, int* _flags, const int _flag_value)
+				to display the checkbox inside a node with an optional tooltip.
+		@param _label The label to display next to the checkbox.
+		@param _flags Pointer to the int encoding the flags (e.g. enum).
+		@param _flag The flag to control and visualize with the checkbox.
+		@param _tooltip The message to display when hovering over the checkbox.
+		@see ECellEngine::Editor::Utility::NodeDrawer::NodeAllImPlotAxisFlags(ImPlot::ImploImPlotAxisFlags* _flags)
+		@see ECellEngine::Editor::Utility::NodeDrawer::NodeAllImPlotFlags(ImPlot::ImploImPlotAxisFlags* _flags)
+		*/
+		static void NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr);
+
+		/*!
+		@brief Draws all the relevant flags encoded in ImPlot::ImPlotAxisFlags.
+		@details This gives access to the flags at runtime within a node to customize
+				 the visuals of the axis of a plot.
+		@param _flags Pointer to the int encoding the flags (e.g. enum).
+		@see ECellEngine::Editor::Utility::NodeDrawer::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr)
+		*/
+		static void NodeAllImPlotAxisFlags(ImPlotAxisFlags* _flags);
+
+		/*!
+		@brief Draws all the relevant flags encoded in ImPlot::ImPlotFlags.
+		@details This gives access to the flags at runtime within a node to customize
+				 the visuals of the plot.
+		@param _flags Pointer to the int encoding the flags (e.g. enum).
+		@see ECellEngine::Editor::Utility::NodeDrawer::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr)
+		*/
+		static void NodeAllImPlotFlags(ImPlotFlags* _flags);
+
 		/*!
 		@brief Custom collapsing header for nodes with no pins.
 		@details The collapsing header is a button that changes the value of the
