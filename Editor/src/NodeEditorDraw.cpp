@@ -487,6 +487,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _speciesNodeInfo.data->Set(value);
+            _speciesNodeInfo.OutputUpdate((std::size_t&)_speciesNodeInfo.outputPins[6].id);
         }
     }
 
