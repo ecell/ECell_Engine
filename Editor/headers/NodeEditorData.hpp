@@ -852,7 +852,7 @@ namespace ECellEngine::Editor::Utility
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
 			//Not used for now but added for homogeneity
-			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 
 			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);
 
