@@ -191,6 +191,8 @@ namespace ECellEngine::Editor::Utility
 			return "NodeType_Default";
 		case NodeType_Asset:
 			return "NodeType_Asset";
+		case NodeType_Data:
+			return "NodeType_Data";
 		case NodeType_Parameter:
 			return "NodeType_Parameter";
 		case NodeType_Reaction:
