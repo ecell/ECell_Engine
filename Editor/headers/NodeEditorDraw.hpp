@@ -494,7 +494,7 @@ namespace ECellEngine::Editor::Utility
 		static bool NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* _valueBuffer, 
 			const float _inputFieldWidth, const float _startX, const float _drawLength,
 			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
-			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_None);
+			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_EnterReturnsTrue);
 
 		/*!
 		@brief Draw an input field for text inputs. Contrary to other node
