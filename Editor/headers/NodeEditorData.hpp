@@ -505,19 +505,23 @@ namespace ECellEngine::Editor::Utility
 	{
 		char* name = "Line Plot";
 
-		const ImGuiWindowFlags plotWindowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
 		ScrollingBuffer dataPoints;
+		float newPointBuffer[2] = { 0, 0 };
+		unsigned short newPointConstructionCounter = 0;
+
 		char plotTitle[64] = "PlotTitle";
 		char xAxisLabel[64] = "x";
 		char yAxisLabel[64] = "y";
 		char lineLegend[64] = "f(x)";
 		float plotSize[2] = { ImPlot::GetStyle().PlotDefaultSize.x, ImPlot::GetStyle().PlotDefaultSize.y };
+
+		const ImGuiWindowFlags plotWindowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
 		ImPlotFlags plotFlags = ImPlotFlags_NoLegend | ImPlotFlags_NoInputs;
 		ImPlotAxisFlags xAxisFlags = ImPlotAxisFlags_None;
 		ImPlotAxisFlags yAxisFlags = ImPlotAxisFlags_None;
 		
 		NodeInputPinData inputPins[3];
-		NodeInputPinData outputPins[1];//not used
+		NodeOutputPinData outputPins[1];//not used
 
 		unsigned char utilityState = 0;
 
@@ -529,8 +533,10 @@ namespace ECellEngine::Editor::Utility
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Plot Collapsing Header
-			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//X
-			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Y
+			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//X
+			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Y
+
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
 
 			collapsingHeadersIds[0] = GetMNBVCtxtNextId();//Parameters Collapsing header
 			collapsingHeadersIds[1] = GetMNBVCtxtNextId();//General (Parameters) Collapsing header
@@ -569,9 +575,11 @@ namespace ECellEngine::Editor::Utility
 			return (utilityState >> 6) & 1;
 		}
 
-		inline void OpenPlot() noexcept
+		inline void ResetNewPointBuffer()
 		{
-			utilityState |= 1 << 6;
+			newPointConstructionCounter = 0;
+		}
+
 		/*!
 		@brief Utility function to switch the value 0 -> 1 or 1 -> 0 of the bit
 				at position @p _stateBitPos in ::utilityState.

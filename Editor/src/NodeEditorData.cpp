@@ -33,9 +33,43 @@ void ECellEngine::Editor::Utility::AssetNodeData::OutputUpdate(std::size_t& _nod
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("AssetNodeData::OutputUpdate");
 }
 
-void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t& _nodeInputId, float _data)
+void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t& _nodeInputPinId, float _data)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("LinePlotNodeData::InputUpdate; data=" + std::to_string(_data));
+
+	NodeInputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(inputPins, inputPins + std::size(inputPins), _nodeInputPinId);
+	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
+	idx = std::distance(inputPins, it);
+
+	//The node input pin corresponding to the X Axis data
+	if (idx == 1)
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogDebug("newPointBuffer[0] = " + std::to_string(_data));
+		newPointBuffer[0] = _data;
+
+		//If both the x and y values of a new data point have been updated this frame.
+		if (++newPointConstructionCounter == 2)
+		{
+			ECellEngine::Logging::Logger::GetSingleton().LogDebug("Add point to Line Plot from X");
+			//We add the new point
+			dataPoints.AddPoint(newPointBuffer[0], newPointBuffer[1]);
+		}
+	}
+
+	//The node input pin corresponding to the Y Axis data
+	if (idx == 2)
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogDebug("newPointBuffer[1] = " + std::to_string(_data));
+		newPointBuffer[1] = _data;
+
+		//If both the x and y values of a new data point have been updated this frame.
+		if (++newPointConstructionCounter == 2)
+		{
+			ECellEngine::Logging::Logger::GetSingleton().LogDebug("Add point to Line Plot from Y");
+			//We add the new point
+			dataPoints.AddPoint(newPointBuffer[0], newPointBuffer[1]);
+		}
+	}
 }
 
 void ECellEngine::Editor::Utility::ComputedParameterNodeData::InputUpdate(std::size_t& _nodeInputPinId, float _data)
@@ -115,5 +149,12 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(std::size_t& _n
 	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
 	idx = std::distance(outputPins, it);
 
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SpeciesNodeData::OutputUpdate");
+	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SpeciesNodeData::OutputUpdate; idx= " + std::to_string(idx));
+
+	//The node output pin corresponding to the Quantity
+	if (idx == 6)
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogDebug("Broadcasting Species Quantity; value= " + std::to_string(data->Get()));
+		it->Broadcast(data->Get());
+	}
 }

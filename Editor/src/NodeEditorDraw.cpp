@@ -251,7 +251,12 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
             if (ImPlot::BeginPlot(_linePlotNodeData.plotTitle, ImVec2(_linePlotNodeData.plotSize[0], _linePlotNodeData.plotSize[1]), _linePlotNodeData.plotFlags))
             {
                 ImPlot::SetupAxes(_linePlotNodeData.xAxisLabel, _linePlotNodeData.yAxisLabel, _linePlotNodeData.xAxisFlags, _linePlotNodeData.yAxisFlags);
-                ImPlot::PlotLine(_linePlotNodeData.lineLegend, &_linePlotNodeData.dataPoints.Data[0].x, &_linePlotNodeData.dataPoints.Data[0].y, _linePlotNodeData.dataPoints.Data.Size + 1);
+                ImPlot::PlotLine(_linePlotNodeData.lineLegend,
+                    &_linePlotNodeData.dataPoints.Data[0].x, &_linePlotNodeData.dataPoints.Data[0].y,
+                    _linePlotNodeData.dataPoints.Data.Size, 0, 2 * sizeof(float));
+                
+                _linePlotNodeData.ResetNewPointBuffer();
+                
                 ImPlot::EndPlot();
             }
         }

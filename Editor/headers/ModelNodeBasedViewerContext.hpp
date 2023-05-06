@@ -136,6 +136,7 @@ namespace ECellEngine::Editor::Utility
 			uniqueId{ 0 }, countTASToMCmds{ 0 }
 		{
 			authorizedDynamicLinks[PinType_Solver][PinType_Solver] = true;
+			authorizedDynamicLinks[PinType_ValueFloat][PinType_ValueFloat] = true;
 		}
 
 		/*!
