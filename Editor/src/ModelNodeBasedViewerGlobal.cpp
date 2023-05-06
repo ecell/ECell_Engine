@@ -35,6 +35,13 @@ ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeIn
         return itND;
     }
 
+    //Search in the list of Line Plot Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->linePlotNodes.begin(), s_mnbvCtxt->linePlotNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
     //Search in the list of Reaction Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->reactionNodes.begin(), s_mnbvCtxt->reactionNodes.end());
     if (itND != nullptr)
@@ -90,6 +97,13 @@ ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNod
 
     //Search in the list of Computed Parameter Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->computedParameterNodes.begin(), s_mnbvCtxt->computedParameterNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
+    //Search in the list of Line Plot Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->linePlotNodes.begin(), s_mnbvCtxt->linePlotNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;
