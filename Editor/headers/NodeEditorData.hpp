@@ -542,6 +542,22 @@ namespace ECellEngine::Editor::Utility
 			dataPoints.AddPoint(0, 0);
 		}
 
+		LinePlotNodeData(const LinePlotNodeData& _lpnd):
+			NodeData(_lpnd), dataPoints{ _lpnd.dataPoints },
+			inputPins{ _lpnd.inputPins[0], _lpnd.inputPins[1] , _lpnd.inputPins[2]},
+			outputPins{ _lpnd.outputPins[0] },
+			utilityState{ _lpnd.utilityState },
+			collapsingHeadersIds{ _lpnd.collapsingHeadersIds[0], _lpnd.collapsingHeadersIds[1],
+			_lpnd.collapsingHeadersIds[2], _lpnd.collapsingHeadersIds[3], _lpnd.collapsingHeadersIds[4],
+			_lpnd.collapsingHeadersIds[5] }
+		{
+			inputPins[0].node = this;
+			inputPins[1].node = this;
+			inputPins[2].node = this;
+
+			outputPins[0].node = this;
+		}
+
 		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {};
 
 		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
