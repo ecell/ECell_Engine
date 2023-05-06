@@ -474,19 +474,24 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
 
     NodeHorizontalSeparator(headerSize);
 
+    if (_speciesNodeInfo.speciesQuantityBuffer != _speciesNodeInfo.data->Get())
+    {
+        _speciesNodeInfo.speciesQuantityBuffer = _speciesNodeInfo.data->Get();
+        _speciesNodeInfo.OutputUpdate((std::size_t&)_speciesNodeInfo.outputPins[6].id);
+    }
+
     if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.collapsingHeadersIds[1],
         _speciesNodeInfo.utilityState, 1,
         startX, headerSize,
         _speciesNodeInfo.inputPins[6], _speciesNodeInfo.outputPins[5], GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
-        float value = _speciesNodeInfo.data->Get();
-        if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &value,
+        if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &_speciesNodeInfo.speciesQuantityBuffer,
             itemsWidth, startX, headerSize,
             _speciesNodeInfo.inputPins[7], _speciesNodeInfo.outputPins[6], GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            _speciesNodeInfo.data->Set(value);
+            _speciesNodeInfo.data->Set(_speciesNodeInfo.speciesQuantityBuffer);
             _speciesNodeInfo.OutputUpdate((std::size_t&)_speciesNodeInfo.outputPins[6].id);
         }
     }

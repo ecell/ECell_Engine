@@ -881,6 +881,7 @@ namespace ECellEngine::Editor::Utility
 		//ax::NodeEditor::NodeId id;
 
 		ECellEngine::Data::Species* data;
+		float speciesQuantityBuffer = 0.f;
 
 		NodeInputPinData inputPins[8];
 		NodeOutputPinData outputPins[7];
@@ -889,16 +890,16 @@ namespace ECellEngine::Editor::Utility
 
 		std::size_t collapsingHeadersIds[2];
 
-		SpeciesNodeData(const SpeciesNodeData& _rnd) :
-			NodeData(_rnd), data{ _rnd.data },
-			inputPins{ _rnd.inputPins[0], _rnd.inputPins[1] , _rnd.inputPins[2] ,
-					  _rnd.inputPins[3] , _rnd.inputPins[4] , _rnd.inputPins[5],
-					  _rnd.inputPins[6] , _rnd.inputPins[7]},
-			outputPins{ _rnd.outputPins[0], _rnd.outputPins[1] , _rnd.outputPins[2] ,
-					  _rnd.outputPins[3] , _rnd.outputPins[4] , _rnd.outputPins[5],
-					  _rnd.outputPins[6]},
-			utilityState{ _rnd.utilityState },
-			collapsingHeadersIds{ _rnd.collapsingHeadersIds[0], _rnd.collapsingHeadersIds[1]}
+		SpeciesNodeData(const SpeciesNodeData& _snd) :
+			NodeData(_snd), data{ _snd.data }, speciesQuantityBuffer{ _snd.speciesQuantityBuffer },
+			inputPins{ _snd.inputPins[0], _snd.inputPins[1] , _snd.inputPins[2] ,
+					  _snd.inputPins[3] , _snd.inputPins[4] , _snd.inputPins[5],
+					  _snd.inputPins[6] , _snd.inputPins[7]},
+			outputPins{ _snd.outputPins[0], _snd.outputPins[1] , _snd.outputPins[2] ,
+					  _snd.outputPins[3] , _snd.outputPins[4] , _snd.outputPins[5],
+					  _snd.outputPins[6]},
+			utilityState{ _snd.utilityState },
+			collapsingHeadersIds{ _snd.collapsingHeadersIds[0], _snd.collapsingHeadersIds[1]}
 		{
 			inputPins[0].node = this;
 			inputPins[1].node = this;
