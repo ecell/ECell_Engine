@@ -70,42 +70,59 @@ namespace ECellEngine::Editor::Utility
 
 #pragma region Nodes
 		/*!
-		@brief Draws a node to display and access the content of an
-				ECellEngine::Data::Module.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::AssetNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _assetNodeInfo The struct with information about what to draw.
-		@param _assetNodeColors The set of colors to cutomize the looks of this
-				node.
-		@param _solverPinColors The set of colors to cutomize the solver pin in
-				this node.
-		@param _parameterPinColors The set of colors to cutomize the parameter
-				pin in this node.
-		@param _reactionPinColors The set of colors to cutomize the reaction pin
-				in this node.
-		@param _speciesPinColors The set of colors to cutomize the species pin in
-				this node.
 		*/
 		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo);
 
-		static void ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo);
-		
-		static void ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo);
-
-		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
 		/*!
-		@brief Draws a node to display and access the content of a
-				ECellEngine::Solvers::Solver.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::ComputedParameterNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _solverNodeInfo The struct with information about what to draw.
-		@param _solverNodeColors The set of colors to cutomize the looks of this
-				node.
-		@param _assetPinColors The set of colors to cutomize the asset pin in
-				this node.
+		@param _assetNodeInfo The struct with information about what to draw.
+		*/
+		static void ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo);
+
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::LinePlotNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _assetNodeInfo The struct with information about what to draw.
+		*/
+		static void LinePlotNode(const char* _name, LinePlotNodeData& _linePlotNodeInfo);
+		
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::ReactionNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _assetNodeInfo The struct with information about what to draw.
+		*/
+		static void ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo);
+
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SimpleParameterNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _assetNodeInfo The struct with information about what to draw.
+		*/
+		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
+		
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SolverNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _assetNodeInfo The struct with information about what to draw.
 		*/
 		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo);
 
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SpeciesNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _assetNodeInfo The struct with information about what to draw.
+		*/
 		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo);
 
 #pragma endregion

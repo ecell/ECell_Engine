@@ -150,6 +150,101 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(const c
     PopNodeStyle();
 }
 
+void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _name, LinePlotNodeData& _linePlotNodeData)
+{
+    PushNodeStyle(GetNodeColors(NodeType_Default));
+    ax::NodeEditor::BeginNode(_linePlotNodeData.id);
+
+    const float headerWidth = NodeHeader("Plot:", _name, GetNodeColors(NodeType_Reaction), 300.f, 1, 1);
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth, 1);
+    const float startX = ImGui::GetCursorPosX();
+
+    if (NodeCollapsingHeader("Parameters", _linePlotNodeData.collapsingHeadersIds[0],
+        _linePlotNodeData.utilityState, 0,
+        startX, headerWidth, ImVec2(headerWidth, 0.f)))
+    {
+        if (NodeCollapsingHeader("General", _linePlotNodeData.collapsingHeadersIds[1],
+            _linePlotNodeData.utilityState, 1,
+            startX, headerWidth, ImVec2(headerWidth, 0.f)))
+        {
+            char buffer[64] = "\0";
+            NodeInputText("Plot Title", _linePlotNodeData.plotTitle, buffer, 64, headerWidth, startX, headerWidth);
+
+            NodeInputText("X Axis Label", _linePlotNodeData.xAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
+
+            NodeInputText("Y Axis Label", _linePlotNodeData.yAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
+
+            NodeInputText("Line Legend", _linePlotNodeData.lineLegend, buffer, 64, headerWidth, startX, headerWidth);
+
+            ImGui::SetNextItemWidth(headerWidth - ImGui::CalcTextSize("Plot Size").x - ImGui::GetStyle().ItemSpacing.x);
+            ImGui::DragFloat2("Plot Size", _linePlotNodeData.plotSize, 1.f, 10.f, 1000.f);
+        }
+
+        if (NodeCollapsingHeader("Plot Flags", _linePlotNodeData.collapsingHeadersIds[2],
+            _linePlotNodeData.utilityState, 2,
+            startX, headerWidth, ImVec2(headerWidth, 0.f)))
+        {
+            NodeAllImPlotFlags(&_linePlotNodeData.plotFlags);
+        }
+
+        if (NodeCollapsingHeader("X Axis Flags", _linePlotNodeData.collapsingHeadersIds[3],
+            _linePlotNodeData.utilityState, 3,
+            startX, headerWidth, ImVec2(headerWidth, 0.f)))
+        {
+            NodeAllImPlotAxisFlags(&_linePlotNodeData.xAxisFlags);
+        }
+
+        if (NodeCollapsingHeader("Y Axis Flags", _linePlotNodeData.collapsingHeadersIds[4],
+            _linePlotNodeData.utilityState, 4,
+            startX, headerWidth, ImVec2(headerWidth, 0.f)))
+        {
+            NodeAllImPlotAxisFlags(&_linePlotNodeData.yAxisFlags);
+        }
+        
+    }
+
+    NodeHorizontalSeparator(headerWidth);
+
+    if (NodeCollapsingHeader_In("Plot", _linePlotNodeData.collapsingHeadersIds[5],
+        _linePlotNodeData.utilityState, 5,
+        startX, headerWidth,
+        _linePlotNodeData.inputPins[0], GetPinColors(PinType_Default),
+        ImVec2(itemsWidth, 0.f)))
+    {
+        NodeText_In(_linePlotNodeData.xAxisLabel, startX, _linePlotNodeData.inputPins[1], GetPinColors(PinType_Default));
+        NodeText_In(_linePlotNodeData.yAxisLabel, startX, _linePlotNodeData.inputPins[2], GetPinColors(PinType_Default));
+        
+        AlignToCenter(startX, headerWidth, headerWidth);
+        if (ImGui::Button("Open Plot", ImVec2(headerWidth, 0.f)))
+        {
+            _linePlotNodeData.OpenPlot();
+        }
+    }
+
+    if (_linePlotNodeData.IsPlotOpen())
+    {
+        ImGuiStyle& imguiStyle = ImGui::GetStyle();
+        ImPlotStyle& implotStyle = ImPlot::GetStyle();
+        ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.plotSize[0] + 2 * imguiStyle.WindowPadding.x,
+                                        _linePlotNodeData.plotSize[1] + 2 * imguiStyle.WindowPadding.y));
+        ax::NodeEditor::Suspend();
+        if (ImGui::Begin(_name, NULL, _linePlotNodeData.plotWindowFlags))
+        {
+            if (ImPlot::BeginPlot(_linePlotNodeData.plotTitle, ImVec2(_linePlotNodeData.plotSize[0], _linePlotNodeData.plotSize[1]), _linePlotNodeData.plotFlags))
+            {
+                ImPlot::SetupAxes(_linePlotNodeData.xAxisLabel, _linePlotNodeData.yAxisLabel, _linePlotNodeData.xAxisFlags, _linePlotNodeData.yAxisFlags);
+                ImPlot::PlotLine(_linePlotNodeData.lineLegend, &_linePlotNodeData.dataPoints.Data[0].x, &_linePlotNodeData.dataPoints.Data[0].y, _linePlotNodeData.dataPoints.Data.Size + 1);
+                ImPlot::EndPlot();
+            }
+        }
+        ImGui::End();
+        ax::NodeEditor::Resume();
+    }
+
+    ax::NodeEditor::EndNode();
+    PopNodeStyle();
+}
+
 void ECellEngine::Editor::Utility::NodeEditorDraw::ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo)
 {
     PushNodeStyle(GetNodeColors(NodeType_Reaction));

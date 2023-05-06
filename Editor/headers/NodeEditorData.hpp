@@ -1,4 +1,5 @@
 #pragma once
+#include "implot.h"
 #include "imgui_node_editor.h"
 
 #include "BinaryOperatedVector.hpp"
@@ -504,14 +505,23 @@ namespace ECellEngine::Editor::Utility
 	{
 		char* name = "Line Plot";
 
+		const ImGuiWindowFlags plotWindowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
 		ScrollingBuffer dataPoints;
+		char plotTitle[64] = "PlotTitle";
+		char xAxisLabel[64] = "x";
+		char yAxisLabel[64] = "y";
+		char lineLegend[64] = "f(x)";
+		float plotSize[2] = { ImPlot::GetStyle().PlotDefaultSize.x, ImPlot::GetStyle().PlotDefaultSize.y };
+		ImPlotFlags plotFlags = ImPlotFlags_NoLegend | ImPlotFlags_NoInputs;
+		ImPlotAxisFlags xAxisFlags = ImPlotAxisFlags_None;
+		ImPlotAxisFlags yAxisFlags = ImPlotAxisFlags_None;
 		
 		NodeInputPinData inputPins[3];
 		NodeInputPinData outputPins[1];//not used
 
 		unsigned char utilityState = 0;
 
-		std::size_t collapsingHeadersIds[2];
+		std::size_t collapsingHeadersIds[6];
 
 		LinePlotNodeData(int _maxNbDataPoints, ImVec2 _position) :
 			NodeData(), dataPoints{ _maxNbDataPoints }
@@ -523,7 +533,11 @@ namespace ECellEngine::Editor::Utility
 			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Y
 
 			collapsingHeadersIds[0] = GetMNBVCtxtNextId();//Parameters Collapsing header
-			collapsingHeadersIds[1] = GetMNBVCtxtNextId();//Plot Collapsing Header
+			collapsingHeadersIds[1] = GetMNBVCtxtNextId();//General (Parameters) Collapsing header
+			collapsingHeadersIds[2] = GetMNBVCtxtNextId();//Plot Flags (Parameters) Collapsing header
+			collapsingHeadersIds[3] = GetMNBVCtxtNextId();//X Axis Flags (Parameters) Collapsing header
+			collapsingHeadersIds[4] = GetMNBVCtxtNextId();//Y Axis Falgs (Parameters) Collapsing header
+			collapsingHeadersIds[5] = GetMNBVCtxtNextId();//Plot Collapsing Header
 
 			dataPoints.AddPoint(0, 0);
 		}
@@ -533,6 +547,16 @@ namespace ECellEngine::Editor::Utility
 		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
 
 		void OutputUpdate(std::size_t& _nodeOutputPinId) override {};
+
+		inline bool IsPlotOpen() noexcept
+		{
+			return (utilityState >> 6) & 1;
+		}
+
+		inline void OpenPlot() noexcept
+		{
+			utilityState |= 1 << 6;
+		}
 	};
 
 	struct ReactionNodeData : public NodeData

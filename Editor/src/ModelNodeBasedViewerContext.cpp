@@ -2,6 +2,29 @@
 
 void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine::Data::DataState* _dataState)
 {
+    ax::NodeEditor::Suspend();
+    if (ax::NodeEditor::ShowBackgroundContextMenu())
+    {
+        ImGui::OpenPopup("Create New Node");
+    }
+
+    if (ImGui::BeginPopup("Create New Node"))
+    {
+        if (ImGui::BeginMenu("Plots"))
+        {
+            if (ImGui::MenuItem("Line Plot Node"))
+            {
+                ax::NodeEditor::Resume();
+                linePlotNodes.emplace_back(ECellEngine::Editor::Utility::LinePlotNodeData(1024, ImGui::GetIO().MousePos));
+                ax::NodeEditor::Suspend();
+            }
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndPopup();
+    }
+    ax::NodeEditor::Resume();
+
     for (std::vector<ECellEngine::Editor::Utility::AssetNodeData>::iterator it = assetNodes.begin(); it != assetNodes.end(); it++)
     {
         ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(it->data->GetName(), *it);
@@ -55,6 +78,11 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
     for (std::vector< ECellEngine::Editor::Utility::ComputedParameterNodeData>::iterator it = computedParameterNodes.begin(); it != computedParameterNodes.end(); it++)
     {
         ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(it->data->name.c_str(), *it);
+    }
+
+    for (std::vector<ECellEngine::Editor::Utility::LinePlotNodeData>::iterator it = linePlotNodes.begin(); it != linePlotNodes.end(); it++)
+    {
+        ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(it->name, *it);
     }
 
     for (std::vector< ECellEngine::Editor::Utility::ReactionNodeData>::iterator it = reactionNodes.begin(); it != reactionNodes.end(); ++it)

@@ -45,6 +45,14 @@ namespace ECellEngine::Editor::Utility
 		std::vector<ECellEngine::Editor::Utility::ComputedParameterNodeData> computedParameterNodes;
 
 		/*!
+		@brief The list of nodes handling line plots in this context.
+		@details It contains the information used to draw the nodes managing
+				 line plots to display numeric data imported in the current simulation
+				 space.
+		*/
+		std::vector<ECellEngine::Editor::Utility::LinePlotNodeData> linePlotNodes;
+
+		/*!
 		@brief The list of reaction nodes in this context.
 		@details It contains the information used to draw the nodes corresponding
 				 to each reaction of various assets imported in the current
