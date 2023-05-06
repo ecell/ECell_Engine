@@ -556,6 +556,15 @@ namespace ECellEngine::Editor::Utility
 		inline void OpenPlot() noexcept
 		{
 			utilityState |= 1 << 6;
+		/*!
+		@brief Utility function to switch the value 0 -> 1 or 1 -> 0 of the bit
+				at position @p _stateBitPos in ::utilityState.
+		@remarks It could be moved outside of this class in the future since the
+				 code works with any data and is not pecific to this context.
+		*/
+		inline void SwitchState(const short _stateBitPos)
+		{
+			utilityState ^= (1 << _stateBitPos);
 		}
 	};
 

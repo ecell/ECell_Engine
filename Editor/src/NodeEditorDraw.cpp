@@ -158,6 +158,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
     const float headerWidth = NodeHeader("Plot:", _name, GetNodeColors(NodeType_Reaction), 300.f, 1, 1);
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth, 1);
     const float startX = ImGui::GetCursorPosX();
+    ImGuiStyle& style = ImGui::GetStyle();
 
     if (NodeCollapsingHeader("Parameters", _linePlotNodeData.collapsingHeadersIds[0],
         _linePlotNodeData.utilityState, 0,
@@ -176,7 +177,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
 
             NodeInputText("Line Legend", _linePlotNodeData.lineLegend, buffer, 64, headerWidth, startX, headerWidth);
 
-            ImGui::SetNextItemWidth(headerWidth - ImGui::CalcTextSize("Plot Size").x - ImGui::GetStyle().ItemSpacing.x);
+            ImGui::SetNextItemWidth(headerWidth - ImGui::CalcTextSize("Plot Size").x - style.ItemSpacing.x);
             ImGui::DragFloat2("Plot Size", _linePlotNodeData.plotSize, 1.f, 10.f, 1000.f);
         }
 
@@ -200,7 +201,6 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
         {
             NodeAllImPlotAxisFlags(&_linePlotNodeData.yAxisFlags);
         }
-        
     }
 
     NodeHorizontalSeparator(headerWidth);
@@ -215,9 +215,28 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
         NodeText_In(_linePlotNodeData.yAxisLabel, startX, _linePlotNodeData.inputPins[2], GetPinColors(PinType_Default));
         
         AlignToCenter(startX, headerWidth, headerWidth);
-        if (ImGui::Button("Open Plot", ImVec2(headerWidth, 0.f)))
+
+        if (_linePlotNodeData.IsPlotOpen())
         {
-            _linePlotNodeData.OpenPlot();
+            if (ImGui::Button("Show", ImVec2(0.5f * (headerWidth - style.ItemSpacing.x), 0.f)))
+            {
+                //ImGuiWindow* window = ImGui::FindWindowByName(_name);
+                ImGui::BringWindowToDisplayFront(ImGui::FindWindowByName(_name));
+                ImGui::SetNextWindowPos(ax::NodeEditor::CanvasToScreen( ImGui::GetCursorPos()));
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Close", ImVec2(0.5f * (headerWidth - style.ItemSpacing.x), 0.f)))
+            {
+                _linePlotNodeData.SwitchState(6);
+            }
+        }
+        else
+        {
+            if (ImGui::Button("Open", ImVec2(headerWidth, 0.f)))
+            {
+                _linePlotNodeData.SwitchState(6);
+                ImGui::SetNextWindowPos(ax::NodeEditor::CanvasToScreen(ImGui::GetCursorPos()));
+            }
         }
     }
 
@@ -227,7 +246,6 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
         ImPlotStyle& implotStyle = ImPlot::GetStyle();
         ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.plotSize[0] + 2 * imguiStyle.WindowPadding.x,
                                         _linePlotNodeData.plotSize[1] + 2 * imguiStyle.WindowPadding.y));
-        ax::NodeEditor::Suspend();
         if (ImGui::Begin(_name, NULL, _linePlotNodeData.plotWindowFlags))
         {
             if (ImPlot::BeginPlot(_linePlotNodeData.plotTitle, ImVec2(_linePlotNodeData.plotSize[0], _linePlotNodeData.plotSize[1]), _linePlotNodeData.plotFlags))
@@ -238,7 +256,6 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
             }
         }
         ImGui::End();
-        ax::NodeEditor::Resume();
     }
 
     ax::NodeEditor::EndNode();
