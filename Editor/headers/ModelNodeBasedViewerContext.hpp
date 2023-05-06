@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "DataState.hpp"
+#include "Simulation.hpp"
 
 #include "NodeEditorDraw.hpp"
 #include "NodeEditorStyle.hpp"
@@ -143,6 +143,6 @@ namespace ECellEngine::Editor::Utility
 		@brief The logic to draw the elements (nodes, pins, links) stored in
 				this context.
 		*/
-		void Draw(ECellEngine::Data::DataState* _dataState);
+		void Draw(ECellEngine::Core::Simulation* _simulation);
 	};
 }

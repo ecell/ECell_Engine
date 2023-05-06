@@ -65,10 +65,8 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
         //Relevant payloads are the references to assets or solvers loaded in
         //the simulation space.
         HandleSimuDataRefDrop();
-        
-        ECellEngine::Data::DataState* dataState = editor.engine.GetSimulationsManager()->GetSimulation(0)->GetDataState();
 
-        ECellEngine::Editor::Utility::CurrentMNBVContextDraw(dataState);
+        ECellEngine::Editor::Utility::CurrentMNBVContextDraw(editor.engine.GetSimulationsManager()->GetSimulation(0));
 
         ECellEngine::Editor::Utility::SendEngineTASToMCmd("0", editor.engine.GetCommandsManager());
 

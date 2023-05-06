@@ -1,6 +1,6 @@
 #include "ModelNodeBasedViewerContext.hpp"
 
-void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine::Data::DataState* _dataState)
+void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine::Core::Simulation* _simulation)
 {
     ax::NodeEditor::Suspend();
     if (ax::NodeEditor::ShowBackgroundContextMenu())
@@ -33,7 +33,7 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
         if (it->speciesNLB.IsAnItemDoubleClicked())
         {
            speciesNodes.emplace_back(ECellEngine::Editor::Utility::SpeciesNodeData(
-                _dataState->GetSpecies(it->speciesNLB.data->at(it->speciesNLB.doubleClickedItem))));
+                _simulation->GetDataState()->GetSpecies(it->speciesNLB.data->at(it->speciesNLB.doubleClickedItem))));
 
             links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[0].id,speciesNodes.back().inputPins[1].id));
             links.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[0].id, 1);
@@ -43,7 +43,7 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
         if (it->simpleParametersNLB.IsAnItemDoubleClicked())
         {
            simpleParameterNodes.emplace_back(ECellEngine::Editor::Utility::SimpleParameterNodeData(
-                _dataState->GetSimpleParameter(it->simpleParametersNLB.data->at(it->simpleParametersNLB.doubleClickedItem))));
+                _simulation->GetDataState()->GetSimpleParameter(it->simpleParametersNLB.data->at(it->simpleParametersNLB.doubleClickedItem))));
 
             links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[1].id,simpleParameterNodes.back().inputPins[1].id));
             links.back().OverrideEndFallbackPin(simpleParameterNodes.back().inputPins[0].id, 1);
@@ -53,7 +53,7 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
         if (it->computedParametersNLB.IsAnItemDoubleClicked())
         {
            computedParameterNodes.emplace_back(ECellEngine::Editor::Utility::ComputedParameterNodeData(
-                _dataState->GetComputedParameter(it->computedParametersNLB.data->at(it->computedParametersNLB.doubleClickedItem))));
+                _simulation->GetDataState()->GetComputedParameter(it->computedParametersNLB.data->at(it->computedParametersNLB.doubleClickedItem))));
 
             links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[2].id,computedParameterNodes.back().inputPins[1].id));
             links.back().OverrideEndFallbackPin(computedParameterNodes.back().inputPins[0].id, 1);
@@ -63,7 +63,7 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
         if (it->reactionsNLB.IsAnItemDoubleClicked())
         {
            reactionNodes.emplace_back(ECellEngine::Editor::Utility::ReactionNodeData(
-                _dataState->GetReaction(it->reactionsNLB.data->at(it->reactionsNLB.doubleClickedItem))));
+                _simulation->GetDataState()->GetReaction(it->reactionsNLB.data->at(it->reactionsNLB.doubleClickedItem))));
 
             links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[3].id,reactionNodes.back().inputPins[1].id));
             links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[0].id, 1);

@@ -12,9 +12,9 @@ void ECellEngine::Editor::Utility::AddSolverNode(ECellEngine::Solvers::Solver* _
     s_mnbvCtxt->solverNodes.push_back(ECellEngine::Editor::Utility::SolverNodeData(_solver));
 }
 
-void ECellEngine::Editor::Utility::CurrentMNBVContextDraw(ECellEngine::Data::DataState* _dataState)
+void ECellEngine::Editor::Utility::CurrentMNBVContextDraw(ECellEngine::Core::Simulation* _simulation)
 {
-    s_mnbvCtxt->Draw(_dataState);
+    s_mnbvCtxt->Draw(_simulation);
 }
 
 ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeInAll(const std::size_t _id)

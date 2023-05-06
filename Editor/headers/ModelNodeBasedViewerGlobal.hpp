@@ -2,7 +2,8 @@
 
 #include "BinaryOperatedVector.hpp"
 #include "CommandsManager.hpp"
-#include "SBMLModule.hpp" //eventually includes DataState.hpp
+#include "Simulation.hpp"
+#include "SBMLModule.hpp"
 #include "NodeEditorStyle.hpp"
 
 namespace ECellEngine::Editor::Utility
@@ -42,12 +43,12 @@ namespace ECellEngine::Editor::Utility
 	/*!
 	@brief Asks the current Model Node Based Viewer (MNBV) Context to draw the
 			nodes registered to it.
-	@param  _dataState The pointer to the datastate of the simulation space
-			the nodes registered in the current MNBV come from. This is used
-			to keep adding nodes to the MNBV context depending on the user's
+	@param  _simulation The pointer to the simulation from where the nodes
+			registered in the current MNBV come from. This is used to keep
+			adding nodes to the MNBV context depending on the user's
 			interaction with the node editor.
 	*/
-	void CurrentMNBVContextDraw(ECellEngine::Data::DataState* _dataState);
+	void CurrentMNBVContextDraw(ECellEngine::Core::Simulation* _simulation);
 
 	/*!
 	@brief Searchs for a ECellEngine::Editor::Utility::NodeData with id @p _id
