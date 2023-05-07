@@ -416,6 +416,30 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const cha
     PopNodeStyle();
 }
 
+void ECellEngine::Editor::Utility::NodeEditorDraw::SimulationTimeNode(const char* _name, SimulationTimeNodeData& _simulationTimeNodeInfo)
+{
+    PushNodeStyle(GetNodeColors(NodeType_Data));
+    ax::NodeEditor::BeginNode(_simulationTimeNodeInfo.id);
+
+    const float headerWidth = NodeHeader("Time:", _name, GetNodeColors(NodeType_Data));
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+    const float startX = ImGui::GetCursorPosX();
+
+    NodeInputFloat_Out("Elapsed Time", _simulationTimeNodeInfo.id.Get(), &_simulationTimeNodeInfo.elapsedTimeBuffer,
+        itemsWidth, startX, headerWidth, 
+        _simulationTimeNodeInfo.outputPins[0], GetPinColors(PinType_ValueFloat),
+        ImGuiInputTextFlags_ReadOnly);
+
+    if (_simulationTimeNodeInfo.elapsedTimeBuffer != _simulationTimeNodeInfo.simulationTimer->elapsedTime)
+    {
+        _simulationTimeNodeInfo.elapsedTimeBuffer = _simulationTimeNodeInfo.simulationTimer->elapsedTime;
+        _simulationTimeNodeInfo.OutputUpdate((std::size_t&)_simulationTimeNodeInfo.outputPins[0].id);
+    }
+
+    ax::NodeEditor::EndNode();
+    PopNodeStyle();
+}
+
 void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo)
 {
     PushNodeStyle(GetNodeColors(NodeType_Solver));
@@ -852,6 +876,67 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const
     }
 }
 
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* valueBuffer,
+    const float _inputFieldWidth, const float _startX, const float _drawLength,
+    const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
+    const ImGuiInputTextFlags _flags)
+{
+    ImGui::SetCursorPosX(_startX);
+
+    Pin(_inputPin, _pinColors); ImGui::SameLine();
+
+    ImGui::PushID((int)_id);
+    ImGui::AlignTextToFramePadding(); AlignToCenter(_startX, _drawLength, _inputFieldWidth);
+    
+    ImGui::Text(_label); ImGui::SameLine();
+    ImGui::SetNextItemWidth(_inputFieldWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x);
+    bool edited = ImGui::InputFloat("##quantity", valueBuffer, 0.f, 0.f, "%.3f", _flags);
+    if (ImGui::IsItemActive() && (_flags & ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        ax::NodeEditor::Suspend();
+        ImGui::SetTooltip("Press ENTER to confirm.");
+        ax::NodeEditor::Resume();
+    }
+    ImGui::PopID();
+
+    ImGui::SameLine();
+    
+    AlignToRight(_startX, _drawLength, GetMNBVStyle()->pinWidth);
+    Pin(_outputPin, _pinColors);
+
+    return edited;
+}
+
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_Out(const char* _label, const std::size_t _id, float* valueBuffer,
+    const float _inputFieldWidth, const float _startX, const float _drawLength,
+    const NodePinData& _pin, const ImVec4 _pinColors[],
+    const ImGuiInputTextFlags _flags)
+{
+    ImGui::SetCursorPosX(_startX);
+
+    ImGui::PushID((int)_id);
+    ImGui::AlignTextToFramePadding();
+    AlignToRight(_startX, _drawLength - GetMNBVStyle()->pinWidth - ImGui::GetStyle().ItemSpacing.x - (_inputFieldWidth - ImGui::CalcTextSize(_label).x) , ImGui::CalcTextSize(_label).x);
+    
+    ImGui::Text(_label); ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(_inputFieldWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x);
+    bool edited = ImGui::InputFloat("##quantity", valueBuffer, 0.f, 0.f, "%.3f", _flags);
+    if (ImGui::IsItemActive() && !(_flags & ImGuiInputTextFlags_ReadOnly) && (_flags & ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        ax::NodeEditor::Suspend();
+        ImGui::SetTooltip("Press ENTER to confirm.");
+        ax::NodeEditor::Resume();
+    }
+    ImGui::PopID();
+
+    ImGui::SameLine();
+    
+    Pin(_pin, _pinColors);
+
+    return edited;
+}
+
 bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputText(const char* _label, char* _target, char* _buffer,
     const std::size_t _bufferSize, const float _inputFieldWidth, const float _startX, const float _drawLength,
     const ImGuiInputTextFlags _flags)
@@ -884,37 +969,6 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputText(const char* _la
     }
 
     return false;
-}
-
-bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* valueBuffer,
-    const float _inputFieldWidth, const float _startX, const float _drawLength,
-    const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
-    const ImGuiInputTextFlags _flags)
-{
-    ImGui::SetCursorPosX(_startX);
-
-    Pin(_inputPin, _pinColors); ImGui::SameLine();
-
-    ImGui::PushID((int)_id);
-    ImGui::AlignTextToFramePadding(); AlignToCenter(_startX, _drawLength, _inputFieldWidth);
-    
-    ImGui::Text(_label); ImGui::SameLine();
-    ImGui::SetNextItemWidth(_inputFieldWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x);
-    bool edited = ImGui::InputFloat("##quantity", valueBuffer, 0.f, 0.f, "%.3f", _flags);
-    if (ImGui::IsItemActive() && (_flags & ImGuiInputTextFlags_EnterReturnsTrue))
-    {
-        ax::NodeEditor::Suspend();
-        ImGui::SetTooltip("Press ENTER to confirm.");
-        ax::NodeEditor::Resume();
-    }
-    ImGui::PopID();
-
-    ImGui::SameLine();
-    
-    AlignToRight(_startX, _drawLength, GetMNBVStyle()->pinWidth);
-    Pin(_outputPin, _pinColors);
-
-    return edited;
 }
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData& _nslbData,

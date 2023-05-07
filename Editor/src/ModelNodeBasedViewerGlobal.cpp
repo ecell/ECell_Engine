@@ -56,6 +56,13 @@ ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeIn
         return itND;
     }
 
+     //Search in the list of Simulation Time Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->simulationTimeNodes.begin(), s_mnbvCtxt->simulationTimeNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
     //Search in the list of Solver Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->solverNodes.begin(), s_mnbvCtxt->solverNodes.end());
     if (itND != nullptr)
@@ -118,6 +125,13 @@ ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNod
 
     //Search in the list of Simple Parameter Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->simpleParameterNodes.begin(), s_mnbvCtxt->simpleParameterNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
+    //Search in the list of Simulation Time Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->simulationTimeNodes.begin(), s_mnbvCtxt->simulationTimeNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;

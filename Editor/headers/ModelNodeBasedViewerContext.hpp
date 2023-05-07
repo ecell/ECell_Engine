@@ -69,6 +69,13 @@ namespace ECellEngine::Editor::Utility
 		std::vector<ECellEngine::Editor::Utility::SimpleParameterNodeData> simpleParameterNodes;
 		
 		/*!
+		@brief The list of simulation time nodes.
+		@details It contains the information used to draw the nodes corresponding
+				 to display and use the elapsed time of the simulation.
+		*/
+		std::vector<ECellEngine::Editor::Utility::SimulationTimeNodeData> simulationTimeNodes;
+
+		/*!
 		@brief The list of solver nodes.
 		@details It contains the information used to draw the nodes corresponding
 				 to each solvers imported in the current simulation space.

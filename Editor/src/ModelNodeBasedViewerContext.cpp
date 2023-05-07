@@ -21,6 +21,17 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
             ImGui::EndMenu();
         }
 
+        if (ImGui::BeginMenu("Time"))
+        {
+            if (ImGui::MenuItem("Simulation Elapsed Time"))
+            {
+                ax::NodeEditor::Resume();
+                simulationTimeNodes.emplace_back(ECellEngine::Editor::Utility::SimulationTimeNodeData(_simulation->GetTimer(), ImGui::GetIO().MousePos));
+                ax::NodeEditor::Suspend();
+            }
+            ImGui::EndMenu();
+        }
+
         ImGui::EndPopup();
     }
     ax::NodeEditor::Resume();
@@ -93,6 +104,11 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
     for (std::vector< ECellEngine::Editor::Utility::SimpleParameterNodeData>::iterator it = simpleParameterNodes.begin(); it != simpleParameterNodes.end(); it++)
     {
         ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(it->data->name.c_str(), *it);
+    }
+
+    for (std::vector< ECellEngine::Editor::Utility::SimulationTimeNodeData>::iterator it = simulationTimeNodes.begin(); it != simulationTimeNodes.end(); it++)
+    {
+        ECellEngine::Editor::Utility::NodeEditorDraw::SimulationTimeNode("Simulation Elapsed Time", *it);
     }
 
     for (std::vector< ECellEngine::Editor::Utility::SolverNodeData>::iterator it = solverNodes.begin(); it != solverNodes.end(); it++)

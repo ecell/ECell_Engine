@@ -3,13 +3,9 @@
 
 void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(std::size_t& _nodeInputPinId, char* _data)
 {
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("AssetNodeData::InputUpdate; data=" + std::string(_data));
-
 	NodeInputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(inputPins, inputPins + std::size(inputPins), _nodeInputPinId);
 	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
 	idx = std::distance(inputPins, it);
-
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SolverNodeData::OutputUpdate; idx= " + std::to_string(idx));
 
 	//The node input pin representing the solver attached to this asset.
 	if (idx == 0)
@@ -35,8 +31,6 @@ void ECellEngine::Editor::Utility::AssetNodeData::OutputUpdate(std::size_t& _nod
 
 void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t& _nodeInputPinId, float _data)
 {
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("LinePlotNodeData::InputUpdate; data=" + std::to_string(_data));
-
 	NodeInputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(inputPins, inputPins + std::size(inputPins), _nodeInputPinId);
 	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
 	idx = std::distance(inputPins, it);
@@ -44,7 +38,6 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t& _n
 	//The node input pin corresponding to the X Axis data
 	if (idx == 1)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogDebug("newPointBuffer[0] = " + std::to_string(_data));
 		newPointBuffer[0] = _data;
 
 		//If both the x and y values of a new data point have been updated this frame.
@@ -59,7 +52,6 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t& _n
 	//The node input pin corresponding to the Y Axis data
 	if (idx == 2)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogDebug("newPointBuffer[1] = " + std::to_string(_data));
 		newPointBuffer[1] = _data;
 
 		//If both the x and y values of a new data point have been updated this frame.
@@ -115,15 +107,18 @@ void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputUpdate(std::si
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SimpleParameterNodeData::OutputUpdate");
 }
 
+void ECellEngine::Editor::Utility::SimulationTimeNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
+{
+	//There is only one output pin in the SImulationTimeNodeData so no need to look
+	//for a specific one: we know our target is at index 0.
+	outputPins[0].Broadcast(simulationTimer->elapsedTime);
+}
+
 void ECellEngine::Editor::Utility::SolverNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
 {
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SolverNodeData::OutputUpdate");
-
 	NodeOutputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(outputPins, outputPins + std::size(outputPins), _nodeOutputPinId);
 	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
 	idx = std::distance(outputPins, it);
-
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SolverNodeData::OutputUpdate; idx= " + std::to_string(idx));
 
 	//The node output pin representing the solver.
 	//It is used to attach a solver to an asset.
@@ -143,18 +138,13 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::InputUpdate(std::size_t& _no
 
 void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
 {
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SpeciesNodeData::OutputUpdate");
-
 	NodeOutputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(outputPins, outputPins + std::size(outputPins), _nodeOutputPinId);
 	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
 	idx = std::distance(outputPins, it);
 
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SpeciesNodeData::OutputUpdate; idx= " + std::to_string(idx));
-
 	//The node output pin corresponding to the Quantity
 	if (idx == 6)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogDebug("Broadcasting Species Quantity; value= " + std::to_string(data->Get()));
 		it->Broadcast(data->Get());
 	}
 }

@@ -146,6 +146,14 @@ namespace ECellEngine::Core
 		}
 
 		/*
+		@brief Gets the timer of this simulation.
+		*/
+		inline Timer* GetTimer() noexcept
+		{
+			return &timer;
+		}
+
+		/*
 		@brief Finds the module which name matches the argument @p _moduleName.
 		@details Implements a naive linear search from the start of the list
 				 towards the end.

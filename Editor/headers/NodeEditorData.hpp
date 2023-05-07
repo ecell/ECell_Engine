@@ -3,6 +3,7 @@
 #include "imgui_node_editor.h"
 
 #include "BinaryOperatedVector.hpp"
+#include "Timer.hpp"
 #include "ModelNodeBasedViewerGlobal.hpp"
 #include "PlotUtility.hpp"
 
@@ -527,7 +528,7 @@ namespace ECellEngine::Editor::Utility
 
 		std::size_t collapsingHeadersIds[6];
 
-		LinePlotNodeData(int _maxNbDataPoints, ImVec2 _position) :
+		LinePlotNodeData(int _maxNbDataPoints, ImVec2& _position) :
 			NodeData(), dataPoints{ _maxNbDataPoints }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
@@ -826,6 +827,39 @@ namespace ECellEngine::Editor::Utility
 		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {}
 
 		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+	};
+
+	struct SimulationTimeNodeData : public NodeData
+	{
+		ECellEngine::Core::Timer* simulationTimer;
+		float elapsedTimeBuffer = 0.f;
+
+		NodeInputPinData inputPins[1];
+		NodeOutputPinData outputPins[1];
+
+		SimulationTimeNodeData(ECellEngine::Core::Timer* _simulationTimer, ImVec2& _position) :
+			NodeData(), simulationTimer{ _simulationTimer }
+		{
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this); //simulation Time
+		}
+
+		SimulationTimeNodeData(const SimulationTimeNodeData& _stnd) :
+			NodeData(_stnd), simulationTimer{ _stnd.simulationTimer },
+			inputPins{ _stnd.inputPins[0] },
+			outputPins{ _stnd.outputPins[0] }
+		{
+			inputPins[0].node = this;
+			outputPins[0].node = this;
+		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {};
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {};
 
 		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};

@@ -108,6 +108,14 @@ namespace ECellEngine::Editor::Utility
 		@param _assetNodeInfo The struct with information about what to draw.
 		*/
 		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
+
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SimulationTimeNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _assetNodeInfo The struct with information about what to draw.
+		*/
+		static void SimulationTimeNode(const char* _name, SimulationTimeNodeData& _parameterNodeInfo);
 		
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SolverNodeData.
@@ -494,6 +502,31 @@ namespace ECellEngine::Editor::Utility
 		static bool NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* _valueBuffer, 
 			const float _inputFieldWidth, const float _startX, const float _drawLength,
 			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
+			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_EnterReturnsTrue);
+		
+		/*!
+		@brief Draw an input field for floats with an output pin.
+		@details Aligns the InputField text label and the Input Field body
+				to the center of the node.
+		@param _label The text label of the Input Field to display.
+		@param _id The _id of the InputField for ImGui.
+		@param _valueBuffer The float buffer to hold the value given by the user
+				and displayed in the field.
+		@param _inputFieldWidth The total width of the input field (text label
+				and body).
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _pin The pin data used for the output pin to draw.
+		@param _pinColors The set of colors to cutomize both pins.
+		@param _flags Flags to customize the behaviour of the input field.
+				Note that not every ImGuiInputTextFlags have an effect on
+				ImGui InputFloat widget.
+		*/
+		static bool NodeInputFloat_Out(const char* _label, const std::size_t _id, float* _valueBuffer, 
+			const float _inputFieldWidth, const float _startX, const float _drawLength,
+			const NodePinData& _pin, const ImVec4 _pinColors[],
 			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_EnterReturnsTrue);
 
 		/*!
