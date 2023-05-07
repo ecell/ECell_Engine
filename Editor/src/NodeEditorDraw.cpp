@@ -142,8 +142,125 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(const c
         float value = _parameterNodeInfo.data->Get();
         NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &value,
             itemsWidth, startX, headerWidth,
-            _parameterNodeInfo.inputPins[9], _parameterNodeInfo.outputPins[8], GetPinColors(PinType_Default),
+            _parameterNodeInfo.inputPins[9], _parameterNodeInfo.outputPins[8], GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_ReadOnly);
+    }
+
+    ax::NodeEditor::EndNode();
+    PopNodeStyle();
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _name, LinePlotNodeData& _linePlotNodeData)
+{
+    PushNodeStyle(GetNodeColors(NodeType_Default));
+    ax::NodeEditor::BeginNode(_linePlotNodeData.id);
+
+    const float headerWidth = NodeHeader("Plot:", _name, GetNodeColors(NodeType_Reaction), 300.f, 1, 1);
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth, 1);
+    const float startX = ImGui::GetCursorPosX();
+    ImGuiStyle& style = ImGui::GetStyle();
+
+    if (NodeCollapsingHeader("Parameters", _linePlotNodeData.collapsingHeadersIds[0],
+        _linePlotNodeData.utilityState, 0,
+        startX, headerWidth, ImVec2(headerWidth, 0.f)))
+    {
+        if (NodeCollapsingHeader("General", _linePlotNodeData.collapsingHeadersIds[1],
+            _linePlotNodeData.utilityState, 1,
+            startX, headerWidth, ImVec2(headerWidth, 0.f)))
+        {
+            char buffer[64] = "\0";
+            NodeInputText("Plot Title", _linePlotNodeData.plotTitle, buffer, 64, headerWidth, startX, headerWidth);
+
+            NodeInputText("X Axis Label", _linePlotNodeData.xAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
+
+            NodeInputText("Y Axis Label", _linePlotNodeData.yAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
+
+            NodeInputText("Line Legend", _linePlotNodeData.lineLegend, buffer, 64, headerWidth, startX, headerWidth);
+
+            ImGui::SetNextItemWidth(headerWidth - ImGui::CalcTextSize("Plot Size").x - style.ItemSpacing.x);
+            ImGui::DragFloat2("Plot Size", _linePlotNodeData.plotSize, 1.f, 10.f, 1000.f);
+        }
+
+        if (NodeCollapsingHeader("Plot Flags", _linePlotNodeData.collapsingHeadersIds[2],
+            _linePlotNodeData.utilityState, 2,
+            startX, headerWidth, ImVec2(headerWidth, 0.f)))
+        {
+            NodeAllImPlotFlags(&_linePlotNodeData.plotFlags);
+        }
+
+        if (NodeCollapsingHeader("X Axis Flags", _linePlotNodeData.collapsingHeadersIds[3],
+            _linePlotNodeData.utilityState, 3,
+            startX, headerWidth, ImVec2(headerWidth, 0.f)))
+        {
+            NodeAllImPlotAxisFlags(&_linePlotNodeData.xAxisFlags);
+        }
+
+        if (NodeCollapsingHeader("Y Axis Flags", _linePlotNodeData.collapsingHeadersIds[4],
+            _linePlotNodeData.utilityState, 4,
+            startX, headerWidth, ImVec2(headerWidth, 0.f)))
+        {
+            NodeAllImPlotAxisFlags(&_linePlotNodeData.yAxisFlags);
+        }
+    }
+
+    NodeHorizontalSeparator(headerWidth);
+
+    if (NodeCollapsingHeader_In("Plot", _linePlotNodeData.collapsingHeadersIds[5],
+        _linePlotNodeData.utilityState, 5,
+        startX, headerWidth,
+        _linePlotNodeData.inputPins[0], GetPinColors(PinType_Default),
+        ImVec2(itemsWidth, 0.f)))
+    {
+        NodeText_In(_linePlotNodeData.xAxisLabel, startX, _linePlotNodeData.inputPins[1], GetPinColors(PinType_ValueFloat));
+        NodeText_In(_linePlotNodeData.yAxisLabel, startX, _linePlotNodeData.inputPins[2], GetPinColors(PinType_ValueFloat));
+        
+        AlignToCenter(startX, headerWidth, headerWidth);
+
+        if (_linePlotNodeData.IsPlotOpen())
+        {
+            if (ImGui::Button("Show", ImVec2(0.5f * (headerWidth - style.ItemSpacing.x), 0.f)))
+            {
+                //ImGuiWindow* window = ImGui::FindWindowByName(_name);
+                ImGui::BringWindowToDisplayFront(ImGui::FindWindowByName(_name));
+                ImGui::SetNextWindowPos(ax::NodeEditor::CanvasToScreen( ImGui::GetCursorPos()));
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Close", ImVec2(0.5f * (headerWidth - style.ItemSpacing.x), 0.f)))
+            {
+                _linePlotNodeData.SwitchState(6);
+            }
+        }
+        else
+        {
+            if (ImGui::Button("Open", ImVec2(headerWidth, 0.f)))
+            {
+                _linePlotNodeData.SwitchState(6);
+                ImGui::SetNextWindowPos(ax::NodeEditor::CanvasToScreen(ImGui::GetCursorPos()));
+            }
+        }
+    }
+
+    if (_linePlotNodeData.IsPlotOpen())
+    {
+        ImGuiStyle& imguiStyle = ImGui::GetStyle();
+        ImPlotStyle& implotStyle = ImPlot::GetStyle();
+        ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.plotSize[0] + 2 * imguiStyle.WindowPadding.x,
+                                        _linePlotNodeData.plotSize[1] + 2 * imguiStyle.WindowPadding.y));
+        if (ImGui::Begin(_name, NULL, _linePlotNodeData.plotWindowFlags))
+        {
+            if (ImPlot::BeginPlot(_linePlotNodeData.plotTitle, ImVec2(_linePlotNodeData.plotSize[0], _linePlotNodeData.plotSize[1]), _linePlotNodeData.plotFlags))
+            {
+                ImPlot::SetupAxes(_linePlotNodeData.xAxisLabel, _linePlotNodeData.yAxisLabel, _linePlotNodeData.xAxisFlags, _linePlotNodeData.yAxisFlags);
+                ImPlot::PlotLine(_linePlotNodeData.lineLegend,
+                    &_linePlotNodeData.dataPoints.Data[0].x, &_linePlotNodeData.dataPoints.Data[0].y,
+                    _linePlotNodeData.dataPoints.Data.Size, 0, 2 * sizeof(float));
+                
+                _linePlotNodeData.ResetNewPointBuffer();
+                
+                ImPlot::EndPlot();
+            }
+        }
+        ImGui::End();
     }
 
     ax::NodeEditor::EndNode();
@@ -230,7 +347,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ReactionNode(const char* _nam
         float value = _reactionNodeInfo.data->GetKineticLawValue();
         NodeInputFloat_InOut("Value", _reactionNodeInfo.id.Get(), &value,
             itemsWidth, startX, headerWidth,
-            _reactionNodeInfo.inputPins[9], _reactionNodeInfo.outputPins[8], GetPinColors(PinType_Default),
+            _reactionNodeInfo.inputPins[9], _reactionNodeInfo.outputPins[8], GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_ReadOnly);
     }
 
@@ -288,11 +405,35 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const cha
         float value = _parameterNodeInfo.data->Get();
         if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &value,
             itemsWidth, startX, headerWidth,
-            _parameterNodeInfo.inputPins[5], _parameterNodeInfo.outputPins[4], GetPinColors(PinType_Default),
+            _parameterNodeInfo.inputPins[5], _parameterNodeInfo.outputPins[4], GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _parameterNodeInfo.data->Set(value);
         }
+    }
+
+    ax::NodeEditor::EndNode();
+    PopNodeStyle();
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::SimulationTimeNode(const char* _name, SimulationTimeNodeData& _simulationTimeNodeInfo)
+{
+    PushNodeStyle(GetNodeColors(NodeType_Data));
+    ax::NodeEditor::BeginNode(_simulationTimeNodeInfo.id);
+
+    const float headerWidth = NodeHeader("Time:", _name, GetNodeColors(NodeType_Data));
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+    const float startX = ImGui::GetCursorPosX();
+
+    NodeInputFloat_Out("Elapsed Time", _simulationTimeNodeInfo.id.Get(), &_simulationTimeNodeInfo.elapsedTimeBuffer,
+        itemsWidth, startX, headerWidth, 
+        _simulationTimeNodeInfo.outputPins[0], GetPinColors(PinType_ValueFloat),
+        ImGuiInputTextFlags_ReadOnly);
+
+    if (_simulationTimeNodeInfo.elapsedTimeBuffer != _simulationTimeNodeInfo.simulationTimer->elapsedTime)
+    {
+        _simulationTimeNodeInfo.elapsedTimeBuffer = _simulationTimeNodeInfo.simulationTimer->elapsedTime;
+        _simulationTimeNodeInfo.OutputUpdate((std::size_t&)_simulationTimeNodeInfo.outputPins[0].id);
     }
 
     ax::NodeEditor::EndNode();
@@ -357,19 +498,25 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
 
     NodeHorizontalSeparator(headerSize);
 
+    if (_speciesNodeInfo.speciesQuantityBuffer != _speciesNodeInfo.data->Get())
+    {
+        _speciesNodeInfo.speciesQuantityBuffer = _speciesNodeInfo.data->Get();
+        _speciesNodeInfo.OutputUpdate((std::size_t&)_speciesNodeInfo.outputPins[6].id);
+    }
+
     if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.collapsingHeadersIds[1],
         _speciesNodeInfo.utilityState, 1,
         startX, headerSize,
         _speciesNodeInfo.inputPins[6], _speciesNodeInfo.outputPins[5], GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
-        float value = _speciesNodeInfo.data->Get();
-        if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &value,
+        if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &_speciesNodeInfo.speciesQuantityBuffer,
             itemsWidth, startX, headerSize,
-            _speciesNodeInfo.inputPins[7], _speciesNodeInfo.outputPins[6], GetPinColors(PinType_Default),
+            _speciesNodeInfo.inputPins[7], _speciesNodeInfo.outputPins[6], GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            _speciesNodeInfo.data->Set(value);
+            _speciesNodeInfo.data->Set(_speciesNodeInfo.speciesQuantityBuffer);
+            _speciesNodeInfo.OutputUpdate((std::size_t&)_speciesNodeInfo.outputPins[6].id);
         }
     }
 
@@ -377,6 +524,26 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
     PopNodeStyle();
 }
 
+void ECellEngine::Editor::Utility::NodeEditorDraw::ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo)
+{
+    PushNodeStyle(GetNodeColors(NodeType_Data));
+    ax::NodeEditor::BeginNode(_valueFloatNodeInfo.id);
+
+    const float headerWidth = NodeHeader("Value:", _name, GetNodeColors(NodeType_Data));
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+    const float startX = ImGui::GetCursorPosX();
+
+    if (NodeDragFloat_Out("Value", _valueFloatNodeInfo.id.Get(), &_valueFloatNodeInfo.value,
+        itemsWidth, startX, headerWidth,
+        _valueFloatNodeInfo.outputPins[0], GetPinColors(PinType_ValueFloat),
+        ImGuiInputTextFlags_ReadOnly))
+    {
+        _valueFloatNodeInfo.OutputUpdate((std::size_t&)_valueFloatNodeInfo.outputPins[0].id);
+    }
+
+    ax::NodeEditor::EndNode();
+    PopNodeStyle();
+}
 #pragma endregion
 
 #pragma region Node Pins
@@ -528,6 +695,99 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::Link(LinkData& linkInfo)
 
 #pragma region Custom Node Widgets
 
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip)
+{
+    ImGui::CheckboxFlags(_label, _flags, _flag);
+    if (_tooltip)
+    {
+        if (ImGui::IsItemHovered())
+        {
+            ax::NodeEditor::Suspend();
+            ImGui::SetTooltip(_tooltip);
+            ax::NodeEditor::Resume();
+        }
+    }
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeAllImPlotAxisFlags(ImPlotFlags* _flags)
+{
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoLabel", _flags, ImPlotAxisFlags_NoLabel, "The axis label will not be displayed (axis labels also hidden if the supplied string name is NULL).");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoGridLines", _flags, ImPlotAxisFlags_NoGridLines, "No grid lines will be displayed.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoTickMarks", _flags, ImPlotAxisFlags_NoTickMarks, "No tick marks will be displayed.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoTickLabels", _flags, ImPlotAxisFlags_NoTickLabels, "No text labels will be displayed.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoInitialFit", _flags, ImPlotAxisFlags_NoInitialFit, "Axis will not be initially fit to data extents on the first rendered frame.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoMenus", _flags, ImPlotAxisFlags_NoMenus, "The user will not be able to open context menus with right-click.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_Opposite", _flags, ImPlotAxisFlags_Opposite, "Axis ticks and labels will be rendered on conventionally opposite side (i.e, right or top).");
+    NodeCheckBoxFlag("ImPlotAxisFlags_Foreground", _flags, ImPlotAxisFlags_Foreground, "Grid lines will be displayed in the foreground (i.e. on top of data) in stead of the background.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_LogScale", _flags, ImPlotAxisFlags_LogScale, "A logartithmic (base 10) axis scale will be used (mutually exclusive with ImPlotAxisFlags_Time).");
+    NodeCheckBoxFlag("ImPlotAxisFlags_Time", _flags, ImPlotAxisFlags_Time, "Axis will display date/time formatted labels (mutually exclusive with ImPlotAxisFlags_LogScale).");
+    NodeCheckBoxFlag("ImPlotAxisFlags_Invert", _flags, ImPlotAxisFlags_Invert, "The axis will be inverted.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_AutoFit", _flags, ImPlotAxisFlags_AutoFit, "Axis will be auto-fitting to data extents.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_RangeFit", _flags, ImPlotAxisFlags_RangeFit, "Axis will only fit points if the point is in the visible range of the **orthogonal** axis.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_LockMin", _flags, ImPlotAxisFlags_LockMin, "The axis minimum value will be locked when panning/zooming.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_LockMax", _flags, ImPlotAxisFlags_LockMax, "The axis maximum value will be locked when panning/zooming.");
+    NodeCheckBoxFlag("ImPlotAxisFlags_Lock", _flags, ImPlotAxisFlags_Lock, "ImPlotAxisFlags_LockMin | ImPlotAxisFlags_LockMax,");
+    NodeCheckBoxFlag("ImPlotAxisFlags_NoDecorations", _flags, ImPlotAxisFlags_NoDecorations, "ImPlotAxisFlags_NoLabel | ImPlotAxisFlags_NoGridLines | ImPlotAxisFlags_NoTickMarks | ImPlotAxisFlags_NoTickLabels,");
+    NodeCheckBoxFlag("ImPlotAxisFlags_AuxDefault", _flags, ImPlotAxisFlags_AuxDefault, "ImPlotAxisFlags_NoGridLines | ImPlotAxisFlags_Opposite");
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeAllImPlotFlags(ImPlotFlags* _flags)
+{
+    NodeCheckBoxFlag("ImPlotFlags_NoTitle", _flags, ImPlotFlags_NoTitle, "The plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MyPlot\").");
+    NodeCheckBoxFlag("ImPlotFlags_NoLegend", _flags, ImPlotFlags_NoLegend, "The legend will not be displayed.");
+    NodeCheckBoxFlag("ImPlotFlags_NoMouseText", _flags, ImPlotFlags_NoMouseText, "The mouse position, in plot coordinates, will not be displayed inside of the plot.");
+    NodeCheckBoxFlag("ImPlotFlags_NoInputs", _flags, ImPlotFlags_NoInputs, "The user will not be able to interact with the plot.");
+    NodeCheckBoxFlag("ImPlotFlags_NoMenus", _flags, ImPlotFlags_NoMenus, "The user will not be able to open context menus.");
+    NodeCheckBoxFlag("ImPlotFlags_NoBoxSelect", _flags, ImPlotFlags_NoBoxSelect, "The user will not be able to box-select.");
+    NodeCheckBoxFlag("ImPlotFlags_NoChild", _flags, ImPlotFlags_NoChild, "A child window region will not be used to capture mouse scroll (can boost performance for single ImGui window applications).");
+    NodeCheckBoxFlag("ImPlotFlags_NoFrame", _flags, ImPlotFlags_NoFrame, "The ImGui frame will not be rendered.");
+    NodeCheckBoxFlag("ImPlotFlags_Equal", _flags, ImPlotFlags_Equal, "X and Y axes pairs will be constrained to have the same units/pixel.");
+    NodeCheckBoxFlag("ImPlotFlags_Crosshairs", _flags, ImPlotFlags_Crosshairs, "The default mouse cursor will be replaced with a crosshair when hovered.");
+    NodeCheckBoxFlag("ImPlotFlags_AntiAliased", _flags, ImPlotFlags_AntiAliased, "Plot items will be software anti-aliased (not recommended for high density plots, prefer MSAA).");
+    NodeCheckBoxFlag("ImPlotFlags_CanvasOnly", _flags, ImPlotFlags_CanvasOnly, "ImPlotFlags_NoTitle | ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText");
+}
+
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader(const char* _label, const std::size_t _id,
+    unsigned char& _utilityState, const short _stateBitPos,
+    const float _startX, const float _drawLength,
+    const ImVec2& _size)
+{
+    AlignToCenter(_startX, _drawLength, _size.x);
+    ImGui::PushID((int)_id);
+    if (ImGui::Button(_label, _size))
+    {
+        _utilityState ^= 1 << _stateBitPos;
+    }
+    ImGui::PopID();
+
+    return _utilityState >> _stateBitPos & 1;
+}
+
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_In(const char* _label, const std::size_t _id,
+    unsigned char& _utilityState, const short _stateBitPos,
+    const float _startX, const float _drawLength,
+    const NodePinData& _pin, const ImVec4 _pinColors[],
+    const ImVec2& _size, const bool _hidePinsOnExpand)
+{
+    AlignToRight(_startX, _drawLength, _size.x);
+    ImGui::PushID((int)_id);
+    if (ImGui::Button(_label, _size))
+    {
+        _utilityState ^= 1 << _stateBitPos;
+    }
+    ImGui::PopID();
+
+    bool open = _utilityState >> _stateBitPos & 1;
+
+    if (!open || !_hidePinsOnExpand)
+    {
+        ImGui::SameLine(); ImGui::SetCursorPosX(_startX);
+        Pin(_pin, _pinColors);
+    }
+
+    return open;
+}
+
 bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_InOut(const char* _label, const std::size_t _id,
     unsigned char& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength,
@@ -582,14 +842,38 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_Out(cons
     return open;
 }
 
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeDragFloat_Out(const char* _label, const std::size_t _id, float* valueBuffer,
+    const float _inputFieldWidth, const float _startX, const float _drawLength,
+    const NodePinData& _pin, const ImVec4 _pinColors[],
+    const ImGuiInputTextFlags _flags)
+{
+    ImGui::SetCursorPosX(_startX);
+
+    ImGui::PushID((int)_id);
+    ImGui::AlignTextToFramePadding();
+    AlignToRight(_startX, _drawLength - GetMNBVStyle()->pinWidth - ImGui::GetStyle().ItemSpacing.x - (_inputFieldWidth - ImGui::CalcTextSize(_label).x), ImGui::CalcTextSize(_label).x);
+
+    ImGui::Text(_label); ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(_inputFieldWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x);
+    bool edited = ImGui::DragFloat("##value", valueBuffer, 1.0f, 0.f, 0.f, "%.3f", _flags);
+    ImGui::PopID();
+
+    ImGui::SameLine();
+
+    Pin(_pin, _pinColors);
+
+    return edited;
+}
+
 float ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type, const char* _name,
-    const ImVec4 _colorSet[], const float _width, const short _height)
+    const ImVec4 _colorSet[], const float _width, const short _height, const short _nbPins)
 {
     const float titleSize = ImGui::CalcTextSize(_type).x + ImGui::CalcTextSize(_name).x + ImGui::GetStyle().ItemSpacing.x;
     
     const ImVec2 startPos = ImGui::GetCursorScreenPos();
     const ImVec2 endPos = ImVec2(
-        startPos.x + std::max(_width + 2.f * GetPinDrawOffset(), titleSize + 2.f * ImGui::GetStyle().FramePadding.x),
+        startPos.x + std::max(_width + _nbPins * GetPinDrawOffset(), titleSize + _nbPins * ImGui::GetStyle().FramePadding.x),
         startPos.y + ImGui::GetTextLineHeightWithSpacing()
     );
 
@@ -665,6 +949,70 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const ch
     Pin(_outputPin, _pinColors);
 
     return edited;
+}
+
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_Out(const char* _label, const std::size_t _id, float* valueBuffer,
+    const float _inputFieldWidth, const float _startX, const float _drawLength,
+    const NodePinData& _pin, const ImVec4 _pinColors[],
+    const ImGuiInputTextFlags _flags)
+{
+    ImGui::SetCursorPosX(_startX);
+
+    ImGui::PushID((int)_id);
+    ImGui::AlignTextToFramePadding();
+    AlignToRight(_startX, _drawLength - GetMNBVStyle()->pinWidth - ImGui::GetStyle().ItemSpacing.x - (_inputFieldWidth - ImGui::CalcTextSize(_label).x) , ImGui::CalcTextSize(_label).x);
+    
+    ImGui::Text(_label); ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(_inputFieldWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x);
+    bool edited = ImGui::InputFloat("##quantity", valueBuffer, 0.f, 0.f, "%.3f", _flags);
+    if (ImGui::IsItemActive() && !(_flags & ImGuiInputTextFlags_ReadOnly) && (_flags & ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        ax::NodeEditor::Suspend();
+        ImGui::SetTooltip("Press ENTER to confirm.");
+        ax::NodeEditor::Resume();
+    }
+    ImGui::PopID();
+
+    ImGui::SameLine();
+    
+    Pin(_pin, _pinColors);
+
+    return edited;
+}
+
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputText(const char* _label, char* _target, char* _buffer,
+    const std::size_t _bufferSize, const float _inputFieldWidth, const float _startX, const float _drawLength,
+    const ImGuiInputTextFlags _flags)
+{
+    std::size_t targetLen = std::strlen(_target);
+    std::memcpy(_buffer, _target, targetLen);
+    if (targetLen < _bufferSize)
+    {
+        _buffer[targetLen] = '\0';
+    }
+    AlignToCenter(_startX, _drawLength, _inputFieldWidth);
+    ImGui::SetNextItemWidth(_inputFieldWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x);
+    if (ImGui::InputText(_label, _buffer, _bufferSize, _flags))
+    {
+        //std::memset(_target, '\0', std::max(targetLen, std::strlen(_buffer)));
+        std::size_t bufferLen = std::strlen(_buffer);
+        std::memcpy(_target, _buffer, bufferLen);
+        if (bufferLen < _bufferSize)
+        {
+            _target[bufferLen] = '\0';
+        }
+
+        return true;
+    }
+    if (ImGui::IsItemActive() && (_flags & ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        ax::NodeEditor::Suspend();
+        ImGui::SetTooltip("Press ENTER to confirm.");
+        ax::NodeEditor::Resume();
+    }
+
+    return false;
 }
 
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData& _nslbData,
@@ -787,6 +1135,17 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_In(const char* _labe
     Pin(_pin, _pinColors);
 
     ImGui::SameLine();
+
+    ImGui::AlignTextToFramePadding();
+    ImGui::Text(_label);
+}
+
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_In(const char* _label, const float _labelWidth,
+    const float _startX,
+    const NodePinData& _pin, const ImVec4 _pinColors[])
+{
+    ImGui::SetCursorPosX(_startX);
+    Pin(_pin, _pinColors); ImGui::SameLine();
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text(_label);

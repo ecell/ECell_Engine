@@ -16,6 +16,7 @@ namespace ECellEngine::Editor::Utility
 		NodeType_Default,
 
 		NodeType_Asset,
+		NodeType_Data,
 		NodeType_Parameter,
 		NodeType_Reaction,
 		NodeType_Solver,
@@ -122,6 +123,14 @@ namespace ECellEngine::Editor::Utility
 			nodeColors[NodeType_Asset][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Asset][NodeColorType_HeaderHovered] = ImVec4(0.7f, 0.7f, 0.7f, 0.5f);
 
+			nodeColors[NodeType_Data][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Data][NodeColorType_Border] = ImVec4(1.0f, 1.0f, 1.0f, 1.f);
+			//nodeColors[NodeType_Data][NodeColorType_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
+			//nodeColors[NodeType_Data][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			nodeColors[NodeType_Data][NodeColorType_HeaderBg] = ImVec4(1.0f, 1.0f, 1.0f, 0.25f);
+			nodeColors[NodeType_Data][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Data][NodeColorType_HeaderHovered] = ImVec4(1.0f, 1.0f, 1.0f, 0.5f);
+
 			nodeColors[NodeType_Parameter][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Parameter][NodeColorType_Border] = ImVec4(0.05f, 0.463f, 0.297f, 1.f);
 			//nodeColors[NodeType_Parameter][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
@@ -177,6 +186,10 @@ namespace ECellEngine::Editor::Utility
 			pinColors[PinType_Species][PinColorType_BgActivated] = nodeColors[NodeType_Species][NodeColorType_Border];
 			pinColors[PinType_Species][PinColorType_BgInactivated] = nodeColors[NodeType_Species][NodeColorType_Bg];
 			pinColors[PinType_Species][PinColorType_Border] = nodeColors[NodeType_Species][NodeColorType_Border];
+
+			pinColors[PinType_ValueFloat][PinColorType_BgActivated] = nodeColors[NodeType_Data][NodeColorType_Border];
+			pinColors[PinType_ValueFloat][PinColorType_BgInactivated] = nodeColors[NodeType_Data][NodeColorType_Bg];
+			pinColors[PinType_ValueFloat][PinColorType_Border] = nodeColors[NodeType_Data][NodeColorType_Border];
 
 		}
 	};

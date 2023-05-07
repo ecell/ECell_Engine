@@ -23,6 +23,12 @@ namespace ECellEngine::Editor::Utility
             Data.reserve(MaxSize);
         }
 
+        ScrollingBuffer(const ScrollingBuffer& _sb) :
+            MaxSize{ _sb.MaxSize }, Offset{ _sb.Offset }, Data{ _sb.Data }
+        {
+
+        }
+
         /*!
         @brief Adds a point to the buffer.
         */

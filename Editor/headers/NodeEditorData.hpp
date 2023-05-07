@@ -1,8 +1,11 @@
 #pragma once
+#include "implot.h"
 #include "imgui_node_editor.h"
 
 #include "BinaryOperatedVector.hpp"
+#include "Timer.hpp"
 #include "ModelNodeBasedViewerGlobal.hpp"
+#include "PlotUtility.hpp"
 
 namespace ECellEngine::Editor::Utility
 {
@@ -384,7 +387,7 @@ namespace ECellEngine::Editor::Utility
 		std::size_t collapsingHeadersIds[5];
 
 		/*!
-		@biref The array of of list box data that are potentially displayed in
+		@brief The array of of list box data that are potentially displayed in
 				this node.
 		@details At index 0 we find the list box with the links to other computed
 				 parameters where this computed parameter is also found.
@@ -499,6 +502,97 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};
 
+	struct LinePlotNodeData : public NodeData
+	{
+		char* name = "Line Plot";
+
+		ScrollingBuffer dataPoints;
+		float newPointBuffer[2] = { 0, 0 };
+		unsigned short newPointConstructionCounter = 0;
+
+		char plotTitle[64] = "PlotTitle";
+		char xAxisLabel[64] = "x";
+		char yAxisLabel[64] = "y";
+		char lineLegend[64] = "f(x)";
+		float plotSize[2] = { ImPlot::GetStyle().PlotDefaultSize.x, ImPlot::GetStyle().PlotDefaultSize.y };
+
+		const ImGuiWindowFlags plotWindowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
+		ImPlotFlags plotFlags = ImPlotFlags_NoLegend | ImPlotFlags_NoInputs;
+		ImPlotAxisFlags xAxisFlags = ImPlotAxisFlags_None;
+		ImPlotAxisFlags yAxisFlags = ImPlotAxisFlags_None;
+		
+		NodeInputPinData inputPins[3];
+		NodeOutputPinData outputPins[1];//not used
+
+		unsigned char utilityState = 0;
+
+		std::size_t collapsingHeadersIds[6];
+
+		LinePlotNodeData(int _maxNbDataPoints, ImVec2& _position) :
+			NodeData(), dataPoints{ _maxNbDataPoints }
+		{
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Plot Collapsing Header
+			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//X
+			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Y
+
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
+
+			collapsingHeadersIds[0] = GetMNBVCtxtNextId();//Parameters Collapsing header
+			collapsingHeadersIds[1] = GetMNBVCtxtNextId();//General (Parameters) Collapsing header
+			collapsingHeadersIds[2] = GetMNBVCtxtNextId();//Plot Flags (Parameters) Collapsing header
+			collapsingHeadersIds[3] = GetMNBVCtxtNextId();//X Axis Flags (Parameters) Collapsing header
+			collapsingHeadersIds[4] = GetMNBVCtxtNextId();//Y Axis Falgs (Parameters) Collapsing header
+			collapsingHeadersIds[5] = GetMNBVCtxtNextId();//Plot Collapsing Header
+
+			dataPoints.AddPoint(0, 0);
+		}
+
+		LinePlotNodeData(const LinePlotNodeData& _lpnd):
+			NodeData(_lpnd), dataPoints{ _lpnd.dataPoints },
+			inputPins{ _lpnd.inputPins[0], _lpnd.inputPins[1] , _lpnd.inputPins[2]},
+			outputPins{ _lpnd.outputPins[0] },
+			utilityState{ _lpnd.utilityState },
+			collapsingHeadersIds{ _lpnd.collapsingHeadersIds[0], _lpnd.collapsingHeadersIds[1],
+			_lpnd.collapsingHeadersIds[2], _lpnd.collapsingHeadersIds[3], _lpnd.collapsingHeadersIds[4],
+			_lpnd.collapsingHeadersIds[5] }
+		{
+			inputPins[0].node = this;
+			inputPins[1].node = this;
+			inputPins[2].node = this;
+
+			outputPins[0].node = this;
+		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {};
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override {};
+
+		inline bool IsPlotOpen() noexcept
+		{
+			return (utilityState >> 6) & 1;
+		}
+
+		inline void ResetNewPointBuffer()
+		{
+			newPointConstructionCounter = 0;
+		}
+
+		/*!
+		@brief Utility function to switch the value 0 -> 1 or 1 -> 0 of the bit
+				at position @p _stateBitPos in ::utilityState.
+		@remarks It could be moved outside of this class in the future since the
+				 code works with any data and is not pecific to this context.
+		*/
+		inline void SwitchState(const short _stateBitPos)
+		{
+			utilityState ^= (1 << _stateBitPos);
+		}
+	};
+
 	struct ReactionNodeData : public NodeData
 	{
 		/*!
@@ -516,7 +610,7 @@ namespace ECellEngine::Editor::Utility
 		std::size_t collapsingHeadersIds[5];
 
 		/*!
-		@biref The array of of list box data that are potentially displayed in
+		@brief The array of of list box data that are potentially displayed in
 				this node.
 		@details At index 0 we find the list box with the links to the reactants
 				 species of this reaction.
@@ -737,6 +831,39 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};
 
+	struct SimulationTimeNodeData : public NodeData
+	{
+		ECellEngine::Core::Timer* simulationTimer;
+		float elapsedTimeBuffer = 0.f;
+
+		NodeInputPinData inputPins[1];
+		NodeOutputPinData outputPins[1];
+
+		SimulationTimeNodeData(ECellEngine::Core::Timer* _simulationTimer, ImVec2& _position) :
+			NodeData(), simulationTimer{ _simulationTimer }
+		{
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this); //simulation Time
+		}
+
+		SimulationTimeNodeData(const SimulationTimeNodeData& _stnd) :
+			NodeData(_stnd), simulationTimer{ _stnd.simulationTimer },
+			inputPins{ _stnd.inputPins[0] },
+			outputPins{ _stnd.outputPins[0] }
+		{
+			inputPins[0].node = this;
+			outputPins[0].node = this;
+		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {};
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {};
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+	};
+
 	struct SolverNodeData : public NodeData
 	{
 		/*!
@@ -767,7 +894,7 @@ namespace ECellEngine::Editor::Utility
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
 			//Not used for now but added for homogeneity
-			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 
 			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);
 
@@ -788,6 +915,7 @@ namespace ECellEngine::Editor::Utility
 		//ax::NodeEditor::NodeId id;
 
 		ECellEngine::Data::Species* data;
+		float speciesQuantityBuffer = 0.f;
 
 		NodeInputPinData inputPins[8];
 		NodeOutputPinData outputPins[7];
@@ -796,16 +924,16 @@ namespace ECellEngine::Editor::Utility
 
 		std::size_t collapsingHeadersIds[2];
 
-		SpeciesNodeData(const SpeciesNodeData& _rnd) :
-			NodeData(_rnd), data{ _rnd.data },
-			inputPins{ _rnd.inputPins[0], _rnd.inputPins[1] , _rnd.inputPins[2] ,
-					  _rnd.inputPins[3] , _rnd.inputPins[4] , _rnd.inputPins[5],
-					  _rnd.inputPins[6] , _rnd.inputPins[7]},
-			outputPins{ _rnd.outputPins[0], _rnd.outputPins[1] , _rnd.outputPins[2] ,
-					  _rnd.outputPins[3] , _rnd.outputPins[4] , _rnd.outputPins[5],
-					  _rnd.outputPins[6]},
-			utilityState{ _rnd.utilityState },
-			collapsingHeadersIds{ _rnd.collapsingHeadersIds[0], _rnd.collapsingHeadersIds[1]}
+		SpeciesNodeData(const SpeciesNodeData& _snd) :
+			NodeData(_snd), data{ _snd.data }, speciesQuantityBuffer{ _snd.speciesQuantityBuffer },
+			inputPins{ _snd.inputPins[0], _snd.inputPins[1] , _snd.inputPins[2] ,
+					  _snd.inputPins[3] , _snd.inputPins[4] , _snd.inputPins[5],
+					  _snd.inputPins[6] , _snd.inputPins[7]},
+			outputPins{ _snd.outputPins[0], _snd.outputPins[1] , _snd.outputPins[2] ,
+					  _snd.outputPins[3] , _snd.outputPins[4] , _snd.outputPins[5],
+					  _snd.outputPins[6]},
+			utilityState{ _snd.utilityState },
+			collapsingHeadersIds{ _snd.collapsingHeadersIds[0], _snd.collapsingHeadersIds[1]}
 		{
 			inputPins[0].node = this;
 			inputPins[1].node = this;
@@ -873,5 +1001,36 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};
 
+	struct ValueFloatNodeData : public NodeData
+	{
+		float value = 0.f;
+
+		NodeInputPinData inputPins[1];
+		NodeOutputPinData outputPins[1];
+
+		ValueFloatNodeData(float _value, ImVec2& _position) :
+			NodeData(), value{ _value }
+		{
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this); //simulation Time
+		}
+
+		ValueFloatNodeData(const ValueFloatNodeData& _vfnd) :
+			NodeData(_vfnd), value{ _vfnd.value },
+			inputPins{ _vfnd.inputPins[0] },
+			outputPins{ _vfnd.outputPins[0] }
+		{
+			inputPins[0].node = this;
+			outputPins[0].node = this;
+		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {};
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {};
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+	};
 #pragma endregion
 }

@@ -12,9 +12,9 @@ void ECellEngine::Editor::Utility::AddSolverNode(ECellEngine::Solvers::Solver* _
     s_mnbvCtxt->solverNodes.push_back(ECellEngine::Editor::Utility::SolverNodeData(_solver));
 }
 
-void ECellEngine::Editor::Utility::CurrentMNBVContextDraw(ECellEngine::Data::DataState* _dataState)
+void ECellEngine::Editor::Utility::CurrentMNBVContextDraw(ECellEngine::Core::Simulation* _simulation)
 {
-    s_mnbvCtxt->Draw(_dataState);
+    s_mnbvCtxt->Draw(_simulation);
 }
 
 ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeInAll(const std::size_t _id)
@@ -35,6 +35,13 @@ ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeIn
         return itND;
     }
 
+    //Search in the list of Line Plot Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->linePlotNodes.begin(), s_mnbvCtxt->linePlotNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
     //Search in the list of Reaction Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->reactionNodes.begin(), s_mnbvCtxt->reactionNodes.end());
     if (itND != nullptr)
@@ -49,6 +56,13 @@ ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeIn
         return itND;
     }
 
+     //Search in the list of Simulation Time Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->simulationTimeNodes.begin(), s_mnbvCtxt->simulationTimeNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
     //Search in the list of Solver Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->solverNodes.begin(), s_mnbvCtxt->solverNodes.end());
     if (itND != nullptr)
@@ -58,6 +72,13 @@ ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeIn
 
     //Search in the list of Species Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->speciesNodes.begin(), s_mnbvCtxt->speciesNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Species Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->valueFloatNodes.begin(), s_mnbvCtxt->valueFloatNodes.end());
     if (itND != nullptr)
     {
         return itND;
@@ -95,6 +116,13 @@ ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNod
         return itNPD;
     }
 
+    //Search in the list of Line Plot Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->linePlotNodes.begin(), s_mnbvCtxt->linePlotNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
     //Search in the list of Reaction Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->reactionNodes.begin(), s_mnbvCtxt->reactionNodes.end());
     if (itNPD != nullptr)
@@ -109,6 +137,13 @@ ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNod
         return itNPD;
     }
 
+    //Search in the list of Simulation Time Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->simulationTimeNodes.begin(), s_mnbvCtxt->simulationTimeNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
     //Search in the list of Solver Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->solverNodes.begin(), s_mnbvCtxt->solverNodes.end());
     if (itNPD != nullptr)
@@ -118,6 +153,13 @@ ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNod
 
     //Search in the list of Species Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->speciesNodes.begin(), s_mnbvCtxt->speciesNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
+    //Search in the list of Species Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->valueFloatNodes.begin(), s_mnbvCtxt->valueFloatNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;

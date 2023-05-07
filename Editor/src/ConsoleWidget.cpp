@@ -21,6 +21,8 @@ void ECellEngine::Editor::ConsoleWidget::Draw()
         ImGui::PopStyleColor();
     }
 
+    ImGui::SetScrollHereY();
+
     ImGui::PopStyleVar();
     ImGui::EndChild();
 

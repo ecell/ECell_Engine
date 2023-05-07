@@ -1,7 +1,7 @@
 #pragma once
 
 #include "imgui_internal.h"
-#include "NodeEditorData.hpp"
+#include "NodeEditorData.hpp" //also include "implot.h"
 
 #include "Logger.hpp"
 
@@ -70,43 +70,76 @@ namespace ECellEngine::Editor::Utility
 
 #pragma region Nodes
 		/*!
-		@brief Draws a node to display and access the content of an
-				ECellEngine::Data::Module.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::AssetNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _assetNodeInfo The struct with information about what to draw.
-		@param _assetNodeColors The set of colors to cutomize the looks of this
-				node.
-		@param _solverPinColors The set of colors to cutomize the solver pin in
-				this node.
-		@param _parameterPinColors The set of colors to cutomize the parameter
-				pin in this node.
-		@param _reactionPinColors The set of colors to cutomize the reaction pin
-				in this node.
-		@param _speciesPinColors The set of colors to cutomize the species pin in
-				this node.
 		*/
 		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo);
 
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::ComputedParameterNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _parameterNodeInfo The struct with information about what to draw.
+		*/
 		static void ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo);
+
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::LinePlotNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _linePlotNodeInfo The struct with information about what to draw.
+		*/
+		static void LinePlotNode(const char* _name, LinePlotNodeData& _linePlotNodeInfo);
 		
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::ReactionNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _reactionNodeInfo The struct with information about what to draw.
+		*/
 		static void ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo);
 
-		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
 		/*!
-		@brief Draws a node to display and access the content of a
-				ECellEngine::Solvers::Solver.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SimpleParameterNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _parameterNodeInfo The struct with information about what to draw.
+		*/
+		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
+
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SimulationTimeNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _parameterNodeInfo The struct with information about what to draw.
+		*/
+		static void SimulationTimeNode(const char* _name, SimulationTimeNodeData& _parameterNodeInfo);
+		
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SolverNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _solverNodeInfo The struct with information about what to draw.
-		@param _solverNodeColors The set of colors to cutomize the looks of this
-				node.
-		@param _assetPinColors The set of colors to cutomize the asset pin in
-				this node.
 		*/
 		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo);
 
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SpeciesNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _speciesNodeInfo The struct with information about what to draw.
+		*/
 		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo);
+
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::ValueFloatNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _valueFloatNodeInfo The struct with information about what to draw.
+		*/
+		static void ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo);
 
 #pragma endregion
 
@@ -242,9 +275,9 @@ namespace ECellEngine::Editor::Utility
 			return GetMNBVStyle()->pinWidth + ImGui::GetStyle().ItemSpacing.x;
 		}
 
-		inline static float GetNodeCenterAreaWidth(const float _headerWidth)
+		inline static float GetNodeCenterAreaWidth(const float _headerWidth, const short _nbPins = 2)
 		{
-			return std::max(GetMNBVStyle()->nodeCenterAreaMinWidth, _headerWidth - 2 * GetMNBVStyle()->pinWidth - 2 * ImGui::GetStyle().ItemSpacing.x);
+			return std::max(GetMNBVStyle()->nodeCenterAreaMinWidth, _headerWidth - _nbPins * GetMNBVStyle()->pinWidth - _nbPins * ImGui::GetStyle().ItemSpacing.x);
 		}
 
 		/*!
@@ -263,6 +296,98 @@ namespace ECellEngine::Editor::Utility
 #pragma endregion
 
 #pragma region Custom Node Widget
+
+		/*!
+		@brief Draws a checkbox to change the value of flags.
+		@details Wrapper around ImGui::CheckBoxFlags(const char* _label, int* _flags, const int _flag_value)
+				to display the checkbox inside a node with an optional tooltip.
+		@param _label The label to display next to the checkbox.
+		@param _flags Pointer to the int encoding the flags (e.g. enum).
+		@param _flag The flag to control and visualize with the checkbox.
+		@param _tooltip The message to display when hovering over the checkbox.
+		@see ECellEngine::Editor::Utility::NodeDrawer::NodeAllImPlotAxisFlags(ImPlot::ImploImPlotAxisFlags* _flags)
+		@see ECellEngine::Editor::Utility::NodeDrawer::NodeAllImPlotFlags(ImPlot::ImploImPlotAxisFlags* _flags)
+		*/
+		static void NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr);
+
+		/*!
+		@brief Draws all the relevant flags encoded in ImPlot::ImPlotAxisFlags.
+		@details This gives access to the flags at runtime within a node to customize
+				 the visuals of the axis of a plot.
+		@param _flags Pointer to the int encoding the flags (e.g. enum).
+		@see ECellEngine::Editor::Utility::NodeDrawer::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr)
+		*/
+		static void NodeAllImPlotAxisFlags(ImPlotAxisFlags* _flags);
+
+		/*!
+		@brief Draws all the relevant flags encoded in ImPlot::ImPlotFlags.
+		@details This gives access to the flags at runtime within a node to customize
+				 the visuals of the plot.
+		@param _flags Pointer to the int encoding the flags (e.g. enum).
+		@see ECellEngine::Editor::Utility::NodeDrawer::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr)
+		*/
+		static void NodeAllImPlotFlags(ImPlotFlags* _flags);
+
+		/*!
+		@brief Custom collapsing header for nodes with no pins.
+		@details The collapsing header is a button that changes the value of the
+				@p utilityState. The button is drawn at the center of the node.
+		@remarks This intends to reproduce ImGui::CollapsingHeader but without
+				 relying on ImGui's tree nodes API. Because it is not possible
+				 (as of ImGui 1.89) to control the width of a tree node which
+				 creates a visual artifact: the node extends infinitely because
+				 in the Node Editor virtual area has not limits.
+		@param _label The text to display in the collapsing header.
+		@param _id Unique integer ID to identify the collapsing header. This is
+				mandatory to not mess up ImGui's internal identification system.
+		@param _utilityState The reference to the character containing the encoding
+				of the the open/close state of this header.
+		@param _stateBitPos The position of the bit in @p _utilityState that
+				encodes the open/close state of this header
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _size The size of the button representing the collapsing header.
+		*/
+		static bool NodeCollapsingHeader(const char* _label, const std::size_t _id,
+			unsigned char& _utilityState, const short _stateBitPos,
+			const float _startX, const float _drawLength,
+			const ImVec2& _size = ImVec2(0, 0));
+
+		/*!
+		@brief Custom collapsing header for nodes with an input pin.
+		@details The collapsing header is a button that changes the value of the
+				@p utilityState. The button is drawn at the center of the node.
+		@remarks This intends to reproduce ImGui::CollapsingHeader but without
+				 relying on ImGui's tree nodes API. Because it is not possible
+				 (as of ImGui 1.89) to control the width of a tree node which
+				 creates a visual artifact: the node extends infinitely because
+				 in the Node Editor virtual area has not limits.
+		@param _label The text to display in the collapsing header.
+		@param _id Unique integer ID to identify the collapsing header. This is
+				mandatory to not mess up ImGui's internal identification system.
+		@param _utilityState The reference to the character containing the encoding
+				of the the open/close state of this header.
+		@param _stateBitPos The position of the bit in @p _utilityState that
+				encodes the open/close state of this header
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _pin The pin data used for the output pin to draw.
+		@param _pinColors The set of colors to cutomize the input pins.
+		@param _size The size of the button representing the collapsing header.
+		@param _hidePinsOnExpand A boolean to control whether the input pin associated
+				to the collapsing header shall NOT be drawn when the collapsing header
+				is open (displaying the content bellowit).
+		*/
+		static bool NodeCollapsingHeader_In(const char* _label, const std::size_t _id,
+			unsigned char& _utilityState, const short _stateBitPos,
+			const float _startX, const float _drawLength,
+			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
+		
 		/*!
 		@brief Custom collapsing header for nodes with an input pin and output
 				pin.
@@ -321,10 +446,10 @@ namespace ECellEngine::Editor::Utility
 		@param _drawLength The distance where to draw the output pin relatively
 				to @p _startX. Used for alignment calculations.
 		@param _pin The pin data used for the output pin to draw.
-		@param _pinColors The set of colors to cutomize both pins.
+		@param _pinColors The set of colors to cutomize the output pins.
 		@param _size The size of the button representing the collapsing header.
-		@param _hidePinsOnExpand A boolean to control whether the pins associated to
-				the collapsing header shall NOT be drawn when the collapsing header
+		@param _hidePinsOnExpand A boolean to control whether the output pin associated
+				to the collapsing header shall NOT be drawn when the collapsing header
 				is open (displaying the content bellowit).
 		*/
 		static bool NodeCollapsingHeader_Out(const char* _label, const std::size_t _id,
@@ -332,6 +457,29 @@ namespace ECellEngine::Editor::Utility
 			const float _startX, const float _drawLength,
 			const NodePinData& _pin, const ImVec4 _pinColors[],
 			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
+
+		/*!
+		@brief Draw an drag field for 1 float with an output pin.
+		@details Aligns the DragField text label and the Input Field body
+				to the right of the node.
+		@param _label The text label of the Input Field to display.
+		@param _id The _id of the DragField for ImGui.
+		@param _valueBuffer The float buffer to hold the value given by the user
+				and displayed in the field.
+		@param _inputFieldWidth The total width of the drag field (text label
+				and body).
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _pin The pin data used for the output pin to draw.
+		@param _pinColors The set of colors to cutomize both pins.
+		@param _flags Flags to customize the behaviour of the drag field.
+		*/
+		static bool NodeDragFloat_Out(const char* _label, const std::size_t _id, float* _valueBuffer,
+			const float _inputFieldWidth, const float _startX, const float _drawLength,
+			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const ImGuiSliderFlags _flags = ImGuiSliderFlags_None);
 
 		/*!
 		@brief Logic to draw headers of nodes.
@@ -342,10 +490,14 @@ namespace ECellEngine::Editor::Utility
 		@param _width The minimal width of the header. The header may be bigger than
 				this width if the string @p _type + @p _name is bigger.
 		@param _height The height of the header. It is counted in number of lines.
+		@param _nbPins Number of sides of the node that has pins. Enter 0 if the
+				node has no pins on the input nor output side. Enter 1 if the node
+				has pins on the input side or the output side. Enter 2 if the node
+				has pins on the input side and ouput side.
 		@returns The final width of the header.
 		*/
 		static float NodeHeader(const char* _type, const char* _name, const ImVec4 _colorSet[],
-			const float _width = 200.f, const short _height = 1);
+			const float _width = 200.f, const short _height = 1, const short _nbPins = 2);
 
 		/*!
 		@brief Draws a horizontal line of a set width and thickness.
@@ -374,12 +526,63 @@ namespace ECellEngine::Editor::Utility
 		@param _inputPin The pin data used for the input pin to draw.
 		@param _outputPin The pin data used for the output pin to draw.
 		@param _pinColors The set of colors to cutomize both pins.
-		@param _flags Input
+		@param _flags Flags to customize the behaviour of the input field.
+				Note that not every ImGuiInputTextFlags have an effect on
+				ImGui InputFloat widget.
 		*/
 		static bool NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* _valueBuffer, 
 			const float _inputFieldWidth, const float _startX, const float _drawLength,
 			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
-			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_None);
+			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_EnterReturnsTrue);
+		
+		/*!
+		@brief Draw an input field for floats with an output pin.
+		@details Aligns the InputField text label and the Input Field body
+				to the right of the node.
+		@param _label The text label of the Input Field to display.
+		@param _id The _id of the InputField for ImGui.
+		@param _valueBuffer The float buffer to hold the value given by the user
+				and displayed in the field.
+		@param _inputFieldWidth The total width of the input field (text label
+				and body).
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _pin The pin data used for the output pin to draw.
+		@param _pinColors The set of colors to cutomize both pins.
+		@param _flags Flags to customize the behaviour of the input field.
+				Note that not every ImGuiInputTextFlags have an effect on
+				ImGui InputFloat widget.
+		*/
+		static bool NodeInputFloat_Out(const char* _label, const std::size_t _id, float* _valueBuffer, 
+			const float _inputFieldWidth, const float _startX, const float _drawLength,
+			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_EnterReturnsTrue);
+
+		/*!
+		@brief Draw an input field for text inputs. Contrary to other node
+				inputs (e.g. NodeInputFloat_XXX) the assignment of the buffer
+				value to the target value is handled in the function.
+		@details Aligns the InputField text label and the Input Field body
+				to the center of the node.
+		@param _label The text label of the Input Field to display.
+		@param _buffer The buffer char array where to store the input value.
+		@param _bufferSize The byte size of the buffer char array.
+		@param _inputFieldWidth The total width of the input field (text label
+				and body).
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _flags Flags to customize the behaviour of the input field. Default
+				to the flag @a _EnterReturnsTrue so users have to press enter for
+				the buffer value to be assigned to the target.
+		*/
+		static bool NodeInputText(const char* _label, char* _target, char* _buffer,
+			const std::size_t _bufferSize, 
+			const float _inputFieldWidth, const float _startX, const float _drawLength,
+			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_EnterReturnsTrue);
 
 		/*!
 		@brief Custom list box to display strings in nodes.
@@ -412,6 +615,20 @@ namespace ECellEngine::Editor::Utility
 			const NodePinData& _pin, const ImVec4 _pinColors[]);
 
 		/*!
+		@brief Draws a Text Label with an input pin.
+		@details Aligns the Text label to the left of the node (input side).
+		@param _label The text label to display.
+		@param _labelWidth The width of the text label to display.
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _pin The pin data used for the input pin to draw.
+		@param _pinColors The set of colors to cutomize the input pin.
+		*/
+		static void NodeText_In(const char* _label, const float _labelWidth,
+			const float _startX,
+			const NodePinData& _pin, const ImVec4 _pinColors[]);
+
+		/*!
 		@brief Draws a Text label with an input pin and an output pin.
 		@details Aligns the Text label to the center of the node.
 		@param _label The text label to display.
@@ -438,6 +655,8 @@ namespace ECellEngine::Editor::Utility
 				done. Typically the left side of the node.
 		@param _drawLength The distance where to draw the output pin relatively
 				to @p _startX. Used for alignment calculations.
+		@param _itemSpacingX The spacing to respect between the text and the
+				output pin. Used for alignement calculations.
 		@param _pin The pin data used for the output pin to draw.
 		@param _pinColors The set of colors to cutomize the output pin.
 		*/

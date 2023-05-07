@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "DataState.hpp"
+#include "Simulation.hpp"
 
 #include "NodeEditorDraw.hpp"
 #include "NodeEditorStyle.hpp"
@@ -45,6 +45,14 @@ namespace ECellEngine::Editor::Utility
 		std::vector<ECellEngine::Editor::Utility::ComputedParameterNodeData> computedParameterNodes;
 
 		/*!
+		@brief The list of nodes handling line plots in this context.
+		@details It contains the information used to draw the nodes managing
+				 line plots to display numeric data imported in the current simulation
+				 space.
+		*/
+		std::vector<ECellEngine::Editor::Utility::LinePlotNodeData> linePlotNodes;
+
+		/*!
 		@brief The list of reaction nodes in this context.
 		@details It contains the information used to draw the nodes corresponding
 				 to each reaction of various assets imported in the current
@@ -61,6 +69,13 @@ namespace ECellEngine::Editor::Utility
 		std::vector<ECellEngine::Editor::Utility::SimpleParameterNodeData> simpleParameterNodes;
 		
 		/*!
+		@brief The list of simulation time nodes.
+		@details It contains the information used to draw the nodes corresponding
+				 to display and use the elapsed time of the simulation.
+		*/
+		std::vector<ECellEngine::Editor::Utility::SimulationTimeNodeData> simulationTimeNodes;
+
+		/*!
 		@brief The list of solver nodes.
 		@details It contains the information used to draw the nodes corresponding
 				 to each solvers imported in the current simulation space.
@@ -74,6 +89,13 @@ namespace ECellEngine::Editor::Utility
 				 simulation space.
 		*/
 		std::vector<ECellEngine::Editor::Utility::SpeciesNodeData> speciesNodes;
+		
+		/*!
+		@brief The list of value float nodes in this context.
+		@details It contains the information used to draw the nodes to display, set
+				and use custom float values.
+		*/
+		std::vector<ECellEngine::Editor::Utility::ValueFloatNodeData> valueFloatNodes;
 #pragma endregion
 
 		/*!
@@ -128,12 +150,13 @@ namespace ECellEngine::Editor::Utility
 			uniqueId{ 0 }, countTASToMCmds{ 0 }
 		{
 			authorizedDynamicLinks[PinType_Solver][PinType_Solver] = true;
+			authorizedDynamicLinks[PinType_ValueFloat][PinType_ValueFloat] = true;
 		}
 
 		/*!
 		@brief The logic to draw the elements (nodes, pins, links) stored in
 				this context.
 		*/
-		void Draw(ECellEngine::Data::DataState* _dataState);
+		void Draw(ECellEngine::Core::Simulation* _simulation);
 	};
 }
