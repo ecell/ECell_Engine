@@ -148,3 +148,10 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(std::size_t& _n
 		it->Broadcast(data->Get());
 	}
 }
+
+void ECellEngine::Editor::Utility::ValueFloatNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
+{
+	//There is only one output pin in the ValueFloatNodeData so no need to look
+	//for a specific one: we know our target is at index 0.
+	outputPins[0].Broadcast(value);
+}

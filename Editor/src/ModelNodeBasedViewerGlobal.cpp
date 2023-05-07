@@ -77,6 +77,13 @@ ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeIn
         return itND;
     }
 
+    //Search in the list of Species Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->valueFloatNodes.begin(), s_mnbvCtxt->valueFloatNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
     return nullptr;
 }
 
@@ -146,6 +153,13 @@ ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNod
 
     //Search in the list of Species Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->speciesNodes.begin(), s_mnbvCtxt->speciesNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
+    //Search in the list of Species Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->valueFloatNodes.begin(), s_mnbvCtxt->valueFloatNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;

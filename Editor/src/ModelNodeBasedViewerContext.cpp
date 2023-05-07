@@ -10,6 +10,17 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
 
     if (ImGui::BeginPopup("Create New Node"))
     {
+        if (ImGui::BeginMenu("Data"))
+        {
+            if (ImGui::MenuItem("Value Float Node"))
+            {
+                ax::NodeEditor::Resume();
+                valueFloatNodes.emplace_back(ECellEngine::Editor::Utility::ValueFloatNodeData(0.f, ImGui::GetIO().MousePos));
+                ax::NodeEditor::Suspend();
+            }
+            ImGui::EndMenu();
+        }
+        
         if (ImGui::BeginMenu("Plots"))
         {
             if (ImGui::MenuItem("Line Plot Node"))
@@ -119,6 +130,11 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
     for (std::vector< ECellEngine::Editor::Utility::SpeciesNodeData>::iterator it = speciesNodes.begin(); it != speciesNodes.end(); it++)
     {
         ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(it->data->name.c_str(), *it);
+    }
+    
+    for (std::vector< ECellEngine::Editor::Utility::ValueFloatNodeData>::iterator it = valueFloatNodes.begin(); it != valueFloatNodes.end(); it++)
+    {
+        ECellEngine::Editor::Utility::NodeEditorDraw::ValueFloatNode("Float", *it);
     }
 
     ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(links);

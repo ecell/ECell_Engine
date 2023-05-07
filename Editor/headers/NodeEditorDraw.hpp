@@ -81,7 +81,7 @@ namespace ECellEngine::Editor::Utility
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::ComputedParameterNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _assetNodeInfo The struct with information about what to draw.
+		@param _parameterNodeInfo The struct with information about what to draw.
 		*/
 		static void ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo);
 
@@ -89,7 +89,7 @@ namespace ECellEngine::Editor::Utility
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::LinePlotNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _assetNodeInfo The struct with information about what to draw.
+		@param _linePlotNodeInfo The struct with information about what to draw.
 		*/
 		static void LinePlotNode(const char* _name, LinePlotNodeData& _linePlotNodeInfo);
 		
@@ -97,7 +97,7 @@ namespace ECellEngine::Editor::Utility
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::ReactionNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _assetNodeInfo The struct with information about what to draw.
+		@param _reactionNodeInfo The struct with information about what to draw.
 		*/
 		static void ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo);
 
@@ -105,7 +105,7 @@ namespace ECellEngine::Editor::Utility
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SimpleParameterNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _assetNodeInfo The struct with information about what to draw.
+		@param _parameterNodeInfo The struct with information about what to draw.
 		*/
 		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
 
@@ -113,7 +113,7 @@ namespace ECellEngine::Editor::Utility
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SimulationTimeNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _assetNodeInfo The struct with information about what to draw.
+		@param _parameterNodeInfo The struct with information about what to draw.
 		*/
 		static void SimulationTimeNode(const char* _name, SimulationTimeNodeData& _parameterNodeInfo);
 		
@@ -121,7 +121,7 @@ namespace ECellEngine::Editor::Utility
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SolverNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _assetNodeInfo The struct with information about what to draw.
+		@param _solverNodeInfo The struct with information about what to draw.
 		*/
 		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo);
 
@@ -129,9 +129,17 @@ namespace ECellEngine::Editor::Utility
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SpeciesNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _assetNodeInfo The struct with information about what to draw.
+		@param _speciesNodeInfo The struct with information about what to draw.
 		*/
 		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo);
+
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::ValueFloatNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _valueFloatNodeInfo The struct with information about what to draw.
+		*/
+		static void ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo);
 
 #pragma endregion
 
@@ -451,6 +459,29 @@ namespace ECellEngine::Editor::Utility
 			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
 
 		/*!
+		@brief Draw an drag field for 1 float with an output pin.
+		@details Aligns the DragField text label and the Input Field body
+				to the right of the node.
+		@param _label The text label of the Input Field to display.
+		@param _id The _id of the DragField for ImGui.
+		@param _valueBuffer The float buffer to hold the value given by the user
+				and displayed in the field.
+		@param _inputFieldWidth The total width of the drag field (text label
+				and body).
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the output pin relatively
+				to @p _startX. Used for alignment calculations.
+		@param _pin The pin data used for the output pin to draw.
+		@param _pinColors The set of colors to cutomize both pins.
+		@param _flags Flags to customize the behaviour of the drag field.
+		*/
+		static bool NodeDragFloat_Out(const char* _label, const std::size_t _id, float* _valueBuffer,
+			const float _inputFieldWidth, const float _startX, const float _drawLength,
+			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const ImGuiSliderFlags _flags = ImGuiSliderFlags_None);
+
+		/*!
 		@brief Logic to draw headers of nodes.
 		@param _type A string that describes the type of the node.
 		@param _name The name of the node. It is displayed right after @p _type.
@@ -507,7 +538,7 @@ namespace ECellEngine::Editor::Utility
 		/*!
 		@brief Draw an input field for floats with an output pin.
 		@details Aligns the InputField text label and the Input Field body
-				to the center of the node.
+				to the right of the node.
 		@param _label The text label of the Input Field to display.
 		@param _id The _id of the InputField for ImGui.
 		@param _valueBuffer The float buffer to hold the value given by the user

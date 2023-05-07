@@ -89,6 +89,13 @@ namespace ECellEngine::Editor::Utility
 				 simulation space.
 		*/
 		std::vector<ECellEngine::Editor::Utility::SpeciesNodeData> speciesNodes;
+		
+		/*!
+		@brief The list of value float nodes in this context.
+		@details It contains the information used to draw the nodes to display, set
+				and use custom float values.
+		*/
+		std::vector<ECellEngine::Editor::Utility::ValueFloatNodeData> valueFloatNodes;
 #pragma endregion
 
 		/*!

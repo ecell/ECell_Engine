@@ -524,6 +524,26 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
     PopNodeStyle();
 }
 
+void ECellEngine::Editor::Utility::NodeEditorDraw::ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo)
+{
+    PushNodeStyle(GetNodeColors(NodeType_Data));
+    ax::NodeEditor::BeginNode(_valueFloatNodeInfo.id);
+
+    const float headerWidth = NodeHeader("Value:", _name, GetNodeColors(NodeType_Data));
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+    const float startX = ImGui::GetCursorPosX();
+
+    if (NodeDragFloat_Out("Value", _valueFloatNodeInfo.id.Get(), &_valueFloatNodeInfo.value,
+        itemsWidth, startX, headerWidth,
+        _valueFloatNodeInfo.outputPins[0], GetPinColors(PinType_ValueFloat),
+        ImGuiInputTextFlags_ReadOnly))
+    {
+        _valueFloatNodeInfo.OutputUpdate((std::size_t&)_valueFloatNodeInfo.outputPins[0].id);
+    }
+
+    ax::NodeEditor::EndNode();
+    PopNodeStyle();
+}
 #pragma endregion
 
 #pragma region Node Pins
@@ -820,6 +840,30 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_Out(cons
     }
 
     return open;
+}
+
+bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeDragFloat_Out(const char* _label, const std::size_t _id, float* valueBuffer,
+    const float _inputFieldWidth, const float _startX, const float _drawLength,
+    const NodePinData& _pin, const ImVec4 _pinColors[],
+    const ImGuiInputTextFlags _flags)
+{
+    ImGui::SetCursorPosX(_startX);
+
+    ImGui::PushID((int)_id);
+    ImGui::AlignTextToFramePadding();
+    AlignToRight(_startX, _drawLength - GetMNBVStyle()->pinWidth - ImGui::GetStyle().ItemSpacing.x - (_inputFieldWidth - ImGui::CalcTextSize(_label).x), ImGui::CalcTextSize(_label).x);
+
+    ImGui::Text(_label); ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(_inputFieldWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x);
+    bool edited = ImGui::DragFloat("##value", valueBuffer, 1.0f, 0.f, 0.f, "%.3f", _flags);
+    ImGui::PopID();
+
+    ImGui::SameLine();
+
+    Pin(_pin, _pinColors);
+
+    return edited;
 }
 
 float ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type, const char* _name,

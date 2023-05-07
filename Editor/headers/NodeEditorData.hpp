@@ -1001,5 +1001,36 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
 	};
 
+	struct ValueFloatNodeData : public NodeData
+	{
+		float value = 0.f;
+
+		NodeInputPinData inputPins[1];
+		NodeOutputPinData outputPins[1];
+
+		ValueFloatNodeData(float _value, ImVec2& _position) :
+			NodeData(), value{ _value }
+		{
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
+			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this); //simulation Time
+		}
+
+		ValueFloatNodeData(const ValueFloatNodeData& _vfnd) :
+			NodeData(_vfnd), value{ _vfnd.value },
+			inputPins{ _vfnd.inputPins[0] },
+			outputPins{ _vfnd.outputPins[0] }
+		{
+			inputPins[0].node = this;
+			outputPins[0].node = this;
+		}
+
+		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {};
+
+		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {};
+
+		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+	};
 #pragma endregion
 }
