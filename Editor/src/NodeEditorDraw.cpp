@@ -253,7 +253,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
                 ImPlot::SetupAxes(_linePlotNodeData.xAxisLabel, _linePlotNodeData.yAxisLabel, _linePlotNodeData.xAxisFlags, _linePlotNodeData.yAxisFlags);
                 ImPlot::PlotLine(_linePlotNodeData.lineLegend,
                     &_linePlotNodeData.dataPoints.Data[0].x, &_linePlotNodeData.dataPoints.Data[0].y,
-                    _linePlotNodeData.dataPoints.Data.Size, 0, 2 * sizeof(float));
+                    _linePlotNodeData.dataPoints.Data.Size, _linePlotNodeData.dataPoints.Offset, 2 * sizeof(float));
                 
                 _linePlotNodeData.ResetNewPointBuffer();
                 

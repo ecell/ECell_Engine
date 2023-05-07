@@ -43,7 +43,6 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t& _n
 		//If both the x and y values of a new data point have been updated this frame.
 		if (++newPointConstructionCounter == 2)
 		{
-			ECellEngine::Logging::Logger::GetSingleton().LogDebug("Add point to Line Plot from X");
 			//We add the new point
 			dataPoints.AddPoint(newPointBuffer[0], newPointBuffer[1]);
 		}
@@ -57,7 +56,6 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t& _n
 		//If both the x and y values of a new data point have been updated this frame.
 		if (++newPointConstructionCounter == 2)
 		{
-			ECellEngine::Logging::Logger::GetSingleton().LogDebug("Add point to Line Plot from Y");
 			//We add the new point
 			dataPoints.AddPoint(newPointBuffer[0], newPointBuffer[1]);
 		}
