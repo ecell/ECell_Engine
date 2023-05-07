@@ -518,8 +518,8 @@ namespace ECellEngine::Editor::Utility
 
 		const ImGuiWindowFlags plotWindowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
 		ImPlotFlags plotFlags = ImPlotFlags_NoLegend | ImPlotFlags_NoInputs;
-		ImPlotAxisFlags xAxisFlags = ImPlotAxisFlags_None;
-		ImPlotAxisFlags yAxisFlags = ImPlotAxisFlags_None;
+		ImPlotAxisFlags xAxisFlags = ImPlotAxisFlags_AutoFit;
+		ImPlotAxisFlags yAxisFlags = ImPlotAxisFlags_AutoFit;
 		
 		NodeInputPinData inputPins[3];
 		NodeOutputPinData outputPins[1];//not used
