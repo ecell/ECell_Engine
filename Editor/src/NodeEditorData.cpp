@@ -1,7 +1,7 @@
 #include "NodeEditorData.hpp"
 
 
-void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(std::size_t& _nodeInputPinId, char* _data)
+void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(std::size_t _nodeInputPinId, char* _data)
 {
 	NodeInputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(inputPins, inputPins + std::size(inputPins), _nodeInputPinId);
 	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
@@ -18,7 +18,7 @@ void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(std::size_t& _node
 	}
 }
 
-void ECellEngine::Editor::Utility::AssetNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
+void ECellEngine::Editor::Utility::AssetNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("AssetNodeData::OutputUpdate");
 	
@@ -29,7 +29,7 @@ void ECellEngine::Editor::Utility::AssetNodeData::OutputUpdate(std::size_t& _nod
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("AssetNodeData::OutputUpdate");
 }
 
-void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t& _nodeInputPinId, float _data)
+void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t _nodeInputPinId, float _data)
 {
 	NodeInputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(inputPins, inputPins + std::size(inputPins), _nodeInputPinId);
 	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
@@ -62,12 +62,12 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t& _n
 	}
 }
 
-void ECellEngine::Editor::Utility::ComputedParameterNodeData::InputUpdate(std::size_t& _nodeInputPinId, float _data)
+void ECellEngine::Editor::Utility::ComputedParameterNodeData::InputUpdate(std::size_t _nodeInputPinId, float _data)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ComputedParameterNodeData::InputUpdate; data=" + std::to_string(_data));
 }
 
-void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
+void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ComputedParameterNodeData::OutputUpdate");
 	
@@ -78,7 +78,7 @@ void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputUpdate(std::
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ComputedParameterNodeData::OutputUpdate");
 }
 
-void ECellEngine::Editor::Utility::ReactionNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
+void ECellEngine::Editor::Utility::ReactionNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ReactionNodeData::OutputUpdate");
 
@@ -89,12 +89,12 @@ void ECellEngine::Editor::Utility::ReactionNodeData::OutputUpdate(std::size_t& _
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ReactionNodeData::OutputUpdate");
 }
 
-void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputUpdate(std::size_t& _nodeInputPinId, float _data)
+void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputUpdate(std::size_t _nodeInputPinId, float _data)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SimpleParameterNodeData::InputUpdate; data=" + std::to_string(_data));
 }
 
-void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
+void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SimpleParameterNodeData::OutputUpdate");
 
@@ -105,14 +105,14 @@ void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputUpdate(std::si
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SimpleParameterNodeData::OutputUpdate");
 }
 
-void ECellEngine::Editor::Utility::SimulationTimeNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
+void ECellEngine::Editor::Utility::SimulationTimeNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
 {
 	//There is only one output pin in the SImulationTimeNodeData so no need to look
 	//for a specific one: we know our target is at index 0.
 	outputPins[0].Broadcast(simulationTimer->elapsedTime);
 }
 
-void ECellEngine::Editor::Utility::SolverNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
+void ECellEngine::Editor::Utility::SolverNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
 {
 	NodeOutputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(outputPins, outputPins + std::size(outputPins), _nodeOutputPinId);
 	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
@@ -129,12 +129,12 @@ void ECellEngine::Editor::Utility::SolverNodeData::OutputUpdate(std::size_t& _no
 	}
 }
 
-void ECellEngine::Editor::Utility::SpeciesNodeData::InputUpdate(std::size_t& _nodeInputPinId, float _data)
+void ECellEngine::Editor::Utility::SpeciesNodeData::InputUpdate(std::size_t _nodeInputPinId, float _data)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SpeciesNodeData::InputUpdate; data=" + std::to_string(_data));
 }
 
-void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
+void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
 {
 	NodeOutputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(outputPins, outputPins + std::size(outputPins), _nodeOutputPinId);
 	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
@@ -147,7 +147,7 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(std::size_t& _n
 	}
 }
 
-void ECellEngine::Editor::Utility::ValueFloatNodeData::OutputUpdate(std::size_t& _nodeOutputPinId)
+void ECellEngine::Editor::Utility::ValueFloatNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
 {
 	//There is only one output pin in the ValueFloatNodeData so no need to look
 	//for a specific one: we know our target is at index 0.

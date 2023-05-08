@@ -199,11 +199,11 @@ namespace ECellEngine::Editor::Utility
 		friend inline bool operator<=(const NodeData& lhs, const NodeData& rhs) { return !(lhs > rhs); }
 		friend inline bool operator>=(const NodeData& lhs, const NodeData& rhs) { return !(lhs < rhs); }
 
-		virtual void InputUpdate(std::size_t & _nodeInputPinId, char* _data) = 0;
+		virtual void InputUpdate(std::size_t _nodeInputPinId, char* _data) = 0;
 
-		virtual void InputUpdate(std::size_t & _nodeInputPinId, float _data) = 0;
+		virtual void InputUpdate(std::size_t _nodeInputPinId, float _data) = 0;
 
-		virtual void OutputUpdate(std::size_t& _nodeOutputPinId) = 0;
+		virtual void OutputUpdate(std::size_t _nodeOutputPinId) = 0;
 	};
 
 	/*
@@ -264,7 +264,7 @@ namespace ECellEngine::Editor::Utility
 		template<class Data>
 		inline void Receive(Data _data)
 		{
-			node->InputUpdate((std::size_t&)id, _data);
+			node->InputUpdate((std::size_t)id, _data);
 		}
 	};
 
@@ -283,7 +283,7 @@ namespace ECellEngine::Editor::Utility
 		inline void AddSubscriber(NodeInputPinData* _newSubscriber)
 		{
 			subscribers.push_back(_newSubscriber);
-			node->OutputUpdate((std::size_t&)id);
+			node->OutputUpdate((std::size_t)id);
 		}
 
 		template<class Data>
@@ -363,11 +363,11 @@ namespace ECellEngine::Editor::Utility
 
 		}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override;
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override;
 
-		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {}
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {}
 
-		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
 
 	struct ComputedParameterNodeData : public NodeData
@@ -495,11 +495,11 @@ namespace ECellEngine::Editor::Utility
 			outputPins[8] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {}
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override;
 
-		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
 
 	struct LinePlotNodeData : public NodeData
@@ -565,11 +565,11 @@ namespace ECellEngine::Editor::Utility
 			outputPins[0].node = this;
 		}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {};
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};
 
-		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override;
 
-		void OutputUpdate(std::size_t& _nodeOutputPinId) override {};
+		void OutputUpdate(std::size_t _nodeOutputPinId) override {};
 
 		inline bool IsPlotOpen() noexcept
 		{
@@ -737,11 +737,11 @@ namespace ECellEngine::Editor::Utility
 			outputPins[8] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {}
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {}
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {}
 
-		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
 
 	struct SimpleParameterNodeData : public NodeData
@@ -824,11 +824,11 @@ namespace ECellEngine::Editor::Utility
 			outputPins[4] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {}
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override;
 
-		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
 
 	struct SimulationTimeNodeData : public NodeData
@@ -857,11 +857,11 @@ namespace ECellEngine::Editor::Utility
 			outputPins[0].node = this;
 		}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {};
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};
 
-		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {};
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};
 
-		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
 
 	struct SolverNodeData : public NodeData
@@ -900,11 +900,11 @@ namespace ECellEngine::Editor::Utility
 
 		}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {}
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {}
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {}
 
-		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
 
 	struct SpeciesNodeData : public NodeData
@@ -994,11 +994,11 @@ namespace ECellEngine::Editor::Utility
 			outputPins[6] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {}
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override;
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override;
 
-		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
 
 	struct ValueFloatNodeData : public NodeData
@@ -1026,11 +1026,11 @@ namespace ECellEngine::Editor::Utility
 			outputPins[0].node = this;
 		}
 
-		void InputUpdate(std::size_t& _nodeInputPinId, char* _data) override {};
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};
 
-		void InputUpdate(std::size_t& _nodeInputPinId, float _data) override {};
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};
 
-		void OutputUpdate(std::size_t& _nodeOutputPinId) override;
+		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
 #pragma endregion
 }
