@@ -12,6 +12,7 @@ namespace ECellEngine::Editor::Utility
 	struct ModelNodeBasedViewerContext;
 	struct NodePinData;
 	struct NodeData;
+	struct LinkData;
 	
 	/*!
 	@file ModelNodeBasedViewerGlobal.hpp
@@ -126,6 +127,8 @@ namespace ECellEngine::Editor::Utility
 	@see ECellEngine::Editor::Utility::SetCurrentMNBVContext(ECellEngine::Editor::Utility::ModelNodeBasedViewerContext* _ctxt)
 	*/
 	ModelNodeBasedViewerContext* GetCurrentMNBVContext();
+
+	std::vector<LinkData>* GetLinks();
 
 	/*!
 	@brief Gets the pointer to the member field ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::style

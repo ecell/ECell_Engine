@@ -199,9 +199,13 @@ namespace ECellEngine::Editor::Utility
 		friend inline bool operator<=(const NodeData& lhs, const NodeData& rhs) { return !(lhs > rhs); }
 		friend inline bool operator>=(const NodeData& lhs, const NodeData& rhs) { return !(lhs < rhs); }
 
+		virtual void InputConnect(std::size_t _nodeInputPinId) = 0;
+		
 		virtual void InputUpdate(std::size_t _nodeInputPinId, char* _data) = 0;
 
 		virtual void InputUpdate(std::size_t _nodeInputPinId, float _data) = 0;
+
+		virtual void OutputConnect(std::size_t _nodeOutputPinId) = 0;
 
 		virtual void OutputUpdate(std::size_t _nodeOutputPinId) = 0;
 	};
@@ -283,6 +287,12 @@ namespace ECellEngine::Editor::Utility
 		inline void AddSubscriber(NodeInputPinData* _newSubscriber)
 		{
 			subscribers.push_back(_newSubscriber);
+
+			//What to do on connection.
+			node->OutputConnect((std::size_t)id);
+			_newSubscriber->node->InputConnect((std::size_t)_newSubscriber->id);
+
+			//Send data for the first time
 			node->OutputUpdate((std::size_t)id);
 		}
 
@@ -363,11 +373,15 @@ namespace ECellEngine::Editor::Utility
 
 		}
 
+		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in asset node data
+
 		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override;
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {}
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in asset node data
 
-		void OutputUpdate(std::size_t _nodeOutputPinId) override;
+		void OutputConnect(std::size_t _nodeOutputPinId) override {};//not used in asset node data
+
+		void OutputUpdate(std::size_t _nodeOutputPinId) override {};//not used in asset node data
 	};
 
 	struct ComputedParameterNodeData : public NodeData
@@ -398,7 +412,7 @@ namespace ECellEngine::Editor::Utility
 				 At index 2 we find the list box with the links to species that
 				 are involved (as quantities) in the computation of this parameter.
 
-				 At index 3 we find the list box with the links to simple 
+				 At index 3 we find the list box with the links to simple
 				 parameters that are involved (as values) in the computation of
 				 this parameter.
 
@@ -411,36 +425,57 @@ namespace ECellEngine::Editor::Utility
 		std::vector<std::string> simpleParametersOperands;
 		std::vector<std::string> computedParametersOperands;
 
-		ComputedParameterNodeData(const ComputedParameterNodeData& _cpnd):
-			NodeData(_cpnd), data{_cpnd.data},
-			inputPins{_cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
+		ComputedParameterNodeData(const ComputedParameterNodeData& _cpnd) :
+			NodeData(_cpnd), data{ _cpnd.data },
+			inputPins{ _cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
 					  _cpnd.inputPins[3] , _cpnd.inputPins[4] , _cpnd.inputPins[5],
 					  _cpnd.inputPins[6] , _cpnd.inputPins[7] , _cpnd.inputPins[8], _cpnd.inputPins[9] },
 			outputPins{ _cpnd.outputPins[0], _cpnd.outputPins[1] , _cpnd.outputPins[2] ,
 					  _cpnd.outputPins[3] , _cpnd.outputPins[4] , _cpnd.outputPins[5],
 					  _cpnd.outputPins[6] , _cpnd.outputPins[7] , _cpnd.outputPins[8] },
-			utilityState{_cpnd.utilityState},
+			utilityState{ _cpnd.utilityState },
 			collapsingHeadersIds{ _cpnd.collapsingHeadersIds[0], _cpnd.collapsingHeadersIds[1] , _cpnd.collapsingHeadersIds[2] ,
 					  _cpnd.collapsingHeadersIds[3] , _cpnd.collapsingHeadersIds[4] },
 			nslbData{ _cpnd.nslbData[0], _cpnd.nslbData[1] , _cpnd.nslbData[2] ,
 					  _cpnd.nslbData[3] , _cpnd.nslbData[4] },
-			speciesOperands{_cpnd.speciesOperands },
-			simpleParametersOperands{_cpnd.simpleParametersOperands},
+			speciesOperands{ _cpnd.speciesOperands },
+			simpleParametersOperands{ _cpnd.simpleParametersOperands },
 			computedParametersOperands{ _cpnd.computedParametersOperands }
 		{
 			nslbData[2].data = &speciesOperands;
 			nslbData[3].data = &simpleParametersOperands;
 			nslbData[4].data = &computedParametersOperands;
+
+			inputPins[0].node = this;
+			inputPins[1].node = this;
+			inputPins[2].node = this;
+			inputPins[3].node = this;
+			inputPins[4].node = this;
+			inputPins[5].node = this;
+			inputPins[6].node = this;
+			inputPins[7].node = this;
+			inputPins[8].node = this;
+			inputPins[9].node = this;
+
+			outputPins[0].node = this;
+			outputPins[1].node = this;
+			outputPins[2].node = this;
+			outputPins[3].node = this;
+			outputPins[4].node = this;
+			outputPins[5].node = this;
+			outputPins[6].node = this;
+			outputPins[7].node = this;
+			outputPins[8].node = this;
 		}
 
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		ComputedParameterNodeData(ECellEngine::Data::ComputedParameter* _data) :
-			NodeData(), data{_data}
+			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
-			
+
 			//ModelLinks Collapsing header
 			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
@@ -476,28 +511,32 @@ namespace ECellEngine::Editor::Utility
 			outputPins[5] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);
 			nslbData[2] = { &speciesOperands, GetMNBVCtxtNextId() };
-			
+
 			//Node String List Box for Simple Parameter Operands
 			inputPins[7] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			outputPins[6] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::SimpleParameter>(simpleParametersOperands);
 			nslbData[3] = { &simpleParametersOperands, GetMNBVCtxtNextId() };
-			
+
 			//Node String List Box for Computed Parameter Operands
 			inputPins[8] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			outputPins[7] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::ComputedParameter>(computedParametersOperands);
 			nslbData[4] = { &computedParametersOperands, GetMNBVCtxtNextId() };
-			
+
 			//Value Float string of the computation of the formula
 			//The user cannot directly change the value of the result
 			inputPins[9] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 			outputPins[8] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {}
+		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in computed parameter node data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override;
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in computed parameter node data
+
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in computed parameter node data
+
+		void OutputConnect(std::size_t _nodeOutputPinId) override;
 
 		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
@@ -520,7 +559,7 @@ namespace ECellEngine::Editor::Utility
 		ImPlotFlags plotFlags = ImPlotFlags_NoLegend | ImPlotFlags_NoInputs;
 		ImPlotAxisFlags xAxisFlags = ImPlotAxisFlags_AutoFit;
 		ImPlotAxisFlags yAxisFlags = ImPlotAxisFlags_AutoFit;
-		
+
 		NodeInputPinData inputPins[3];
 		NodeOutputPinData outputPins[1];//not used
 
@@ -549,9 +588,9 @@ namespace ECellEngine::Editor::Utility
 			dataPoints.AddPoint(0, 0);
 		}
 
-		LinePlotNodeData(const LinePlotNodeData& _lpnd):
+		LinePlotNodeData(const LinePlotNodeData& _lpnd) :
 			NodeData(_lpnd), dataPoints{ _lpnd.dataPoints },
-			inputPins{ _lpnd.inputPins[0], _lpnd.inputPins[1] , _lpnd.inputPins[2]},
+			inputPins{ _lpnd.inputPins[0], _lpnd.inputPins[1] , _lpnd.inputPins[2] },
 			outputPins{ _lpnd.outputPins[0] },
 			utilityState{ _lpnd.utilityState },
 			collapsingHeadersIds{ _lpnd.collapsingHeadersIds[0], _lpnd.collapsingHeadersIds[1],
@@ -565,11 +604,15 @@ namespace ECellEngine::Editor::Utility
 			outputPins[0].node = this;
 		}
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};
+		void InputConnect(std::size_t _nodeInputPinId) override;
+
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};// not used in line plot node data
 
 		void InputUpdate(std::size_t _nodeInputPinId, float _data) override;
 
-		void OutputUpdate(std::size_t _nodeOutputPinId) override {};
+		void OutputConnect(std::size_t _nodeOutputPinId) override {};// not used in line plot node data
+
+		void OutputUpdate(std::size_t _nodeOutputPinId) override {};// not used in line plot node data
 
 		inline bool IsPlotOpen() noexcept
 		{
@@ -636,7 +679,7 @@ namespace ECellEngine::Editor::Utility
 		std::vector<std::string> computedParametersOperands;
 
 		ReactionNodeData(const ReactionNodeData& _rnd) :
-			NodeData(_rnd), data{_rnd.data},
+			NodeData(_rnd), data{ _rnd.data },
 			inputPins{ _rnd.inputPins[0], _rnd.inputPins[1] , _rnd.inputPins[2] ,
 					  _rnd.inputPins[3] , _rnd.inputPins[4] , _rnd.inputPins[5],
 					  _rnd.inputPins[6] , _rnd.inputPins[7] , _rnd.inputPins[8], _rnd.inputPins[9] },
@@ -680,7 +723,7 @@ namespace ECellEngine::Editor::Utility
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		ReactionNodeData(ECellEngine::Data::Reaction* _data) :
-			NodeData(), data{_data}
+			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -737,9 +780,13 @@ namespace ECellEngine::Editor::Utility
 			outputPins[8] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {}
+		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in Reaction Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {}
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Reaction Node Data
+
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in Reaction Node Data
+
+		void OutputConnect(std::size_t _nodeOutputPinId) override;
 
 		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
@@ -765,13 +812,13 @@ namespace ECellEngine::Editor::Utility
 		SimpleParameterNodeData(const SimpleParameterNodeData& _sprnd) :
 			NodeData(_sprnd), data{ _sprnd.data },
 			inputPins{ _sprnd.inputPins[0], _sprnd.inputPins[1] , _sprnd.inputPins[2] ,
-					  _sprnd.inputPins[3] , _sprnd.inputPins[4] , _sprnd.inputPins[5]},
+					  _sprnd.inputPins[3] , _sprnd.inputPins[4] , _sprnd.inputPins[5] },
 			outputPins{ _sprnd.outputPins[0], _sprnd.outputPins[1] , _sprnd.outputPins[2] ,
-					  _sprnd.outputPins[3] , _sprnd.outputPins[4]},
+					  _sprnd.outputPins[3] , _sprnd.outputPins[4] },
 			utilityState{ _sprnd.utilityState },
 			collapsingHeadersIds{ _sprnd.collapsingHeadersIds[0], _sprnd.collapsingHeadersIds[1] , _sprnd.collapsingHeadersIds[2] ,
-					  _sprnd.collapsingHeadersIds[3]},
-			nslbData{ _sprnd.nslbData[0], _sprnd.nslbData[1]}
+					  _sprnd.collapsingHeadersIds[3] },
+			nslbData{ _sprnd.nslbData[0], _sprnd.nslbData[1] }
 		{
 			inputPins[0].node = this;
 			inputPins[1].node = this;
@@ -790,7 +837,7 @@ namespace ECellEngine::Editor::Utility
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		SimpleParameterNodeData(ECellEngine::Data::SimpleParameter* _data) :
-			NodeData(), data{_data}
+			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -813,20 +860,24 @@ namespace ECellEngine::Editor::Utility
 			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
 			//lbsData[1] = { /*list of kinetic laws where this one appears*/, GetMNBVCtxtNextId()}
-			
+
 			//Data Fields collapsing header
 			inputPins[4] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 			outputPins[3] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
 			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
-			
+
 			//Value Float field
 			inputPins[5] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 			outputPins[4] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {}
+		void InputConnect(std::size_t _nodeInputPinId) override;
+
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Reaction Node Data
 
 		void InputUpdate(std::size_t _nodeInputPinId, float _data) override;
+
+		void OutputConnect(std::size_t _nodeOutputPinId) override;
 
 		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
@@ -857,9 +908,13 @@ namespace ECellEngine::Editor::Utility
 			outputPins[0].node = this;
 		}
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};
+		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in Simulation Time Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Simulation Time Node Data
+
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in Simulation Time Node Data
+
+		void OutputConnect(std::size_t _nodeOutputPinId) override {};//not used in Simulation Time Node Data
 
 		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
@@ -878,8 +933,8 @@ namespace ECellEngine::Editor::Utility
 
 		SolverNodeData(const SolverNodeData& _slvnd) :
 			NodeData(_slvnd), data{ _slvnd.data },
-			inputPins{ _slvnd.inputPins[0]},
-			outputPins{ _slvnd.outputPins[0]}
+			inputPins{ _slvnd.inputPins[0] },
+			outputPins{ _slvnd.outputPins[0] }
 		{
 			inputPins[0].node = this;
 			outputPins[0].node = this;
@@ -889,7 +944,7 @@ namespace ECellEngine::Editor::Utility
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		SolverNodeData(ECellEngine::Solvers::Solver* _data) :
-			NodeData(), data{_data}
+			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
@@ -900,9 +955,13 @@ namespace ECellEngine::Editor::Utility
 
 		}
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {}
+		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in Solver Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {}
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Solver Node Data
+
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in Solver Node Data
+
+		void OutputConnect(std::size_t _nodeOutputPinId) override {};//not used in Solver Node Data
 
 		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
@@ -928,12 +987,12 @@ namespace ECellEngine::Editor::Utility
 			NodeData(_snd), data{ _snd.data }, speciesQuantityBuffer{ _snd.speciesQuantityBuffer },
 			inputPins{ _snd.inputPins[0], _snd.inputPins[1] , _snd.inputPins[2] ,
 					  _snd.inputPins[3] , _snd.inputPins[4] , _snd.inputPins[5],
-					  _snd.inputPins[6] , _snd.inputPins[7]},
+					  _snd.inputPins[6] , _snd.inputPins[7] },
 			outputPins{ _snd.outputPins[0], _snd.outputPins[1] , _snd.outputPins[2] ,
 					  _snd.outputPins[3] , _snd.outputPins[4] , _snd.outputPins[5],
-					  _snd.outputPins[6]},
+					  _snd.outputPins[6] },
 			utilityState{ _snd.utilityState },
-			collapsingHeadersIds{ _snd.collapsingHeadersIds[0], _snd.collapsingHeadersIds[1]}
+			collapsingHeadersIds{ _snd.collapsingHeadersIds[0], _snd.collapsingHeadersIds[1] }
 		{
 			inputPins[0].node = this;
 			inputPins[1].node = this;
@@ -953,9 +1012,9 @@ namespace ECellEngine::Editor::Utility
 		}
 
 		SpeciesNodeData(ECellEngine::Data::Species* _data) :
-			NodeData(), data{_data}
+			NodeData(), data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f+ImGui::GetIO().MousePos.x, 0.f+ ImGui::GetIO().MousePos.y));
+			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			//Id to uniquely identify the collapsing header for the MODEL LINKS of each species node
 			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
@@ -994,9 +1053,13 @@ namespace ECellEngine::Editor::Utility
 			outputPins[6] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {}
+		void InputConnect(std::size_t _nodeInputPinId) override;
+
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Species Node Data
 
 		void InputUpdate(std::size_t _nodeInputPinId, float _data) override;
+
+		void OutputConnect(std::size_t _nodeOutputPinId) override;
 
 		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};
@@ -1026,9 +1089,13 @@ namespace ECellEngine::Editor::Utility
 			outputPins[0].node = this;
 		}
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};
+		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in Value Float Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};
+		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Value Float Node Data
+
+		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in Value Float Node Data
+
+		void OutputConnect(std::size_t _nodeOutputPinId) override {};//not used in Value Float Node Data
 
 		void OutputUpdate(std::size_t _nodeOutputPinId) override;
 	};

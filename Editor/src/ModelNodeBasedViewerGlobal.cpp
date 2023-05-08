@@ -221,6 +221,11 @@ ECellEngine::Editor::Utility::ModelNodeBasedViewerContext* ECellEngine::Editor::
     return s_mnbvCtxt;
 }
 
+std::vector<ECellEngine::Editor::Utility::LinkData>* ECellEngine::Editor::Utility::GetLinks()
+{
+    return &s_mnbvCtxt->links;
+}
+
 ECellEngine::Editor::Utility::NodeEditorStyle* ECellEngine::Editor::Utility::GetMNBVStyle()
 {
     return &s_mnbvCtxt->style;
