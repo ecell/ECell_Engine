@@ -131,12 +131,12 @@ void ECellEngine::Editor::Utility::SolverNodeData::OutputUpdate(const NodeOutput
 {
 	//The node output pin representing the solver.
 	//It is used to attach a solver to an asset.
-	if (_nodeOutputPin == outputPins[0])
+	if (_nodeOutputPin == outputPins[SolverNodeData::OutputPin_Solver])
 	{
 		//The Solver node send his name to the asset node.
 		//It is the Asset node, in its InputUpdate() that will Queue the command to 
 		//try to attach the Solver to the Asset.
-		outputPins[0].Broadcast(data->GetName());
+		outputPins[SolverNodeData::OutputPin_Solver].Broadcast(data->GetName());
 	}
 }
 

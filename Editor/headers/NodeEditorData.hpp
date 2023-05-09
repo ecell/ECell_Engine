@@ -1111,23 +1111,39 @@ namespace ECellEngine::Editor::Utility
 
 	struct SolverNodeData : public NodeData
 	{
-		/*!
-		@brief The ID of this node to in the Node Editor.
-		*/
-		//ax::NodeEditor::NodeId id;
+		enum InputPin
+		{
+			InputPin_None,
+
+			InputPin_Count
+		};
+
+		enum OutputPin
+		{
+			OutputPin_Solver,
+
+			OutputPin_Count
+		};
 
 		ECellEngine::Solvers::Solver* data;
 
-		NodeInputPinData inputPins[1];
-		NodeOutputPinData outputPins[1];
+		NodeInputPinData inputPins[InputPin_Count];
+		NodeOutputPinData outputPins[OutputPin_Count];
 
 		SolverNodeData(const SolverNodeData& _slvnd) :
 			NodeData(_slvnd), data{ _slvnd.data },
 			inputPins{ _slvnd.inputPins[0] },
 			outputPins{ _slvnd.outputPins[0] }
 		{
-			inputPins[0].node = this;
-			outputPins[0].node = this;
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
+
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
 		}
 
 		/*!
@@ -1137,11 +1153,9 @@ namespace ECellEngine::Editor::Utility
 			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
-
-			//Not used for now but added for homogeneity
-			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-
-			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);
+			
+			inputPins[InputPin_None] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//not used
+			outputPins[OutputPin_Solver] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);//this solver transmission
 
 		}
 

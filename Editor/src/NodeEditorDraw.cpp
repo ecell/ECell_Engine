@@ -451,7 +451,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name,
 
     NodeText_Out("Target Asset", labelWidth,
         ImGui::GetCursorPosX(), headerWidth, ImGui::GetStyle().ItemSpacing.x,
-        _solverNodeInfo.outputPins[0], GetPinColors(PinType_Asset));
+        _solverNodeInfo.outputPins[SolverNodeData::OutputPin_Solver], GetPinColors(PinType_Asset));
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
