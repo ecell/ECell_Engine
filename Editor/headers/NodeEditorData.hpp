@@ -435,41 +435,86 @@ namespace ECellEngine::Editor::Utility
 
 	struct ComputedParameterNodeData : public NodeData
 	{
-		/*!
-		@brief The ID of this node to in the Node Editor.
-		*/
-		//ax::NodeEditor::NodeId id;
+		enum InputPin
+		{
+			InputPin_CollHdrModelLinks,
+			InputPin_CollHdrComputedParameters,
+			InputPin_CollHdrKineticLaws,
+			InputPin_CollHdrDataFields,
+			InputPin_CollHdrEquationOperands,
+			InputPin_NLBSComputedParameters,
+			InputPin_NLBSSimpleParameters,
+			InputPin_NLBSSpecies,
+			InputPin_ComputedParameterValue,
+			InputPin_Asset,
+
+			InputPin_Count
+		};
+
+		enum OutputPin
+		{
+			OutputPin_CollHdrModelLinks,
+			OutputPin_CollHdrComputedParameters,
+			OutputPin_CollHdrKineticLaws,
+			OutputPin_CollHdrDataFields,
+			OutputPin_CollHdrEquationOperands,
+			OutputPin_NLBSComputedParameters,
+			OutputPin_NLBSSimpleParameters,
+			OutputPin_NLBSSpecies,
+			OutputPin_ComputedParameterValue,
+
+			OutputPin_Count
+		};
+
+		enum CollapsingHeader
+		{
+			CollapsingHeader_ModelLinks,
+			CollapsingHeader_ComputedParameters,
+			CollapsingHeader_KineticLaws,
+			CollapsingHeader_DataFields,
+			CollapsingHeader_EquationOperands,
+
+			CollapsingHeader_Count
+		};
+
+		enum NodeListBoxString
+		{
+			NodeListBoxString_ComputedParameterLinks,
+			NodeListBoxString_ReactionLinks,
+			NodeListBoxString_ComputedParameterOperands,
+			NodeListBoxString_SimpleParameterOperands,
+			NodeListBoxString_SpeciesOperands,
+
+			NodeListBoxString_Count
+		};
+
+		enum State
+		{
+			State_CollHdrModelLinks,
+			State_CollHdrComputedParameters,
+			State_CollHdrKineticLaws,
+			State_CollHdrDataFields,
+			State_CollHdrEquationOperands,
+
+			State_Count
+		};
 
 		ECellEngine::Data::ComputedParameter* data;
 
-		NodeInputPinData inputPins[10];
-		NodeOutputPinData outputPins[9];
+		NodeInputPinData inputPins[InputPin_Count];
+		NodeOutputPinData outputPins[OutputPin_Count];
 
 		unsigned char utilityState = 0;
 
-		std::size_t collapsingHeadersIds[5];
+		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
 		/*!
 		@brief The array of of list box data that are potentially displayed in
 				this node.
-		@details At index 0 we find the list box with the links to other computed
-				 parameters where this computed parameter is also found.
-
-				 At index 1 we find the list box with the links to reaction's
-				 kinetic laws where this computed parameter is found.
-
-				 At index 2 we find the list box with the links to species that
-				 are involved (as quantities) in the computation of this parameter.
-
-				 At index 3 we find the list box with the links to simple
-				 parameters that are involved (as values) in the computation of
-				 this parameter.
-
-				 At index 4 we find the list box with the links to computed
-				 parameters that are involved (as values) in the computation of
-				 this parameter.
 		*/
-		NodeListBoxStringData nlbsData[5];
+		NodeListBoxStringData nlbsData[NodeListBoxString_Count];
+		std::vector<std::string> computedParameterLinks;
+		std::vector<std::string> reactionLinks;
 		std::vector<std::string> speciesOperands;
 		std::vector<std::string> simpleParametersOperands;
 		std::vector<std::string> computedParametersOperands;
@@ -491,30 +536,21 @@ namespace ECellEngine::Editor::Utility
 			simpleParametersOperands{ _cpnd.simpleParametersOperands },
 			computedParametersOperands{ _cpnd.computedParametersOperands }
 		{
-			nlbsData[2].data = &speciesOperands;
-			nlbsData[3].data = &simpleParametersOperands;
-			nlbsData[4].data = &computedParametersOperands;
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
 
-			inputPins[0].node = this;
-			inputPins[1].node = this;
-			inputPins[2].node = this;
-			inputPins[3].node = this;
-			inputPins[4].node = this;
-			inputPins[5].node = this;
-			inputPins[6].node = this;
-			inputPins[7].node = this;
-			inputPins[8].node = this;
-			inputPins[9].node = this;
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
 
-			outputPins[0].node = this;
-			outputPins[1].node = this;
-			outputPins[2].node = this;
-			outputPins[3].node = this;
-			outputPins[4].node = this;
-			outputPins[5].node = this;
-			outputPins[6].node = this;
-			outputPins[7].node = this;
-			outputPins[8].node = this;
+			nlbsData[NodeListBoxString_ComputedParameterLinks].data = &computedParameterLinks;
+			nlbsData[NodeListBoxString_ReactionLinks].data = &reactionLinks;
+			nlbsData[NodeListBoxString_SpeciesOperands].data = &speciesOperands;
+			nlbsData[NodeListBoxString_SimpleParameterOperands].data = &simpleParametersOperands;
+			nlbsData[NodeListBoxString_ComputedParameterOperands].data = &computedParametersOperands;
 		}
 
 		/*!
@@ -524,59 +560,42 @@ namespace ECellEngine::Editor::Utility
 			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
+			
+			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
+			inputPins[InputPin_Asset] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Asset, this);//Asset
+			inputPins[InputPin_CollHdrComputedParameters] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
+			inputPins[InputPin_CollHdrKineticLaws] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
+			inputPins[InputPin_CollHdrDataFields] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
+			inputPins[InputPin_CollHdrEquationOperands] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Equation Operands collapsing header
+			inputPins[InputPin_NLBSSpecies] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Node String List Box for Species Operands
+			inputPins[InputPin_NLBSSimpleParameters] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Simple Parameter Operands
+			inputPins[InputPin_NLBSComputedParameters] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Computed Parameter Operands
+			inputPins[InputPin_ComputedParameterValue] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Operation Value Float
+			
+			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
+			outputPins[OutputPin_CollHdrComputedParameters] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
+			outputPins[OutputPin_CollHdrKineticLaws] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
+			outputPins[OutputPin_CollHdrDataFields] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
+			outputPins[OutputPin_CollHdrEquationOperands] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Equation Operands collapsing header
+			outputPins[OutputPin_NLBSSpecies] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Node String List Box for Species Operands
+			outputPins[OutputPin_NLBSSimpleParameters] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Simple Parameter Operands
+			outputPins[OutputPin_NLBSComputedParameters] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Computed Parameter Operands
+			outputPins[OutputPin_ComputedParameterValue] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Operation Value Float
 
-			//ModelLinks Collapsing header
-			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
+			collapsingHeadersIds[CollapsingHeader_ModelLinks] = GetMNBVCtxtNextId();//ModelLinks Collapsing header
+			collapsingHeadersIds[CollapsingHeader_ComputedParameters] = GetMNBVCtxtNextId();//Computed Parameters section
+			collapsingHeadersIds[CollapsingHeader_KineticLaws] = GetMNBVCtxtNextId();//Kinetic Laws section
+			collapsingHeadersIds[CollapsingHeader_DataFields] = GetMNBVCtxtNextId();//Data Fields collapsing header
+			collapsingHeadersIds[CollapsingHeader_EquationOperands] = GetMNBVCtxtNextId();//Equation Operands collapsing header
 
-			//Asset
-			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-
-			//Computed Parameters section
-			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
-			//lbsData[0] = { /*list of computed parameters where this one appears*/, GetMNBVCtxtNextId()}
-
-			//Kinetic Laws section
-			inputPins[3] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
-			//lbsData[1] = { /*list of kinetic laws where this one appears*/, GetMNBVCtxtNextId()}
-
-			//Data Fields collapsing header
-			inputPins[4] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			outputPins[3] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
-
-			//Equation Operands collapsing header
-			inputPins[5] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			outputPins[4] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			collapsingHeadersIds[4] = GetMNBVCtxtNextId();
-
-			//Node String List Box for Species Operands
-			inputPins[6] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
-			outputPins[5] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
-			_data->GetOperation().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);
-			nlbsData[2] = { &speciesOperands, GetMNBVCtxtNextId() };
-
-			//Node String List Box for Simple Parameter Operands
-			inputPins[7] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			outputPins[6] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			_data->GetOperation().GetOperandsNames<ECellEngine::Data::SimpleParameter>(simpleParametersOperands);
-			nlbsData[3] = { &simpleParametersOperands, GetMNBVCtxtNextId() };
-
-			//Node String List Box for Computed Parameter Operands
-			inputPins[8] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			outputPins[7] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			_data->GetOperation().GetOperandsNames<ECellEngine::Data::ComputedParameter>(computedParametersOperands);
-			nlbsData[4] = { &computedParametersOperands, GetMNBVCtxtNextId() };
-
-			//Value Float string of the computation of the formula
-			//The user cannot directly change the value of the result
-			inputPins[9] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
-			outputPins[8] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
+			nlbsData[NodeListBoxString_ComputedParameterLinks] = { &computedParameterLinks , GetMNBVCtxtNextId() };
+			nlbsData[NodeListBoxString_ReactionLinks] = { &reactionLinks, GetMNBVCtxtNextId() };
+			_data->GetOperation().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);//Node String List Box for Species Operands
+			nlbsData[NodeListBoxString_SpeciesOperands] = { &speciesOperands, GetMNBVCtxtNextId() };//Node String List Box for Species Operands
+			_data->GetOperation().GetOperandsNames<ECellEngine::Data::SimpleParameter>(simpleParametersOperands);//Node String List Box for Simple Parameter Operands
+			nlbsData[NodeListBoxString_SimpleParameterOperands] = { &simpleParametersOperands, GetMNBVCtxtNextId() };//Node String List Box for Simple Parameter Operands
+			_data->GetOperation().GetOperandsNames<ECellEngine::Data::ComputedParameter>(computedParametersOperands);//Node String List Box for Computed Parameter Operands
+			nlbsData[NodeListBoxString_ComputedParameterOperands] = { &computedParametersOperands, GetMNBVCtxtNextId() };//Node String List Box for Computed Parameter Operands
 		}
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in computed parameter node data

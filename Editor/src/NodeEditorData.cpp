@@ -18,10 +18,10 @@ void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(const NodeInputPin
 void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Computed parameter operation value
-	if (_nodeOutputPin == outputPins[8])
+	if (_nodeOutputPin == outputPins[ComputedParameterNodeData::OutputPin_ComputedParameterValue])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
-		GetLinks()->back().OverrideStartFallbackPin(outputPins[3].id, 1);
+		GetLinks()->back().OverrideStartFallbackPin(outputPins[ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);
 	}
 }
 
