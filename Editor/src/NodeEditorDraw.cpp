@@ -11,44 +11,44 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
     const float startX = ImGui::GetCursorPosX();
 
     // ----- Pin and Text to connect the solver to the asset -----
-    Pin(_assetNodeInfo.inputPins[0], GetPinColors(PinType_Solver));
+    Pin(_assetNodeInfo.inputPins[AssetNodeData::InputPin_Solver], GetPinColors(PinType_Solver));
     ImGui::SameLine(); ImGui::AlignTextToFramePadding(); ImGui::Text("Solver");
 
     // ----- String List Box and Pin to access the species of the asset -----
-    if (NodeCollapsingHeader_Out("Species", _assetNodeInfo.collapsingHeadersIds[0],
-        _assetNodeInfo.utilityState, 0,
+    if (NodeCollapsingHeader_Out("Species", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_Species],
+        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrSpecies,
         startX, headerWidth,
-        _assetNodeInfo.outputPins[0], GetPinColors(PinType_Species),
+        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrSpecies], GetPinColors(PinType_Species),
         ImVec2(itemsWidth, 0), false))
     {
         NodeStringListBox(_assetNodeInfo.speciesNLB, startX, headerWidth, itemsWidth);
     }
 
     // ----- String List Box and Pin to access the simple parameters of the asset -----
-    if (NodeCollapsingHeader_Out("Constant Parameters", _assetNodeInfo.collapsingHeadersIds[1],
-        _assetNodeInfo.utilityState, 1,
+    if (NodeCollapsingHeader_Out("Constant Parameters", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_SimpleParameter],
+        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrSimpleParameter,
         startX, headerWidth,
-        _assetNodeInfo.outputPins[1], GetPinColors(PinType_Parameter),
+        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrSimpleParameter], GetPinColors(PinType_Parameter),
         ImVec2(itemsWidth, 0), false))
     {
         NodeStringListBox(_assetNodeInfo.simpleParametersNLB, startX, headerWidth, itemsWidth);
     }
 
     // ----- String List Box and Pin to access the computed parameters of the asset -----
-    if (NodeCollapsingHeader_Out("Computed Parameters", _assetNodeInfo.collapsingHeadersIds[2],
-        _assetNodeInfo.utilityState, 2,
+    if (NodeCollapsingHeader_Out("Computed Parameters", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_ComputedParameter],
+        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrComputedParameter,
         startX, headerWidth,
-        _assetNodeInfo.outputPins[2], GetPinColors(PinType_Parameter),
+        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrComputedParameter], GetPinColors(PinType_Parameter),
         ImVec2(itemsWidth, 0), false))
     {
         NodeStringListBox(_assetNodeInfo.computedParametersNLB, startX, headerWidth, itemsWidth);
     }
 
     // ----- String List Box and Pin to access the reactions of the asset -----
-    if (NodeCollapsingHeader_Out("Reactions", _assetNodeInfo.collapsingHeadersIds[3],
-        _assetNodeInfo.utilityState, 3,
+    if (NodeCollapsingHeader_Out("Reactions", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_Reaction],
+        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrReaction,
         startX, headerWidth,
-        _assetNodeInfo.outputPins[3], GetPinColors(PinType_Reaction),
+        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrReaction], GetPinColors(PinType_Reaction),
         ImVec2(itemsWidth, 0), false))
     {
         NodeStringListBox(_assetNodeInfo.reactionsNLB, startX, headerWidth, itemsWidth);

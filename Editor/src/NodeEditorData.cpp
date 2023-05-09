@@ -4,7 +4,7 @@
 void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, char* _data)
 {
 	//The node input pin representing the solver attached to this asset.
-	if (_nodeInputPin == inputPins[0])
+	if (_nodeInputPin == inputPins[AssetNodeData::InputPin_Solver])
 	{
 		//In this case, the parameter _data is the name of the solver node that is attempting to attach.
 		//So, we know that we have the action to perform is to queue the TryAttachSolverToModuleCommand

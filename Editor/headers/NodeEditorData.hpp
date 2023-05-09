@@ -315,10 +315,47 @@ namespace ECellEngine::Editor::Utility
 
 	struct AssetNodeData : public NodeData
 	{
+		enum InputPin
+		{
+			InputPin_Solver,
+
+			InputPin_Count
+		};
+
+		enum OutputPin
+		{
+			OutputPin_CollHdrComputedParameter,
+			OutputPin_CollHdrReaction,
+			OutputPin_CollHdrSimpleParameter,
+			OutputPin_CollHdrSpecies,
+
+			OutputPin_Count
+		};
+
+		enum CollapsingHeader
+		{
+			CollapsingHeader_ComputedParameter,
+			CollapsingHeader_Reaction,
+			CollapsingHeader_SimpleParameter,
+			CollapsingHeader_Species,
+
+			CollapsingHeader_Count
+		};
+
+		enum State
+		{
+			State_CollHdrComputedParameter,
+			State_CollHdrReaction,
+			State_CollHdrSimpleParameter,
+			State_CollHdrSpecies,
+
+			State_Count
+		};
+		
 		ECellEngine::Data::SBMLModule* data;
 
-		NodeInputPinData inputPins[1];
-		NodeOutputPinData outputPins[4];
+		NodeInputPinData inputPins[InputPin_Count];
+		NodeOutputPinData outputPins[OutputPin_Count];
 
 		unsigned char utilityState = 0;
 
@@ -340,12 +377,15 @@ namespace ECellEngine::Editor::Utility
 			speciesNLB{ _and.speciesNLB }, simpleParametersNLB{ _and.simpleParametersNLB },
 			computedParametersNLB{ _and.computedParametersNLB }, reactionsNLB{ _and.reactionsNLB }
 		{
-			inputPins[0].node = this;
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
 
-			outputPins[0].node = this;
-			outputPins[1].node = this;
-			outputPins[2].node = this;
-			outputPins[3].node = this;
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
 		}
 
 		/*!
@@ -356,17 +396,17 @@ namespace ECellEngine::Editor::Utility
 		{
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
-			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);//Solver
+			inputPins[InputPin_Solver] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);//Solver
 
-			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Species Collapsing header
-			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameters Collapsing header
-			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters Collapsing header
-			outputPins[3] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Reaction, this);//Reactions Collapsing header
+			outputPins[OutputPin_CollHdrReaction] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Species Collapsing header
+			outputPins[OutputPin_CollHdrReaction] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameters Collapsing header
+			outputPins[OutputPin_CollHdrSimpleParameter] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters Collapsing header
+			outputPins[OutputPin_CollHdrSpecies] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Reaction, this);//Reactions Collapsing header
 
-			collapsingHeadersIds[0] = GetMNBVCtxtNextId();//Species Collapsing header
-			collapsingHeadersIds[1] = GetMNBVCtxtNextId();//Simple Parameters Collapsing header
-			collapsingHeadersIds[2] = GetMNBVCtxtNextId();//Computed Parameters Collapsing header
-			collapsingHeadersIds[3] = GetMNBVCtxtNextId();//Reactions Collapsing header
+			collapsingHeadersIds[CollapsingHeader_ComputedParameter] = GetMNBVCtxtNextId();//Species Collapsing header
+			collapsingHeadersIds[CollapsingHeader_Reaction] = GetMNBVCtxtNextId();//Simple Parameters Collapsing header
+			collapsingHeadersIds[CollapsingHeader_SimpleParameter] = GetMNBVCtxtNextId();//Computed Parameters Collapsing header
+			collapsingHeadersIds[CollapsingHeader_Species] = GetMNBVCtxtNextId();//Reactions Collapsing header
 
 			//Initialize the list boxes data
 			speciesNLB = { &data->GetAllSpecies(), GetMNBVCtxtNextId() };
