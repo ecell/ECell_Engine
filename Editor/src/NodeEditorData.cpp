@@ -79,10 +79,10 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(const NodeInput
 void ECellEngine::Editor::Utility::ReactionNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Reaction kinetic law value
-	if (_nodeOutputPin == outputPins[8])
+	if (_nodeOutputPin == outputPins[ReactionNodeData::OutputPin_KineticLawValue])
 	{
 		//we set the input pin of the kinetic law collapsing header as the fall back
-		GetLinks()->back().OverrideStartFallbackPin(outputPins[3].id, 1);
+		GetLinks()->back().OverrideStartFallbackPin(outputPins[OutputPin_CollHdrKineticLaw].id, 1);
 	}
 }
 

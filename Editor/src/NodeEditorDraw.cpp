@@ -276,78 +276,78 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ReactionNode(const char* _nam
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
-    if (NodeCollapsingHeader_InOut("Model Links", _reactionNodeInfo.collapsingHeadersIds[0],
-        _reactionNodeInfo.utilityState, 0,
+    if (NodeCollapsingHeader_InOut("Model Links", _reactionNodeInfo.collapsingHeadersIds[ReactionNodeData::CollapsingHeader_ModelLinks],
+        _reactionNodeInfo.utilityState, ReactionNodeData::State_CollHdrModelLinks,
         startX, headerWidth,
-        _reactionNodeInfo.inputPins[0], _reactionNodeInfo.outputPins[0], GetPinColors(PinType_Default),
+        _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_CollHdrModelLinks], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_CollHdrModelLinks], GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0.f)))
     {
 
-        NodeText_In("Asset", startX, _reactionNodeInfo.inputPins[1], GetPinColors(PinType_Asset));
+        NodeText_In("Asset", startX, _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_Asset], GetPinColors(PinType_Asset));
 
-        if (NodeCollapsingHeader_InOut("Reactants", _reactionNodeInfo.collapsingHeadersIds[1],
-            _reactionNodeInfo.utilityState, 1,
+        if (NodeCollapsingHeader_InOut("Reactants", _reactionNodeInfo.collapsingHeadersIds[ReactionNodeData::CollapsingHeader_Reactants],
+            _reactionNodeInfo.utilityState, ReactionNodeData::State_CollHdrReactants,
             startX, headerWidth,
-            _reactionNodeInfo.inputPins[2], _reactionNodeInfo.outputPins[1], GetPinColors(PinType_Species),
+            _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_CollHdrReactants], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_CollHdrReactants], GetPinColors(PinType_Species),
             ImVec2(itemsWidth, 0.f), false))
         {
-            NodeStringListBox(_reactionNodeInfo.nlbsData[0], startX, headerWidth, itemsWidth);
+            NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_Reactants], startX, headerWidth, itemsWidth);
         }
 
-        if (NodeCollapsingHeader_InOut("Products", _reactionNodeInfo.collapsingHeadersIds[2],
-            _reactionNodeInfo.utilityState, 2,
+        if (NodeCollapsingHeader_InOut("Products", _reactionNodeInfo.collapsingHeadersIds[ReactionNodeData::CollapsingHeader_Products],
+            _reactionNodeInfo.utilityState, ReactionNodeData::State_CollHdrProducts,
             startX, headerWidth,
-            _reactionNodeInfo.inputPins[3], _reactionNodeInfo.outputPins[2], GetPinColors(PinType_Species),
+            _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_CollHdrProducts], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_CollHdrProducts], GetPinColors(PinType_Species),
             ImVec2(itemsWidth, 0.f), false))
         {
-            NodeStringListBox(_reactionNodeInfo.nlbsData[1], startX, headerWidth, itemsWidth);
+            NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_Products], startX, headerWidth, itemsWidth);
         }
     }
 
     NodeHorizontalSeparator(headerWidth);
 
-    if (NodeCollapsingHeader_InOut("Kinetic Law", _reactionNodeInfo.collapsingHeadersIds[3],
-        _reactionNodeInfo.utilityState, 3,
+    if (NodeCollapsingHeader_InOut("Kinetic Law", _reactionNodeInfo.collapsingHeadersIds[ReactionNodeData::CollapsingHeader_KineticLaw],
+        _reactionNodeInfo.utilityState, ReactionNodeData::State_CollHdrKineticLaw,
         startX, headerWidth,
-        _reactionNodeInfo.inputPins[4], _reactionNodeInfo.outputPins[3], GetPinColors(PinType_Default),
+        _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_CollHdrKineticLaw], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_CollHdrKineticLaw], GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
 
-        if (NodeCollapsingHeader_InOut("Operands", _reactionNodeInfo.collapsingHeadersIds[4],
-            _reactionNodeInfo.utilityState, 4,
+        if (NodeCollapsingHeader_InOut("Operands", _reactionNodeInfo.collapsingHeadersIds[ReactionNodeData::CollapsingHeader_KineticLawOperands],
+            _reactionNodeInfo.utilityState, ReactionNodeData::State_CollHdrKineticLawOperands,
             startX, headerWidth,
-            _reactionNodeInfo.inputPins[5], _reactionNodeInfo.outputPins[4], GetPinColors(PinType_Default),
+            _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_CollHdrKineticLawOperands], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_CollHdrKineticLawOperands], GetPinColors(PinType_Default),
             ImVec2(itemsWidth, 0.f)))
         {
-            if (_reactionNodeInfo.nlbsData[2].data->size())
+            if (_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_SpeciesOperands].data->size())
             {
                 const float spTextWidth = ImGui::CalcTextSize("Species").x;
                 NodeText_InOut("Species", spTextWidth, startX, headerWidth,
-                    _reactionNodeInfo.inputPins[6], _reactionNodeInfo.outputPins[5], GetPinColors(PinType_Species));
-                NodeStringListBox(_reactionNodeInfo.nlbsData[2], startX, headerWidth, itemsWidth);
+                    _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_NLBSSpecies], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_NLBSSpecies], GetPinColors(PinType_Species));
+                NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_SpeciesOperands], startX, headerWidth, itemsWidth);
             }
 
-            if (_reactionNodeInfo.nlbsData[3].data->size())
+            if (_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_SimpleParameterOperands].data->size())
             {
                 const float sparamTextWidth = ImGui::CalcTextSize("Simple Parameters").x;
                 NodeText_InOut("Simple Parameters", sparamTextWidth, startX, headerWidth,
-                    _reactionNodeInfo.inputPins[7], _reactionNodeInfo.outputPins[6], GetPinColors(PinType_Parameter));
-                NodeStringListBox(_reactionNodeInfo.nlbsData[3], startX, headerWidth, itemsWidth);
+                    _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_NLBSSimpleParameters], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_NLBSSimpleParameters], GetPinColors(PinType_Parameter));
+                NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_SimpleParameterOperands], startX, headerWidth, itemsWidth);
             }
 
-            if (_reactionNodeInfo.nlbsData[4].data->size())
+            if (_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_ComputedParameterOperands].data->size())
             {
                 const float cparaTextWidth = ImGui::CalcTextSize("Computed Parameters").x;
                 NodeText_InOut("Computed Parameters", cparaTextWidth, startX, headerWidth,
-                    _reactionNodeInfo.inputPins[8], _reactionNodeInfo.outputPins[7], GetPinColors(PinType_Parameter));
-                NodeStringListBox(_reactionNodeInfo.nlbsData[4], startX, headerWidth, itemsWidth);
+                    _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_NLBSComputedParameters], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_NLBSComputedParameters], GetPinColors(PinType_Parameter));
+                NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_ComputedParameterOperands], startX, headerWidth, itemsWidth);
             }
         }
 
         float value = _reactionNodeInfo.data->GetKineticLawValue();
         NodeInputFloat_InOut("Value", _reactionNodeInfo.id.Get(), &value,
             itemsWidth, startX, headerWidth,
-            _reactionNodeInfo.inputPins[9], _reactionNodeInfo.outputPins[8], GetPinColors(PinType_ValueFloat),
+            _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_KineticLawValue], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_KineticLawValue], GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_ReadOnly);
     }
 

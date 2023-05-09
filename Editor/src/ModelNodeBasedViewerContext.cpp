@@ -87,8 +87,8 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
             reactionNodes.emplace_back(ECellEngine::Editor::Utility::ReactionNodeData(
                 _simulation->GetDataState()->GetReaction(it->nlbsData[AssetNodeData::NodeListBoxString_Reactions].data->at(it->nlbsData[AssetNodeData::NodeListBoxString_Reactions].doubleClickedItem))));
 
-            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[AssetNodeData::OutputPin_CollHdrReactions].id, reactionNodes.back().inputPins[1].id));
-            links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[0].id, 1);
+            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[AssetNodeData::OutputPin_CollHdrReactions].id, reactionNodes.back().inputPins[ReactionNodeData::InputPin_Asset].id));
+            links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[ReactionNodeData::CollapsingHeader_ModelLinks].id, 1);
         }
 
         it->nlbsData[AssetNodeData::NodeListBoxString_Species].ResetUtilityState();
