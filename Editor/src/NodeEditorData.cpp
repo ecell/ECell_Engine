@@ -33,24 +33,24 @@ void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputUpdate(const
 void ECellEngine::Editor::Utility::LinePlotNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
 {
 	//X axis input pin
-	if (_nodeInputPin == inputPins[1])
+	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_XAxis])
 	{
 		//we set the input pin of the collapsing header as the fallback
-		GetLinks()->back().OverrideEndFallbackPin(inputPins[0].id, 1);
+		GetLinks()->back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
 	}
 
 	//Y axis input pin
-	if (_nodeInputPin == inputPins[2])
+	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_YAxis])
 	{
 		//we set the input pin of the collapsing header as the fallback
-		GetLinks()->back().OverrideEndFallbackPin(inputPins[0].id, 1);
+		GetLinks()->back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
 	}
 }
 
 void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
 {
 	//The node input pin corresponding to the X Axis data
-	if (_nodeInputPin == inputPins[1])
+	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_XAxis])
 	{
 		newPointBuffer[0] = _data;
 
@@ -63,7 +63,7 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(const NodeInput
 	}
 
 	//The node input pin corresponding to the Y Axis data
-	if (_nodeInputPin == inputPins[2])
+	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_YAxis])
 	{
 		newPointBuffer[1] = _data;
 

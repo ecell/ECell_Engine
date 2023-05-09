@@ -611,6 +611,46 @@ namespace ECellEngine::Editor::Utility
 
 	struct LinePlotNodeData : public NodeData
 	{
+		enum InputPin
+		{
+			InputPin_CollHdrPlot,
+			InputPin_XAxis,
+			InputPin_YAxis,
+
+			InputPin_Count
+		};
+
+		enum OutputPin
+		{
+			OutputPin_None,
+
+			OutputPin_Count
+		};
+
+		enum CollapsingHeader
+		{
+			CollapsingHeader_AllParameters,
+			CollapsingHeader_GeneralParameters,
+			CollapsingHeader_PlotFlags,
+			CollapsingHeader_XAxisFlags,
+			CollapsingHeader_YAxisFlags,
+			CollapsingHeader_Plot,
+
+			CollapsingHeader_Count
+		};
+
+		enum State
+		{
+			State_CollHdrAllParameters,
+			State_CollHdrGeneralParameters,
+			State_CollHdrPlotFlags,
+			State_CollHdrXAxisFlags,
+			State_CollHdrYAxisFlags,
+			State_CollHdrPlot,
+
+			State_Count
+		};
+
 		char* name = "Line Plot";
 
 		ScrollingBuffer dataPoints;
@@ -640,18 +680,18 @@ namespace ECellEngine::Editor::Utility
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Plot Collapsing Header
-			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//X
-			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Y
+			inputPins[InputPin_CollHdrPlot] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Plot Collapsing Header
+			inputPins[InputPin_XAxis] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//X
+			inputPins[InputPin_YAxis] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Y
 
-			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
+			outputPins[OutputPin_None] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
 
-			collapsingHeadersIds[0] = GetMNBVCtxtNextId();//Parameters Collapsing header
-			collapsingHeadersIds[1] = GetMNBVCtxtNextId();//General (Parameters) Collapsing header
-			collapsingHeadersIds[2] = GetMNBVCtxtNextId();//Plot Flags (Parameters) Collapsing header
-			collapsingHeadersIds[3] = GetMNBVCtxtNextId();//X Axis Flags (Parameters) Collapsing header
-			collapsingHeadersIds[4] = GetMNBVCtxtNextId();//Y Axis Falgs (Parameters) Collapsing header
-			collapsingHeadersIds[5] = GetMNBVCtxtNextId();//Plot Collapsing Header
+			collapsingHeadersIds[CollapsingHeader_AllParameters] = GetMNBVCtxtNextId();//Parameters Collapsing header
+			collapsingHeadersIds[CollapsingHeader_GeneralParameters] = GetMNBVCtxtNextId();//General (Parameters) Collapsing header
+			collapsingHeadersIds[CollapsingHeader_PlotFlags] = GetMNBVCtxtNextId();//Plot Flags (Parameters) Collapsing header
+			collapsingHeadersIds[CollapsingHeader_XAxisFlags] = GetMNBVCtxtNextId();//X Axis Flags (Parameters) Collapsing header
+			collapsingHeadersIds[CollapsingHeader_YAxisFlags] = GetMNBVCtxtNextId();//Y Axis Falgs (Parameters) Collapsing header
+			collapsingHeadersIds[CollapsingHeader_Plot] = GetMNBVCtxtNextId();//Plot Collapsing Header
 
 			dataPoints.AddPoint(0, 0);
 		}
@@ -665,11 +705,15 @@ namespace ECellEngine::Editor::Utility
 			_lpnd.collapsingHeadersIds[2], _lpnd.collapsingHeadersIds[3], _lpnd.collapsingHeadersIds[4],
 			_lpnd.collapsingHeadersIds[5] }
 		{
-			inputPins[0].node = this;
-			inputPins[1].node = this;
-			inputPins[2].node = this;
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
 
-			outputPins[0].node = this;
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
 		}
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override;

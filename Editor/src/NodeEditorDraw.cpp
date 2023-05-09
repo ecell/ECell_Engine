@@ -160,12 +160,12 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
     const float startX = ImGui::GetCursorPosX();
     ImGuiStyle& style = ImGui::GetStyle();
 
-    if (NodeCollapsingHeader("Parameters", _linePlotNodeData.collapsingHeadersIds[0],
-        _linePlotNodeData.utilityState, 0,
+    if (NodeCollapsingHeader("All Parameters", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_AllParameters],
+        _linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrAllParameters,
         startX, headerWidth, ImVec2(headerWidth, 0.f)))
     {
-        if (NodeCollapsingHeader("General", _linePlotNodeData.collapsingHeadersIds[1],
-            _linePlotNodeData.utilityState, 1,
+        if (NodeCollapsingHeader("General", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_GeneralParameters],
+            _linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrGeneralParameters,
             startX, headerWidth, ImVec2(headerWidth, 0.f)))
         {
             char buffer[64] = "\0";
@@ -181,22 +181,22 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
             ImGui::DragFloat2("Plot Size", _linePlotNodeData.plotSize, 1.f, 10.f, 1000.f);
         }
 
-        if (NodeCollapsingHeader("Plot Flags", _linePlotNodeData.collapsingHeadersIds[2],
-            _linePlotNodeData.utilityState, 2,
+        if (NodeCollapsingHeader("Plot Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_PlotFlags],
+            _linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrPlotFlags,
             startX, headerWidth, ImVec2(headerWidth, 0.f)))
         {
             NodeAllImPlotFlags(&_linePlotNodeData.plotFlags);
         }
 
-        if (NodeCollapsingHeader("X Axis Flags", _linePlotNodeData.collapsingHeadersIds[3],
-            _linePlotNodeData.utilityState, 3,
+        if (NodeCollapsingHeader("X Axis Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_XAxisFlags],
+            _linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrXAxisFlags,
             startX, headerWidth, ImVec2(headerWidth, 0.f)))
         {
             NodeAllImPlotAxisFlags(&_linePlotNodeData.xAxisFlags);
         }
 
-        if (NodeCollapsingHeader("Y Axis Flags", _linePlotNodeData.collapsingHeadersIds[4],
-            _linePlotNodeData.utilityState, 4,
+        if (NodeCollapsingHeader("Y Axis Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_YAxisFlags],
+            _linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrYAxisFlags,
             startX, headerWidth, ImVec2(headerWidth, 0.f)))
         {
             NodeAllImPlotAxisFlags(&_linePlotNodeData.yAxisFlags);
@@ -205,14 +205,14 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
 
     NodeHorizontalSeparator(headerWidth);
 
-    if (NodeCollapsingHeader_In("Plot", _linePlotNodeData.collapsingHeadersIds[5],
-        _linePlotNodeData.utilityState, 5,
+    if (NodeCollapsingHeader_In("Plot", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_Plot],
+        _linePlotNodeData.utilityState, LinePlotNodeData::CollapsingHeader_Plot,
         startX, headerWidth,
-        _linePlotNodeData.inputPins[0], GetPinColors(PinType_Default),
+        _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_CollHdrPlot], GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0.f)))
     {
-        NodeText_In(_linePlotNodeData.xAxisLabel, startX, _linePlotNodeData.inputPins[1], GetPinColors(PinType_ValueFloat));
-        NodeText_In(_linePlotNodeData.yAxisLabel, startX, _linePlotNodeData.inputPins[2], GetPinColors(PinType_ValueFloat));
+        NodeText_In(_linePlotNodeData.xAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_XAxis], GetPinColors(PinType_ValueFloat));
+        NodeText_In(_linePlotNodeData.yAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_YAxis], GetPinColors(PinType_ValueFloat));
         
         AlignToCenter(startX, headerWidth, headerWidth);
 
