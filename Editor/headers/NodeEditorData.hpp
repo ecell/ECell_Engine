@@ -922,21 +922,69 @@ namespace ECellEngine::Editor::Utility
 
 	struct SimpleParameterNodeData : public NodeData
 	{
-		/*!
-		@brief The ID of this node to in the Node Editor.
-		*/
-		//ax::NodeEditor::NodeId id;
+		enum InputPin
+		{
+			InputPin_CollHdrModelLinks,
+			InputPin_CollHdrComputedParameters,
+			InputPin_CollHdrKineticLaws,
+			InputPin_CollHdrDataFields,
+			InputPin_ParameterValue,
+			InputPin_Asset,
+
+			InputPin_Count
+		};
+
+		enum OutputPin
+		{
+			OutputPin_CollHdrModelLinks,
+			OutputPin_CollHdrComputedParameters,
+			OutputPin_CollHdrKineticLaws,
+			OutputPin_CollHdrDataFields,
+			OutputPin_ParameterValue,
+
+			OutputPin_Count
+		};
+
+		enum CollapsingHeader
+		{
+			CollapsingHeader_ModelLinks,
+			CollapsingHeader_ComputedParameters,
+			CollapsingHeader_KineticLaws,
+			CollapsingHeader_DataFields,
+
+			CollapsingHeader_Count
+		};
+
+		enum NodeListBoxString
+		{
+			NodeListBoxString_ComputedParameterLinks,
+			NodeListBoxString_KineticLaws,
+
+			NodeListBoxString_Count
+		};
+
+		enum State
+		{
+			State_CollHdrModelLinks,
+			State_CollHdrComputedParameters,
+			State_CollHdrKineticLaws,
+			State_CollHdrDataFields,
+
+			State_Count
+		};
 
 		ECellEngine::Data::SimpleParameter* data;
 
-		NodeInputPinData inputPins[6];
-		NodeOutputPinData outputPins[5];
+		NodeInputPinData inputPins[InputPin_Count];
+		NodeOutputPinData outputPins[OutputPin_Count];
 
 		unsigned char utilityState = 0;
 
-		std::size_t collapsingHeadersIds[4];
+		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
-		NodeListBoxStringData nlbsData[2];
+		NodeListBoxStringData nlbsData[NodeListBoxString_Count];
+		std::vector<std::string> computedParameterLinks;
+		std::vector<std::string> reactionLinks;
 
 		SimpleParameterNodeData(const SimpleParameterNodeData& _sprnd) :
 			NodeData(_sprnd), data{ _sprnd.data },
@@ -947,19 +995,18 @@ namespace ECellEngine::Editor::Utility
 			utilityState{ _sprnd.utilityState },
 			collapsingHeadersIds{ _sprnd.collapsingHeadersIds[0], _sprnd.collapsingHeadersIds[1] , _sprnd.collapsingHeadersIds[2] ,
 					  _sprnd.collapsingHeadersIds[3] },
-			nlbsData{ _sprnd.nlbsData[0], _sprnd.nlbsData[1] }
+			nlbsData{ _sprnd.nlbsData[0], _sprnd.nlbsData[1] },
+			computedParameterLinks { _sprnd.computedParameterLinks }, reactionLinks{ _sprnd.reactionLinks }
 		{
-			inputPins[0].node = this;
-			inputPins[1].node = this;
-			inputPins[2].node = this;
-			inputPins[3].node = this;
-			inputPins[4].node = this;
-			inputPins[5].node = this;
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
 
-			outputPins[0].node = this;
-			outputPins[1].node = this;
-			outputPins[2].node = this;
-			outputPins[4].node = this;
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
 		}
 
 		/*!
@@ -970,34 +1017,27 @@ namespace ECellEngine::Editor::Utility
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
-			//ModelLinks Collapsing header
-			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
+			
+			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
+			inputPins[InputPin_Asset] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Asset
+			inputPins[InputPin_CollHdrComputedParameters] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
+			inputPins[InputPin_CollHdrKineticLaws] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
+			inputPins[InputPin_CollHdrDataFields] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
+			inputPins[InputPin_ParameterValue] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Value Float field
 
-			//Asset
-			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
+			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
+			outputPins[OutputPin_CollHdrComputedParameters] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
+			outputPins[OutputPin_CollHdrKineticLaws] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
+			outputPins[OutputPin_CollHdrDataFields] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
+			outputPins[OutputPin_ParameterValue] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Value Float field
 
-			//Computed Parameters section
-			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
-			//lbsData[0] = { /*list of computed parameters where this one appears*/, GetMNBVCtxtNextId()}
+			collapsingHeadersIds[CollapsingHeader_ModelLinks] = GetMNBVCtxtNextId();//ModelLinks Collapsing header
+			collapsingHeadersIds[CollapsingHeader_ComputedParameters] = GetMNBVCtxtNextId();//Computed Parameters section
+			collapsingHeadersIds[CollapsingHeader_KineticLaws] = GetMNBVCtxtNextId();//Kinetic Laws section
+			collapsingHeadersIds[CollapsingHeader_DataFields] = GetMNBVCtxtNextId();//Data Fields collapsing header
 
-			//Kinetic Laws section
-			inputPins[3] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
-			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
-			//lbsData[1] = { /*list of kinetic laws where this one appears*/, GetMNBVCtxtNextId()}
-
-			//Data Fields collapsing header
-			inputPins[4] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			outputPins[3] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			collapsingHeadersIds[3] = GetMNBVCtxtNextId();
-
-			//Value Float field
-			inputPins[5] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
-			outputPins[4] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
+			nlbsData[NodeListBoxString_ComputedParameterLinks] = { &computedParameterLinks, GetMNBVCtxtNextId() }; //Computed Parameters section
+			nlbsData[NodeListBoxString_KineticLaws] = { &reactionLinks, GetMNBVCtxtNextId() };//Kinetic Laws section
 		}
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override;

@@ -94,10 +94,10 @@ void ECellEngine::Editor::Utility::ReactionNodeData::OutputUpdate(const NodeOutp
 void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
 {
 	//Simple parameter value
-	if (_nodeInputPin == inputPins[5])
+	if (_nodeInputPin == inputPins[SimpleParameterNodeData::InputPin_ParameterValue])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
-		GetLinks()->back().OverrideEndFallbackPin(inputPins[4].id, 1);
+		GetLinks()->back().OverrideEndFallbackPin(inputPins[SimpleParameterNodeData::InputPin_CollHdrDataFields].id, 1);
 	}
 }
 
@@ -109,10 +109,10 @@ void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputUpdate(const No
 void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Simple parameter value
-	if (_nodeOutputPin == outputPins[4])
+	if (_nodeOutputPin == outputPins[SimpleParameterNodeData::OutputPin_ParameterValue])
 	{
 		//we set the output pin of the data field collapsing header as the fall back
-		GetLinks()->back().OverrideStartFallbackPin(outputPins[3].id, 1);
+		GetLinks()->back().OverrideStartFallbackPin(outputPins[SimpleParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
 	}
 }
 

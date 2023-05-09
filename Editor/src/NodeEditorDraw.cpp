@@ -364,29 +364,29 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const cha
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
-    if (NodeCollapsingHeader_InOut("Model Links", _parameterNodeInfo.collapsingHeadersIds[0],
-        _parameterNodeInfo.utilityState, 0,
+    if (NodeCollapsingHeader_InOut("Model Links", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_ModelLinks],
+        _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrModelLinks,
         startX, headerWidth,
-        _parameterNodeInfo.inputPins[0], _parameterNodeInfo.outputPins[0], GetPinColors(PinType_Default),
+        _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrModelLinks], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrModelLinks], GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0.f)))
     {
 
-        NodeText_In("Asset", startX, _parameterNodeInfo.inputPins[1], GetPinColors(PinType_Asset));
+        NodeText_In("Asset", startX, _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_Asset], GetPinColors(PinType_Asset));
 
-        if (NodeCollapsingHeader_InOut("Computed Parameters", _parameterNodeInfo.collapsingHeadersIds[1],
-            _parameterNodeInfo.utilityState, 1,
+        if (NodeCollapsingHeader_InOut("Computed Parameters", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_ComputedParameters],
+            _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrComputedParameters,
             startX, headerWidth,
-            _parameterNodeInfo.inputPins[2], _parameterNodeInfo.outputPins[1], GetPinColors(PinType_Parameter),
+            _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrComputedParameters], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrComputedParameters], GetPinColors(PinType_Parameter),
             ImVec2(itemsWidth, 0.f), false))
         {
             //NodeStringListBox(_parameterNodeInfo.nlbsData[0], GetPinDrawOffset(), itemsWidth, 0);
             ImGui::Text("A List box will be here.");
         }
 
-        if (NodeCollapsingHeader_InOut("Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[2],
-            _parameterNodeInfo.utilityState, 2,
+        if (NodeCollapsingHeader_InOut("Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_KineticLaws],
+            _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrKineticLaws,
             startX, headerWidth,
-            _parameterNodeInfo.inputPins[3], _parameterNodeInfo.outputPins[2], GetPinColors(PinType_Parameter),
+            _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrKineticLaws], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrKineticLaws], GetPinColors(PinType_Parameter),
             ImVec2(itemsWidth, 0.f), false))
         {
             //NodeStringListBox(_parameterNodeInfo.nlbsData[0], GetPinDrawOffset(), itemsWidth, 0);
@@ -396,16 +396,16 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const cha
 
     NodeHorizontalSeparator(headerWidth);
 
-    if (NodeCollapsingHeader_InOut("Data Fields", _parameterNodeInfo.collapsingHeadersIds[3],
-        _parameterNodeInfo.utilityState, 3,
+    if (NodeCollapsingHeader_InOut("Data Fields", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_DataFields],
+        _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrDataFields,
         startX, headerWidth,
-        _parameterNodeInfo.inputPins[4], _parameterNodeInfo.outputPins[3], GetPinColors(PinType_Default),
+        _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrDataFields], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrDataFields], GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
         float value = _parameterNodeInfo.data->Get();
         if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &value,
             itemsWidth, startX, headerWidth,
-            _parameterNodeInfo.inputPins[5], _parameterNodeInfo.outputPins[4], GetPinColors(PinType_ValueFloat),
+            _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_ParameterValue], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_ParameterValue], GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _parameterNodeInfo.data->Set(value);

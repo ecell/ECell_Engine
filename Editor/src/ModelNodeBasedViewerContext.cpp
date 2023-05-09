@@ -67,8 +67,8 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
             simpleParameterNodes.emplace_back(ECellEngine::Editor::Utility::SimpleParameterNodeData(
                 _simulation->GetDataState()->GetSimpleParameter(it->nlbsData[AssetNodeData::NodeListBoxString_SimpleParameters].data->at(it->nlbsData[AssetNodeData::NodeListBoxString_SimpleParameters].doubleClickedItem))));
 
-            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[AssetNodeData::OutputPin_CollHdrSimpleParameters].id, simpleParameterNodes.back().inputPins[1].id));
-            links.back().OverrideEndFallbackPin(simpleParameterNodes.back().inputPins[0].id, 1);
+            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[AssetNodeData::OutputPin_CollHdrSimpleParameters].id, simpleParameterNodes.back().inputPins[SimpleParameterNodeData::InputPin_Asset].id));
+            links.back().OverrideEndFallbackPin(simpleParameterNodes.back().inputPins[SimpleParameterNodeData::CollapsingHeader_ModelLinks].id, 1);
         }
 
         //If double click on computed parameter selectable in the list box, spawn the corresponding computed parameter node
