@@ -324,9 +324,9 @@ namespace ECellEngine::Editor::Utility
 
 		enum OutputPin
 		{
-			OutputPin_CollHdrComputedParameter,
-			OutputPin_CollHdrReaction,
-			OutputPin_CollHdrSimpleParameter,
+			OutputPin_CollHdrComputedParameters,
+			OutputPin_CollHdrReactions,
+			OutputPin_CollHdrSimpleParameters,
 			OutputPin_CollHdrSpecies,
 
 			OutputPin_Count
@@ -334,19 +334,29 @@ namespace ECellEngine::Editor::Utility
 
 		enum CollapsingHeader
 		{
-			CollapsingHeader_ComputedParameter,
-			CollapsingHeader_Reaction,
-			CollapsingHeader_SimpleParameter,
+			CollapsingHeader_ComputedParameters,
+			CollapsingHeader_Reactions,
+			CollapsingHeader_SimpleParameters,
 			CollapsingHeader_Species,
 
 			CollapsingHeader_Count
 		};
 
+		enum NodeListBoxString
+		{
+			NodeListBoxString_ComputedParameters,
+			NodeListBoxString_Reactions,
+			NodeListBoxString_SimpleParameters,
+			NodeListBoxString_Species,
+
+			NodeListBoxString_Count
+		};
+
 		enum State
 		{
-			State_CollHdrComputedParameter,
-			State_CollHdrReaction,
-			State_CollHdrSimpleParameter,
+			State_CollHdrComputedParameters,
+			State_CollHdrReactions,
+			State_CollHdrSimpleParameters,
 			State_CollHdrSpecies,
 
 			State_Count
@@ -361,10 +371,7 @@ namespace ECellEngine::Editor::Utility
 
 		std::size_t collapsingHeadersIds[4];
 
-		NodeListBoxStringData speciesNLB;
-		NodeListBoxStringData simpleParametersNLB;
-		NodeListBoxStringData computedParametersNLB;
-		NodeListBoxStringData reactionsNLB;
+		NodeListBoxStringData nlbsData[NodeListBoxString_Count];
 
 		AssetNodeData(const AssetNodeData& _and) :
 			NodeData(_and), data{ _and.data },
@@ -374,8 +381,7 @@ namespace ECellEngine::Editor::Utility
 			utilityState{ _and.utilityState },
 			collapsingHeadersIds{ _and.collapsingHeadersIds[0], _and.collapsingHeadersIds[1] , _and.collapsingHeadersIds[2] ,
 					  _and.collapsingHeadersIds[3] },
-			speciesNLB{ _and.speciesNLB }, simpleParametersNLB{ _and.simpleParametersNLB },
-			computedParametersNLB{ _and.computedParametersNLB }, reactionsNLB{ _and.reactionsNLB }
+			nlbsData{ _and.nlbsData[0], _and.nlbsData[1] , _and.nlbsData[2] , _and.nlbsData[3] }
 		{
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -398,21 +404,21 @@ namespace ECellEngine::Editor::Utility
 
 			inputPins[InputPin_Solver] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);//Solver
 
-			outputPins[OutputPin_CollHdrReaction] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Species Collapsing header
-			outputPins[OutputPin_CollHdrReaction] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameters Collapsing header
-			outputPins[OutputPin_CollHdrSimpleParameter] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters Collapsing header
+			outputPins[OutputPin_CollHdrComputedParameters] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Species Collapsing header
+			outputPins[OutputPin_CollHdrReactions] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameters Collapsing header
+			outputPins[OutputPin_CollHdrSimpleParameters] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters Collapsing header
 			outputPins[OutputPin_CollHdrSpecies] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Reaction, this);//Reactions Collapsing header
 
-			collapsingHeadersIds[CollapsingHeader_ComputedParameter] = GetMNBVCtxtNextId();//Species Collapsing header
-			collapsingHeadersIds[CollapsingHeader_Reaction] = GetMNBVCtxtNextId();//Simple Parameters Collapsing header
-			collapsingHeadersIds[CollapsingHeader_SimpleParameter] = GetMNBVCtxtNextId();//Computed Parameters Collapsing header
+			collapsingHeadersIds[CollapsingHeader_ComputedParameters] = GetMNBVCtxtNextId();//Species Collapsing header
+			collapsingHeadersIds[CollapsingHeader_Reactions] = GetMNBVCtxtNextId();//Simple Parameters Collapsing header
+			collapsingHeadersIds[CollapsingHeader_SimpleParameters] = GetMNBVCtxtNextId();//Computed Parameters Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Species] = GetMNBVCtxtNextId();//Reactions Collapsing header
 
 			//Initialize the list boxes data
-			speciesNLB = { &data->GetAllSpecies(), GetMNBVCtxtNextId() };
-			simpleParametersNLB = { &data->GetAllSimpleParameter(), GetMNBVCtxtNextId() };
-			computedParametersNLB = { &data->GetAllComputedParameter(), GetMNBVCtxtNextId() };
-			reactionsNLB = { &data->GetAllReaction(), GetMNBVCtxtNextId() };
+			nlbsData[NodeListBoxString_ComputedParameters] = { &data->GetAllComputedParameter(), GetMNBVCtxtNextId() };
+			nlbsData[NodeListBoxString_Reactions] = { &data->GetAllReaction(), GetMNBVCtxtNextId() };
+			nlbsData[NodeListBoxString_SimpleParameters] = { &data->GetAllSimpleParameter(), GetMNBVCtxtNextId() };
+			nlbsData[NodeListBoxString_Species] = { &data->GetAllSpecies(), GetMNBVCtxtNextId() };
 
 		}
 
@@ -463,7 +469,7 @@ namespace ECellEngine::Editor::Utility
 				 parameters that are involved (as values) in the computation of
 				 this parameter.
 		*/
-		NodeListBoxStringData nslbData[5];
+		NodeListBoxStringData nlbsData[5];
 		std::vector<std::string> speciesOperands;
 		std::vector<std::string> simpleParametersOperands;
 		std::vector<std::string> computedParametersOperands;
@@ -479,15 +485,15 @@ namespace ECellEngine::Editor::Utility
 			utilityState{ _cpnd.utilityState },
 			collapsingHeadersIds{ _cpnd.collapsingHeadersIds[0], _cpnd.collapsingHeadersIds[1] , _cpnd.collapsingHeadersIds[2] ,
 					  _cpnd.collapsingHeadersIds[3] , _cpnd.collapsingHeadersIds[4] },
-			nslbData{ _cpnd.nslbData[0], _cpnd.nslbData[1] , _cpnd.nslbData[2] ,
-					  _cpnd.nslbData[3] , _cpnd.nslbData[4] },
+			nlbsData{ _cpnd.nlbsData[0], _cpnd.nlbsData[1] , _cpnd.nlbsData[2] ,
+					  _cpnd.nlbsData[3] , _cpnd.nlbsData[4] },
 			speciesOperands{ _cpnd.speciesOperands },
 			simpleParametersOperands{ _cpnd.simpleParametersOperands },
 			computedParametersOperands{ _cpnd.computedParametersOperands }
 		{
-			nslbData[2].data = &speciesOperands;
-			nslbData[3].data = &simpleParametersOperands;
-			nslbData[4].data = &computedParametersOperands;
+			nlbsData[2].data = &speciesOperands;
+			nlbsData[3].data = &simpleParametersOperands;
+			nlbsData[4].data = &computedParametersOperands;
 
 			inputPins[0].node = this;
 			inputPins[1].node = this;
@@ -553,19 +559,19 @@ namespace ECellEngine::Editor::Utility
 			inputPins[6] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			outputPins[5] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);
-			nslbData[2] = { &speciesOperands, GetMNBVCtxtNextId() };
+			nlbsData[2] = { &speciesOperands, GetMNBVCtxtNextId() };
 
 			//Node String List Box for Simple Parameter Operands
 			inputPins[7] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			outputPins[6] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::SimpleParameter>(simpleParametersOperands);
-			nslbData[3] = { &simpleParametersOperands, GetMNBVCtxtNextId() };
+			nlbsData[3] = { &simpleParametersOperands, GetMNBVCtxtNextId() };
 
 			//Node String List Box for Computed Parameter Operands
 			inputPins[8] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			outputPins[7] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::ComputedParameter>(computedParametersOperands);
-			nslbData[4] = { &computedParametersOperands, GetMNBVCtxtNextId() };
+			nlbsData[4] = { &computedParametersOperands, GetMNBVCtxtNextId() };
 
 			//Value Float string of the computation of the formula
 			//The user cannot directly change the value of the result
@@ -716,7 +722,7 @@ namespace ECellEngine::Editor::Utility
 				 parameters that are involved (as values) in the computation
 				 of the kinetic law.
 		*/
-		NodeListBoxStringData nslbData[5];
+		NodeListBoxStringData nlbsData[5];
 		std::vector<std::string> speciesOperands;
 		std::vector<std::string> simpleParametersOperands;
 		std::vector<std::string> computedParametersOperands;
@@ -732,15 +738,15 @@ namespace ECellEngine::Editor::Utility
 			utilityState{ _rnd.utilityState },
 			collapsingHeadersIds{ _rnd.collapsingHeadersIds[0], _rnd.collapsingHeadersIds[1] , _rnd.collapsingHeadersIds[2] ,
 					  _rnd.collapsingHeadersIds[3] , _rnd.collapsingHeadersIds[4] },
-			nslbData{ _rnd.nslbData[0], _rnd.nslbData[1] , _rnd.nslbData[2] ,
-					  _rnd.nslbData[3] , _rnd.nslbData[4] },
+			nlbsData{ _rnd.nlbsData[0], _rnd.nlbsData[1] , _rnd.nlbsData[2] ,
+					  _rnd.nlbsData[3] , _rnd.nlbsData[4] },
 			speciesOperands{ _rnd.speciesOperands },
 			simpleParametersOperands{ _rnd.simpleParametersOperands },
 			computedParametersOperands{ _rnd.computedParametersOperands }
 		{
-			nslbData[2].data = &speciesOperands;
-			nslbData[3].data = &simpleParametersOperands;
-			nslbData[4].data = &computedParametersOperands;
+			nlbsData[2].data = &speciesOperands;
+			nlbsData[3].data = &simpleParametersOperands;
+			nlbsData[4].data = &computedParametersOperands;
 
 			inputPins[0].node = this;
 			inputPins[1].node = this;
@@ -782,13 +788,13 @@ namespace ECellEngine::Editor::Utility
 			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
-			nslbData[0] = { _data->GetReactants() , GetMNBVCtxtNextId() };
+			nlbsData[0] = { _data->GetReactants() , GetMNBVCtxtNextId() };
 
 			//Products section
 			inputPins[3] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			collapsingHeadersIds[2] = GetMNBVCtxtNextId();
-			nslbData[1] = { data->GetProducts(), GetMNBVCtxtNextId() };
+			nlbsData[1] = { data->GetProducts(), GetMNBVCtxtNextId() };
 
 			//Kinetic Law collapsing header
 			inputPins[4] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
@@ -804,19 +810,19 @@ namespace ECellEngine::Editor::Utility
 			inputPins[6] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			outputPins[5] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
 			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);
-			nslbData[2] = { &speciesOperands, GetMNBVCtxtNextId() };
+			nlbsData[2] = { &speciesOperands, GetMNBVCtxtNextId() };
 
 			//Node String List Box for Simple Parameter Operands, from Kinetic Law
 			inputPins[7] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			outputPins[6] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::SimpleParameter>(simpleParametersOperands);
-			nslbData[3] = { &simpleParametersOperands, GetMNBVCtxtNextId() };
+			nlbsData[3] = { &simpleParametersOperands, GetMNBVCtxtNextId() };
 
 			//Node String List Box for Computed Parameter Operands, from Kinetic Law
 			inputPins[8] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			outputPins[7] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);
 			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::ComputedParameter>(computedParametersOperands);
-			nslbData[4] = { &computedParametersOperands, GetMNBVCtxtNextId() };
+			nlbsData[4] = { &computedParametersOperands, GetMNBVCtxtNextId() };
 
 			//Kinetic Law Value Float field (must be Read Only)
 			inputPins[9] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
@@ -850,7 +856,7 @@ namespace ECellEngine::Editor::Utility
 
 		std::size_t collapsingHeadersIds[4];
 
-		NodeListBoxStringData nslbData[2];
+		NodeListBoxStringData nlbsData[2];
 
 		SimpleParameterNodeData(const SimpleParameterNodeData& _sprnd) :
 			NodeData(_sprnd), data{ _sprnd.data },
@@ -861,7 +867,7 @@ namespace ECellEngine::Editor::Utility
 			utilityState{ _sprnd.utilityState },
 			collapsingHeadersIds{ _sprnd.collapsingHeadersIds[0], _sprnd.collapsingHeadersIds[1] , _sprnd.collapsingHeadersIds[2] ,
 					  _sprnd.collapsingHeadersIds[3] },
-			nslbData{ _sprnd.nslbData[0], _sprnd.nslbData[1] }
+			nlbsData{ _sprnd.nlbsData[0], _sprnd.nlbsData[1] }
 		{
 			inputPins[0].node = this;
 			inputPins[1].node = this;

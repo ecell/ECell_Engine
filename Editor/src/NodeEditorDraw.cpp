@@ -21,37 +21,37 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
         _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrSpecies], GetPinColors(PinType_Species),
         ImVec2(itemsWidth, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.speciesNLB, startX, headerWidth, itemsWidth);
+        NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Species], startX, headerWidth, itemsWidth);
     }
 
     // ----- String List Box and Pin to access the simple parameters of the asset -----
-    if (NodeCollapsingHeader_Out("Constant Parameters", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_SimpleParameter],
-        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrSimpleParameter,
+    if (NodeCollapsingHeader_Out("Constant Parameters", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_SimpleParameters],
+        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrSimpleParameters,
         startX, headerWidth,
-        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrSimpleParameter], GetPinColors(PinType_Parameter),
+        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrSimpleParameters], GetPinColors(PinType_Parameter),
         ImVec2(itemsWidth, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.simpleParametersNLB, startX, headerWidth, itemsWidth);
+        NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_SimpleParameters], startX, headerWidth, itemsWidth);
     }
 
     // ----- String List Box and Pin to access the computed parameters of the asset -----
-    if (NodeCollapsingHeader_Out("Computed Parameters", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_ComputedParameter],
-        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrComputedParameter,
+    if (NodeCollapsingHeader_Out("Computed Parameters", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_ComputedParameters],
+        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrComputedParameters,
         startX, headerWidth,
-        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrComputedParameter], GetPinColors(PinType_Parameter),
+        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrComputedParameters], GetPinColors(PinType_Parameter),
         ImVec2(itemsWidth, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.computedParametersNLB, startX, headerWidth, itemsWidth);
+        NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_ComputedParameters], startX, headerWidth, itemsWidth);
     }
 
     // ----- String List Box and Pin to access the reactions of the asset -----
-    if (NodeCollapsingHeader_Out("Reactions", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_Reaction],
-        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrReaction,
+    if (NodeCollapsingHeader_Out("Reactions", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_Reactions],
+        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrReactions,
         startX, headerWidth,
-        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrReaction], GetPinColors(PinType_Reaction),
+        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrReactions], GetPinColors(PinType_Reaction),
         ImVec2(itemsWidth, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.reactionsNLB, startX, headerWidth, itemsWidth);
+        NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Reactions], startX, headerWidth, itemsWidth);
     }
 
     ax::NodeEditor::EndNode();
@@ -83,7 +83,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(const c
             _parameterNodeInfo.inputPins[2], _parameterNodeInfo.outputPins[1], GetPinColors(PinType_Parameter),
             ImVec2(itemsWidth, 0.f), false))
         {
-            //NodeStringListBox(_parameterNodeInfo.nslbData[0], GetPinDrawOffset(), 200.f, 0);
+            //NodeStringListBox(_parameterNodeInfo.nlbsData[0], GetPinDrawOffset(), 200.f, 0);
             ImGui::Text("A List box will be here.");
         }
 
@@ -93,7 +93,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(const c
             _parameterNodeInfo.inputPins[3], _parameterNodeInfo.outputPins[2], GetPinColors(PinType_Parameter),
             ImVec2(itemsWidth, 0.f), false))
         {
-            //NodeStringListBox(_parameterNodeInfo.nslbData[0], GetPinDrawOffset(), 200.f, 0);
+            //NodeStringListBox(_parameterNodeInfo.nlbsData[0], GetPinDrawOffset(), 200.f, 0);
             ImGui::Text("A List box will be here.");
         }
     }
@@ -113,28 +113,28 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(const c
             _parameterNodeInfo.inputPins[5], _parameterNodeInfo.outputPins[4], GetPinColors(PinType_Default),
             ImVec2(itemsWidth, 0.f)))
         {
-            if (_parameterNodeInfo.nslbData[2].data->size())
+            if (_parameterNodeInfo.nlbsData[2].data->size())
             {
                 const float spTextWidth = ImGui::CalcTextSize("Species").x;
                 NodeText_InOut("Species", spTextWidth, startX, headerWidth,
                     _parameterNodeInfo.inputPins[6], _parameterNodeInfo.outputPins[5], GetPinColors(PinType_Species));
-                NodeStringListBox(_parameterNodeInfo.nslbData[2], startX, headerWidth, itemsWidth);
+                NodeStringListBox(_parameterNodeInfo.nlbsData[2], startX, headerWidth, itemsWidth);
             }
 
-            if (_parameterNodeInfo.nslbData[3].data->size())
+            if (_parameterNodeInfo.nlbsData[3].data->size())
             {
                 const float sparamTextWidth = ImGui::CalcTextSize("Simple Parameters").x;
                 NodeText_InOut("Simple Parameters", sparamTextWidth, startX, headerWidth,
                     _parameterNodeInfo.inputPins[7], _parameterNodeInfo.outputPins[6], GetPinColors(PinType_Parameter));
-                NodeStringListBox(_parameterNodeInfo.nslbData[3], startX, headerWidth, itemsWidth);
+                NodeStringListBox(_parameterNodeInfo.nlbsData[3], startX, headerWidth, itemsWidth);
             }
 
-            if (_parameterNodeInfo.nslbData[4].data->size())
+            if (_parameterNodeInfo.nlbsData[4].data->size())
             {
                 const float cparaTextWidth = ImGui::CalcTextSize("Computed Parameters").x;
                 NodeText_InOut("Computed Parameters", cparaTextWidth, startX, headerWidth,
                     _parameterNodeInfo.inputPins[8], _parameterNodeInfo.outputPins[7], GetPinColors(PinType_Parameter));
-                NodeStringListBox(_parameterNodeInfo.nslbData[4], startX, headerWidth, itemsWidth);
+                NodeStringListBox(_parameterNodeInfo.nlbsData[4], startX, headerWidth, itemsWidth);
             }
         }
 
@@ -291,7 +291,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ReactionNode(const char* _nam
             _reactionNodeInfo.inputPins[2], _reactionNodeInfo.outputPins[1], GetPinColors(PinType_Species),
             ImVec2(itemsWidth, 0.f), false))
         {
-            NodeStringListBox(_reactionNodeInfo.nslbData[0], startX, headerWidth, itemsWidth);
+            NodeStringListBox(_reactionNodeInfo.nlbsData[0], startX, headerWidth, itemsWidth);
         }
 
         if (NodeCollapsingHeader_InOut("Products", _reactionNodeInfo.collapsingHeadersIds[2],
@@ -300,7 +300,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ReactionNode(const char* _nam
             _reactionNodeInfo.inputPins[3], _reactionNodeInfo.outputPins[2], GetPinColors(PinType_Species),
             ImVec2(itemsWidth, 0.f), false))
         {
-            NodeStringListBox(_reactionNodeInfo.nslbData[1], startX, headerWidth, itemsWidth);
+            NodeStringListBox(_reactionNodeInfo.nlbsData[1], startX, headerWidth, itemsWidth);
         }
     }
 
@@ -319,28 +319,28 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ReactionNode(const char* _nam
             _reactionNodeInfo.inputPins[5], _reactionNodeInfo.outputPins[4], GetPinColors(PinType_Default),
             ImVec2(itemsWidth, 0.f)))
         {
-            if (_reactionNodeInfo.nslbData[2].data->size())
+            if (_reactionNodeInfo.nlbsData[2].data->size())
             {
                 const float spTextWidth = ImGui::CalcTextSize("Species").x;
                 NodeText_InOut("Species", spTextWidth, startX, headerWidth,
                     _reactionNodeInfo.inputPins[6], _reactionNodeInfo.outputPins[5], GetPinColors(PinType_Species));
-                NodeStringListBox(_reactionNodeInfo.nslbData[2], startX, headerWidth, itemsWidth);
+                NodeStringListBox(_reactionNodeInfo.nlbsData[2], startX, headerWidth, itemsWidth);
             }
 
-            if (_reactionNodeInfo.nslbData[3].data->size())
+            if (_reactionNodeInfo.nlbsData[3].data->size())
             {
                 const float sparamTextWidth = ImGui::CalcTextSize("Simple Parameters").x;
                 NodeText_InOut("Simple Parameters", sparamTextWidth, startX, headerWidth,
                     _reactionNodeInfo.inputPins[7], _reactionNodeInfo.outputPins[6], GetPinColors(PinType_Parameter));
-                NodeStringListBox(_reactionNodeInfo.nslbData[3], startX, headerWidth, itemsWidth);
+                NodeStringListBox(_reactionNodeInfo.nlbsData[3], startX, headerWidth, itemsWidth);
             }
 
-            if (_reactionNodeInfo.nslbData[4].data->size())
+            if (_reactionNodeInfo.nlbsData[4].data->size())
             {
                 const float cparaTextWidth = ImGui::CalcTextSize("Computed Parameters").x;
                 NodeText_InOut("Computed Parameters", cparaTextWidth, startX, headerWidth,
                     _reactionNodeInfo.inputPins[8], _reactionNodeInfo.outputPins[7], GetPinColors(PinType_Parameter));
-                NodeStringListBox(_reactionNodeInfo.nslbData[4], startX, headerWidth, itemsWidth);
+                NodeStringListBox(_reactionNodeInfo.nlbsData[4], startX, headerWidth, itemsWidth);
             }
         }
 
@@ -379,7 +379,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const cha
             _parameterNodeInfo.inputPins[2], _parameterNodeInfo.outputPins[1], GetPinColors(PinType_Parameter),
             ImVec2(itemsWidth, 0.f), false))
         {
-            //NodeStringListBox(_parameterNodeInfo.nslbData[0], GetPinDrawOffset(), itemsWidth, 0);
+            //NodeStringListBox(_parameterNodeInfo.nlbsData[0], GetPinDrawOffset(), itemsWidth, 0);
             ImGui::Text("A List box will be here.");
         }
 
@@ -389,7 +389,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const cha
             _parameterNodeInfo.inputPins[3], _parameterNodeInfo.outputPins[2], GetPinColors(PinType_Parameter),
             ImVec2(itemsWidth, 0.f), false))
         {
-            //NodeStringListBox(_parameterNodeInfo.nslbData[0], GetPinDrawOffset(), itemsWidth, 0);
+            //NodeStringListBox(_parameterNodeInfo.nlbsData[0], GetPinDrawOffset(), itemsWidth, 0);
             ImGui::Text("A List box will be here.");
         }
     }
@@ -1015,7 +1015,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputText(const char* _la
     return false;
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData& _nslbData,
+void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData& _nlbsData,
     const float _startX, const float _drawLength,
     const float _widgetWidth, const unsigned short _itemViewHeight)
 {
@@ -1024,7 +1024,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
 
     ImGui::BeginGroup();
-    const unsigned short nbItems = (const unsigned short)_nslbData.data->size();
+    const unsigned short nbItems = (const unsigned short)_nlbsData.data->size();
     const unsigned short actualViewHeight = std::min(_itemViewHeight, nbItems);
     const bool hasScrollBar = nbItems > _itemViewHeight;
     
@@ -1044,21 +1044,21 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
     const float itemWidth = _widgetWidth - hasScrollBar * style.ScrollbarSize - NodeFramePadding.x - NodeFramePadding.y;//includes left and right
     const char* itemString;
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + NodeFramePadding.z);//Top Padding
-    for (std::size_t n = _nslbData.cursor; n > _nslbData.cursor - actualViewHeight; n--)
+    for (std::size_t n = _nlbsData.cursor; n > _nlbsData.cursor - actualViewHeight; n--)
     {
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + NodeFramePadding.x);//Left Padding
 
-        itemString = _nslbData.data->at(nbItems - n).c_str();
+        itemString = _nlbsData.data->at(nbItems - n).c_str();
         if (ImGui::Selectable(itemString, false, ImGuiSelectableFlags_None, ImVec2(itemWidth, 0)))
         {
-            _nslbData.selectedItem = nbItems - n;
-            _nslbData.SetItemClicked();
+            _nlbsData.selectedItem = nbItems - n;
+            _nlbsData.SetItemClicked();
         }
 
         if (ImGui::IsItemHovered())
         {
-            _nslbData.hoveredItem = nbItems - n;
-            _nslbData.SetItemHovered();
+            _nlbsData.hoveredItem = nbItems - n;
+            _nlbsData.SetItemHovered();
 
             if (ImGui::CalcTextSize(itemString).x > itemWidth)
             {
@@ -1069,8 +1069,8 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
 
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
             {
-                _nslbData.doubleClickedItem = nbItems - n;
-                _nslbData.SetItemDoubleClicked();
+                _nlbsData.doubleClickedItem = nbItems - n;
+                _nlbsData.SetItemDoubleClicked();
             }
         }
     }
@@ -1087,18 +1087,18 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
         //No need to do the right padding because it's included in the
         //reduced size of the selectable items in the list box.
 
-        ImGui::PushID((int)_nslbData.scrollBarID);
+        ImGui::PushID((int)_nlbsData.scrollBarID);
         PushScrollBarStyle(style);
         ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 40);
         ImGui::VSliderInt("##VertSliderInt", ImVec2(style.ScrollbarSize, actualViewHeight * ImGui::GetTextLineHeightWithSpacing()),
-            (int*)&_nslbData.cursor, actualViewHeight, nbItems, "", ImGuiSliderFlags_None);
+            (int*)&_nlbsData.cursor, actualViewHeight, nbItems, "", ImGuiSliderFlags_None);
         if (ImGui::IsItemHovered())
         {
-            _nslbData.SetScrollBarHovered();
+            _nlbsData.SetScrollBarHovered();
         }
         if (ImGui::IsItemActive())
         {
-            _nslbData.SetScrollBarActivated();
+            _nlbsData.SetScrollBarActivated();
         }
         ImGui::PopStyleVar(); //poping ImGuiStyleVar_GrabMinSize
         PopScrollBarStyle(); //poping after PushScrollBarStyle(style);
@@ -1108,20 +1108,20 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
     ImGui::PopStyleVar(); //poping ImGuiStyleVar_ItemSpacing
     ImGui::EndGroup();
 
-    if (_nslbData.IsAnItemHovered() || _nslbData.IsScrollBarHovered())
+    if (_nlbsData.IsAnItemHovered() || _nlbsData.IsScrollBarHovered())
     {
         ax::NodeEditor::SuspendNavigation();
         if (ImGui::GetIO().MouseWheel != 0)
         {
-            _nslbData.cursor += ImGui::GetIO().MouseWheel;
-            if (_nslbData.cursor < actualViewHeight)
+            _nlbsData.cursor += ImGui::GetIO().MouseWheel;
+            if (_nlbsData.cursor < actualViewHeight)
             {
-                _nslbData.cursor = actualViewHeight;
+                _nlbsData.cursor = actualViewHeight;
             }
 
-            if (nbItems < _nslbData.cursor)
+            if (nbItems < _nlbsData.cursor)
             {
-                _nslbData.cursor = nbItems;
+                _nlbsData.cursor = nbItems;
             }
         }
         ax::NodeEditor::ResumeNavigation();

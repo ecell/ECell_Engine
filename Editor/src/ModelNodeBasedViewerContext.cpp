@@ -52,49 +52,49 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
         ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(it->data->GetName(), *it);
 
         //If double click on species selectable in the list box, spawn the corresponding species node
-        if (it->speciesNLB.IsAnItemDoubleClicked())
+        if (it->nlbsData[AssetNodeData::NodeListBoxString_Species].IsAnItemDoubleClicked())
         {
            speciesNodes.emplace_back(ECellEngine::Editor::Utility::SpeciesNodeData(
-                _simulation->GetDataState()->GetSpecies(it->speciesNLB.data->at(it->speciesNLB.doubleClickedItem))));
+                _simulation->GetDataState()->GetSpecies(it->nlbsData[AssetNodeData::NodeListBoxString_Species].data->at(it->nlbsData[AssetNodeData::NodeListBoxString_Species].doubleClickedItem))));
 
             links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[0].id,speciesNodes.back().inputPins[1].id));
             links.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[0].id, 1);
         }
 
         //If double click on simple parameter selectable in the list box, spawn the corresponding simple parameter node
-        if (it->simpleParametersNLB.IsAnItemDoubleClicked())
+        if (it->nlbsData[AssetNodeData::NodeListBoxString_SimpleParameters].IsAnItemDoubleClicked())
         {
-           simpleParameterNodes.emplace_back(ECellEngine::Editor::Utility::SimpleParameterNodeData(
-                _simulation->GetDataState()->GetSimpleParameter(it->simpleParametersNLB.data->at(it->simpleParametersNLB.doubleClickedItem))));
+            simpleParameterNodes.emplace_back(ECellEngine::Editor::Utility::SimpleParameterNodeData(
+                _simulation->GetDataState()->GetSimpleParameter(it->nlbsData[AssetNodeData::NodeListBoxString_SimpleParameters].data->at(it->nlbsData[AssetNodeData::NodeListBoxString_SimpleParameters].doubleClickedItem))));
 
-            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[1].id,simpleParameterNodes.back().inputPins[1].id));
+            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[1].id, simpleParameterNodes.back().inputPins[1].id));
             links.back().OverrideEndFallbackPin(simpleParameterNodes.back().inputPins[0].id, 1);
         }
 
         //If double click on computed parameter selectable in the list box, spawn the corresponding computed parameter node
-        if (it->computedParametersNLB.IsAnItemDoubleClicked())
+        if (it->nlbsData[AssetNodeData::NodeListBoxString_ComputedParameters].IsAnItemDoubleClicked())
         {
-           computedParameterNodes.emplace_back(ECellEngine::Editor::Utility::ComputedParameterNodeData(
-                _simulation->GetDataState()->GetComputedParameter(it->computedParametersNLB.data->at(it->computedParametersNLB.doubleClickedItem))));
+            computedParameterNodes.emplace_back(ECellEngine::Editor::Utility::ComputedParameterNodeData(
+                _simulation->GetDataState()->GetComputedParameter(it->nlbsData[AssetNodeData::NodeListBoxString_ComputedParameters].data->at(it->nlbsData[AssetNodeData::NodeListBoxString_ComputedParameters].doubleClickedItem))));
 
-            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[2].id,computedParameterNodes.back().inputPins[1].id));
+            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[2].id, computedParameterNodes.back().inputPins[1].id));
             links.back().OverrideEndFallbackPin(computedParameterNodes.back().inputPins[0].id, 1);
         }
 
         //If double click on computed parameter selectable in the list box, spawn the corresponding computed parameter node
-        if (it->reactionsNLB.IsAnItemDoubleClicked())
+        if (it->nlbsData[AssetNodeData::NodeListBoxString_Reactions].IsAnItemDoubleClicked())
         {
-           reactionNodes.emplace_back(ECellEngine::Editor::Utility::ReactionNodeData(
-                _simulation->GetDataState()->GetReaction(it->reactionsNLB.data->at(it->reactionsNLB.doubleClickedItem))));
+            reactionNodes.emplace_back(ECellEngine::Editor::Utility::ReactionNodeData(
+                _simulation->GetDataState()->GetReaction(it->nlbsData[AssetNodeData::NodeListBoxString_Reactions].data->at(it->nlbsData[AssetNodeData::NodeListBoxString_Reactions].doubleClickedItem))));
 
-            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[3].id,reactionNodes.back().inputPins[1].id));
+            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[3].id, reactionNodes.back().inputPins[1].id));
             links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[0].id, 1);
         }
 
-        it->speciesNLB.ResetUtilityState();
-        it->simpleParametersNLB.ResetUtilityState();
-        it->computedParametersNLB.ResetUtilityState();
-        it->reactionsNLB.ResetUtilityState();
+        it->nlbsData[AssetNodeData::NodeListBoxString_Species].ResetUtilityState();
+        it->nlbsData[AssetNodeData::NodeListBoxString_SimpleParameters].ResetUtilityState();
+        it->nlbsData[AssetNodeData::NodeListBoxString_ComputedParameters].ResetUtilityState();
+        it->nlbsData[AssetNodeData::NodeListBoxString_Reactions].ResetUtilityState();
     }
     
     for (std::vector< ECellEngine::Editor::Utility::ComputedParameterNodeData>::iterator it = computedParameterNodes.begin(); it != computedParameterNodes.end(); it++)
