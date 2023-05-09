@@ -123,9 +123,8 @@ void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputUpdate(const N
 
 void ECellEngine::Editor::Utility::SimulationTimeNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
-	//There is only one output pin in the SImulationTimeNodeData so no need to look
-	//for a specific one: we know our target is at index 0.
-	outputPins[0].Broadcast(simulationTimer->elapsedTime);
+	//There is only one output pin in the SImulationTimeNodeData
+	outputPins[OutputPin_SimulationTime].Broadcast(simulationTimer->elapsedTime);
 }
 
 void ECellEngine::Editor::Utility::SolverNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)

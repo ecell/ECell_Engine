@@ -427,13 +427,13 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimulationTimeNode(const char
 
     NodeInputFloat_Out("Elapsed Time", _simulationTimeNodeInfo.id.Get(), &_simulationTimeNodeInfo.elapsedTimeBuffer,
         itemsWidth, startX, headerWidth, 
-        _simulationTimeNodeInfo.outputPins[0], GetPinColors(PinType_ValueFloat),
+        _simulationTimeNodeInfo.outputPins[SimulationTimeNodeData::OutputPin_SimulationTime], GetPinColors(PinType_ValueFloat),
         ImGuiInputTextFlags_ReadOnly);
 
     if (_simulationTimeNodeInfo.elapsedTimeBuffer != _simulationTimeNodeInfo.simulationTimer->elapsedTime)
     {
         _simulationTimeNodeInfo.elapsedTimeBuffer = _simulationTimeNodeInfo.simulationTimer->elapsedTime;
-        _simulationTimeNodeInfo.OutputUpdate(_simulationTimeNodeInfo.outputPins[0]);
+        _simulationTimeNodeInfo.OutputUpdate(_simulationTimeNodeInfo.outputPins[SimulationTimeNodeData::OutputPin_SimulationTime]);
     }
 
     ax::NodeEditor::EndNode();

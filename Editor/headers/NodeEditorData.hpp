@@ -1053,19 +1053,33 @@ namespace ECellEngine::Editor::Utility
 
 	struct SimulationTimeNodeData : public NodeData
 	{
+		enum InputPin
+		{
+			InputPin_None,
+
+			InputPin_Count
+		};
+
+		enum OutputPin
+		{
+			OutputPin_SimulationTime,
+
+			OutputPin_Count
+		};
+
 		ECellEngine::Core::Timer* simulationTimer;
 		float elapsedTimeBuffer = 0.f;
 
-		NodeInputPinData inputPins[1];
-		NodeOutputPinData outputPins[1];
+		NodeInputPinData inputPins[InputPin_Count];
+		NodeOutputPinData outputPins[OutputPin_Count];
 
 		SimulationTimeNodeData(ECellEngine::Core::Timer* _simulationTimer, ImVec2& _position) :
 			NodeData(), simulationTimer{ _simulationTimer }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
-			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this); //simulation Time
+			inputPins[InputPin_None] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
+			outputPins[OutputPin_SimulationTime] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this); //simulation Time
 		}
 
 		SimulationTimeNodeData(const SimulationTimeNodeData& _stnd) :
@@ -1073,8 +1087,15 @@ namespace ECellEngine::Editor::Utility
 			inputPins{ _stnd.inputPins[0] },
 			outputPins{ _stnd.outputPins[0] }
 		{
-			inputPins[0].node = this;
-			outputPins[0].node = this;
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
+
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
 		}
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Simulation Time Node Data
