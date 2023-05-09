@@ -433,7 +433,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimulationTimeNode(const char
     if (_simulationTimeNodeInfo.elapsedTimeBuffer != _simulationTimeNodeInfo.simulationTimer->elapsedTime)
     {
         _simulationTimeNodeInfo.elapsedTimeBuffer = _simulationTimeNodeInfo.simulationTimer->elapsedTime;
-        _simulationTimeNodeInfo.OutputUpdate((std::size_t)_simulationTimeNodeInfo.outputPins[0].id);
+        _simulationTimeNodeInfo.OutputUpdate(_simulationTimeNodeInfo.outputPins[0]);
     }
 
     ax::NodeEditor::EndNode();
@@ -501,7 +501,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
     if (_speciesNodeInfo.speciesQuantityBuffer != _speciesNodeInfo.data->Get())
     {
         _speciesNodeInfo.speciesQuantityBuffer = _speciesNodeInfo.data->Get();
-        _speciesNodeInfo.OutputUpdate((std::size_t)_speciesNodeInfo.outputPins[6].id);
+        _speciesNodeInfo.OutputUpdate(_speciesNodeInfo.outputPins[6]);
     }
 
     if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.collapsingHeadersIds[1],
@@ -516,7 +516,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _speciesNodeInfo.data->Set(_speciesNodeInfo.speciesQuantityBuffer);
-            _speciesNodeInfo.OutputUpdate((std::size_t)_speciesNodeInfo.outputPins[6].id);
+            _speciesNodeInfo.OutputUpdate(_speciesNodeInfo.outputPins[6]);
         }
     }
 
@@ -538,7 +538,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ValueFloatNode(const char* _n
         _valueFloatNodeInfo.outputPins[0], GetPinColors(PinType_ValueFloat),
         ImGuiInputTextFlags_ReadOnly))
     {
-        _valueFloatNodeInfo.OutputUpdate((std::size_t)_valueFloatNodeInfo.outputPins[0].id);
+        _valueFloatNodeInfo.OutputUpdate(_valueFloatNodeInfo.outputPins[0]);
     }
 
     ax::NodeEditor::EndNode();

@@ -1,14 +1,10 @@
 #include "NodeEditorData.hpp"
 
 
-void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(std::size_t _nodeInputPinId, char* _data)
+void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, char* _data)
 {
-	NodeInputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(inputPins, inputPins + std::size(inputPins), _nodeInputPinId);
-	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
-	idx = std::distance(inputPins, it);
-
 	//The node input pin representing the solver attached to this asset.
-	if (idx == 0)
+	if (_nodeInputPin == inputPins[0])
 	{
 		//In this case, the parameter _data is the name of the solver node that is attempting to attach.
 		//So, we know that we have the action to perform is to queue the TryAttachSolverToModuleCommand
@@ -19,52 +15,42 @@ void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(std::size_t _nodeI
 }
 
 
-void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputConnect(std::size_t _nodeOutputPinId)
+void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Computed parameter operation value
-	if (_nodeOutputPinId == (std::size_t)outputPins[8].id)
+	if (_nodeOutputPin == outputPins[8])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
 		GetLinks()->back().OverrideStartFallbackPin(outputPins[3].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
+void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ComputedParameterNodeData::OutputUpdate");
-	
-	NodeOutputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(outputPins, outputPins + std::size(outputPins), _nodeOutputPinId);
-	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
-	idx = std::distance(outputPins, it);
-
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ComputedParameterNodeData::OutputUpdate");
 }
 
-void ECellEngine::Editor::Utility::LinePlotNodeData::InputConnect(std::size_t _nodeInputPinId)
+void ECellEngine::Editor::Utility::LinePlotNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
 {
 	//X axis input pin
-	if (_nodeInputPinId == (std::size_t)inputPins[1].id)
+	if (_nodeInputPin == inputPins[1])
 	{
 		//we set the input pin of the collapsing header as the fallback
 		GetLinks()->back().OverrideEndFallbackPin(inputPins[0].id, 1);
 	}
 
 	//Y axis input pin
-	if (_nodeInputPinId == (std::size_t)inputPins[2].id)
+	if (_nodeInputPin == inputPins[2])
 	{
 		//we set the input pin of the collapsing header as the fallback
 		GetLinks()->back().OverrideEndFallbackPin(inputPins[0].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t _nodeInputPinId, float _data)
+void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
 {
-	NodeInputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(inputPins, inputPins + std::size(inputPins), _nodeInputPinId);
-	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
-	idx = std::distance(inputPins, it);
-
 	//The node input pin corresponding to the X Axis data
-	if (idx == 1)
+	if (_nodeInputPin == inputPins[1])
 	{
 		newPointBuffer[0] = _data;
 
@@ -77,7 +63,7 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t _no
 	}
 
 	//The node input pin corresponding to the Y Axis data
-	if (idx == 2)
+	if (_nodeInputPin == inputPins[2])
 	{
 		newPointBuffer[1] = _data;
 
@@ -90,111 +76,99 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(std::size_t _no
 	}
 }
 
-void ECellEngine::Editor::Utility::ReactionNodeData::OutputConnect(std::size_t _nodeOutputPinId)
+void ECellEngine::Editor::Utility::ReactionNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Reaction kinetic law value
-	if (_nodeOutputPinId == (std::size_t)outputPins[8].id)
+	if (_nodeOutputPin == outputPins[8])
 	{
 		//we set the input pin of the kinetic law collapsing header as the fall back
 		GetLinks()->back().OverrideStartFallbackPin(outputPins[3].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::ReactionNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
+void ECellEngine::Editor::Utility::ReactionNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
-	
+
 }
 
-void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputConnect(std::size_t _nodeInputPinId)
+void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
 {
 	//Simple parameter value
-	if (_nodeInputPinId == (std::size_t)inputPins[5].id)
+	if (_nodeInputPin == inputPins[5])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
 		GetLinks()->back().OverrideEndFallbackPin(inputPins[4].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputUpdate(std::size_t _nodeInputPinId, float _data)
+void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SimpleParameterNodeData::InputUpdate; data=" + std::to_string(_data));
 }
 
-void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputConnect(std::size_t _nodeOutputPinId)
+void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Simple parameter value
-	if (_nodeOutputPinId == (std::size_t)outputPins[4].id)
+	if (_nodeOutputPin == outputPins[4])
 	{
 		//we set the output pin of the data field collapsing header as the fall back
 		GetLinks()->back().OverrideStartFallbackPin(outputPins[3].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
+void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SimpleParameterNodeData::OutputUpdate");
-
-	NodeOutputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(outputPins, outputPins + std::size(outputPins), _nodeOutputPinId);
-	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
-	idx = std::distance(outputPins, it);
-
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SimpleParameterNodeData::OutputUpdate");
 }
 
-void ECellEngine::Editor::Utility::SimulationTimeNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
+void ECellEngine::Editor::Utility::SimulationTimeNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
 	//There is only one output pin in the SImulationTimeNodeData so no need to look
 	//for a specific one: we know our target is at index 0.
 	outputPins[0].Broadcast(simulationTimer->elapsedTime);
 }
 
-void ECellEngine::Editor::Utility::SolverNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
+void ECellEngine::Editor::Utility::SolverNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
-	NodeOutputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(outputPins, outputPins + std::size(outputPins), _nodeOutputPinId);
-	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
-	idx = std::distance(outputPins, it);
-
 	//The node output pin representing the solver.
 	//It is used to attach a solver to an asset.
-	if (idx == 0)
+	if (_nodeOutputPin == outputPins[0])
 	{
 		//The Solver node send his name to the asset node.
 		//It is the Asset node, in its InputUpdate() that will Queue the command to 
 		//try to attach the Solver to the Asset.
-		it->Broadcast(data->GetName());
+		outputPins[0].Broadcast(data->GetName());
 	}
 }
 
-void ECellEngine::Editor::Utility::SpeciesNodeData::InputConnect(std::size_t _nodeInputPinId)
+void ECellEngine::Editor::Utility::SpeciesNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
 {
 	//Quantity value
-	if (_nodeInputPinId == (std::size_t)inputPins[7].id)
+	if (_nodeInputPin == inputPins[7])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
 		GetLinks()->back().OverrideEndFallbackPin(inputPins[6].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::SpeciesNodeData::InputUpdate(std::size_t _nodeInputPinId, float _data)
+void ECellEngine::Editor::Utility::SpeciesNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SpeciesNodeData::InputUpdate; data=" + std::to_string(_data));
 }
 
-void ECellEngine::Editor::Utility::SpeciesNodeData::OutputConnect(std::size_t _nodeOutputPinId)
+void ECellEngine::Editor::Utility::SpeciesNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SpeciesNodeData::OutputConnect");
 	//Quantity value
-	if (_nodeOutputPinId == (std::size_t)outputPins[6].id)
+	if (_nodeOutputPin == outputPins[6])
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogDebug("fall back of quantity to collapsing header");
 		//we set the output pin of the data field collapsing header as the fall back
 		GetLinks()->back().OverrideStartFallbackPin(outputPins[5].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
+void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
-	NodeOutputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(outputPins, outputPins + std::size(outputPins), _nodeOutputPinId);
+	NodeOutputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(outputPins, outputPins + std::size(outputPins), _nodeOutputPin);
 	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
 	idx = std::distance(outputPins, it);
 
@@ -205,7 +179,7 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(std::size_t _no
 	}
 }
 
-void ECellEngine::Editor::Utility::ValueFloatNodeData::OutputUpdate(std::size_t _nodeOutputPinId)
+void ECellEngine::Editor::Utility::ValueFloatNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
 	//There is only one output pin in the ValueFloatNodeData so no need to look
 	//for a specific one: we know our target is at index 0.

@@ -170,6 +170,9 @@ namespace ECellEngine::Editor::Utility
 		}
 	};
 
+	struct NodeInputPinData;
+	struct NodeOutputPinData;
+
 	struct NodeData
 	{
 		/*!
@@ -199,15 +202,15 @@ namespace ECellEngine::Editor::Utility
 		friend inline bool operator<=(const NodeData& lhs, const NodeData& rhs) { return !(lhs > rhs); }
 		friend inline bool operator>=(const NodeData& lhs, const NodeData& rhs) { return !(lhs < rhs); }
 
-		virtual void InputConnect(std::size_t _nodeInputPinId) = 0;
-		
-		virtual void InputUpdate(std::size_t _nodeInputPinId, char* _data) = 0;
+		virtual void InputConnect(const NodeInputPinData& _nodeInput) = 0;
 
-		virtual void InputUpdate(std::size_t _nodeInputPinId, float _data) = 0;
+		virtual void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) = 0;
 
-		virtual void OutputConnect(std::size_t _nodeOutputPinId) = 0;
+		virtual void InputUpdate(const NodeInputPinData& _nodeInput, float _data) = 0;
 
-		virtual void OutputUpdate(std::size_t _nodeOutputPinId) = 0;
+		virtual void OutputConnect(const NodeOutputPinData& _nodeOutput) = 0;
+
+		virtual void OutputUpdate(const NodeOutputPinData& _nodeOutput) = 0;
 	};
 
 	/*
@@ -259,8 +262,8 @@ namespace ECellEngine::Editor::Utility
 	{
 		NodeInputPinData() = default;
 
-		NodeInputPinData(std::size_t& _pinId, PinType _type, NodeData* _node):
-			NodePinData( _pinId, ax::NodeEditor::PinKind::Input, _type, _node)
+		NodeInputPinData(std::size_t& _pinId, PinType _type, NodeData* _node) :
+			NodePinData(_pinId, ax::NodeEditor::PinKind::Input, _type, _node)
 		{
 
 		}
@@ -268,18 +271,18 @@ namespace ECellEngine::Editor::Utility
 		template<class Data>
 		inline void Receive(Data _data)
 		{
-			node->InputUpdate((std::size_t)id, _data);
+			node->InputUpdate(*this, _data);
 		}
 	};
 
 	struct NodeOutputPinData : public NodePinData
 	{
 		std::vector<NodeInputPinData*> subscribers;
-		
+
 		NodeOutputPinData() = default;
 
-		NodeOutputPinData(std::size_t& _pinId, PinType _type, NodeData* _node):
-			NodePinData( _pinId, ax::NodeEditor::PinKind::Output, _type, _node)
+		NodeOutputPinData(std::size_t& _pinId, PinType _type, NodeData* _node) :
+			NodePinData(_pinId, ax::NodeEditor::PinKind::Output, _type, _node)
 		{
 
 		}
@@ -289,11 +292,11 @@ namespace ECellEngine::Editor::Utility
 			subscribers.push_back(_newSubscriber);
 
 			//What to do on connection.
-			node->OutputConnect((std::size_t)id);
-			_newSubscriber->node->InputConnect((std::size_t)_newSubscriber->id);
+			node->OutputConnect(*this);
+			_newSubscriber->node->InputConnect(*_newSubscriber);
 
 			//Send data for the first time
-			node->OutputUpdate((std::size_t)id);
+			node->OutputUpdate(*this);
 		}
 
 		template<class Data>
@@ -349,17 +352,17 @@ namespace ECellEngine::Editor::Utility
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		AssetNodeData(ECellEngine::Data::Module* _data) :
-			NodeData(), data{dynamic_cast<ECellEngine::Data::SBMLModule*>(_data)}
+			NodeData(), data{ dynamic_cast<ECellEngine::Data::SBMLModule*>(_data) }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
 			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);//Solver
-			
+
 			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Species Collapsing header
 			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameters Collapsing header
 			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters Collapsing header
 			outputPins[3] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Reaction, this);//Reactions Collapsing header
-			
+
 			collapsingHeadersIds[0] = GetMNBVCtxtNextId();//Species Collapsing header
 			collapsingHeadersIds[1] = GetMNBVCtxtNextId();//Simple Parameters Collapsing header
 			collapsingHeadersIds[2] = GetMNBVCtxtNextId();//Computed Parameters Collapsing header
@@ -373,15 +376,15 @@ namespace ECellEngine::Editor::Utility
 
 		}
 
-		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in asset node data
+		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in asset node data
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override;
+		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override;
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in asset node data
+		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in asset node data
 
-		void OutputConnect(std::size_t _nodeOutputPinId) override {};//not used in asset node data
+		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in asset node data
 
-		void OutputUpdate(std::size_t _nodeOutputPinId) override {};//not used in asset node data
+		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override {};//not used in asset node data
 	};
 
 	struct ComputedParameterNodeData : public NodeData
@@ -530,15 +533,15 @@ namespace ECellEngine::Editor::Utility
 			outputPins[8] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in computed parameter node data
+		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in computed parameter node data
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in computed parameter node data
+		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in computed parameter node data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in computed parameter node data
+		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in computed parameter node data
 
-		void OutputConnect(std::size_t _nodeOutputPinId) override;
+		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
 
-		void OutputUpdate(std::size_t _nodeOutputPinId) override;
+		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
 	struct LinePlotNodeData : public NodeData
@@ -604,15 +607,15 @@ namespace ECellEngine::Editor::Utility
 			outputPins[0].node = this;
 		}
 
-		void InputConnect(std::size_t _nodeInputPinId) override;
+		void InputConnect(const NodeInputPinData& _nodeInput) override;
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};// not used in line plot node data
+		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};// not used in line plot node data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override;
+		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override;
 
-		void OutputConnect(std::size_t _nodeOutputPinId) override {};// not used in line plot node data
+		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};// not used in line plot node data
 
-		void OutputUpdate(std::size_t _nodeOutputPinId) override {};// not used in line plot node data
+		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override {};// not used in line plot node data
 
 		inline bool IsPlotOpen() noexcept
 		{
@@ -780,15 +783,15 @@ namespace ECellEngine::Editor::Utility
 			outputPins[8] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in Reaction Node Data
+		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Reaction Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Reaction Node Data
+		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Reaction Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in Reaction Node Data
+		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Reaction Node Data
 
-		void OutputConnect(std::size_t _nodeOutputPinId) override;
+		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
 
-		void OutputUpdate(std::size_t _nodeOutputPinId) override;
+		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
 	struct SimpleParameterNodeData : public NodeData
@@ -871,15 +874,15 @@ namespace ECellEngine::Editor::Utility
 			outputPins[4] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputConnect(std::size_t _nodeInputPinId) override;
+		void InputConnect(const NodeInputPinData& _nodeInput) override;
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Reaction Node Data
+		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Reaction Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override;
+		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override;
 
-		void OutputConnect(std::size_t _nodeOutputPinId) override;
+		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
 
-		void OutputUpdate(std::size_t _nodeOutputPinId) override;
+		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
 	struct SimulationTimeNodeData : public NodeData
@@ -908,15 +911,15 @@ namespace ECellEngine::Editor::Utility
 			outputPins[0].node = this;
 		}
 
-		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in Simulation Time Node Data
+		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Simulation Time Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Simulation Time Node Data
+		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Simulation Time Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in Simulation Time Node Data
+		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Simulation Time Node Data
 
-		void OutputConnect(std::size_t _nodeOutputPinId) override {};//not used in Simulation Time Node Data
+		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in Simulation Time Node Data
 
-		void OutputUpdate(std::size_t _nodeOutputPinId) override;
+		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
 	struct SolverNodeData : public NodeData
@@ -955,15 +958,15 @@ namespace ECellEngine::Editor::Utility
 
 		}
 
-		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in Solver Node Data
+		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Solver Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Solver Node Data
+		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Solver Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in Solver Node Data
+		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Solver Node Data
 
-		void OutputConnect(std::size_t _nodeOutputPinId) override {};//not used in Solver Node Data
+		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in Solver Node Data
 
-		void OutputUpdate(std::size_t _nodeOutputPinId) override;
+		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
 	struct SpeciesNodeData : public NodeData
@@ -1053,15 +1056,15 @@ namespace ECellEngine::Editor::Utility
 			outputPins[6] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
 		}
 
-		void InputConnect(std::size_t _nodeInputPinId) override;
+		void InputConnect(const NodeInputPinData& _nodeInput) override;
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Species Node Data
+		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Species Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override;
+		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override;
 
-		void OutputConnect(std::size_t _nodeOutputPinId) override;
+		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
 
-		void OutputUpdate(std::size_t _nodeOutputPinId) override;
+		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
 	struct ValueFloatNodeData : public NodeData
@@ -1089,15 +1092,15 @@ namespace ECellEngine::Editor::Utility
 			outputPins[0].node = this;
 		}
 
-		void InputConnect(std::size_t _nodeInputPinId) override {};//not used in Value Float Node Data
+		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Value Float Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, char* _data) override {};//not used in Value Float Node Data
+		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Value Float Node Data
 
-		void InputUpdate(std::size_t _nodeInputPinId, float _data) override {};//not used in Value Float Node Data
+		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Value Float Node Data
 
-		void OutputConnect(std::size_t _nodeOutputPinId) override {};//not used in Value Float Node Data
+		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in Value Float Node Data
 
-		void OutputUpdate(std::size_t _nodeOutputPinId) override;
+		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 #pragma endregion
 }
