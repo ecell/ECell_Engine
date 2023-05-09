@@ -144,10 +144,10 @@ void ECellEngine::Editor::Utility::SolverNodeData::OutputUpdate(const NodeOutput
 void ECellEngine::Editor::Utility::SpeciesNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
 {
 	//Quantity value
-	if (_nodeInputPin == inputPins[7])
+	if (_nodeInputPin == inputPins[SpeciesNodeData::InputPin_Quantity])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
-		GetLinks()->back().OverrideEndFallbackPin(inputPins[6].id, 1);
+		GetLinks()->back().OverrideEndFallbackPin(inputPins[SpeciesNodeData::InputPin_CollHdrDataFields].id, 1);
 	}
 }
 
@@ -159,23 +159,19 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::InputUpdate(const NodeInputP
 void ECellEngine::Editor::Utility::SpeciesNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Quantity value
-	if (_nodeOutputPin == outputPins[6])
+	if (_nodeOutputPin == outputPins[SpeciesNodeData::OutputPin_Quantity])
 	{
 		//we set the output pin of the data field collapsing header as the fall back
-		GetLinks()->back().OverrideStartFallbackPin(outputPins[5].id, 1);
+		GetLinks()->back().OverrideStartFallbackPin(outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields].id, 1);
 	}
 }
 
 void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
-	NodeOutputPinData* it = ECellEngine::Data::BinaryOperation::LowerBound(outputPins, outputPins + std::size(outputPins), _nodeOutputPin);
-	typename std::iterator_traits<NodeOutputPinData*>::difference_type idx;
-	idx = std::distance(outputPins, it);
-
 	//The node output pin corresponding to the Quantity
-	if (idx == 6)
+	if (_nodeOutputPin == outputPins[SpeciesNodeData::OutputPin_Quantity])
 	{
-		it->Broadcast(data->Get());
+		outputPins[SpeciesNodeData::OutputPin_Quantity].Broadcast(data->Get());
 	}
 }
 

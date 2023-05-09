@@ -466,10 +466,10 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
     const float itemsWidth = GetNodeCenterAreaWidth(headerSize);
     const float startX = ImGui::GetCursorPosX();
 
-    if (NodeCollapsingHeader_InOut("Model Links", _speciesNodeInfo.collapsingHeadersIds[0],
-        _speciesNodeInfo.utilityState, 0,
+    if (NodeCollapsingHeader_InOut("Model Links", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_ModelLinks],
+        _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrModelLinks,
         startX, headerSize,
-        _speciesNodeInfo.inputPins[0], _speciesNodeInfo.outputPins[0], GetPinColors(PinType_Default),
+        _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrModelLinks], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrModelLinks], GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
         const static float icpTextWidth = ImGui::CalcTextSize("In Computed Parameters").x;
@@ -477,23 +477,23 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
         const static float ipTextWidth = ImGui::CalcTextSize("Is Product").x;
         const static float iklTextWidth = ImGui::CalcTextSize("In Kinetic Law").x;
 
-        NodeText_In("Asset", startX, _speciesNodeInfo.inputPins[1], GetPinColors(PinType_Asset));
+        NodeText_In("Asset", startX, _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Asset], GetPinColors(PinType_Asset));
 
         NodeText_InOut("In Computed Parameters", icpTextWidth,
             startX, headerSize,
-            _speciesNodeInfo.inputPins[2], _speciesNodeInfo.outputPins[1], GetPinColors(PinType_Parameter));
+            _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_NLBSInComputedParameter], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_NLBSInComputedParameter], GetPinColors(PinType_Parameter));
 
-        NodeText_InOut("Is Reactant", irTextWidth,
+        NodeText_InOut("As Reactant", irTextWidth,
             startX, headerSize,
-            _speciesNodeInfo.inputPins[3], _speciesNodeInfo.outputPins[2], GetPinColors(PinType_Reaction));
+            _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_NLBSAsReactant], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_NLBSAsReactant], GetPinColors(PinType_Reaction));
 
-        NodeText_InOut("Is Product", ipTextWidth,
+        NodeText_InOut("As Product", ipTextWidth,
             startX, headerSize,
-            _speciesNodeInfo.inputPins[4], _speciesNodeInfo.outputPins[3], GetPinColors(PinType_Reaction));
+            _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_NLBSAsProduct], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_NLBSAsProduct], GetPinColors(PinType_Reaction));
 
         NodeText_InOut("In Kinetic Law", iklTextWidth,
             startX, headerSize,
-            _speciesNodeInfo.inputPins[5], _speciesNodeInfo.outputPins[4], GetPinColors(PinType_Reaction));
+            _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_NLBSInKineticLaw], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_NLBSInKineticLaw], GetPinColors(PinType_Reaction));
     }
 
     NodeHorizontalSeparator(headerSize);
@@ -504,19 +504,19 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
         _speciesNodeInfo.OutputUpdate(_speciesNodeInfo.outputPins[6]);
     }
 
-    if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.collapsingHeadersIds[1],
-        _speciesNodeInfo.utilityState, 1,
+    if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_DataFields],
+        _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrDataFields,
         startX, headerSize,
-        _speciesNodeInfo.inputPins[6], _speciesNodeInfo.outputPins[5], GetPinColors(PinType_Default),
+        _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrDataFields], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields], GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
         if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &_speciesNodeInfo.speciesQuantityBuffer,
             itemsWidth, startX, headerSize,
-            _speciesNodeInfo.inputPins[7], _speciesNodeInfo.outputPins[6], GetPinColors(PinType_ValueFloat),
+            _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Quantity], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_Quantity], GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _speciesNodeInfo.data->Set(_speciesNodeInfo.speciesQuantityBuffer);
-            _speciesNodeInfo.OutputUpdate(_speciesNodeInfo.outputPins[6]);
+            _speciesNodeInfo.OutputUpdate(_speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_Quantity]);
         }
     }
 

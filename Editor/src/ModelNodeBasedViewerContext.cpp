@@ -57,8 +57,8 @@ void ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::Draw(ECellEngine
            speciesNodes.emplace_back(ECellEngine::Editor::Utility::SpeciesNodeData(
                 _simulation->GetDataState()->GetSpecies(it->nlbsData[AssetNodeData::NodeListBoxString_Species].data->at(it->nlbsData[AssetNodeData::NodeListBoxString_Species].doubleClickedItem))));
 
-            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[AssetNodeData::OutputPin_CollHdrSpecies].id,speciesNodes.back().inputPins[1].id));
-            links.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[0].id, 1);
+            links.emplace_back(ECellEngine::Editor::Utility::LinkData(it->outputPins[AssetNodeData::OutputPin_CollHdrSpecies].id,speciesNodes.back().inputPins[SpeciesNodeData::InputPin_Asset].id));
+            links.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);
         }
 
         //If double click on simple parameter selectable in the list box, spawn the corresponding simple parameter node

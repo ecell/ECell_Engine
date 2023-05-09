@@ -1137,20 +1137,58 @@ namespace ECellEngine::Editor::Utility
 
 	struct SpeciesNodeData : public NodeData
 	{
-		/*!
-		@brief The ID of this node to in the Node Editor.
-		*/
-		//ax::NodeEditor::NodeId id;
+		enum InputPin
+		{
+			InputPin_CollHdrModelLinks,
+			InputPin_CollHdrDataFields,
+			InputPin_NLBSAsReactant,
+			InputPin_NLBSAsProduct,
+			InputPin_NLBSInComputedParameter,
+			InputPin_NLBSInKineticLaw,
+			InputPin_Quantity,
+			InputPin_Asset,
+
+			InputPin_Count
+		};
+
+		enum OutputPin
+		{
+			OutputPin_CollHdrModelLinks,
+			OutputPin_CollHdrDataFields,
+			OutputPin_NLBSAsReactant,
+			OutputPin_NLBSAsProduct,
+			OutputPin_NLBSInComputedParameter,
+			OutputPin_NLBSInKineticLaw,
+			OutputPin_Quantity,
+
+			OutputPin_Count
+		};
+
+		enum CollapsingHeader
+		{
+			CollapsingHeader_ModelLinks,
+			CollapsingHeader_DataFields,
+
+			CollapsingHeader_Count
+		};
+
+		enum State
+		{
+			State_CollHdrModelLinks,
+			State_CollHdrDataFields,
+
+			State_Count
+		};
 
 		ECellEngine::Data::Species* data;
 		float speciesQuantityBuffer = 0.f;
 
-		NodeInputPinData inputPins[8];
-		NodeOutputPinData outputPins[7];
+		NodeInputPinData inputPins[InputPin_Count];
+		NodeOutputPinData outputPins[OutputPin_Count];
 
 		unsigned char utilityState = 0;
 
-		std::size_t collapsingHeadersIds[2];
+		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
 		SpeciesNodeData(const SpeciesNodeData& _snd) :
 			NodeData(_snd), data{ _snd.data }, speciesQuantityBuffer{ _snd.speciesQuantityBuffer },
@@ -1163,21 +1201,15 @@ namespace ECellEngine::Editor::Utility
 			utilityState{ _snd.utilityState },
 			collapsingHeadersIds{ _snd.collapsingHeadersIds[0], _snd.collapsingHeadersIds[1] }
 		{
-			inputPins[0].node = this;
-			inputPins[1].node = this;
-			inputPins[2].node = this;
-			inputPins[3].node = this;
-			inputPins[4].node = this;
-			inputPins[5].node = this;
-			inputPins[6].node = this;
-			inputPins[7].node = this;
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
 
-			outputPins[0].node = this;
-			outputPins[1].node = this;
-			outputPins[2].node = this;
-			outputPins[4].node = this;
-			outputPins[5].node = this;
-			outputPins[6].node = this;
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
 		}
 
 		SpeciesNodeData(ECellEngine::Data::Species* _data) :
@@ -1185,41 +1217,25 @@ namespace ECellEngine::Editor::Utility
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
-			//Id to uniquely identify the collapsing header for the MODEL LINKS of each species node
-			collapsingHeadersIds[0] = GetMNBVCtxtNextId();
-			//Id to uniquely identify the collapsing header for the DATA FIELDS of each species node
-			collapsingHeadersIds[1] = GetMNBVCtxtNextId();
+			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Model Links
+			inputPins[InputPin_Asset] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Asset
+			inputPins[InputPin_NLBSInComputedParameter] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Computed parameters equation
+			inputPins[InputPin_NLBSAsReactant] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Reactions's Reactants
+			inputPins[InputPin_NLBSAsProduct] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Products
+			inputPins[InputPin_NLBSInKineticLaw] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Kinetic Law
+			inputPins[InputPin_CollHdrDataFields] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Data Fields
+			inputPins[InputPin_Quantity] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Quantity
 
-			//Collapsing Header Model Links
-			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
+			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Model Links
+			outputPins[OutputPin_NLBSInComputedParameter] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Computed parameters equation
+			outputPins[OutputPin_NLBSAsReactant] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Reactions's Reactants
+			outputPins[OutputPin_NLBSAsProduct] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Products
+			outputPins[OutputPin_NLBSInKineticLaw] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Kinetic Law
+			outputPins[OutputPin_CollHdrDataFields] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Data Fields
+			outputPins[OutputPin_Quantity] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Quantity
 
-			//Asset
-			inputPins[1] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
-
-			//Computed parameters equation
-			inputPins[2] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
-			outputPins[1] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
-
-			//Reactions's Reactants
-			inputPins[3] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
-			outputPins[2] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
-
-			//Reaction's Products
-			inputPins[4] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
-			outputPins[3] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
-
-			//Reaction's Kinetic Law
-			inputPins[5] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
-			outputPins[4] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);
-
-			//Collapsing Header Data Fields
-			inputPins[6] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-			outputPins[5] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);
-
-			//Quantity
-			inputPins[7] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
-			outputPins[6] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);
+			collapsingHeadersIds[CollapsingHeader_ModelLinks] = GetMNBVCtxtNextId();//Collapsing Header Model Links
+			collapsingHeadersIds[CollapsingHeader_DataFields] = GetMNBVCtxtNextId();//Collapsing Header Data Fields
 		}
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override;
