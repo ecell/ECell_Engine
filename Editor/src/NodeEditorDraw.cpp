@@ -535,10 +535,10 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ValueFloatNode(const char* _n
 
     if (NodeDragFloat_Out("Value", _valueFloatNodeInfo.id.Get(), &_valueFloatNodeInfo.value,
         itemsWidth, startX, headerWidth,
-        _valueFloatNodeInfo.outputPins[0], GetPinColors(PinType_ValueFloat),
+        _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], GetPinColors(PinType_ValueFloat),
         ImGuiInputTextFlags_ReadOnly))
     {
-        _valueFloatNodeInfo.OutputUpdate(_valueFloatNodeInfo.outputPins[0]);
+        _valueFloatNodeInfo.OutputUpdate(_valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value]);
     }
 
     ax::NodeEditor::EndNode();

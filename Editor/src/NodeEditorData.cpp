@@ -176,7 +176,6 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(const NodeOutpu
 
 void ECellEngine::Editor::Utility::ValueFloatNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
-	//There is only one output pin in the ValueFloatNodeData so no need to look
-	//for a specific one: we know our target is at index 0.
-	outputPins[0].Broadcast(value);
+	//There is only one output pin in the ValueFloatNodeData
+	outputPins[ValueFloatNodeData::OutputPin_Value].Broadcast(value);
 }

@@ -1286,18 +1286,32 @@ namespace ECellEngine::Editor::Utility
 
 	struct ValueFloatNodeData : public NodeData
 	{
+		enum InputPin
+		{
+			InputPin_None,
+
+			InputPin_Count
+		};
+
+		enum OutputPin
+		{
+			OutputPin_Value,
+
+			OutputPin_Count
+		};
+
 		float value = 0.f;
 
-		NodeInputPinData inputPins[1];
-		NodeOutputPinData outputPins[1];
+		NodeInputPinData inputPins[InputPin_Count];
+		NodeOutputPinData outputPins[OutputPin_Count];
 
 		ValueFloatNodeData(float _value, ImVec2& _position) :
 			NodeData(), value{ _value }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			inputPins[0] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
-			outputPins[0] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this); //simulation Time
+			inputPins[InputPin_None] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this); //not used
+			outputPins[OutputPin_Value] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this); //Value
 		}
 
 		ValueFloatNodeData(const ValueFloatNodeData& _vfnd) :
@@ -1305,8 +1319,15 @@ namespace ECellEngine::Editor::Utility
 			inputPins{ _vfnd.inputPins[0] },
 			outputPins{ _vfnd.outputPins[0] }
 		{
-			inputPins[0].node = this;
-			outputPins[0].node = this;
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
+
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
 		}
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Value Float Node Data
