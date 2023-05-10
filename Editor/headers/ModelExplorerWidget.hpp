@@ -1,5 +1,11 @@
 #pragma once
 
+/*!
+@file
+@brief The source for the base manager of everything related to visualization
+		of a simulation in the editor.
+*/
+
 #include <string>
 #include <vector>
 

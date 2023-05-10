@@ -1140,17 +1140,6 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_In(const char* _labe
     ImGui::Text(_label);
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_In(const char* _label, const float _labelWidth,
-    const float _startX,
-    const NodePinData& _pin, const ImVec4 _pinColors[])
-{
-    ImGui::SetCursorPosX(_startX);
-    Pin(_pin, _pinColors); ImGui::SameLine();
-
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text(_label);
-}
-
 void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_InOut(const char* _label, const float _labelWidth,
     const float _startX, const float _drawLength,
     const NodePinData& _inputPin, const NodePinData& _outputPin,

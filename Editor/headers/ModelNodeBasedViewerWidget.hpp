@@ -1,5 +1,11 @@
 #pragma once
 
+/*!
+@file
+@brief The source for the windows where we can explore models and assets as a
+		graph.
+*/
+
 #include "imgui_node_editor.h"
 
 //forward declaration

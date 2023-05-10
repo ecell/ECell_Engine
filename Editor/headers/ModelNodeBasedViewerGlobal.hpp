@@ -128,6 +128,10 @@ namespace ECellEngine::Editor::Utility
 	*/
 	ModelNodeBasedViewerContext* GetCurrentMNBVContext();
 
+	/*!
+	@brief Gets the pointer to the list of the links (ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::links)
+			of the current mnbv context.
+	*/
 	std::vector<LinkData>* GetLinks();
 
 	/*!

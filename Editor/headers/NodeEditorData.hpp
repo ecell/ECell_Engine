@@ -1,4 +1,10 @@
 #pragma once
+/*!
+@file
+@brief The source of the data structures describing nodes, pins and links
+		that are used to know how to draw these entities in ECellEngine::Editor::Utility::ModelNodeBasedViewerWidget
+*/
+
 #include "implot.h"
 #include "imgui_node_editor.h"
 
@@ -123,8 +129,23 @@ namespace ECellEngine::Editor::Utility
 	*/
 	struct LinkData
 	{
+		/*!
+		@brief The id of this link
+		*/
 		ax::NodeEditor::LinkId id;
+
+		/*!
+		@brief The ids of the pins to use to as the start of the link.
+		@details At index 0 is the main pin while index 1 contains the if of the
+				 fallback pin.
+		*/
 		ax::NodeEditor::PinId startIds[2];
+
+		/*!
+		@brief The ids of the pins to use to use as the end of the link.
+		@details At index 0 is the main pin while index 1 contains the if of the
+				 fallback pin.
+		*/
 		ax::NodeEditor::PinId endIds[2];
 
 		LinkData(ax::NodeEditor::PinId _startId, ax::NodeEditor::PinId _endId) :
@@ -173,6 +194,9 @@ namespace ECellEngine::Editor::Utility
 	struct NodeInputPinData;
 	struct NodeOutputPinData;
 
+	/*!
+	@brief The base class of for nodes.
+	*/
 	struct NodeData
 	{
 		/*!
@@ -202,14 +226,43 @@ namespace ECellEngine::Editor::Utility
 		friend inline bool operator<=(const NodeData& lhs, const NodeData& rhs) { return !(lhs > rhs); }
 		friend inline bool operator>=(const NodeData& lhs, const NodeData& rhs) { return !(lhs < rhs); }
 
+		/*!
+		@brief Method to implement what to do when a new link is connected
+				to @p _nodeInput.
+		@param _nodeInput The pin notifying this node that a link was made with
+				it as the end.
+		*/
 		virtual void InputConnect(const NodeInputPinData& _nodeInput) = 0;
 
+		/*!
+		@brief Method to implement what to do when a pin (@p _nodeInput) received
+				a char array as data.
+		@param _nodeInput The pin notifying this node that a char array has arrived
+				through it.
+		*/
 		virtual void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) = 0;
 
+		/*!
+		@brief Method to implement what to do when a pin (@p _nodeInput) received
+				a float as data.
+		@param _nodeInput The pin notifying this node that a float has arrived
+				through it.
+		*/
 		virtual void InputUpdate(const NodeInputPinData& _nodeInput, float _data) = 0;
 
+		/*!
+		@brief Method to implement what to do when a new link is connected
+				to @p _nodeOutput.
+		@param _nodeInput The pin notifying this node that a link was made with
+				it as the start.
+		*/
 		virtual void OutputConnect(const NodeOutputPinData& _nodeOutput) = 0;
 
+		/*!
+		@brief Method to implement what to do send data from a pin (@p _nodeOutput)
+				through all of its connected links.
+		@param _nodeOutput The start pin we want to broadcast data from.
+		*/
 		virtual void OutputUpdate(const NodeOutputPinData& _nodeOutput) = 0;
 	};
 
@@ -223,10 +276,21 @@ namespace ECellEngine::Editor::Utility
 		*/
 		ax::NodeEditor::PinId id = 0;
 
+		/*!
+		@brief Whether the pin is Input (receives data) or Output (broadcast
+				data).
+		*/
 		ax::NodeEditor::PinKind kind = ax::NodeEditor::PinKind::Input;
 
+		/*!
+		@brief The type of the pin.
+		@details used to control which pin can be connected to which.
+		*/
 		PinType type = PinType_Default;
 
+		/*!
+		@brief The pointer to the node this Pin is in.
+		*/
 		NodeData* node = nullptr;
 
 		/*!
@@ -258,7 +322,15 @@ namespace ECellEngine::Editor::Utility
 #pragma endregion
 
 #pragma region Derived Pin Data
-	struct NodeInputPinData : public NodePinData
+	
+	/*!
+	@brief The logic for input pins.
+	@details Implements the "Subscriber" part of a Publish-Subscribe design
+			 pattern. (aka Observer)
+	@see ECellEngine::Editor::Utility::NodeOutputPinData for the "Publisher"
+		 part.
+	*/
+	struct NodeInputPinData final : public NodePinData
 	{
 		NodeInputPinData() = default;
 
@@ -268,6 +340,11 @@ namespace ECellEngine::Editor::Utility
 
 		}
 
+		/*!
+		@brief What to do when the pin receives data.
+		@tparam Data The type of data the pin receives. Supports char* and float.
+		@param _data The data the pin receives from its publisher.
+		*/
 		template<class Data>
 		inline void Receive(Data _data)
 		{
@@ -275,8 +352,19 @@ namespace ECellEngine::Editor::Utility
 		}
 	};
 
-	struct NodeOutputPinData : public NodePinData
+	/*!
+	@brief The logic for ouput pins.
+	@details Implements the "Publisher" part of a Publish-Subscribe design
+			 pattern. (aka Observer)
+	@see ECellEngine::Editor::Utility::NodeInputPinData for the "Subscriber"
+		 part.
+	*/
+	struct NodeOutputPinData final : public NodePinData
 	{
+		/*!
+		@brief The list of every input pins which shall receive the data when
+				this output pin data broadcasts.
+		*/
 		std::vector<NodeInputPinData*> subscribers;
 
 		NodeOutputPinData() = default;
@@ -287,6 +375,11 @@ namespace ECellEngine::Editor::Utility
 
 		}
 
+		/*!
+		@brief The logic to add a new input pin as subscriber to this 
+				output pin.
+		@details Typically happens every time a link is created.
+		*/
 		inline void AddSubscriber(NodeInputPinData* _newSubscriber)
 		{
 			subscribers.push_back(_newSubscriber);
@@ -299,6 +392,12 @@ namespace ECellEngine::Editor::Utility
 			node->OutputUpdate(*this);
 		}
 
+		/*!
+		@brief Broadcasts data to the ::subscribers.
+		@tparam Data The type of data the pin broadcasts. Supports char* and
+				float on the side of the subscribers.
+		@param _data The data the pin broadcasts to its ::subscribers.
+		*/
 		template<class Data>
 		inline void Broadcast(Data _data)
 		{
@@ -313,8 +412,16 @@ namespace ECellEngine::Editor::Utility
 
 #pragma region Derived Nodes Data
 
-	struct AssetNodeData : public NodeData
+	/*!
+	@brief The logic to encode the data needed to draw the node representing
+			ECellEngine::Data::SBMLModule.
+	*/
+	struct AssetNodeData final : public NodeData
 	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
 		enum InputPin
 		{
 			InputPin_Solver,
@@ -322,6 +429,10 @@ namespace ECellEngine::Editor::Utility
 			InputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
 		enum OutputPin
 		{
 			OutputPin_CollHdrComputedParameters,
@@ -332,6 +443,10 @@ namespace ECellEngine::Editor::Utility
 			OutputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the collapsing headers.
+		@see ::collapsingHeaders
+		*/
 		enum CollapsingHeader
 		{
 			CollapsingHeader_ComputedParameters,
@@ -342,6 +457,10 @@ namespace ECellEngine::Editor::Utility
 			CollapsingHeader_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the list boxes storing strings.
+		@see ::nlbsData
+		*/
 		enum NodeListBoxString
 		{
 			NodeListBoxString_ComputedParameters,
@@ -352,6 +471,11 @@ namespace ECellEngine::Editor::Utility
 			NodeListBoxString_Count
 		};
 
+		/*!
+		@brief The local enum to manage to the encoding of the state of this
+				node.
+		@see ::utilityState
+		*/
 		enum State
 		{
 			State_CollHdrComputedParameters,
@@ -362,15 +486,39 @@ namespace ECellEngine::Editor::Utility
 			State_Count
 		};
 		
+		/*!
+		@brief Pointer to the sbml module represented by this node.
+		*/
 		ECellEngine::Data::SBMLModule* data;
 
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
 		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
 		NodeOutputPinData outputPins[OutputPin_Count];
 
+		/*!
+		@brief The byte the encode the state variations of this node.
+		@details Manipulate the state with the enum values State_XXX
+		*/
 		unsigned char utilityState = 0;
 
+		/*!
+		@brief All the collapsing headers.
+		@details Access the pins with the enum values CollapsingHeader_XXX
+		*/
 		std::size_t collapsingHeadersIds[4];
 
+		/*!
+		@brief All the list boxes to store/display strings.
+		@details Access the pins with the enum values NodeListBoxString_XXX
+		*/
 		NodeListBoxStringData nlbsData[NodeListBoxString_Count];
 
 		AssetNodeData(const AssetNodeData& _and) :
@@ -433,8 +581,16 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override {};//not used in asset node data
 	};
 
-	struct ComputedParameterNodeData : public NodeData
+	/*!
+	@brief The logic to encode the data needed to draw the node representing
+			ECellEngine::Data::ComputedParameter.
+	*/
+	struct ComputedParameterNodeData final : public NodeData
 	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
 		enum InputPin
 		{
 			InputPin_CollHdrModelLinks,
@@ -451,6 +607,10 @@ namespace ECellEngine::Editor::Utility
 			InputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
 		enum OutputPin
 		{
 			OutputPin_CollHdrModelLinks,
@@ -466,6 +626,10 @@ namespace ECellEngine::Editor::Utility
 			OutputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the collapsing headers.
+		@see ::collapsingHeaders
+		*/
 		enum CollapsingHeader
 		{
 			CollapsingHeader_ModelLinks,
@@ -477,6 +641,10 @@ namespace ECellEngine::Editor::Utility
 			CollapsingHeader_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the list boxes storing strings.
+		@see ::nlbsData
+		*/
 		enum NodeListBoxString
 		{
 			NodeListBoxString_ComputedParameterLinks,
@@ -488,6 +656,11 @@ namespace ECellEngine::Editor::Utility
 			NodeListBoxString_Count
 		};
 
+		/*!
+		@brief The local enum to manage to the encoding of the state of this
+				node.
+		@see ::utilityState
+		*/
 		enum State
 		{
 			State_CollHdrModelLinks,
@@ -499,18 +672,38 @@ namespace ECellEngine::Editor::Utility
 			State_Count
 		};
 
+		/*!
+		@brief Pointer to the computed parameter represented by this node.
+		*/
 		ECellEngine::Data::ComputedParameter* data;
 
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
 		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
 		NodeOutputPinData outputPins[OutputPin_Count];
 
+		/*!
+		@brief The byte the encode the state variations of this node.
+		@details Manipulate the state with the enum values State_XXX
+		*/
 		unsigned char utilityState = 0;
 
+		/*!
+		@brief All the collapsing headers.
+		@details Access the pins with the enum values CollapsingHeader_XXX
+		*/
 		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
 		/*!
-		@brief The array of of list box data that are potentially displayed in
-				this node.
+		@brief All the list boxes to store/display strings.
+		@details Access the pins with the enum values NodeListBoxString_XXX
 		*/
 		NodeListBoxStringData nlbsData[NodeListBoxString_Count];
 		std::vector<std::string> computedParameterLinks;
@@ -560,7 +753,7 @@ namespace ECellEngine::Editor::Utility
 			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
-			
+
 			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			inputPins[InputPin_Asset] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Asset, this);//Asset
 			inputPins[InputPin_CollHdrComputedParameters] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
@@ -571,7 +764,7 @@ namespace ECellEngine::Editor::Utility
 			inputPins[InputPin_NLBSSimpleParameters] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Simple Parameter Operands
 			inputPins[InputPin_NLBSComputedParameters] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Computed Parameter Operands
 			inputPins[InputPin_ComputedParameterValue] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Operation Value Float
-			
+
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			outputPins[OutputPin_CollHdrComputedParameters] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
 			outputPins[OutputPin_CollHdrKineticLaws] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
@@ -609,8 +802,16 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
-	struct LinePlotNodeData : public NodeData
+	/*!
+	@brief The logic to encode the data needed to draw the node to set up and
+			display a line plot.
+	*/
+	struct LinePlotNodeData final : public NodeData
 	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
 		enum InputPin
 		{
 			InputPin_CollHdrPlot,
@@ -620,6 +821,10 @@ namespace ECellEngine::Editor::Utility
 			InputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
 		enum OutputPin
 		{
 			OutputPin_None,
@@ -627,6 +832,10 @@ namespace ECellEngine::Editor::Utility
 			OutputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the collapsing headers.
+		@see ::collapsingHeaders
+		*/
 		enum CollapsingHeader
 		{
 			CollapsingHeader_AllParameters,
@@ -639,6 +848,11 @@ namespace ECellEngine::Editor::Utility
 			CollapsingHeader_Count
 		};
 
+		/*!
+		@brief The local enum to manage to the encoding of the state of this
+				node.
+		@see ::utilityState
+		*/
 		enum State
 		{
 			State_CollHdrAllParameters,
@@ -668,11 +882,28 @@ namespace ECellEngine::Editor::Utility
 		ImPlotAxisFlags xAxisFlags = ImPlotAxisFlags_AutoFit;
 		ImPlotAxisFlags yAxisFlags = ImPlotAxisFlags_AutoFit;
 
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
 		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
 		NodeOutputPinData outputPins[OutputPin_Count];//not used
 
+		/*!
+		@brief The byte the encode the state variations of this node.
+		@details Manipulate the state with the enum values State_XXX
+		*/
 		unsigned char utilityState = 0;
 
+		/*!
+		@brief All the collapsing headers.
+		@details Access the pins with the enum values CollapsingHeader_XXX
+		*/
 		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
 		LinePlotNodeData(int _maxNbDataPoints, ImVec2& _position) :
@@ -748,8 +979,16 @@ namespace ECellEngine::Editor::Utility
 		}
 	};
 
-	struct ReactionNodeData : public NodeData
+	/*!
+	@brief The logic to encode the data needed to draw the node representing
+			ECellEngine::Data::Reaction.
+	*/
+	struct ReactionNodeData final : public NodeData
 	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
 		enum InputPin
 		{
 			InputPin_CollHdrModelLinks,
@@ -766,6 +1005,10 @@ namespace ECellEngine::Editor::Utility
 			InputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
 		enum OutputPin
 		{
 			OutputPin_CollHdrModelLinks,
@@ -777,10 +1020,14 @@ namespace ECellEngine::Editor::Utility
 			OutputPin_NLBSSimpleParameters,
 			OutputPin_NLBSSpecies,
 			OutputPin_KineticLawValue,
-			
+
 			OutputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the collapsing headers.
+		@see ::collapsingHeaders
+		*/
 		enum CollapsingHeader
 		{
 			CollapsingHeader_ModelLinks,
@@ -792,6 +1039,10 @@ namespace ECellEngine::Editor::Utility
 			CollapsingHeader_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the list boxes storing strings.
+		@see ::nlbsData
+		*/
 		enum NodeListBoxString
 		{
 			NodeListBoxString_Reactants,
@@ -803,6 +1054,11 @@ namespace ECellEngine::Editor::Utility
 			NodeListBoxString_Count
 		};
 
+		/*!
+		@brief The local enum to manage to the encoding of the state of this
+				node.
+		@see ::utilityState
+		*/
 		enum State
 		{
 			State_CollHdrModelLinks,
@@ -814,18 +1070,39 @@ namespace ECellEngine::Editor::Utility
 			State_Count
 		};
 
+		/*!
+		@brief Pointer to the reaction represented by this node.
+		*/
 		ECellEngine::Data::Reaction* data;
 
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
 		NodeInputPinData inputPins[InputPin_Count];
-		NodeOutputPinData outputPins[OutputPin_Count];
-
-		unsigned char utilityState = 0;
-
-		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
 		/*!
-		@brief The array of of list box data that are potentially displayed in
-				this node.
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
+		NodeOutputPinData outputPins[OutputPin_Count];
+
+		/*!
+		@brief The byte the encode the state variations of this node.
+		@details Manipulate the state with the enum values State_XXX
+		*/
+		unsigned char utilityState = 0;
+
+		/*!
+		@brief All the collapsing headers.
+		@details Access the pins with the enum values CollapsingHeader_XXX
+		*/
+		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
+
+
+		/*!
+		@brief All the list boxes to store/display strings.
+		@details Access the pins with the enum values NodeListBoxString_XXX
 		*/
 		NodeListBoxStringData nlbsData[NodeListBoxString_Count];
 		std::vector<std::string> speciesOperands;
@@ -871,7 +1148,7 @@ namespace ECellEngine::Editor::Utility
 			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
-			
+
 			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			inputPins[InputPin_Asset] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Reaction, this);//Asset
 			inputPins[InputPin_CollHdrReactants] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Reactants section Collapsing header
@@ -882,7 +1159,7 @@ namespace ECellEngine::Editor::Utility
 			inputPins[InputPin_NLBSSimpleParameters] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameter Operands from Kinetic Law
 			inputPins[InputPin_NLBSComputedParameters] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameter Operands from Kinetic Law
 			inputPins[InputPin_KineticLawValue] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Kinetic Law Value Float field (must be Read Only)
-			
+
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			outputPins[OutputPin_CollHdrReactants] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Reactants section Collapsing header
 			outputPins[OutputPin_CollHdrProducts] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Species, this);//Products section Collapsing header
@@ -892,13 +1169,13 @@ namespace ECellEngine::Editor::Utility
 			outputPins[OutputPin_NLBSSimpleParameters] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameter Operands from Kinetic Law
 			outputPins[OutputPin_NLBSComputedParameters] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameter Operands from Kinetic Law
 			outputPins[OutputPin_KineticLawValue] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Kinetic Law Value Float field (must be Read Only)
-			
+
 			collapsingHeadersIds[CollapsingHeader_ModelLinks] = GetMNBVCtxtNextId();//ModelLinks Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Reactants] = GetMNBVCtxtNextId();//Reactants section Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Products] = GetMNBVCtxtNextId();//Products section Collapsing header
 			collapsingHeadersIds[CollapsingHeader_KineticLaw] = GetMNBVCtxtNextId();//Kinetic Law collapsing header
 			collapsingHeadersIds[CollapsingHeader_KineticLawOperands] = GetMNBVCtxtNextId();//Kinetic Law Operands collapsing header
-			
+
 			nlbsData[NodeListBoxString_Reactants] = { _data->GetReactants() , GetMNBVCtxtNextId() };//Reactants section
 			nlbsData[NodeListBoxString_Products] = { data->GetProducts(), GetMNBVCtxtNextId() };//Products section
 			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);
@@ -920,8 +1197,16 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
-	struct SimpleParameterNodeData : public NodeData
+	/*!
+	@brief The logic to encode the data needed to draw the node representing
+			ECellEngine::Data::SimpleParameter.
+	*/
+	struct SimpleParameterNodeData final : public NodeData
 	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
 		enum InputPin
 		{
 			InputPin_CollHdrModelLinks,
@@ -934,6 +1219,10 @@ namespace ECellEngine::Editor::Utility
 			InputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
 		enum OutputPin
 		{
 			OutputPin_CollHdrModelLinks,
@@ -945,6 +1234,10 @@ namespace ECellEngine::Editor::Utility
 			OutputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the collapsing headers.
+		@see ::collapsingHeaders
+		*/
 		enum CollapsingHeader
 		{
 			CollapsingHeader_ModelLinks,
@@ -955,6 +1248,10 @@ namespace ECellEngine::Editor::Utility
 			CollapsingHeader_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the list boxes storing strings.
+		@see ::nlbsData
+		*/
 		enum NodeListBoxString
 		{
 			NodeListBoxString_ComputedParameterLinks,
@@ -963,6 +1260,11 @@ namespace ECellEngine::Editor::Utility
 			NodeListBoxString_Count
 		};
 
+		/*!
+		@brief The local enum to manage to the encoding of the state of this
+				node.
+		@see ::utilityState
+		*/
 		enum State
 		{
 			State_CollHdrModelLinks,
@@ -973,15 +1275,39 @@ namespace ECellEngine::Editor::Utility
 			State_Count
 		};
 
+		/*!
+		@brief Pointer to the simple parameter represented by this node.
+		*/
 		ECellEngine::Data::SimpleParameter* data;
 
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
 		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
 		NodeOutputPinData outputPins[OutputPin_Count];
 
+		/*!
+		@brief The byte the encode the state variations of this node.
+		@details Manipulate the state with the enum values State_XXX
+		*/
 		unsigned char utilityState = 0;
 
+		/*!
+		@brief All the collapsing headers.
+		@details Access the pins with the enum values CollapsingHeader_XXX
+		*/
 		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
+		/*!
+		@brief All the list boxes to store/display strings.
+		@details Access the pins with the enum values NodeListBoxString_XXX
+		*/
 		NodeListBoxStringData nlbsData[NodeListBoxString_Count];
 		std::vector<std::string> computedParameterLinks;
 		std::vector<std::string> reactionLinks;
@@ -996,7 +1322,7 @@ namespace ECellEngine::Editor::Utility
 			collapsingHeadersIds{ _sprnd.collapsingHeadersIds[0], _sprnd.collapsingHeadersIds[1] , _sprnd.collapsingHeadersIds[2] ,
 					  _sprnd.collapsingHeadersIds[3] },
 			nlbsData{ _sprnd.nlbsData[0], _sprnd.nlbsData[1] },
-			computedParameterLinks { _sprnd.computedParameterLinks }, reactionLinks{ _sprnd.reactionLinks }
+			computedParameterLinks{ _sprnd.computedParameterLinks }, reactionLinks{ _sprnd.reactionLinks }
 		{
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -1017,7 +1343,7 @@ namespace ECellEngine::Editor::Utility
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
-			
+
 			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			inputPins[InputPin_Asset] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Asset
 			inputPins[InputPin_CollHdrComputedParameters] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
@@ -1051,8 +1377,16 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
-	struct SimulationTimeNodeData : public NodeData
+	/*!
+	@brief The logic to encode the data needed to draw the node to access the
+			ECellEngine::Core::Timer.
+	*/
+	struct SimulationTimeNodeData final : public NodeData
 	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
 		enum InputPin
 		{
 			InputPin_None,
@@ -1060,6 +1394,10 @@ namespace ECellEngine::Editor::Utility
 			InputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
 		enum OutputPin
 		{
 			OutputPin_SimulationTime,
@@ -1067,10 +1405,27 @@ namespace ECellEngine::Editor::Utility
 			OutputPin_Count
 		};
 
+		/*!
+		@brief Pointer to the timer partially represented by this node.
+		*/
 		ECellEngine::Core::Timer* simulationTimer;
+
+		/*!
+		@brief A buffer for the elapsed time value in the ::simulationTimer to
+				detect when it has been changed.
+		*/
 		float elapsedTimeBuffer = 0.f;
 
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
 		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
 		NodeOutputPinData outputPins[OutputPin_Count];
 
 		SimulationTimeNodeData(ECellEngine::Core::Timer* _simulationTimer, ImVec2& _position) :
@@ -1109,8 +1464,16 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
+	/*!
+	@brief The logic to encode the data needed to draw the node representing
+			ECellEngine::Data::Solver.
+	*/
 	struct SolverNodeData : public NodeData
 	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
 		enum InputPin
 		{
 			InputPin_None,
@@ -1118,6 +1481,10 @@ namespace ECellEngine::Editor::Utility
 			InputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
 		enum OutputPin
 		{
 			OutputPin_Solver,
@@ -1125,9 +1492,21 @@ namespace ECellEngine::Editor::Utility
 			OutputPin_Count
 		};
 
+		/*!
+		@brief Pointer to the solver represented by this node.
+		*/
 		ECellEngine::Solvers::Solver* data;
 
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
 		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
 		NodeOutputPinData outputPins[OutputPin_Count];
 
 		SolverNodeData(const SolverNodeData& _slvnd) :
@@ -1153,7 +1532,7 @@ namespace ECellEngine::Editor::Utility
 			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
-			
+
 			inputPins[InputPin_None] = NodeInputPinData(GetMNBVCtxtNextId(), PinType_Default, this);//not used
 			outputPins[OutputPin_Solver] = NodeOutputPinData(GetMNBVCtxtNextId(), PinType_Solver, this);//this solver transmission
 
@@ -1170,8 +1549,16 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
+	/*!
+	@brief The logic to encode the data needed to draw the node representing
+			ECellEngine::Data::Species.
+	*/
 	struct SpeciesNodeData : public NodeData
 	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
 		enum InputPin
 		{
 			InputPin_CollHdrModelLinks,
@@ -1186,6 +1573,10 @@ namespace ECellEngine::Editor::Utility
 			InputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
 		enum OutputPin
 		{
 			OutputPin_CollHdrModelLinks,
@@ -1199,6 +1590,10 @@ namespace ECellEngine::Editor::Utility
 			OutputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the collapsing headers.
+		@see ::collapsingHeaders
+		*/
 		enum CollapsingHeader
 		{
 			CollapsingHeader_ModelLinks,
@@ -1207,6 +1602,11 @@ namespace ECellEngine::Editor::Utility
 			CollapsingHeader_Count
 		};
 
+		/*!
+		@brief The local enum to manage to the encoding of the state of this
+				node.
+		@see ::utilityState
+		*/
 		enum State
 		{
 			State_CollHdrModelLinks,
@@ -1215,14 +1615,39 @@ namespace ECellEngine::Editor::Utility
 			State_Count
 		};
 
+		/*!
+		@brief Pointer to the species represented by this node.
+		*/
 		ECellEngine::Data::Species* data;
+
+		/*!
+		@brief A buffer for the quantity value of a species to detect when the
+				value in the engine has been changed.
+		*/
 		float speciesQuantityBuffer = 0.f;
 
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
 		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
 		NodeOutputPinData outputPins[OutputPin_Count];
 
+		/*!
+		@brief The byte the encode the state variations of this node.
+		@details Manipulate the state with the enum values State_XXX
+		*/
 		unsigned char utilityState = 0;
 
+		/*!
+		@brief All the collapsing headers.
+		@details Access the pins with the enum values CollapsingHeader_XXX
+		*/
 		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
 		SpeciesNodeData(const SpeciesNodeData& _snd) :
@@ -1284,8 +1709,16 @@ namespace ECellEngine::Editor::Utility
 		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
 	};
 
+	/*!
+	@brief The logic to encode the data needed to draw the node to define and
+			use a custom float.
+	*/
 	struct ValueFloatNodeData : public NodeData
 	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
 		enum InputPin
 		{
 			InputPin_None,
@@ -1293,6 +1726,10 @@ namespace ECellEngine::Editor::Utility
 			InputPin_Count
 		};
 
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
 		enum OutputPin
 		{
 			OutputPin_Value,
@@ -1300,9 +1737,21 @@ namespace ECellEngine::Editor::Utility
 			OutputPin_Count
 		};
 
+		/*!
+		@brief The value to make accessible through this node.
+		*/
 		float value = 0.f;
 
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
 		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
 		NodeOutputPinData outputPins[OutputPin_Count];
 
 		ValueFloatNodeData(float _value, ImVec2& _position) :

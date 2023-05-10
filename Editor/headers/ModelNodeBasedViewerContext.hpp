@@ -1,5 +1,10 @@
 #pragma once
 
+/*!
+@file
+@brief The source to store the data of the nodes to draw in a ECellEngine::Editor::ModelNodeBasedViewerWidget 
+*/
+
 #include <vector>
 
 #include "Simulation.hpp"
