@@ -1,9 +1,7 @@
 #include "Editor.hpp"//forward declaration initiated in the  base class "Widget"
 
 void ECellEngine::Editor::ModelExplorerWidget::Awake()
-{
-    SetDataState(0);
-    
+{    
     ImGui::Begin("Model Explorer");
     
     ImGuiID rootNode = ImGui::DockBuilderAddNode(ImGui::GetID("Model Explorer"));
@@ -416,9 +414,4 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
 
         ImGui::End();
     }
-}
-
-void ECellEngine::Editor::ModelExplorerWidget::SetDataState(std::size_t _simuIdx)
-{
-    dataState = editor.engine.GetSimulationsManager()->GetSimulation(_simuIdx)->GetDataState();
 }
