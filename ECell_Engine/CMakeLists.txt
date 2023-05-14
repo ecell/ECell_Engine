@@ -46,6 +46,12 @@ else()
     endif()
 endif()
 
+if (MSVC)
+
+    target_compile_options(ECellEngine PRIVATE /MP)	# Multithread compilation
+
+endif()
+
 target_link_libraries(ECellEngine
 						PUBLIC
                             ${LIBSBML_LIBRARY}
