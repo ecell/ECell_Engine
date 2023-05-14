@@ -9,8 +9,6 @@
 #include "SimpleParameter.hpp"
 #include "ComputedParameter.hpp"
 
-#include <string>
-
 namespace ECellEngine::Data
 {
 	/*!
@@ -63,17 +61,20 @@ namespace ECellEngine::Data
 		std::unordered_map<std::shared_ptr<Species>, SpeciesDependencies>				speciesDependencies;
 
 		/*!
-		@brief Collection associating a simple parameter to all its tracked dependencies (see ParameterDependencies).
+		@brief Collection associating a simple parameter to all its tracked
+				dependencies (see ParameterDependencies).
 		*/
 		std::unordered_map<std::shared_ptr<SimpleParameter>, ParameterDependencies>		simpleParameterDependencies;
 
 		/*!
-		@brief Collection associating a computed parameter to all its tracked dependencies (see ParameterDependencies).
+		@brief Collection associating a computed parameter to all its tracked
+				dependencies (see ParameterDependencies).
 		*/
 		std::unordered_map<std::shared_ptr<ComputedParameter>, ParameterDependencies>	computedParameterDependencies;
 
 		/*!
-		@brief Explore content of a computed parameter and fills the species and parameter (both simple and computed) dependencies.
+		@brief Explore content of a computed parameter and fills the species and
+				parameter (both simple and computed) dependencies.
 
 		@param dataState The data state.
 		@param computedParameter The target computed parameter.
@@ -81,22 +82,21 @@ namespace ECellEngine::Data
 		void RefreshComputedParameterDependencies(const DataState& dataState, std::shared_ptr<ComputedParameter> computedParameter) noexcept;
 
 		/*!
-		@brief Explore content of a computed parameter and fills the species dependencies.
+		@brief Explore the @p reaction's reactants, products and kinetic law to fill
+				the species, and parameters dependencies to this @p reaction.
 
 		@param dataState The data state.
-		@param computedParameter The target computed parameter.
-		*/
-		void RefreshSpeciesComputedParameterDependencies(const DataState& dataState, std::shared_ptr<ComputedParameter> computedParameter) noexcept;
-
-		/*!
-		@brief TODO
-
-		@param dataState The data state.
-		@param reaction The iterated reaction.
+		@param reaction The explored reaction.
 		*/
 		void RefreshReactionDependencies(const DataState& dataState, std::shared_ptr<Reaction> reaction)  noexcept;
 
 	public:
+
+		/*!
+		@brief Collection associating a species to all its tracked dependencies (see SpeciesDependencies).
+		*/
+		std::unordered_map<std::shared_ptr<Species>, SpeciesDependencies> speciesDependencies;
+
 		void RefreshDependencies(const DataState& dataState)  noexcept;
 
 		//TODO: Interface to access speciesDependencies
