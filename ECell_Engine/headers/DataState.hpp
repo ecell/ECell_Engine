@@ -29,6 +29,17 @@ namespace ECellEngine::Data
 
 		}
 
+
+		inline std::shared_ptr<ComputedParameter> GetComputedParameter(const std::string& _parameterName) const
+		{
+			return computedParameters.at(_parameterName);
+		}
+
+		inline const std::unordered_map<std::string, std::shared_ptr<ComputedParameter>>& GetComputedParameters() const
+		{
+			return computedParameters;
+		}
+
 		inline float GetElapsedTime() const
 		{
 			return elapsedTime;
@@ -41,34 +52,14 @@ namespace ECellEngine::Data
 			return operandsToOperations;
 		}
 
-		inline Reaction* GetReaction(const std::string& _reactionName)
+		inline std::shared_ptr<Reaction> GetReaction(const std::string& _reactionName) const
 		{
-			return reactions.at(_reactionName).get();
+			return reactions.at(_reactionName);
 		}
 
 		inline const std::unordered_map<std::string, std::shared_ptr<Reaction>>& GetReactions() const
 		{
 			return reactions;
-		}
-
-		inline ComputedParameter* GetComputedParameter(const std::string& _parameterName)
-		{
-			return computedParameters.at(_parameterName).get();
-		}
-
-		inline std::shared_ptr<ComputedParameter> GetComputedParameter(const std::string& _parameterName) const
-		{
-			return computedParameters.at(_parameterName);
-		}
-
-		inline const std::unordered_map<std::string, std::shared_ptr<ComputedParameter>>& GetComputedParameters() const
-		{
-			return computedParameters;
-		}
-
-		inline SimpleParameter* GetSimpleParameter(const std::string& _parameterName)
-		{
-			return simpleParameters.at(_parameterName).get();
 		}
 
 		inline std::shared_ptr<SimpleParameter> GetSimpleParameter(const std::string& _parameterName) const
@@ -79,11 +70,6 @@ namespace ECellEngine::Data
 		inline const std::unordered_map<std::string, std::shared_ptr<SimpleParameter>>& GetSimpleParameters() const
 		{
 			return simpleParameters;
-		}
-
-		inline Species* GetSpecies(const std::string& _speciesName)
-		{
-			return species.at(_speciesName).get();
 		}
 
 		inline std::shared_ptr<Species> GetSpecies(const std::string& _speciesName) const

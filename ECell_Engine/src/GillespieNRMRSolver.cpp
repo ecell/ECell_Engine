@@ -3,7 +3,7 @@
 
 void ECellEngine::Solvers::GillespieNRMRSolver::ApplyBackward(const std::string& _reactionName)
 {
-	ECellEngine::Data::Reaction* reaction = dataState.GetReaction(_reactionName);
+	ECellEngine::Data::Reaction* reaction = dataState.GetReaction(_reactionName).get();
 	//Decrementing quantities of all Products by 1
 	for (std::vector<std::string>::const_iterator it = reaction->GetProducts()->begin(); it != reaction->GetProducts()->end(); it++)
 	{
@@ -19,7 +19,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::ApplyBackward(const std::string&
 
 void ECellEngine::Solvers::GillespieNRMRSolver::ApplyForward(const std::string& _reactionName)
 {
-	ECellEngine::Data::Reaction* reaction = dataState.GetReaction(_reactionName);
+	ECellEngine::Data::Reaction* reaction = dataState.GetReaction(_reactionName).get();
 	
 	//Decrementing quantities of all reactants by 1
 	for (std::vector<std::string>::const_iterator it = reaction->GetReactants()->begin(); it != reaction->GetReactants()->end(); it++)
