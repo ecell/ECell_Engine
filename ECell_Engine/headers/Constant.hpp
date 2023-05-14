@@ -2,16 +2,16 @@
 
 #include "Operand.hpp"
 
-namespace ECellEngine::Maths
+namespace ECellEngine::Data
 {
-    class Constant : public Operand
+    class Constant : public ECellEngine::Maths::Operand
     {
     private:
         float value;
 
     public:
         Constant(float _value) :
-            Operand(""), value{ _value }
+            ECellEngine::Maths::Operand(""), value{ _value }
         {
         }
 

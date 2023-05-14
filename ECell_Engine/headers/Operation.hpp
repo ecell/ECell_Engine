@@ -89,7 +89,7 @@ namespace ECellEngine::Maths
 		/*!
 		@brief The list of local constants used in the operation.
 		*/
-		std::vector<Constant> constants;
+		std::vector<ECellEngine::Data::Constant> constants;
 
 		/*!
 		@brief The list of local operations used in this operation.
@@ -139,9 +139,9 @@ namespace ECellEngine::Maths
 		@details Also writes in ::structure to encode this new operand's
 				 information.
 		*/
-		inline Constant& AddConstant(const float _value)
+		inline ECellEngine::Data::Constant& AddConstant(const float _value)
 		{
-			constants.emplace_back(Constant(_value));
+			constants.emplace_back(ECellEngine::Data::Constant(_value));
 
 			if (structure == 0)// 000 0 00 00
 			{
