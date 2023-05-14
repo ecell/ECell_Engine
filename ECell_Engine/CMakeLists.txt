@@ -28,7 +28,14 @@ add_library(ECellEngine SHARED
     "src/Simulation.cpp"
     "src/SimulationsManager.cpp"
     #"src/SimulationLoop.cpp"
-    "src/Timer.cpp")
+    "src/Timer.cpp"
+    "src/dependencies/DependenciesDatabase.cpp"
+    "src/Species.cpp"
+    "src/Constant.cpp"
+    "src/Parameter.cpp"
+    "src/Operand.cpp"
+    "src/ComputedParameter.cpp"
+)
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)
 

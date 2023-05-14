@@ -1,5 +1,15 @@
 #include "Operation.hpp"
 
+void ECellEngine::Maths::Operation::GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector) const noexcept
+{
+    Operand::GetInvolvedSpecies(out_involvedSpecies, clearOutVector);
+
+    for (Operand* operand : operands)
+    {
+        operand->GetInvolvedSpecies(out_involvedSpecies, false);
+    }
+}
+
 void ECellEngine::Maths::Operation::LinkLocalOperands()
 {
     ShrinkLocalOperands();

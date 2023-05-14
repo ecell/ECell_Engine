@@ -19,5 +19,7 @@ namespace ECellEngine::Maths
         {
             return value;
         }
+
+        void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
     };
 }
