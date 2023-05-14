@@ -56,6 +56,11 @@ namespace ECellEngine::Data
 			return computedParameters.at(_parameterName).get();
 		}
 
+		inline std::shared_ptr<ComputedParameter> GetComputedParameter(const std::string& _parameterName) const
+		{
+			return computedParameters.at(_parameterName);
+		}
+
 		inline const std::unordered_map<std::string, std::shared_ptr<ComputedParameter>>& GetComputedParameters() const
 		{
 			return computedParameters;
@@ -64,6 +69,11 @@ namespace ECellEngine::Data
 		inline SimpleParameter* GetSimpleParameter(const std::string& _parameterName)
 		{
 			return simpleParameters.at(_parameterName).get();
+		}
+
+		inline std::shared_ptr<SimpleParameter> GetSimpleParameter(const std::string& _parameterName) const
+		{
+			return simpleParameters.at(_parameterName);
 		}
 
 		inline const std::unordered_map<std::string, std::shared_ptr<SimpleParameter>>& GetSimpleParameters() const

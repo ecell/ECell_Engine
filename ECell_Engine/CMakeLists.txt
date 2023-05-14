@@ -35,6 +35,7 @@ add_library(ECellEngine SHARED
     "src/Parameter.cpp"
     "src/Operand.cpp"
     "src/ComputedParameter.cpp"
+    "src/SimpleParameter.cpp"
 )
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)
