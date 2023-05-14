@@ -46,9 +46,24 @@ namespace ECellEngine::Data
 			return reactions.at(_reactionName).get();
 		}
 
+		inline const std::unordered_map<std::string, std::shared_ptr<Reaction>>& GetReactions() const
+		{
+			return reactions;
+		}
+
 		inline ComputedParameter* GetComputedParameter(const std::string& _parameterName)
 		{
 			return computedParameters.at(_parameterName).get();
+		}
+
+		inline std::shared_ptr<ComputedParameter> GetComputedParameter(const std::string& _parameterName) const
+		{
+			return computedParameters.at(_parameterName);
+		}
+
+		inline const std::unordered_map<std::string, std::shared_ptr<ComputedParameter>>& GetComputedParameters() const
+		{
+			return computedParameters;
 		}
 
 		inline SimpleParameter* GetSimpleParameter(const std::string& _parameterName)
@@ -56,9 +71,29 @@ namespace ECellEngine::Data
 			return simpleParameters.at(_parameterName).get();
 		}
 
+		inline std::shared_ptr<SimpleParameter> GetSimpleParameter(const std::string& _parameterName) const
+		{
+			return simpleParameters.at(_parameterName);
+		}
+
+		inline const std::unordered_map<std::string, std::shared_ptr<SimpleParameter>>& GetSimpleParameters() const
+		{
+			return simpleParameters;
+		}
+
 		inline Species* GetSpecies(const std::string& _speciesName)
 		{
 			return species.at(_speciesName).get();
+		}
+
+		inline std::shared_ptr<Species> GetSpecies(const std::string& _speciesName) const
+		{
+			return species.at(_speciesName);
+		}
+
+		inline const std::unordered_map<std::string, std::shared_ptr<Species>>& GetAllSpecies() const
+		{
+			return species;
 		}
 
 		inline bool AddReaction(const std::string& _reactionName,

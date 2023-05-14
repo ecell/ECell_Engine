@@ -34,5 +34,10 @@ namespace ECellEngine::Data
             return operation;
         }
 
+        void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
+
+        void GetInvolvedSimpleParameters(std::vector<std::string>& out_involvedSimpleParameters, bool clearOutVector = true) const noexcept override;
+
+        void GetInvolvedComputedParameters(std::vector<std::string>& out_involvedComputedParameters, bool clearOutVector = true) const noexcept override;
     };
 }
