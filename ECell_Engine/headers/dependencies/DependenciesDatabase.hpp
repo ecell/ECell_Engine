@@ -93,12 +93,29 @@ namespace ECellEngine::Data
 	public:
 
 		/*!
-		@brief Collection associating a species to all its tracked dependencies (see SpeciesDependencies).
+		@brief Gets the reference to ::speciesDependencies.
 		*/
-		std::unordered_map<std::shared_ptr<Species>, SpeciesDependencies> speciesDependencies;
+		inline const std::unordered_map<std::shared_ptr<Species>, SpeciesDependencies>& GetSpeciesDependencies() const noexcept
+		{
+			return speciesDependencies;
+		}
 
-		void RefreshDependencies(const DataState& dataState)  noexcept;
+		/*!
+		@brief Gets the reference to ::simpleParameterDependencies.
+		*/
+		inline const std::unordered_map<std::shared_ptr<SimpleParameter>, ParameterDependencies>& GetSimpleParameterDependencies() const noexcept
+		{
+			return simpleParameterDependencies;
+		}
 
-		//TODO: Interface to access speciesDependencies
+		/*!
+		@brief Gets the reference to ::computedParameterDependencies.
+		*/
+		inline const std::unordered_map<std::shared_ptr<ComputedParameter>, ParameterDependencies>& GetComputedParameterDependencies() const noexcept
+		{
+			return computedParameterDependencies;
+		}
+
+		void RefreshDependencies(const DataState& dataState) noexcept;
 	};
 }
