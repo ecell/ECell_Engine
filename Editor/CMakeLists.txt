@@ -38,6 +38,12 @@ add_executable( ECellEngineEditor
 "src/SimulationFlowControlWidget.cpp"
 )
 
+if (MSVC)
+
+    target_compile_options(ECellEngine PRIVATE /MP)	# Multithread compilation
+
+endif()
+
 target_link_libraries(ECellEngineEditor PRIVATE ECellEngine)
 target_link_libraries(ECellEngineEditor PRIVATE imgui::imgui)
 target_link_libraries(ECellEngineEditor PRIVATE glfw)
