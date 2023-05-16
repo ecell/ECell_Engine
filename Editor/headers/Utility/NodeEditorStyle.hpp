@@ -5,7 +5,7 @@
 @brief Enums and data to encode the style of each ECellEngine::Editor::Utility::ModelNodeBasedViewerContext.
 */
 
-namespace ECellEngine::Editor::Utility
+namespace ECellEngine::Editor::Utility::MNBV
 {
 	/*!
 	@brief The various type of nodes that can be exist in a 

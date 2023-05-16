@@ -357,15 +357,15 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawPreferencesPopup()
 
                     if (ImGui::TreeNode("Nodes"))
                     {
-                        for (int i = 0; i < ECellEngine::Editor::Utility::NodeType_Count; i++)
+                        for (int i = 0; i < ECellEngine::Editor::Utility::MNBV::NodeType_Count; i++)
                         {
-                            ECellEngine::Editor::Utility::NodeType nodeType = (ECellEngine::Editor::Utility::NodeType)i;
+                            ECellEngine::Editor::Utility::MNBV::NodeType nodeType = (ECellEngine::Editor::Utility::MNBV::NodeType)i;
                             if (ImGui::TreeNode(MNBV::GetNodeTypeName(nodeType)))
                             {
                                 ImVec4* colors = MNBV::GetNodeColors(nodeType);
-                                for (int j = 0; j < ECellEngine::Editor::Utility::NodeColorType_Count; j++)
+                                for (int j = 0; j < ECellEngine::Editor::Utility::MNBV::NodeColorType_Count; j++)
                                 {
-                                    const char* name = MNBV::GetNodeColorTypeName((ECellEngine::Editor::Utility::NodeColorType)j);
+                                    const char* name = MNBV::GetNodeColorTypeName((ECellEngine::Editor::Utility::MNBV::NodeColorType)j);
                                     ImGui::PushID(j);
                                     ImGui::ColorEdit4("##color", &(colors+j)->x, ImGuiColorEditFlags_AlphaBar | alpha_flags);
                                     ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
@@ -382,15 +382,15 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawPreferencesPopup()
 
                     if (ImGui::TreeNode("Pins"))
                     {
-                        for (int i = 0; i < ECellEngine::Editor::Utility::PinType_Count; i++)
+                        for (int i = 0; i < ECellEngine::Editor::Utility::MNBV::PinType_Count; i++)
                         {
-                            ECellEngine::Editor::Utility::PinType pinType = (ECellEngine::Editor::Utility::PinType)i;
+                            ECellEngine::Editor::Utility::MNBV::PinType pinType = (ECellEngine::Editor::Utility::MNBV::PinType)i;
                             if (ImGui::TreeNode(MNBV::GetPinTypeName(pinType)))
                             {
                                 ImVec4* colors = MNBV::GetPinColors(pinType);
-                                for (int j = 0; j < ECellEngine::Editor::Utility::PinColorType_Count; j++)
+                                for (int j = 0; j < ECellEngine::Editor::Utility::MNBV::PinColorType_Count; j++)
                                 {
-                                    const char* name = MNBV::GetPinColorTypeName((ECellEngine::Editor::Utility::PinColorType)j);
+                                    const char* name = MNBV::GetPinColorTypeName((ECellEngine::Editor::Utility::MNBV::PinColorType)j);
                                     ImGui::PushID(j);
                                     ImGui::ColorEdit4("##color", &(colors+j)->x, ImGuiColorEditFlags_AlphaBar | alpha_flags);
                                     ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);

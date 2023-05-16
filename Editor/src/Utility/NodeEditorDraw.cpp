@@ -1,7 +1,7 @@
 #include "Utility/NodeEditorDraw.hpp"
 
 #pragma region Nodes
-void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, AssetNodeData& _assetNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _name, AssetNodeData& _assetNodeInfo)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Asset));
     ax::NodeEditor::BeginNode(_assetNodeInfo.id);
@@ -59,7 +59,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::AssetNode(const char* _name, 
 
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Parameter));
     ax::NodeEditor::BeginNode(_parameterNodeInfo.id);
@@ -150,7 +150,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ComputedParameterNode(const c
     PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _name, LinePlotNodeData& _linePlotNodeData)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char* _name, LinePlotNodeData& _linePlotNodeData)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Default));
     ax::NodeEditor::BeginNode(_linePlotNodeData.id);
@@ -267,7 +267,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinePlotNode(const char* _nam
     PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Reaction));
     ax::NodeEditor::BeginNode(_reactionNodeInfo.id);
@@ -355,7 +355,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ReactionNode(const char* _nam
     PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Parameter));
     ax::NodeEditor::BeginNode(_parameterNodeInfo.id);
@@ -416,7 +416,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimpleParameterNode(const cha
     PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::SimulationTimeNode(const char* _name, SimulationTimeNodeData& _simulationTimeNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SimulationTimeNode(const char* _name, SimulationTimeNodeData& _simulationTimeNodeInfo)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Data));
     ax::NodeEditor::BeginNode(_simulationTimeNodeInfo.id);
@@ -440,7 +440,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SimulationTimeNode(const char
     PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Solver));
     ax::NodeEditor::BeginNode(_solverNodeInfo.id);
@@ -457,7 +457,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SolverNode(const char* _name,
     PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Species));
     ax::NodeEditor::BeginNode(_speciesNodeInfo.id);
@@ -524,7 +524,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::SpeciesNode(const char* _name
     PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Data));
     ax::NodeEditor::BeginNode(_valueFloatNodeInfo.id);
@@ -547,7 +547,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::ValueFloatNode(const char* _n
 #pragma endregion
 
 #pragma region Node Pins
-void ECellEngine::Editor::Utility::NodeEditorDraw::Pin(const NodePinData& _pinData, const ImVec4 _pinColors[])
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::Pin(const NodePinData& _pinData, const ImVec4 _pinColors[])
 {
     ax::NodeEditor::BeginPin(_pinData.id, _pinData.kind);
 
@@ -580,7 +580,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::Pin(const NodePinData& _pinDa
     ax::NodeEditor::EndPin();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::vector<ECellEngine::Editor::Utility::LinkData>& _links)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinkCreation(std::vector<LinkData>& _links)
 {
     // Handle creation action, returns true if editor want to create new object (node or link)
     if (ax::NodeEditor::BeginCreate())
@@ -652,7 +652,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkCreation(std::vector<ECel
     ax::NodeEditor::EndCreate(); // Wraps up object creation action handling.
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::LinkDestruction(std::vector<ECellEngine::Editor::Utility::LinkData>& _links)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinkDestruction(std::vector<LinkData>& _links)
 {
     if (ax::NodeEditor::BeginDelete())
     {
@@ -664,7 +664,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkDestruction(std::vector<E
             if (ax::NodeEditor::AcceptDeletedItem())
             {
                 // Then remove link from your data.
-                for (std::vector<ECellEngine::Editor::Utility::LinkData>::iterator it = _links.begin(); it != _links.end(); it++)
+                for (std::vector<ECellEngine::Editor::Utility::MNBV::LinkData>::iterator it = _links.begin(); it != _links.end(); it++)
                 {
                     if ((*it).id == deletedLinkId)
                     {
@@ -681,7 +681,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::LinkDestruction(std::vector<E
     ax::NodeEditor::EndDelete(); // Wrap up deletion action
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::Link(LinkData& linkInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::Link(LinkData& linkInfo)
 {
     if (ax::NodeEditor::Link(linkInfo.id, linkInfo.startIds[0], linkInfo.endIds[0])) { return; }
 
@@ -695,7 +695,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::Link(LinkData& linkInfo)
 
 #pragma region Custom Node Widgets
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip)
 {
     ImGui::CheckboxFlags(_label, _flags, _flag);
     if (_tooltip)
@@ -709,7 +709,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeCheckBoxFlag(const char* 
     }
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeAllImPlotAxisFlags(ImPlotFlags* _flags)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeAllImPlotAxisFlags(ImPlotFlags* _flags)
 {
     NodeCheckBoxFlag("ImPlotAxisFlags_NoLabel", _flags, ImPlotAxisFlags_NoLabel, "The axis label will not be displayed (axis labels also hidden if the supplied string name is NULL).");
     NodeCheckBoxFlag("ImPlotAxisFlags_NoGridLines", _flags, ImPlotAxisFlags_NoGridLines, "No grid lines will be displayed.");
@@ -731,7 +731,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeAllImPlotAxisFlags(ImPlot
     NodeCheckBoxFlag("ImPlotAxisFlags_AuxDefault", _flags, ImPlotAxisFlags_AuxDefault, "ImPlotAxisFlags_NoGridLines | ImPlotAxisFlags_Opposite");
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeAllImPlotFlags(ImPlotFlags* _flags)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeAllImPlotFlags(ImPlotFlags* _flags)
 {
     NodeCheckBoxFlag("ImPlotFlags_NoTitle", _flags, ImPlotFlags_NoTitle, "The plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MyPlot\").");
     NodeCheckBoxFlag("ImPlotFlags_NoLegend", _flags, ImPlotFlags_NoLegend, "The legend will not be displayed.");
@@ -747,7 +747,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeAllImPlotFlags(ImPlotFlag
     NodeCheckBoxFlag("ImPlotFlags_CanvasOnly", _flags, ImPlotFlags_CanvasOnly, "ImPlotFlags_NoTitle | ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText");
 }
 
-bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader(const char* _label, const std::size_t _id,
+bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader(const char* _label, const std::size_t _id,
     unsigned char& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength,
     const ImVec2& _size)
@@ -763,7 +763,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader(const ch
     return _utilityState >> _stateBitPos & 1;
 }
 
-bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_In(const char* _label, const std::size_t _id,
+bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_In(const char* _label, const std::size_t _id,
     unsigned char& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength,
     const NodePinData& _pin, const ImVec4 _pinColors[],
@@ -788,7 +788,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_In(const
     return open;
 }
 
-bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_InOut(const char* _label, const std::size_t _id,
+bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_InOut(const char* _label, const std::size_t _id,
     unsigned char& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength,
     const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
@@ -816,7 +816,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_InOut(co
     return open;
 }
 
-bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_Out(const char* _label, const std::size_t _id,
+bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_Out(const char* _label, const std::size_t _id,
     unsigned char& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength,
     const NodePinData& _pin, const ImVec4 _pinColors[],
@@ -842,7 +842,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeCollapsingHeader_Out(cons
     return open;
 }
 
-bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeDragFloat_Out(const char* _label, const std::size_t _id, float* valueBuffer,
+bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeDragFloat_Out(const char* _label, const std::size_t _id, float* valueBuffer,
     const float _inputFieldWidth, const float _startX, const float _drawLength,
     const NodePinData& _pin, const ImVec4 _pinColors[],
     const ImGuiInputTextFlags _flags)
@@ -866,7 +866,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeDragFloat_Out(const char*
     return edited;
 }
 
-float ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type, const char* _name,
+float ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeHeader(const char* _type, const char* _name,
     const ImVec4 _colorSet[], const float _width, const short _height, const short _nbPins)
 {
     const float titleSize = ImGui::CalcTextSize(_type).x + ImGui::CalcTextSize(_name).x + ImGui::GetStyle().ItemSpacing.x;
@@ -908,7 +908,7 @@ float ECellEngine::Editor::Utility::NodeEditorDraw::NodeHeader(const char* _type
     return bb.GetWidth();
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const float _width, const float _thickness)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeHorizontalSeparator(const float _width, const float _thickness)
 {
     //ItemAdd and ImRect are part of imgui_internal.hpp
     const ImVec2 startPos = ImGui::GetCursorPos();
@@ -920,7 +920,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeHorizontalSeparator(const
     }
 }
 
-bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* valueBuffer,
+bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* valueBuffer,
     const float _inputFieldWidth, const float _startX, const float _drawLength,
     const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
     const ImGuiInputTextFlags _flags)
@@ -951,7 +951,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_InOut(const ch
     return edited;
 }
 
-bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_Out(const char* _label, const std::size_t _id, float* valueBuffer,
+bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeInputFloat_Out(const char* _label, const std::size_t _id, float* valueBuffer,
     const float _inputFieldWidth, const float _startX, const float _drawLength,
     const NodePinData& _pin, const ImVec4 _pinColors[],
     const ImGuiInputTextFlags _flags)
@@ -981,7 +981,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputFloat_Out(const char
     return edited;
 }
 
-bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputText(const char* _label, char* _target, char* _buffer,
+bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeInputText(const char* _label, char* _target, char* _buffer,
     const std::size_t _bufferSize, const float _inputFieldWidth, const float _startX, const float _drawLength,
     const ImGuiInputTextFlags _flags)
 {
@@ -1015,7 +1015,7 @@ bool ECellEngine::Editor::Utility::NodeEditorDraw::NodeInputText(const char* _la
     return false;
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData& _nlbsData,
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData& _nlbsData,
     const float _startX, const float _drawLength,
     const float _widgetWidth, const unsigned short _itemViewHeight)
 {
@@ -1128,7 +1128,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox(NodeListBox
     }
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_In(const char* _label, const float _startX,
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeText_In(const char* _label, const float _startX,
     const NodePinData& _pin, const ImVec4 _pinColors[])
 {
     ImGui::SetCursorPosX(_startX);
@@ -1140,7 +1140,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_In(const char* _labe
     ImGui::Text(_label);
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_InOut(const char* _label, const float _labelWidth,
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeText_InOut(const char* _label, const float _labelWidth,
     const float _startX, const float _drawLength,
     const NodePinData& _inputPin, const NodePinData& _outputPin,
     const ImVec4 _pinColors[])
@@ -1158,7 +1158,7 @@ void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_InOut(const char* _l
     Pin(_outputPin, _pinColors);
 }
 
-void ECellEngine::Editor::Utility::NodeEditorDraw::NodeText_Out(const char* _label, const float _labelWidth,
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeText_Out(const char* _label, const float _labelWidth,
     const float _startX, const float _drawLength, const float itemSpacingX,
     const NodePinData& _pin, const ImVec4 _pinColors[])
 {

@@ -1,7 +1,7 @@
 #include "Utility/NodeEditorData.hpp"
 
 
-void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, char* _data)
+void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, char* _data)
 {
 	//The node input pin representing the solver attached to this asset.
 	if (_nodeInputPin == inputPins[AssetNodeData::InputPin_Solver])
@@ -15,7 +15,7 @@ void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(const NodeInputPin
 }
 
 
-void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ComputedParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Computed parameter operation value
 	if (_nodeOutputPin == outputPins[ComputedParameterNodeData::OutputPin_ComputedParameterValue])
@@ -25,12 +25,12 @@ void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputConnect(cons
 	}
 }
 
-void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ComputedParameterNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ComputedParameterNodeData::OutputUpdate");
 }
 
-void ECellEngine::Editor::Utility::LinePlotNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
+void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
 {
 	//X axis input pin
 	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_XAxis])
@@ -47,7 +47,7 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputConnect(const NodeInpu
 	}
 }
 
-void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
+void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
 {
 	//The node input pin corresponding to the X Axis data
 	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_XAxis])
@@ -76,7 +76,7 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputUpdate(const NodeInput
 	}
 }
 
-void ECellEngine::Editor::Utility::ReactionNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Reaction kinetic law value
 	if (_nodeOutputPin == outputPins[ReactionNodeData::OutputPin_KineticLawValue])
@@ -86,12 +86,12 @@ void ECellEngine::Editor::Utility::ReactionNodeData::OutputConnect(const NodeOut
 	}
 }
 
-void ECellEngine::Editor::Utility::ReactionNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
 
 }
 
-void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
+void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
 {
 	//Simple parameter value
 	if (_nodeInputPin == inputPins[SimpleParameterNodeData::InputPin_ParameterValue])
@@ -101,12 +101,12 @@ void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputConnect(const N
 	}
 }
 
-void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
+void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SimpleParameterNodeData::InputUpdate; data=" + std::to_string(_data));
 }
 
-void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Simple parameter value
 	if (_nodeOutputPin == outputPins[SimpleParameterNodeData::OutputPin_ParameterValue])
@@ -116,18 +116,18 @@ void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputConnect(const 
 	}
 }
 
-void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SimpleParameterNodeData::OutputUpdate");
 }
 
-void ECellEngine::Editor::Utility::SimulationTimeNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
 	//There is only one output pin in the SImulationTimeNodeData
 	outputPins[OutputPin_SimulationTime].Broadcast(simulationTimer->elapsedTime);
 }
 
-void ECellEngine::Editor::Utility::SolverNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
 	//The node output pin representing the solver.
 	//It is used to attach a solver to an asset.
@@ -140,7 +140,7 @@ void ECellEngine::Editor::Utility::SolverNodeData::OutputUpdate(const NodeOutput
 	}
 }
 
-void ECellEngine::Editor::Utility::SpeciesNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
 {
 	//Quantity value
 	if (_nodeInputPin == inputPins[SpeciesNodeData::InputPin_Quantity])
@@ -150,12 +150,12 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::InputConnect(const NodeInput
 	}
 }
 
-void ECellEngine::Editor::Utility::SpeciesNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SpeciesNodeData::InputUpdate; data=" + std::to_string(_data));
 }
 
-void ECellEngine::Editor::Utility::SpeciesNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Quantity value
 	if (_nodeOutputPin == outputPins[SpeciesNodeData::OutputPin_Quantity])
@@ -165,7 +165,7 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::OutputConnect(const NodeOutp
 	}
 }
 
-void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
 	//The node output pin corresponding to the Quantity
 	if (_nodeOutputPin == outputPins[SpeciesNodeData::OutputPin_Quantity])
@@ -174,7 +174,7 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::OutputUpdate(const NodeOutpu
 	}
 }
 
-void ECellEngine::Editor::Utility::ValueFloatNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
 	//There is only one output pin in the ValueFloatNodeData
 	outputPins[ValueFloatNodeData::OutputPin_Value].Broadcast(value);

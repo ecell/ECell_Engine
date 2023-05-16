@@ -23,7 +23,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		/*!
 		@brief The unique Id to be used by any newly created data that will be
 				part of this context.
-		@see ECellEngine::Editor::Utility::GetMNBVCtxtNextId()
+		@see ECellEngine::Editor::Widget::MNBV::GetMNBVCtxtNextId()
 		*/
 		std::size_t uniqueId;
 
@@ -31,7 +31,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		@brief The instance of styling data for the elements (nodes, pins, links)
 				of this context.
 		*/
-		ECellEngine::Editor::Utility::NodeEditorStyle style;
+		Utility::MNBV::NodeEditorStyle style;
 
 #pragma region Nodes Lists
 		/*!
@@ -39,7 +39,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		@details It contains the information used to draw the nodes corresponding
 				 to each asset imported in the current simulation space.
 		*/
-		std::vector<ECellEngine::Editor::Utility::AssetNodeData> assetNodes;
+		std::vector<Utility::MNBV::AssetNodeData> assetNodes;
 
 		/*!
 		@brief The list of computed parameter nodes in this context.
@@ -47,7 +47,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 				 to each computed parameter of various assets imported in the current
 				 simulation space.
 		*/
-		std::vector<ECellEngine::Editor::Utility::ComputedParameterNodeData> computedParameterNodes;
+		std::vector<Utility::MNBV::ComputedParameterNodeData> computedParameterNodes;
 
 		/*!
 		@brief The list of nodes handling line plots in this context.
@@ -55,7 +55,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 				 line plots to display numeric data imported in the current simulation
 				 space.
 		*/
-		std::vector<ECellEngine::Editor::Utility::LinePlotNodeData> linePlotNodes;
+		std::vector<Utility::MNBV::LinePlotNodeData> linePlotNodes;
 
 		/*!
 		@brief The list of reaction nodes in this context.
@@ -63,7 +63,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 				 to each reaction of various assets imported in the current
 				 simulation space.
 		*/
-		std::vector<ECellEngine::Editor::Utility::ReactionNodeData> reactionNodes;
+		std::vector<Utility::MNBV::ReactionNodeData> reactionNodes;
 
 		/*!
 		@brief The list of simple parameter nodes in this context.
@@ -71,21 +71,21 @@ namespace ECellEngine::Editor::Widget::MNBV
 				 to each simple parameter of various assets imported in the current
 				 simulation space.
 		*/
-		std::vector<ECellEngine::Editor::Utility::SimpleParameterNodeData> simpleParameterNodes;
+		std::vector<Utility::MNBV::SimpleParameterNodeData> simpleParameterNodes;
 		
 		/*!
 		@brief The list of simulation time nodes.
 		@details It contains the information used to draw the nodes corresponding
 				 to display and use the elapsed time of the simulation.
 		*/
-		std::vector<ECellEngine::Editor::Utility::SimulationTimeNodeData> simulationTimeNodes;
+		std::vector<Utility::MNBV::SimulationTimeNodeData> simulationTimeNodes;
 
 		/*!
 		@brief The list of solver nodes.
 		@details It contains the information used to draw the nodes corresponding
 				 to each solvers imported in the current simulation space.
 		*/
-		std::vector<ECellEngine::Editor::Utility::SolverNodeData> solverNodes;
+		std::vector<Utility::MNBV::SolverNodeData> solverNodes;
 
 		/*!
 		@brief The list of species nodes in this context.
@@ -93,14 +93,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 				 to each species of various assets imported in the current
 				 simulation space.
 		*/
-		std::vector<ECellEngine::Editor::Utility::SpeciesNodeData> speciesNodes;
+		std::vector<Utility::MNBV::SpeciesNodeData> speciesNodes;
 		
 		/*!
 		@brief The list of value float nodes in this context.
 		@details It contains the information used to draw the nodes to display, set
 				and use custom float values.
 		*/
-		std::vector<ECellEngine::Editor::Utility::ValueFloatNodeData> valueFloatNodes;
+		std::vector<Utility::MNBV::ValueFloatNodeData> valueFloatNodes;
 #pragma endregion
 
 		/*!
@@ -108,14 +108,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 		@details It contains the information used to draw the links between pins
 				 of nodes in this context.
 		*/
-		std::vector<ECellEngine::Editor::Utility::LinkData> links;
+		std::vector<Utility::MNBV::LinkData> links;
 
 		/*!
 		@brief The matrix to encode whether a link can be created by the user
 				between a specific pair of pins.
-		@see ECellEngine::Editor::Utility::PinType.
+		@see Utility::MNBV::PinType.
 		*/
-		bool authorizedDynamicLinks[Utility::PinType_Count][Utility::PinType_Count]{};
+		bool authorizedDynamicLinks[Utility::MNBV::PinType_Count][Utility::MNBV::PinType_Count]{};
 
 		/*!
 		@brief A local struct to encapsulate the parameters mandatory to send a
@@ -154,8 +154,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 		ModelNodeBasedViewerContext() :
 			uniqueId{ 0 }, countTASToMCmds{ 0 }
 		{
-			authorizedDynamicLinks[Utility::PinType_Solver][Utility::PinType_Solver] = true;
-			authorizedDynamicLinks[Utility::PinType_ValueFloat][Utility::PinType_ValueFloat] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_Solver][Utility::MNBV::PinType_Solver] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_ValueFloat][Utility::MNBV::PinType_ValueFloat] = true;
 		}
 
 		/*!

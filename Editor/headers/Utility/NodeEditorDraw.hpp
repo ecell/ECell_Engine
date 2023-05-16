@@ -10,7 +10,7 @@
 
 #include "Logging/Logger.hpp"
 
-namespace ECellEngine::Editor::Utility
+namespace ECellEngine::Editor::Utility::MNBV
 {
 	/*!
 	@brief Struct with public static logic to help building the NodeEditor.
@@ -163,13 +163,13 @@ namespace ECellEngine::Editor::Utility
 				pins of nodes.
 		@param _links The current list of links.
 		*/
-		static void LinkCreation(std::vector<ECellEngine::Editor::Utility::LinkData>& _links);
+		static void LinkCreation(std::vector<LinkData>& _links);
 
 		/*!
 		@brief The basic logic to destroy links between nodes.
 		@param _links The current list of links.
 		*/
-		static void LinkDestruction(std::vector<ECellEngine::Editor::Utility::LinkData>& _links);
+		static void LinkDestruction(std::vector<LinkData>& _links);
 
 		/*!
 		@brief Draw a square pin.

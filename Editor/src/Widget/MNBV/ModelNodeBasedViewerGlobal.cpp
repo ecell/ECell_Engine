@@ -4,12 +4,12 @@ static ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* s_mnbvCtx
 
 void ECellEngine::Editor::Widget::MNBV::AddAssetNode(ECellEngine::Data::Module* _module)
 {
-    s_mnbvCtxt->assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeData(_module));
+    s_mnbvCtxt->assetNodes.push_back(Utility::MNBV::AssetNodeData(_module));
 }
 
 void ECellEngine::Editor::Widget::MNBV::AddSolverNode(ECellEngine::Solvers::Solver* _solver)
 {
-    s_mnbvCtxt->solverNodes.push_back(ECellEngine::Editor::Utility::SolverNodeData(_solver));
+    s_mnbvCtxt->solverNodes.push_back(Utility::MNBV::SolverNodeData(_solver));
 }
 
 void ECellEngine::Editor::Widget::MNBV::CurrentMNBVContextDraw(ECellEngine::Core::Simulation* _simulation)
@@ -17,9 +17,9 @@ void ECellEngine::Editor::Widget::MNBV::CurrentMNBVContextDraw(ECellEngine::Core
     s_mnbvCtxt->Draw(_simulation);
 }
 
-ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Widget::MNBV::FindNodeInAll(const std::size_t _id)
+ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV::FindNodeInAll(const std::size_t _id)
 {
-    Utility::NodeData* itND = nullptr;
+    Utility::MNBV::NodeData* itND = nullptr;
 
     //Search in the list of Asset Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end());
@@ -88,7 +88,7 @@ ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Widget::MNBV::FindN
 }
 
 template<class ForwardIt>
-ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Widget::MNBV::FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
+ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV::FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
 {
     if (_first != _last)
     {   
@@ -98,9 +98,9 @@ ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Widget::MNBV::FindN
     return nullptr;
 }
 
-ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Widget::MNBV::FindNodePinInAll(const std::size_t _id)
+ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MNBV::FindNodePinInAll(const std::size_t _id)
 {
-    Utility::NodePinData* itNPD = nullptr;
+    Utility::MNBV::NodePinData* itNPD = nullptr;
 
     //Search in the list of Asset Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end());
@@ -169,9 +169,9 @@ ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Widget::MNBV::Fi
 }
 
 template<class ForwardIt>
-ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Widget::MNBV::FindNodePinIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
+ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MNBV::FindNodePinIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
 {
-    Utility::NodePinData* itNPD;
+    Utility::MNBV::NodePinData* itNPD;
 
     //if length of the space to search is greater than 0
     //The list/array has at least 1 element
@@ -221,22 +221,22 @@ ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* ECellEngine::Edi
     return s_mnbvCtxt;
 }
 
-std::vector<ECellEngine::Editor::Utility::LinkData>* ECellEngine::Editor::Widget::MNBV::GetLinks()
+std::vector<ECellEngine::Editor::Utility::MNBV::LinkData>* ECellEngine::Editor::Widget::MNBV::GetLinks()
 {
     return &s_mnbvCtxt->links;
 }
 
-ECellEngine::Editor::Utility::NodeEditorStyle* ECellEngine::Editor::Widget::MNBV::GetMNBVStyle()
+ECellEngine::Editor::Utility::MNBV::NodeEditorStyle* ECellEngine::Editor::Widget::MNBV::GetMNBVStyle()
 {
     return &s_mnbvCtxt->style;
 }
 
-ImVec4* ECellEngine::Editor::Widget::MNBV::GetNodeColors(Utility::NodeType _nodeType)
+ImVec4* ECellEngine::Editor::Widget::MNBV::GetNodeColors(Utility::MNBV::NodeType _nodeType)
 {
     return s_mnbvCtxt->style.nodeColors[_nodeType];
 }
 
-ImVec4* ECellEngine::Editor::Widget::MNBV::GetPinColors(Utility::PinType _pinType)
+ImVec4* ECellEngine::Editor::Widget::MNBV::GetPinColors(Utility::MNBV::PinType _pinType)
 {
     return s_mnbvCtxt->style.pinColors[_pinType];
 }
@@ -251,7 +251,7 @@ std::size_t& ECellEngine::Editor::Widget::MNBV::GetMNBVCtxtNextId()
     return ++(s_mnbvCtxt->uniqueId);
 }
 
-bool ECellEngine::Editor::Widget::MNBV::IsDynamicLinkAuthorized(Utility::PinType _startPinType, Utility::PinType _endPinType)
+bool ECellEngine::Editor::Widget::MNBV::IsDynamicLinkAuthorized(Utility::MNBV::PinType _startPinType, Utility::MNBV::PinType _endPinType)
 {
     return s_mnbvCtxt->authorizedDynamicLinks[_startPinType][_endPinType];
 }

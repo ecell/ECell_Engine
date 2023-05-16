@@ -13,7 +13,7 @@
 #include "PlotUtility.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerGlobal.hpp"
 
-namespace ECellEngine::Editor::Utility
+namespace ECellEngine::Editor::Utility::MNBV
 {
 #pragma region Custom Node Widgets Data
 	/*!
