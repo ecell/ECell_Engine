@@ -26,10 +26,11 @@ add_library(ECellEngine SHARED
     
     "src/Logging/Logger.cpp"
 
-    "src/BiochemicalSolver.cpp"
+    "src/Solver/BiochemicalSolver.cpp"
+    "src/Solver/GillespieNRMRSolver.cpp"
+    #"src/Solver/Gillespie_NRM_R.cpp"
+
     "src/Function.cpp"
-    "src/GillespieNRMRSolver.cpp"
-    #"src/Gillespie_NRM_R.cpp"
     "src/IndexedMinHeap.cpp"
     "src/MathUtility.cpp"
     "src/Operation.cpp"

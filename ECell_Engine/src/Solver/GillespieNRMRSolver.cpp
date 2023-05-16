@@ -1,5 +1,5 @@
 #include "Data/BiochemicalModule.hpp"
-#include "GillespieNRMRSolver.hpp"
+#include "Solver/GillespieNRMRSolver.hpp"
 
 void ECellEngine::Solvers::GillespieNRMRSolver::ApplyBackward(const std::string& _reactionName)
 {

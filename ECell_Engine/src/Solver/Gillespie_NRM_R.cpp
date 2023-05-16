@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <iterator>
-#include "Gillespie_NRM_R.hpp"
+#include "Solver/Gillespie_NRM_R.hpp"
 
 
 std::ostream& ECellEngine::Solvers::operator<<(std::ostream& os, const Gillespie_NRM_R& _g_nrm_r)

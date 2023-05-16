@@ -7,8 +7,8 @@
 #include "Data/Module.hpp"
 #include "IO/ModuleImporterManager.hpp"
 
-#include "Solver.hpp"
-#include "GillespieNRMRSolver.hpp"
+#include "Solver/Solver.hpp"
+#include "Solver/GillespieNRMRSolver.hpp"
 
 #include "Core/Timer.hpp"
 
