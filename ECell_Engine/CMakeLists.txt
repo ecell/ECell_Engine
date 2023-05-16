@@ -4,38 +4,40 @@ cmake_minimum_required (VERSION 3.12)
 
 # Add ECell_Engine source files
 add_library(ECellEngine SHARED
-    #"src/ASTNode_parser.cpp"
-    "src/BiochemicalSolver.cpp"
-    "src/Commands.cpp"
-    "src/CommandsManager.cpp"
-    "src/DataState.cpp"
-    "src/Engine.cpp"
-    #"src/FileIOManager.cpp"
-    "src/Function.cpp"
-    "src/GillespieNRMRSolver.cpp"
-    #"src/Gillespie_NRM_R.cpp"
-    #"src/Gillespie_NRM_R_Data.cpp"
-    "src/IndexedMinHeap.cpp"
-    "src/Logger.cpp"
-    "src/MathUtility.cpp"
-    "src/ModuleImporterManager.cpp"
-    "src/Operation.cpp"
-    "src/revrand.c"
-    "src/sbml_example.cpp"
-    "src/SBMLModuleImporter.cpp"
-    "src/SbmlParser.cpp"
-    "src/SbmlWriter.cpp"
-    "src/Simulation.cpp"
-    "src/SimulationsManager.cpp"
-    #"src/SimulationLoop.cpp"
-    "src/Timer.cpp"
-    "src/dependencies/DependenciesDatabase.cpp"
-    "src/Species.cpp"
-    "src/Constant.cpp"
-    "src/Parameter.cpp"
-    "src/Operand.cpp"
-    "src/ComputedParameter.cpp"
-    "src/SimpleParameter.cpp"
+    "src/Core/Engine.cpp"
+    "src/Core/Simulation.cpp"
+    "src/Core/SimulationsManager.cpp"
+    "src/Core/Timer.cpp"
+
+    "src/Data/Constant.cpp"
+    "src/Data/ComputedParameter.cpp"
+    "src/Data/DataState.cpp"
+    "src/Data/DependenciesDatabase.cpp"
+    "src/Data/Parameter.cpp"
+    "src/Data/SimpleParameter.cpp"
+    "src/Data/Species.cpp"
+
+    "src/IO/Commands.cpp"
+    "src/IO/CommandsManager.cpp"
+    "src/IO/ModuleImporterManager.cpp"
+    "src/IO/SBMLModuleImporter.cpp"
+    "src/IO/SbmlParser.cpp"
+    "src/IO/SbmlWriter.cpp"
+    
+    "src/Maths/Function.cpp"
+    "src/Maths/MathUtility.cpp"
+    "src/Maths/Operand.cpp"
+    "src/Maths/Operation.cpp"
+    "src/Maths/revrand.c"
+
+    "src/Logging/Logger.cpp"
+
+    "src/Solver/BiochemicalSolver.cpp"
+    "src/Solver/GillespieNRMRSolver.cpp"
+    #"src/Solver/Gillespie_NRM_R.cpp"
+
+    "src/Data/IndexedMinHeap.cpp"
+    
 )
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)

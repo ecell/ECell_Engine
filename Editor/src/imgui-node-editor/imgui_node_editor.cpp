@@ -547,14 +547,18 @@ void ed::Pin::Draw(ImDrawList* drawList, DrawFlags flags)
     {
         drawList->ChannelsSetCurrent(m_Node->m_Channel + c_NodePinChannel);
 
+        /*drawList->AddRectFilled(m_Bounds.Min, m_Bounds.Max,
+            m_Color, m_Rounding, m_Corners);*/
         drawList->AddRectFilled(m_Bounds.Min, m_Bounds.Max,
-            m_Color, m_Rounding, m_Corners);
+            m_Color, m_Rounding, ImDrawFlags_RoundCornersAll);
 
         if (m_BorderWidth > 0.0f)
         {
             FringeScaleScope fringe(1.0f);
+            /*drawList->AddRect(m_Bounds.Min, m_Bounds.Max,
+                m_BorderColor, m_Rounding, m_Corners, m_BorderWidth);*/
             drawList->AddRect(m_Bounds.Min, m_Bounds.Max,
-                m_BorderColor, m_Rounding, m_Corners, m_BorderWidth);
+                m_BorderColor, m_Rounding, ImDrawFlags_RoundCornersAll, m_BorderWidth);
         }
 
         if (!Editor->IsSelected(m_Node))

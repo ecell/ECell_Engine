@@ -94,14 +94,14 @@ void ECellEngine::Editor::Editor::Update()
         // -- CUSTOM WINDOWS SPACE START --
         
         //Awakes the newly created widgets if any.
-        for (std::vector<Widget*>::iterator it = newWidgets.begin(); it != newWidgets.end(); it++)
+        for (std::vector<Widget::Widget*>::iterator it = newWidgets.begin(); it != newWidgets.end(); it++)
         {
             (*it)->Awake();
         }
         newWidgets.clear();
 
         //Draw the Widgets
-        for (std::vector<Widget*>::iterator it = widgets.begin(); it != widgets.end(); it++)
+        for (std::vector<Widget::Widget*>::iterator it = widgets.begin(); it != widgets.end(); it++)
         {
             (*it)->Draw();
         }
