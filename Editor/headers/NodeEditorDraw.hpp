@@ -8,7 +8,7 @@
 #include "imgui_internal.h"
 #include "NodeEditorData.hpp" //also include "implot.h"
 
-#include "Logger.hpp"
+#include "Logging/Logger.hpp"
 
 namespace ECellEngine::Editor::Utility
 {

@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "IO/Commands.hpp"
-#include "Logger.hpp"
+#include "Logging/Logger.hpp"
 
 namespace ECellEngine::IO
 {

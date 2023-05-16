@@ -6,7 +6,7 @@ namespace  ECellEngine::Editor
 	class ConsoleWidget;
 }
 
-#include "LoggerSink.hpp"
+#include "Logging/LoggerSink.hpp"
 
 namespace ECellEngine::Editor::Logging
 {

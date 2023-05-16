@@ -23,13 +23,14 @@ add_library(ECellEngine SHARED
     "src/IO/SBMLModuleImporter.cpp"
     "src/IO/SbmlParser.cpp"
     "src/IO/SbmlWriter.cpp"
+    
+    "src/Logging/Logger.cpp"
 
     "src/BiochemicalSolver.cpp"
     "src/Function.cpp"
     "src/GillespieNRMRSolver.cpp"
     #"src/Gillespie_NRM_R.cpp"
     "src/IndexedMinHeap.cpp"
-    "src/Logger.cpp"
     "src/MathUtility.cpp"
     "src/Operation.cpp"
     "src/revrand.c"

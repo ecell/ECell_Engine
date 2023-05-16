@@ -6,7 +6,7 @@
 
 #include "IO/Commands.hpp"
 #include "IO/CommandsManager.hpp"
-#include "Logger.hpp"
+#include "Logging/Logger.hpp"
 #include "Core/SimulationsManager.hpp"
 
 using namespace ECellEngine::IO;

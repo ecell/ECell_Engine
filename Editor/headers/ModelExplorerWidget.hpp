@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "Data/DataState.hpp"
-#include "Logger.hpp"
+#include "Logging/Logger.hpp"
 #include "ModelHierarchyWidget.hpp"
 #include "ModelNodeBasedViewerContext.hpp"
 #include "ModelNodeBasedViewerWidget.hpp"

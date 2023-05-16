@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "EditorConsoleLoggerSink.hpp"
-#include "Logger.hpp"
+#include "Logging/Logger.hpp"
 #include "Widget.hpp"
 
 using namespace ECellEngine::Editor::Logging;

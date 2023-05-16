@@ -1,4 +1,4 @@
-#include "Logger.hpp"
+#include "Logging/Logger.hpp"
 #include <iostream>
 
 ECellEngine::Logging::Logger& ECellEngine::Logging::Logger::GetSingleton()

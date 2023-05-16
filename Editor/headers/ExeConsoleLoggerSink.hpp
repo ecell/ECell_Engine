@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "LoggerSink.hpp"
+#include "Logging/LoggerSink.hpp"
 
 namespace ECellEngine::Editor::Logging
 {

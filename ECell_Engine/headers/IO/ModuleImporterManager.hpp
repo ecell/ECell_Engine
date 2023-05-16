@@ -5,10 +5,10 @@
 #include <unordered_map> //for unordered_multimap
 
 #include "Data/DataState.hpp"
-#include "Logger.hpp"
 #include "Data/Module.hpp"
 #include "IO/ModuleImporter.hpp"
 #include "IO/SBMLModuleImporter.hpp"
+#include "Logging/Logger.hpp"
 
 namespace ECellEngine::IO
 {

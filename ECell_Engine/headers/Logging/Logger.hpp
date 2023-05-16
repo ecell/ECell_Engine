@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "LoggerSink.hpp"
+#include "Logging/LoggerSink.hpp"
 
 namespace ECellEngine::Logging
 {
