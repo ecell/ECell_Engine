@@ -5,9 +5,9 @@ namespace ECellEngine::Data
 	class Module;
 }
 
-#include "DataState.hpp"
+#include "Data/DataState.hpp"
 #include "Data/Module.hpp"
-#include "Timer.hpp"
+#include "Core/Timer.hpp"
 
 namespace ECellEngine::Solvers
 {

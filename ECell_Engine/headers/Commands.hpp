@@ -7,7 +7,7 @@ namespace ECellEngine::Core
 }
 
 #include "CommandWithReceiver.hpp"
-#include "SimulationsManager.hpp"
+#include "Core/SimulationsManager.hpp"
 
 namespace ECellEngine::IO
 {

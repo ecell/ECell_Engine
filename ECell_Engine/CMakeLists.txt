@@ -4,9 +4,11 @@ cmake_minimum_required (VERSION 3.12)
 
 # Add ECell_Engine source files
 add_library(ECellEngine SHARED
-    "src/BiochemicalSolver.cpp"
-    "src/Commands.cpp"
-    "src/CommandsManager.cpp"
+    "src/Core/Engine.cpp"
+    "src/Core/Simulation.cpp"
+    "src/Core/SimulationsManager.cpp"
+    "src/Core/Timer.cpp"
+
     "src/Data/DataState.cpp"
     "src/Data/DependenciesDatabase.cpp"
     "src/Data/Species.cpp"
@@ -14,7 +16,10 @@ add_library(ECellEngine SHARED
     "src/Data/Parameter.cpp"
     "src/Data/ComputedParameter.cpp"
     "src/Data/SimpleParameter.cpp"
-    "src/Engine.cpp"
+
+    "src/BiochemicalSolver.cpp"
+    "src/Commands.cpp"
+    "src/CommandsManager.cpp"
     "src/Function.cpp"
     "src/GillespieNRMRSolver.cpp"
     #"src/Gillespie_NRM_R.cpp"
@@ -28,9 +33,6 @@ add_library(ECellEngine SHARED
     "src/SBMLModuleImporter.cpp"
     "src/SbmlParser.cpp"
     "src/SbmlWriter.cpp"
-    "src/Simulation.cpp"
-    "src/SimulationsManager.cpp"
-    "src/Timer.cpp"
     "src/Operand.cpp"
 )
 

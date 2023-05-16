@@ -1,4 +1,4 @@
-#include "Simulation.hpp"
+#include "Core/Simulation.hpp"
 
 void ECellEngine::Core::Simulation::AddModule(const std::string& _filePath)
 {

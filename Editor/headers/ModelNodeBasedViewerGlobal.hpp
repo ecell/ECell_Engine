@@ -2,7 +2,7 @@
 
 #include "BinaryOperatedVector.hpp"
 #include "CommandsManager.hpp"
-#include "Simulation.hpp"
+#include "Core/Simulation.hpp"
 #include "Data/SBMLModule.hpp"
 #include "NodeEditorStyle.hpp"
 

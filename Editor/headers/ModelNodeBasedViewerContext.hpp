@@ -7,7 +7,7 @@
 
 #include <vector>
 
-#include "Simulation.hpp"
+#include "Core/Simulation.hpp"
 
 #include "NodeEditorDraw.hpp"
 #include "NodeEditorStyle.hpp"

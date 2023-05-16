@@ -11,7 +11,7 @@ namespace ECellEngine::Editor
 	class ModelExplorerWidget;
 }
 
-#include "Simulation.hpp"
+#include "Core/Simulation.hpp"
 #include "Widget.hpp"
 
 namespace ECellEngine::Editor

@@ -10,7 +10,7 @@
 #include "Solver.hpp"
 #include "GillespieNRMRSolver.hpp"
 
-#include "Timer.hpp"
+#include "Core/Timer.hpp"
 
 using namespace ECellEngine::IO;
 using namespace ECellEngine::Solvers;
