@@ -1015,7 +1015,8 @@ bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeInputText(const cha
     return false;
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData& _nlbsData,
+template<typename DataType>
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData<DataType>& _nlbsData,
     const float _startX, const float _drawLength,
     const float _widgetWidth, const unsigned short _itemViewHeight)
 {
@@ -1048,7 +1049,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeStringListBox(NodeL
     {
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + NodeFramePadding.x);//Left Padding
 
-        itemString = _nlbsData.data->at(nbItems - n).c_str();
+        itemString = _nlbsData.At(nbItems - n);
         if (ImGui::Selectable(itemString, false, ImGuiSelectableFlags_None, ImVec2(itemWidth, 0)))
         {
             _nlbsData.selectedItem = nbItems - n;

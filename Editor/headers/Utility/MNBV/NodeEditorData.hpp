@@ -21,9 +21,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 			a node.
 	@see It is used in ECellEngine::Editor::Utility::NodeEditorDraw::NodeStringListBox
 	*/
+	template<typename DataType>
 	struct NodeListBoxStringData
 	{
-		const std::vector<std::string>* data = nullptr;
+		const std::vector<DataType>* data = nullptr;
+
 		/*!
 		@brief 1-byte char to encode states of the widget
 		@details Bit 0 encodes the hovering of an item this frame.
@@ -57,11 +59,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		NodeListBoxStringData() = default;
 
-		NodeListBoxStringData(const std::vector<std::string>* _data,  std::size_t _scrollBarId) :
+		NodeListBoxStringData(const std::vector<DataType>* _data,  std::size_t _scrollBarId) :
 			data{_data}, cursor{ _data->size()}, scrollBarID{_scrollBarId}
 		{
 
 		}
+
+		const char* At(std::size_t _idx) const noexcept;
 
 		inline bool IsAnItemHovered() noexcept
 		{
@@ -519,7 +523,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief All the list boxes to store/display strings.
 		@details Access the pins with the enum values NodeListBoxString_XXX
 		*/
-		NodeListBoxStringData nlbsData[NodeListBoxString_Count];
+		NodeListBoxStringData<std::string> nlbsData[NodeListBoxString_Count];
 
 		AssetNodeData(const AssetNodeData& _and) :
 			NodeData(_and), data{ _and.data },
@@ -1104,7 +1108,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief All the list boxes to store/display strings.
 		@details Access the pins with the enum values NodeListBoxString_XXX
 		*/
-		NodeListBoxStringData nlbsData[NodeListBoxString_Count];
+		NodeListBoxStringData<std::string> nlbsData[NodeListBoxString_Count];
 		std::vector<std::string> speciesOperands;
 		std::vector<std::string> simpleParametersOperands;
 		std::vector<std::string> computedParametersOperands;
@@ -1308,7 +1312,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief All the list boxes to store/display strings.
 		@details Access the pins with the enum values NodeListBoxString_XXX
 		*/
-		NodeListBoxStringData nlbsData[NodeListBoxString_Count];
+		NodeListBoxStringData<std::string> nlbsData[NodeListBoxString_Count];
 		std::vector<std::string> computedParameterLinks;
 		std::vector<std::string> reactionLinks;
 

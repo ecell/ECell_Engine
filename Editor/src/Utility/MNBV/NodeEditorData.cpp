@@ -1,5 +1,9 @@
 #include "Utility/MNBV/NodeEditorData.hpp"
 
+const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::string>::At(std::size_t _idx) const noexcept
+{
+	return data->at(_idx).c_str();
+}
 
 void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, char* _data)
 {
