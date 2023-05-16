@@ -1,12 +1,12 @@
 #include "Editor.hpp"//forward declaration initiated in the  base class "Widget"
 
-void ECellEngine::Editor::ModelExplorerWidget::Awake()
-{    
+void ECellEngine::Editor::Widget::ModelExplorerWidget::Awake()
+{
     ImGui::Begin("Model Explorer");
-    
+
     ImGuiID rootNode = ImGui::DockBuilderAddNode(ImGui::GetID("Model Explorer"));
     ImGui::DockBuilderSetNodeSize(rootNode, ImGui::GetCurrentWindow()->Size);
-    
+
     ImGuiID dock_id_DRL = ImGui::DockBuilderSplitNode(rootNode, ImGuiDir_Left, 0.2f, nullptr, &rootNode);
     ImGuiID dock_id_DRR = ImGui::DockBuilderSplitNode(rootNode, ImGuiDir_Right, 0.8f, nullptr, &rootNode);
 
@@ -26,7 +26,7 @@ void ECellEngine::Editor::ModelExplorerWidget::Awake()
     }
 }
 
-void ECellEngine::Editor::ModelExplorerWidget::Draw()
+void ECellEngine::Editor::Widget::ModelExplorerWidget::Draw()
 {
     static bool wasdocked = false;
     ImGui::Begin("Model Explorer", NULL, windowFlags);
@@ -45,7 +45,7 @@ void ECellEngine::Editor::ModelExplorerWidget::Draw()
 
     ImGuiID dockspaceID = ImGui::GetID("Model Explorer");
     ImGui::DockSpace(dockspaceID);
-    
+
     DrawMenuBar();
 
     if ((utilityState >> 0) & 1)
@@ -73,7 +73,7 @@ void ECellEngine::Editor::ModelExplorerWidget::Draw()
     ImGui::End();
 }
 
-void ECellEngine::Editor::ModelExplorerWidget::DrawAddSolverPopup()
+void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawAddSolverPopup()
 {
     if (ImGui::Begin("Add Solver", NULL, popupWindowFlags))
     {
@@ -89,7 +89,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawAddSolverPopup()
 
                 SwitchState(1); //Marks the Add Solver popup as closed
             }
-                
+
             if (ImGui::MenuItem("Ordinary Differential Equations (TODO)"))
             {
                 ECellEngine::Logging::Logger::GetSingleton().LogWarning("ODE Solver is not yet available");
@@ -108,7 +108,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawAddSolverPopup()
     }
 }
 
-void ECellEngine::Editor::ModelExplorerWidget::DrawImportAssetPopup()
+void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawImportAssetPopup()
 {
     if (ImGui::Begin("Import Asset From File", NULL, popupWindowFlags))
     {
@@ -121,7 +121,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawImportAssetPopup()
             if (editor.engine.GetCommandsManager()->interpretCommand(addModuleCommandArray))
             {
                 editor.engine.GetSimulationsManager()->GetSimulation(0)->GetModules().back().get()->SetName(assetNameBuffer);
-                
+
                 //TODO refresh the database dependencies
             }
 
@@ -142,7 +142,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawImportAssetPopup()
     }
 }
 
-void ECellEngine::Editor::ModelExplorerWidget::DrawMenuBar()
+void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawMenuBar()
 {
     if (ImGui::BeginMenuBar())
     {
@@ -184,7 +184,7 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawMenuBar()
     }
 }
 
-void ECellEngine::Editor::ModelExplorerWidget::DrawPreferencesPopup()
+void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawPreferencesPopup()
 {
     
     if (ImGui::Begin("Preferences", NULL, popupWindowFlags | ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar))

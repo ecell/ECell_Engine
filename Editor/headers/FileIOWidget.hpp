@@ -7,7 +7,7 @@
 
 using namespace ECellEngine::IO;
 
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Widget
 {
 	class FileIOWidget : public Widget
 	{

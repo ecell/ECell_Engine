@@ -3,7 +3,7 @@
 #include "imgui_internal.h"
 #include "Widget.hpp"
 
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Widget
 {
 	/*!
 	  @brief The widget that covers the whole background of the main window.

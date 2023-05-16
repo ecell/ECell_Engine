@@ -1,6 +1,6 @@
 #include "ModelStateVisualizationWidget.hpp"
 
-void ECellEngine::Editor::ModelStateVisualizationWidget::draw()
+void ECellEngine::Editor::Widget::ModelStateVisualizationWidget::draw()
 {
     ImGui::SetNextWindowSize(ImVec2(600, 300), ImGuiCond_FirstUseEver);
 

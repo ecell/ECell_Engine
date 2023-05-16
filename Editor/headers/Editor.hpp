@@ -42,14 +42,14 @@ namespace ECellEngine::Editor
 		@details This contains pointers to the widgets only for 1 frame. Just to
 				 give them enough time to execute Widget::Awake()
 		*/
-		std::vector<Widget*> newWidgets;
+		std::vector<Widget::Widget*> newWidgets;
 
 		/*!
 		@brief List of all widgets to draw.
 		@details This contains pointers to the widgets as long as we need to draw
 				 them. Widget::Draw() is called for each of them every frame.
 		*/
-		std::vector<Widget*> widgets;
+		std::vector<Widget::Widget*> widgets;
 
 		/*!
 		@brief Creates ImGui contexts, sets the style, the main flags and generates the fonts.
@@ -71,11 +71,11 @@ namespace ECellEngine::Editor
 		{
 			ECellEngine::Logging::Logger::GetSingleton().AddSink(&exeLoggerSink);
 
-			AddWidget<MainWindow>();
-			AddWidget<ConsoleWidget>();
-			AddWidget<OptionsWidget>();
-			AddWidget<SimulationFlowControlWidget>();
-			AddWidget<ModelExplorerWidget>();
+			AddWidget<Widget::MainWindow>();
+			AddWidget<Widget::ConsoleWidget>();
+			AddWidget<Widget::OptionsWidget>();
+			AddWidget<Widget::SimulationFlowControlWidget>();
+			AddWidget<Widget::ModelExplorerWidget>();
 
 			showDemoWindow = false;
 		}
@@ -86,7 +86,7 @@ namespace ECellEngine::Editor
 				 widgets as well as newWidgets.
 		@tparam WidgetType MUST be deriving from Widget.
 		*/
-		template <typename WidgetType, typename = std::enable_if_t<std::is_base_of_v<Widget, WidgetType>>>
+		template <typename WidgetType, typename = std::enable_if_t<std::is_base_of_v<Widget::Widget, WidgetType>>>
 		inline WidgetType*	AddWidget()
 		{
 			widgets.push_back(new WidgetType(*this));

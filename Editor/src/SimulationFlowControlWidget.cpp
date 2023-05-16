@@ -1,13 +1,13 @@
 #include "Editor.hpp"//forward declaration initiated in the  base class "Widget"
 
-void ECellEngine::Editor::SimulationFlowControlWidget::DrawSimulationControls()
+void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationControls()
 {
     //static char* simuState = "stopped";
     static bool isPlaying = false;
     static ImVec4 simuStateColor = ImVec4(0.191f, 0.845f, 0.249f, 1.000f);
 
     //ImGui::Text("This is the base of the Simulation Flow Controls.");
-    
+
     ImGui::PushStyleColor(ImGuiCol_Button, simuStateColor);
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0, 0, 1));
     //if (*simuState == SimulationState::isPlaying)
@@ -87,7 +87,7 @@ void ECellEngine::Editor::SimulationFlowControlWidget::DrawSimulationControls()
 
 }
 
-void ECellEngine::Editor::SimulationFlowControlWidget::Draw()
+void ECellEngine::Editor::Widget::SimulationFlowControlWidget::Draw()
 {
     ImGui::Begin("Simulation Flow Control", NULL, windowFlags);
 
@@ -99,7 +99,7 @@ void ECellEngine::Editor::SimulationFlowControlWidget::Draw()
     ImGui::End();
 }
 
-void ECellEngine::Editor::SimulationFlowControlWidget::SetSimulation(std::size_t _simuIdx)
+void ECellEngine::Editor::Widget::SimulationFlowControlWidget::SetSimulation(std::size_t _simuIdx)
 {
     std::to_chars(simuIdxAsChar, simuIdxAsChar + 8, _simuIdx);
     simulation = editor.engine.GetSimulationsManager()->GetSimulation(_simuIdx);

@@ -17,7 +17,7 @@
 using namespace ECellEngine::Core;
 using namespace ECellEngine::IO;
 
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Widget
 {
     /*!
     @brief The class for the widget to visuals the data stored in the model state.

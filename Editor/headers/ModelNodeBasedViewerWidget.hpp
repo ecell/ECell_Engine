@@ -9,7 +9,7 @@
 #include "imgui_node_editor.h"
 
 //forward declaration
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Widget
 {
 	class ModelExplorerWidget;
 }
@@ -17,7 +17,7 @@ namespace ECellEngine::Editor
 #include "NodeEditorDraw.hpp"
 #include "Widget.hpp"
 
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Widget
 {
 	/*!
 	@brief Displays the assets imported in a simulation space as a graph.

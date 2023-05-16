@@ -11,7 +11,7 @@ namespace ECellEngine::Core
 	class Simulation;
 }
 
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Widget
 {
 	/*!
 	@brief The window containing the buttons to control the flow of time of

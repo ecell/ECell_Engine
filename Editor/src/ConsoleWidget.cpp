@@ -1,6 +1,6 @@
 #include "ConsoleWidget.hpp"
 
-void ECellEngine::Editor::ConsoleWidget::Draw()
+void ECellEngine::Editor::Widget::ConsoleWidget::Draw()
 {
     ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
 

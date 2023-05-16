@@ -14,7 +14,7 @@ namespace ECellEngine::Editor
 #include "Core/Simulation.hpp"
 #include "Widget.hpp"
 
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Widget
 {
 	/*!
 	@brief A widget to display the tree of data added in a simulation space.

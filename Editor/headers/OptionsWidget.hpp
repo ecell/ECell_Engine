@@ -2,7 +2,7 @@
 
 #include "Widget.hpp"
 
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Widget
 {
 	/*!
 	  @brief The window with a variety of options for the editor.

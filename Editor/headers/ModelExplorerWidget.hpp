@@ -16,7 +16,7 @@
 #include "ModelNodeBasedViewerWidget.hpp"
 #include "Widget.hpp"
 
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Widget
 {
 	/*!
 	@brief The window that contains the GUI to explore the assembled model of a
@@ -94,7 +94,7 @@ namespace ECellEngine::Editor
 		@brief The list of model viewers opened to explore the data added
 				in the current simulation.
 		*/
-		std::vector<ModelNodeBasedViewerWidget> mnbViewers;
+		std::vector<ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget> mnbViewers;
 
 		/*!
 		@brief Draws the popup window used to select which solver to add in the
@@ -135,7 +135,7 @@ namespace ECellEngine::Editor
 		ModelExplorerWidget(Editor& _editor) :
 			Widget(_editor), modelHierarchy(_editor)
 		{
-			mnbViewers.push_back(ModelNodeBasedViewerWidget(editor, this));
+			mnbViewers.push_back(ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget(editor, this));
 		}
 
 		/*!

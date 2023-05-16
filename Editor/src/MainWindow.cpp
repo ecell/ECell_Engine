@@ -1,6 +1,6 @@
 #include "Editor.hpp"//forward declaration initiated in the  base class "Widget"
 
-void ECellEngine::Editor::MainWindow::Awake()
+void ECellEngine::Editor::Widget::MainWindow::Awake()
 {
     ImGui::Begin("MainWindow", NULL, windowFlags);
     const ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -28,7 +28,7 @@ void ECellEngine::Editor::MainWindow::Awake()
     ImGui::End();
 }
 
-void ECellEngine::Editor::MainWindow::Draw()
+void ECellEngine::Editor::Widget::MainWindow::Draw()
 {
     const ImGuiViewport* viewport = ImGui::GetMainViewport();
     ImGui::SetNextWindowPos(viewport->WorkPos);

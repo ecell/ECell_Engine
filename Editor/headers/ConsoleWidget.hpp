@@ -9,15 +9,15 @@
 
 using namespace ECellEngine::Editor::Logging;
 
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Logging
 {
-	
 	/*! \file ConsoleWidget.hpp */
 
-	/*!
-	@brief An enum to handle different types of log messages.
-	*/
-	enum LogLevel {
+		/*!
+		@brief An enum to handle different types of log messages.
+		*/
+	enum LogLevel
+	{
 		debug, /*!< Intended to be used to print messages during development.*/
 		error, /*!< Reports errors to the user of the engine.*/
 		trace, /*!< Reports operation performed by the engine to the user.*/
@@ -25,7 +25,7 @@ namespace ECellEngine::Editor
 	};
 
 	/*!
-	@brief The struct containing the data used to correctly 
+	@brief The struct containing the data used to correctly
 		display a message in the console of the editor.
 	*/
 	struct LogMessage
@@ -34,7 +34,7 @@ namespace ECellEngine::Editor
 		ImVec4 color;
 
 		LogMessage(const LogLevel _lvl, const std::string& _msg) :
-			msg{_msg}
+			msg{ _msg }
 		{
 			ProcessLevel(_lvl);
 		}
@@ -61,7 +61,10 @@ namespace ECellEngine::Editor
 			}
 		}
 	};
+}
 
+namespace ECellEngine::Editor::Widget
+{
 	/*!
 	@brief The window displaying a console where messages about the state of
 			the simulation are printed.

@@ -1,12 +1,12 @@
 #include "ModelExplorerWidget.hpp"//forward declaration
 #include "Editor.hpp"
 
-void ECellEngine::Editor::ModelHierarchyWidget::Awake()
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::Awake()
 {
 	SetSimulation(0);
 }
 
-void ECellEngine::Editor::ModelHierarchyWidget::Draw()
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::Draw()
 {
 	if (ImGui::Begin("Model Hierarchy"))
 	{
@@ -19,7 +19,7 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 			{
 				//Id from Drag & Drop
 				ImGui::PushID(dragableID);
-				
+
 				//If users is trying to rename this asset.
 				if (renamingInProgress && renamingIdx == dragableID)
 				{
@@ -136,7 +136,7 @@ void ECellEngine::Editor::ModelHierarchyWidget::Draw()
 	}
 }
 
-void ECellEngine::Editor::ModelHierarchyWidget::SetSimulation(std::size_t _simulationIndex)
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::SetSimulation(std::size_t _simulationIndex)
 {
 	simulation = editor.engine.GetSimulationsManager()->GetSimulation(_simulationIndex);
 }

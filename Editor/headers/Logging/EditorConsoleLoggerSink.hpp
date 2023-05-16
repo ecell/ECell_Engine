@@ -1,7 +1,7 @@
 #pragma once 
 
 //Forward declaration
-namespace  ECellEngine::Editor
+namespace  ECellEngine::Editor::Widget
 {
 	class ConsoleWidget;
 }
@@ -20,7 +20,7 @@ namespace ECellEngine::Editor::Logging
 		/*!
 		@brief Reference to the console where to print the messages.
 		*/
-		ECellEngine::Editor::ConsoleWidget& consoleWidget; 
+		ECellEngine::Editor::Widget::ConsoleWidget& consoleWidget;
 
 	public:
 		/*!
@@ -31,7 +31,7 @@ namespace ECellEngine::Editor::Logging
 		*/
 		std::size_t sinkIdx;
 
-		EditorConsoleLoggerSink(ECellEngine::Editor::ConsoleWidget& _logWidget):
+		EditorConsoleLoggerSink(ECellEngine::Editor::Widget::ConsoleWidget& _logWidget):
 			consoleWidget{_logWidget}
 		{
 

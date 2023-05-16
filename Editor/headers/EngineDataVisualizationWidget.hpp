@@ -13,7 +13,7 @@
 
 using namespace ECellEngine::Core;
 
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Widget
 {
 	/*
 	@brief The widget from which every other widget to visualize

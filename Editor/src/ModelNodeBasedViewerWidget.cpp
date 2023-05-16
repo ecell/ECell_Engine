@@ -1,12 +1,12 @@
 #include "ModelExplorerWidget.hpp"//forward declaration
 #include "Editor.hpp"
 
-ECellEngine::Editor::ModelNodeBasedViewerWidget::~ModelNodeBasedViewerWidget()
+ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::~ModelNodeBasedViewerWidget()
 {
     rootExplorer->RemoveNodeEditorContext(neCtxtIdx);
 }
 
-void ECellEngine::Editor::ModelNodeBasedViewerWidget::Awake()
+void ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::Awake()
 {
     ax::NodeEditor::Config nodeConfig;
 
@@ -34,7 +34,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Awake()
     //BUGFIX: Cycle through the canvas once to give it the opportunity to initialize its size.
     //This is work-around for a badly understood bug.
     //If the ax::NodeEditor::Begin()/ax::NodeEditor::End is not implemented in this Awake function,
-    //the ax::NodeEditor::Begin("Model Exploration Space") in the ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
+    //the ax::NodeEditor::Begin("Model Exploration Space") in the ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::Draw()
     //fails. It apparently comes from the initialization cycle (Begin/End call) for the ImGuiEx::Canvas in
     //ax::NodeEditor::EditorContext::Begin(). The Begin of the Canvas exits early because the Canvas is detected to be clipped.
     //So, as Begin didn't finish, the ASSERT in the End() of the Canvas that checks whether Begin finished correctly is broken.
@@ -46,7 +46,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Awake()
     ax::NodeEditor::SetCurrentEditor(nullptr);
 }
 
-void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
+void ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::Draw()
 {
     if (ImGui::Begin("Model Viewer"))
     {
@@ -79,7 +79,7 @@ void ECellEngine::Editor::ModelNodeBasedViewerWidget::Draw()
     }
 }
 
-void ECellEngine::Editor::ModelNodeBasedViewerWidget::HandleSimuDataRefDrop()
+void ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::HandleSimuDataRefDrop()
 {
     if (ImGui::BeginDragDropTarget())
     {

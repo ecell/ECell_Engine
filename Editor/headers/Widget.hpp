@@ -8,7 +8,7 @@ namespace ECellEngine::Editor
 	class Editor;
 }
 
-namespace ECellEngine::Editor
+namespace ECellEngine::Editor::Widget
 {
 	/*!
 	@brief Base class to write any widget of the editor.
