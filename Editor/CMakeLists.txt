@@ -21,10 +21,7 @@ add_executable( ECellEngineEditor
 "src/Logging/EditorConsoleLoggerSink.cpp"
 
 "src/Main.cpp"
-"src/BackendUtility.cpp"
 "src/Editor.cpp"
-"src/NodeEditorData.cpp"
-"src/NodeEditorDraw.cpp"
 
 #"src/Widget/EngineDataVisualizationWidget.cpp"
 #"src/Widget/FileIOWidget.cpp"
@@ -35,6 +32,10 @@ add_executable( ECellEngineEditor
 "src/Widget/ModelHierarchyWidget.cpp"
 "src/Widget/OptionsWidget.cpp"
 "src/Widget/SimulationFlowControlWidget.cpp"
+
+"src/Utility/BackendUtility.cpp"
+"src/Utility/NodeEditorData.cpp"
+"src/Utility/NodeEditorDraw.cpp"
 
 "src/Widget/MNBV/ModelNodeBasedViewerContext.cpp"
 "src/Widget/MNBV/ModelNodeBasedViewerGlobal.cpp"

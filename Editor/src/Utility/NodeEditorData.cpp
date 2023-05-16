@@ -1,4 +1,4 @@
-#include "NodeEditorData.hpp"
+#include "Utility/NodeEditorData.hpp"
 
 
 void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, char* _data)

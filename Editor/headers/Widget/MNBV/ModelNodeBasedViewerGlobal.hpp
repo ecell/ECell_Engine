@@ -4,7 +4,7 @@
 #include "IO/CommandsManager.hpp"
 #include "Core/Simulation.hpp"
 #include "Data/SBMLModule.hpp"
-#include "NodeEditorStyle.hpp"
+#include "Utility/NodeEditorStyle.hpp"
 
 namespace ECellEngine::Editor::Utility
 {

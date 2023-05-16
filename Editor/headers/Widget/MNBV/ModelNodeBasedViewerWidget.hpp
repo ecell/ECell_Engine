@@ -14,7 +14,7 @@ namespace ECellEngine::Editor::Widget
 	class ModelExplorerWidget;
 }
 
-#include "NodeEditorDraw.hpp"
+#include "Utility/NodeEditorDraw.hpp"
 #include "Widget.hpp"
 
 namespace ECellEngine::Editor::Widget::MNBV
