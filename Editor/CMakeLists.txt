@@ -40,7 +40,7 @@ add_executable( ECellEngineEditor
 
 if (MSVC)
 
-    target_compile_options(ECellEngine PRIVATE /MP)	# Multithread compilation
+    target_compile_options(ECellEngineEditor PRIVATE /MP)	# Multithread compilation
 
 endif()
 
