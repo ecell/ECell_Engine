@@ -23,8 +23,6 @@ add_executable( ECellEngineEditor
 "src/Main.cpp"
 "src/BackendUtility.cpp"
 "src/Editor.cpp"
-"src/ModelNodeBasedViewerContext.cpp"
-"src/ModelNodeBasedViewerGlobal.cpp"
 "src/NodeEditorData.cpp"
 "src/NodeEditorDraw.cpp"
 
@@ -35,9 +33,12 @@ add_executable( ECellEngineEditor
 "src/Widget/MainWindow.cpp"
 "src/Widget/ModelExplorerWidget.cpp"
 "src/Widget/ModelHierarchyWidget.cpp"
-"src/Widget/ModelNodeBasedViewerWidget.cpp"
 "src/Widget/OptionsWidget.cpp"
 "src/Widget/SimulationFlowControlWidget.cpp"
+
+"src/Widget/MNBV/ModelNodeBasedViewerContext.cpp"
+"src/Widget/MNBV/ModelNodeBasedViewerGlobal.cpp"
+"src/Widget/MNBV/ModelNodeBasedViewerWidget.cpp"
 )
 
 if (MSVC)

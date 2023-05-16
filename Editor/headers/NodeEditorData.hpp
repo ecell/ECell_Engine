@@ -10,8 +10,8 @@
 
 #include "Data/BinaryOperatedVector.hpp"
 #include "Core/Timer.hpp"
-#include "ModelNodeBasedViewerGlobal.hpp"
 #include "PlotUtility.hpp"
+#include "Widget/MNBV/ModelNodeBasedViewerGlobal.hpp"
 
 namespace ECellEngine::Editor::Utility
 {

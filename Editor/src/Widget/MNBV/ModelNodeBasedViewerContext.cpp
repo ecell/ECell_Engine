@@ -1,4 +1,4 @@
-#include "ModelNodeBasedViewerContext.hpp"
+#include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellEngine::Core::Simulation* _simulation)
 {

@@ -1,4 +1,4 @@
-#include "ModelNodeBasedViewerContext.hpp"
+#include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 
 static ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* s_mnbvCtxt = nullptr;
 

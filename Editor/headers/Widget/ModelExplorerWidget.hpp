@@ -12,8 +12,8 @@
 #include "Data/DataState.hpp"
 #include "Logging/Logger.hpp"
 #include "ModelHierarchyWidget.hpp"
-#include "ModelNodeBasedViewerContext.hpp"
-#include "ModelNodeBasedViewerWidget.hpp"
+#include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
+#include "Widget/MNBV/ModelNodeBasedViewerWidget.hpp"
 #include "Widget.hpp"
 
 namespace ECellEngine::Editor::Widget
