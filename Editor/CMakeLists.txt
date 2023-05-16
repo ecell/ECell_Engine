@@ -10,37 +10,41 @@ find_package(implot CONFIG REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
 
 add_executable( ECellEngineEditor
-"src/imgui_impl_glfw.cpp"
-"src/imgui_impl_vulkan.cpp"
+"src/imgui/imgui_impl_glfw.cpp"
+"src/imgui/imgui_impl_vulkan.cpp"
 
 "src/imgui-node-editor/crude_json.cpp"
 "src/imgui-node-editor/imgui_canvas.cpp"
 "src/imgui-node-editor/imgui_node_editor.cpp"
 "src/imgui-node-editor/imgui_node_editor_api.cpp"
 
+"src/Logging/EditorConsoleLoggerSink.cpp"
+
 "src/Main.cpp"
-"src/BackendUtility.cpp"
-"src/ConsoleWidget.cpp"
 "src/Editor.cpp"
-"src/EditorConsoleLoggerSink.cpp"
-#"src/EngineDataVisualizationWidget.cpp"
-#"src/FileIOWidget.cpp"
-#"src/ModelStateVisualizationWidget.cpp"
-"src/MainWindow.cpp"
-"src/ModelExplorerWidget.cpp"
-"src/ModelHierarchyWidget.cpp"
-"src/ModelNodeBasedViewerContext.cpp"
-"src/ModelNodeBasedViewerGlobal.cpp"
-"src/ModelNodeBasedViewerWidget.cpp"
-"src/NodeEditorData.cpp"
-"src/NodeEditorDraw.cpp"
-"src/OptionsWidget.cpp"
-"src/SimulationFlowControlWidget.cpp"
+
+#"src/Widget/EngineDataVisualizationWidget.cpp"
+#"src/Widget/FileIOWidget.cpp"
+#"src/Widget/ModelStateVisualizationWidget.cpp"
+"src/Widget/ConsoleWidget.cpp"
+"src/Widget/MainWindow.cpp"
+"src/Widget/ModelExplorerWidget.cpp"
+"src/Widget/ModelHierarchyWidget.cpp"
+"src/Widget/OptionsWidget.cpp"
+"src/Widget/SimulationFlowControlWidget.cpp"
+
+"src/Utility/BackendUtility.cpp"
+"src/Utility/MNBV/NodeEditorData.cpp"
+"src/Utility/MNBV/NodeEditorDraw.cpp"
+
+"src/Widget/MNBV/ModelNodeBasedViewerContext.cpp"
+"src/Widget/MNBV/ModelNodeBasedViewerGlobal.cpp"
+"src/Widget/MNBV/ModelNodeBasedViewerWidget.cpp"
 )
 
 if (MSVC)
 
-    target_compile_options(ECellEngine PRIVATE /MP)	# Multithread compilation
+    target_compile_options(ECellEngineEditor PRIVATE /MP)	# Multithread compilation
 
 endif()
 
@@ -54,6 +58,7 @@ target_include_directories(ECellEngineEditor
 							PRIVATE
 								"./headers"
 								"./headers/imgui-node-editor"
+								"./headers/imgui"
 								"../ECell_Engine/engine_system_files"
 								"../ECell_Engine/headers"
 )
