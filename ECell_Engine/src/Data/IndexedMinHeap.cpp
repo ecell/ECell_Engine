@@ -1,4 +1,4 @@
-#include "IndexedMinHeap.hpp"
+#include "Data/IndexedMinHeap.hpp"
 
 void ECellEngine::Data::IndexedMinHeap::BuildMinHeap()
 {

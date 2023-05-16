@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-#include "IndexedMinHeap.hpp"
+#include "Data/IndexedMinHeap.hpp"
 #include "Data/Reaction.hpp"
 #include "Maths/ReversibleRNG.hpp"
 

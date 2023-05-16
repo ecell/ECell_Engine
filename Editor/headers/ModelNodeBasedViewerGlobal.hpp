@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BinaryOperatedVector.hpp"
+#include "Data/BinaryOperatedVector.hpp"
 #include "IO/CommandsManager.hpp"
 #include "Core/Simulation.hpp"
 #include "Data/SBMLModule.hpp"

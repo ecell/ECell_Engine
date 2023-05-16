@@ -36,7 +36,7 @@ add_library(ECellEngine SHARED
     "src/Solver/GillespieNRMRSolver.cpp"
     #"src/Solver/Gillespie_NRM_R.cpp"
 
-    "src/IndexedMinHeap.cpp"
+    "src/Data/IndexedMinHeap.cpp"
     
 )
 
