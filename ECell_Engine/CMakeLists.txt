@@ -37,7 +37,7 @@ add_library(ECellEngine SHARED
     #"src/Solver/Gillespie_NRM_R.cpp"
 
     "src/IndexedMinHeap.cpp"
-    "src/sbml_example.cpp"
+    
 )
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)

@@ -1,8 +1,4 @@
-﻿#pragma once
-
-#include "Core/Engine.hpp"
-
-/*
+﻿/*
 Updated 2022-01-12
 
 For every header file in the project, we try to respect the following
