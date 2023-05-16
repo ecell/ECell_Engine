@@ -121,6 +121,8 @@ void ECellEngine::Editor::ModelExplorerWidget::DrawImportAssetPopup()
             if (editor.engine.GetCommandsManager()->interpretCommand(addModuleCommandArray))
             {
                 editor.engine.GetSimulationsManager()->GetSimulation(0)->GetModules().back().get()->SetName(assetNameBuffer);
+                
+                //TODO refresh the database dependencies
             }
 
             /*TODO: Check that the module was correctly imported before drawing.*/
