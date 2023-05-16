@@ -9,8 +9,8 @@
 
 #include "Core/Simulation.hpp"
 
-#include "Utility/NodeEditorDraw.hpp"
-#include "Utility/NodeEditorStyle.hpp"
+#include "Utility/MNBV/NodeEditorDraw.hpp"
+#include "Utility/MNBV/NodeEditorStyle.hpp"
 
 namespace ECellEngine::Editor::Widget::MNBV
 {

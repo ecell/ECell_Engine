@@ -4,10 +4,11 @@
 #include "IO/CommandsManager.hpp"
 #include "Core/Simulation.hpp"
 #include "Data/SBMLModule.hpp"
-#include "Utility/NodeEditorStyle.hpp"
+#include "Utility/MNBV/NodeEditorStyle.hpp"
 
 namespace ECellEngine::Editor::Utility::MNBV
 {
+	//forward declaration
 	struct NodePinData;
 	struct NodeData;
 	struct LinkData;
