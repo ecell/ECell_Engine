@@ -83,8 +83,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ComputedParameterNode(c
             _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_CollHdrComputedParameters], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_CollHdrComputedParameters], Widget::MNBV::GetPinColors(PinType_Parameter),
             ImVec2(itemsWidth, 0.f), false))
         {
-            //NodeStringListBox(_parameterNodeInfo.nlbsData[0], GetPinDrawOffset(), 200.f, 0);
-            ImGui::Text("A List box will be here.");
+            if (_parameterNodeInfo.computedParameterDep.size())
+            {
+                NodeStringListBox<std::weak_ptr<ECellEngine::Data::ComputedParameter>>(_parameterNodeInfo.nlbsDataCPDep, startX, headerWidth, itemsWidth);
+            }
         }
 
         if (NodeCollapsingHeader_InOut("Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[ComputedParameterNodeData::CollapsingHeader_KineticLaws],
@@ -93,8 +95,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ComputedParameterNode(c
             _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_CollHdrKineticLaws], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_CollHdrKineticLaws], Widget::MNBV::GetPinColors(PinType_Parameter),
             ImVec2(itemsWidth, 0.f), false))
         {
-            //NodeStringListBox(_parameterNodeInfo.nlbsData[0], GetPinDrawOffset(), 200.f, 0);
-            ImGui::Text("A List box will be here.");
+            if (_parameterNodeInfo.reactionDep.size())
+            {
+                NodeStringListBox(_parameterNodeInfo.nlbsDataRDep, startX, headerWidth, itemsWidth);
+            }
         }
     }
 

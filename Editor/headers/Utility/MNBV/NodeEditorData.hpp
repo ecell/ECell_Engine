@@ -651,8 +651,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum NodeListBoxString
 		{
-			NodeListBoxString_ComputedParameterLinks,
-			NodeListBoxString_ReactionLinks,
 			NodeListBoxString_ComputedParameterOperands,
 			NodeListBoxString_SimpleParameterOperands,
 			NodeListBoxString_SpeciesOperands,
@@ -679,7 +677,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Pointer to the computed parameter represented by this node.
 		*/
-		ECellEngine::Data::ComputedParameter* data;
+		std::shared_ptr<ECellEngine::Data::ComputedParameter> data;
+
+		const ECellEngine::Data::DependenciesDatabase& depDB;
 
 		/*!
 		@brief All the input pins.
@@ -709,15 +709,17 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief All the list boxes to store/display strings.
 		@details Access the pins with the enum values NodeListBoxString_XXX
 		*/
-		NodeListBoxStringData nlbsData[NodeListBoxString_Count];
-		std::vector<std::string> computedParameterLinks;
-		std::vector<std::string> reactionLinks;
+		NodeListBoxStringData<std::string> nlbsData[NodeListBoxString_Count];
+		NodeListBoxStringData<std::weak_ptr<ECellEngine::Data::ComputedParameter>> nlbsDataCPDep;
+		NodeListBoxStringData<std::weak_ptr<ECellEngine::Data::Reaction>> nlbsDataRDep;
+		std::vector<std::weak_ptr<ECellEngine::Data::ComputedParameter>> computedParameterDep;
+		std::vector<std::weak_ptr<ECellEngine::Data::Reaction>> reactionDep;
 		std::vector<std::string> speciesOperands;
 		std::vector<std::string> simpleParametersOperands;
 		std::vector<std::string> computedParametersOperands;
 
 		ComputedParameterNodeData(const ComputedParameterNodeData& _cpnd) :
-			NodeData(_cpnd), data{ _cpnd.data },
+			NodeData(_cpnd), data{ _cpnd.data }, depDB{ _cpnd.depDB },
 			inputPins{ _cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
 					  _cpnd.inputPins[3] , _cpnd.inputPins[4] , _cpnd.inputPins[5],
 					  _cpnd.inputPins[6] , _cpnd.inputPins[7] , _cpnd.inputPins[8], _cpnd.inputPins[9] },
@@ -727,8 +729,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 			utilityState{ _cpnd.utilityState },
 			collapsingHeadersIds{ _cpnd.collapsingHeadersIds[0], _cpnd.collapsingHeadersIds[1] , _cpnd.collapsingHeadersIds[2] ,
 					  _cpnd.collapsingHeadersIds[3] , _cpnd.collapsingHeadersIds[4] },
-			nlbsData{ _cpnd.nlbsData[0], _cpnd.nlbsData[1] , _cpnd.nlbsData[2] ,
-					  _cpnd.nlbsData[3] , _cpnd.nlbsData[4] },
+			nlbsData{ _cpnd.nlbsData[0], _cpnd.nlbsData[1] , _cpnd.nlbsData[2] },
+			nlbsDataCPDep{ _cpnd.nlbsDataCPDep }, nlbsDataRDep { _cpnd.nlbsDataRDep },
+			computedParameterDep{ _cpnd.computedParameterDep },
+			reactionDep{ _cpnd.reactionDep },
 			speciesOperands{ _cpnd.speciesOperands },
 			simpleParametersOperands{ _cpnd.simpleParametersOperands },
 			computedParametersOperands{ _cpnd.computedParametersOperands }
@@ -743,8 +747,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 				outputPins[i].node = this;
 			}
 
-			nlbsData[NodeListBoxString_ComputedParameterLinks].data = &computedParameterLinks;
-			nlbsData[NodeListBoxString_ReactionLinks].data = &reactionLinks;
+			nlbsDataCPDep.data = &computedParameterDep;
+			nlbsDataRDep.data = &reactionDep;
 			nlbsData[NodeListBoxString_SpeciesOperands].data = &speciesOperands;
 			nlbsData[NodeListBoxString_SimpleParameterOperands].data = &simpleParametersOperands;
 			nlbsData[NodeListBoxString_ComputedParameterOperands].data = &computedParametersOperands;
@@ -753,8 +757,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		ComputedParameterNodeData(ECellEngine::Data::ComputedParameter* _data) :
-			NodeData(), data{ _data }
+		ComputedParameterNodeData(std::shared_ptr<ECellEngine::Data::ComputedParameter> _data, const ECellEngine::Data::DependenciesDatabase& _depDB) :
+			NodeData(), data{ _data }, depDB{ _depDB }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -785,8 +789,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds[CollapsingHeader_DataFields] = Widget::MNBV::GetMNBVCtxtNextId();//Data Fields collapsing header
 			collapsingHeadersIds[CollapsingHeader_EquationOperands] = Widget::MNBV::GetMNBVCtxtNextId();//Equation Operands collapsing header
 
-			nlbsData[NodeListBoxString_ComputedParameterLinks] = { &computedParameterLinks , Widget::MNBV::GetMNBVCtxtNextId() };
-			nlbsData[NodeListBoxString_ReactionLinks] = { &reactionLinks, Widget::MNBV::GetMNBVCtxtNextId() };
+			computedParameterDep = depDB.GetComputedParameterDependencies().find(data)->second.partOfComputedParameter;
+			nlbsDataCPDep = { &computedParameterDep , Widget::MNBV::GetMNBVCtxtNextId() };
+			reactionDep = depDB.GetComputedParameterDependencies().find(data)->second.partOfReactionKineticLaw;
+			nlbsDataRDep = { &reactionDep , Widget::MNBV::GetMNBVCtxtNextId() };
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);//Node String List Box for Species Operands
 			nlbsData[NodeListBoxString_SpeciesOperands] = { &speciesOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Node String List Box for Species Operands
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::SimpleParameter>(simpleParametersOperands);//Node String List Box for Simple Parameter Operands

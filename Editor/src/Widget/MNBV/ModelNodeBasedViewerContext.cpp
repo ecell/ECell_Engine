@@ -74,8 +74,8 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		//If double click on computed parameter selectable in the list box, spawn the corresponding computed parameter node
 		if (it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_ComputedParameters].IsAnItemDoubleClicked())
 		{
-			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(
-				_simulation->GetDataState()->GetComputedParameter(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_ComputedParameters].data->at(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_ComputedParameters].doubleClickedItem)).get()));
+			std::shared_ptr<ECellEngine::Data::ComputedParameter> computedParameter = _simulation->GetDataState()->GetComputedParameter(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_ComputedParameters].data->at(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_ComputedParameters].doubleClickedItem));
+			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(computedParameter, _simulation->GetDependenciesDatabase()));
 
 			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::AssetNodeData::OutputPin_CollHdrComputedParameters].id, computedParameterNodes.back().inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_Asset].id));
 			links.back().OverrideEndFallbackPin(computedParameterNodes.back().inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_CollHdrModelLinks].id, 1);
