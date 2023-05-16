@@ -1,4 +1,4 @@
-#include "ModelExplorerWidget.hpp"//forward declaration
+#include "Widget/ModelExplorerWidget.hpp"//forward declaration
 #include "Editor.hpp"
 
 ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::~ModelNodeBasedViewerWidget()

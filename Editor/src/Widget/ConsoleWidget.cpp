@@ -1,4 +1,5 @@
-#include "ConsoleWidget.hpp"
+#include "Editor.hpp"
+//#include "Widget/ConsoleWidget.hpp"
 
 void ECellEngine::Editor::Widget::ConsoleWidget::Draw()
 {

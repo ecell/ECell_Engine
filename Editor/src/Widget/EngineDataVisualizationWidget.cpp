@@ -1,4 +1,4 @@
-#include "EngineDataVisualizationWidget.hpp"
+#include "Widget/EngineDataVisualizationWidget.hpp"
 
 void ECellEngine::Editor::EngineDataVisualizationWidget::drawInstancedWidgets()
 {

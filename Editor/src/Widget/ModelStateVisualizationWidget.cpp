@@ -1,4 +1,4 @@
-#include "ModelStateVisualizationWidget.hpp"
+#include "Widget/ModelStateVisualizationWidget.hpp"
 
 void ECellEngine::Editor::Widget::ModelStateVisualizationWidget::draw()
 {

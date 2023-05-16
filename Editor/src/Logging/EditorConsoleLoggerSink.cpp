@@ -1,4 +1,4 @@
-#include "ConsoleWidget.hpp"
+#include "Widget/ConsoleWidget.hpp"
 
 void ECellEngine::Editor::Logging::EditorConsoleLoggerSink::LogTrace(const std::string& _msg) const noexcept
 {

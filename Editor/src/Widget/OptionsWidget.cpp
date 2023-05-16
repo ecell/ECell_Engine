@@ -1,5 +1,4 @@
 #include "Editor.hpp"
-#include "OptionsWidget.hpp"
 
 void ECellEngine::Editor::Widget::OptionsWidget::Draw()
 {
