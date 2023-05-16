@@ -4,7 +4,7 @@
 #include <memory> //for std::shared_ptr
 #include <vector> //for std::vector<>
 
-#include "Module.hpp"
+#include "Data/Module.hpp"
 #include "ModuleImporterManager.hpp"
 
 #include "Solver.hpp"

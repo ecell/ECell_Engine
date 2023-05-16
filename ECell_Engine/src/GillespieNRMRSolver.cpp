@@ -1,4 +1,4 @@
-#include "BiochemicalModule.hpp"
+#include "Data/BiochemicalModule.hpp"
 #include "GillespieNRMRSolver.hpp"
 
 void ECellEngine::Solvers::GillespieNRMRSolver::ApplyBackward(const std::string& _reactionName)

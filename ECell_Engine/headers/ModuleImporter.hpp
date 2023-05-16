@@ -3,8 +3,8 @@
 #include <filesystem> //for filesystem::path
 #include <memory> //for std::shared_ptr
 
-#include "DataState.hpp"
-#include "Module.hpp"
+#include "Data/DataState.hpp"
+#include "Data/Module.hpp"
 
 namespace ECellEngine::IO
 {

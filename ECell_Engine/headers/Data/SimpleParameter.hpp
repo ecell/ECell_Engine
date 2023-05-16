@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Parameter.hpp"
+#include "Data/Parameter.hpp"
 
 namespace ECellEngine::Data
 {

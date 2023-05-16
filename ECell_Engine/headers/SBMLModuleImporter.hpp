@@ -7,7 +7,7 @@
 
 #include "Function.hpp"
 #include "ModuleImporter.hpp"
-#include "SBMLModule.hpp"
+#include "Data/SBMLModule.hpp"
 
 namespace ECellEngine::IO
 {

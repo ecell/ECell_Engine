@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-#include "DataState.hpp"
+#include "Data/DataState.hpp"
 #include "Logger.hpp"
 #include "ModelHierarchyWidget.hpp"
 #include "ModelNodeBasedViewerContext.hpp"

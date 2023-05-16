@@ -5,10 +5,10 @@
 #include <unordered_map>
 #include <vector>
 
-#include "ComputedParameter.hpp"
-#include "Reaction.hpp"
-#include "SimpleParameter.hpp"
-#include "Species.hpp"
+#include "Data/ComputedParameter.hpp"
+#include "Data/Reaction.hpp"
+#include "Data/SimpleParameter.hpp"
+#include "Data/Species.hpp"
 
 namespace ECellEngine::Data
 {

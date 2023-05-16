@@ -4,9 +4,9 @@
 #include <memory> //for shared_ptr
 #include <unordered_map> //for unordered_multimap
 
-#include "DataState.hpp"
+#include "Data/DataState.hpp"
 #include "Logger.hpp"
-#include "Module.hpp"
+#include "Data/Module.hpp"
 #include "ModuleImporter.hpp"
 #include "SBMLModuleImporter.hpp"
 

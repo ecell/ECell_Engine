@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Parameter.hpp"
+#include "Data/Parameter.hpp"
 #include "Operation.hpp"
 
 namespace ECellEngine::Data

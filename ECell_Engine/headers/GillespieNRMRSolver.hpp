@@ -4,7 +4,7 @@
 
 #include "BiochemicalSolver.hpp"
 #include "IndexedMinHeap.hpp"
-#include "Reaction.hpp"
+#include "Data/Reaction.hpp"
 #include "ReversibleRNG.hpp"
 
 namespace ECellEngine::Solvers

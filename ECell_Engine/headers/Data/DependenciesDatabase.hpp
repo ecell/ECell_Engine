@@ -4,10 +4,10 @@
 #include <vector>
 #include <unordered_map>
 
-#include "Reaction.hpp"
-#include "DataState.hpp"
-#include "SimpleParameter.hpp"
-#include "ComputedParameter.hpp"
+#include "Data/Reaction.hpp"
+#include "Data/DataState.hpp"
+#include "Data/SimpleParameter.hpp"
+#include "Data/ComputedParameter.hpp"
 
 namespace ECellEngine::Data
 {

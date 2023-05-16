@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "Constant.hpp" //#include "Operand.hpp"
+#include "Data/Constant.hpp" //#include "Operand.hpp"
 #include "Function.hpp"
 
 namespace ECellEngine::Maths

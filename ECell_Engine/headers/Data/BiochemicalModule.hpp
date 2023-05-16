@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "BiochemicalSolver.hpp"
-#include "Module.hpp"
+#include "Data/Module.hpp"
 
 namespace ECellEngine::Data
 {

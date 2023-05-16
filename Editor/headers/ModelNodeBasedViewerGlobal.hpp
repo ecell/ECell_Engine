@@ -3,7 +3,7 @@
 #include "BinaryOperatedVector.hpp"
 #include "CommandsManager.hpp"
 #include "Simulation.hpp"
-#include "SBMLModule.hpp"
+#include "Data/SBMLModule.hpp"
 #include "NodeEditorStyle.hpp"
 
 namespace ECellEngine::Editor::Utility

@@ -7,7 +7,13 @@ add_library(ECellEngine SHARED
     "src/BiochemicalSolver.cpp"
     "src/Commands.cpp"
     "src/CommandsManager.cpp"
-    "src/DataState.cpp"
+    "src/Data/DataState.cpp"
+    "src/Data/DependenciesDatabase.cpp"
+    "src/Data/Species.cpp"
+    "src/Data/Constant.cpp"
+    "src/Data/Parameter.cpp"
+    "src/Data/ComputedParameter.cpp"
+    "src/Data/SimpleParameter.cpp"
     "src/Engine.cpp"
     "src/Function.cpp"
     "src/GillespieNRMRSolver.cpp"
@@ -25,13 +31,7 @@ add_library(ECellEngine SHARED
     "src/Simulation.cpp"
     "src/SimulationsManager.cpp"
     "src/Timer.cpp"
-    "src/dependencies/DependenciesDatabase.cpp"
-    "src/Species.cpp"
-    "src/Constant.cpp"
-    "src/Parameter.cpp"
     "src/Operand.cpp"
-    "src/ComputedParameter.cpp"
-    "src/SimpleParameter.cpp"
 )
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)
