@@ -5,7 +5,7 @@
 #include "BackendUtility.hpp"
 #include "Core/Engine.hpp"
 #include "Logging/Logger.hpp"
-#include "ExeConsoleLoggerSink.hpp"
+#include "Logging/ExeConsoleLoggerSink.hpp"
 #include "ConsoleWidget.hpp"
 #include "MainWindow.hpp"
 #include "ModelExplorerWidget.hpp"

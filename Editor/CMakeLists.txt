@@ -18,11 +18,12 @@ add_executable( ECellEngineEditor
 "src/imgui-node-editor/imgui_node_editor.cpp"
 "src/imgui-node-editor/imgui_node_editor_api.cpp"
 
+"src/Logging/EditorConsoleLoggerSink.cpp"
+
 "src/Main.cpp"
 "src/BackendUtility.cpp"
 "src/ConsoleWidget.cpp"
 "src/Editor.cpp"
-"src/EditorConsoleLoggerSink.cpp"
 #"src/EngineDataVisualizationWidget.cpp"
 #"src/FileIOWidget.cpp"
 #"src/ModelStateVisualizationWidget.cpp"

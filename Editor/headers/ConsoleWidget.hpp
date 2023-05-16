@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 
-#include "EditorConsoleLoggerSink.hpp"
+#include "Logging/EditorConsoleLoggerSink.hpp"
 #include "Logging/Logger.hpp"
 #include "Widget.hpp"
 
