@@ -7,8 +7,8 @@
 #include "Data/DataState.hpp"
 #include "Logger.hpp"
 #include "Data/Module.hpp"
-#include "ModuleImporter.hpp"
-#include "SBMLModuleImporter.hpp"
+#include "IO/ModuleImporter.hpp"
+#include "IO/SBMLModuleImporter.hpp"
 
 namespace ECellEngine::IO
 {

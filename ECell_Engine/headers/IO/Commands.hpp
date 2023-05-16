@@ -6,7 +6,7 @@ namespace ECellEngine::Core
 	class Engine;
 }
 
-#include "CommandWithReceiver.hpp"
+#include "IO/CommandWithReceiver.hpp"
 #include "Core/SimulationsManager.hpp"
 
 namespace ECellEngine::IO

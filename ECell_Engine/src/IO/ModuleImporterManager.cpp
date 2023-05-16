@@ -1,4 +1,4 @@
-#include "ModuleImporterManager.hpp"
+#include "IO/ModuleImporterManager.hpp"
 
 const std::shared_ptr<ECellEngine::Data::Module> ECellEngine::IO::ModuleImporterManager::TryImportModule(const std::filesystem::path& _filePath, ECellEngine::Data::DataState& _dataState) noexcept
 {

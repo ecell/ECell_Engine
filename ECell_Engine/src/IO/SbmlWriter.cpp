@@ -42,7 +42,7 @@
  */
 
 #include <iostream>
-#include "SbmlWriter.hpp"
+#include "IO/SbmlWriter.hpp"
 using namespace std;
 using namespace ECellEngine::Maths;
 

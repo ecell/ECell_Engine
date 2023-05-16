@@ -42,7 +42,7 @@
  * -------------------------------------------------------------------------->
  */
 
-#include "SbmlParser.hpp"
+#include "IO/SbmlParser.hpp"
 
 bool ECellEngine::IO::SbmlParser::ValidateSBML(SBMLDocument* _sbmlDoc)
 {

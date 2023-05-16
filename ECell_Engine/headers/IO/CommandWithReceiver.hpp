@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Command.hpp"
+#include "IO/Command.hpp"
 
 namespace ECellEngine::IO
 {

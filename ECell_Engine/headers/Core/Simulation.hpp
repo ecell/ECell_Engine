@@ -5,7 +5,7 @@
 #include <vector> //for std::vector<>
 
 #include "Data/Module.hpp"
-#include "ModuleImporterManager.hpp"
+#include "IO/ModuleImporterManager.hpp"
 
 #include "Solver.hpp"
 #include "GillespieNRMRSolver.hpp"

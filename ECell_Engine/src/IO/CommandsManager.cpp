@@ -1,4 +1,4 @@
-#include "CommandsManager.hpp"
+#include "IO/CommandsManager.hpp"
 
 bool ECellEngine::IO::CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit)
 {

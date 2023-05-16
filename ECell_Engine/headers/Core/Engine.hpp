@@ -4,8 +4,8 @@
 #include <string>
 #include <thread>
 
-#include "Commands.hpp"
-#include "CommandsManager.hpp"
+#include "IO/Commands.hpp"
+#include "IO/CommandsManager.hpp"
 #include "Logger.hpp"
 #include "Core/SimulationsManager.hpp"
 

@@ -6,7 +6,7 @@
 #include <sbml/SBMLTypes.h>
 
 #include "Function.hpp"
-#include "ModuleImporter.hpp"
+#include "IO/ModuleImporter.hpp"
 #include "Data/SBMLModule.hpp"
 
 namespace ECellEngine::IO

@@ -1,4 +1,4 @@
-#include "SBMLModuleImporter.hpp"
+#include "IO/SBMLModuleImporter.hpp"
 
 void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule,
     const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
