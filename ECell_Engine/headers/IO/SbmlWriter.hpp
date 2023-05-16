@@ -43,7 +43,7 @@
 
 
 #include <sbml/SBMLTypes.h>
-#include "MathUtility.hpp"
+#include "Maths/MathUtility.hpp"
 
 namespace ECellEngine::IO
 {

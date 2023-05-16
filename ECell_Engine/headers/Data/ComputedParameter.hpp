@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Data/Parameter.hpp"
-#include "Operation.hpp"
+#include "Maths/Operation.hpp"
 
 namespace ECellEngine::Data
 {

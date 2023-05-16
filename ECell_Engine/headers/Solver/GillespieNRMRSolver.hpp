@@ -2,10 +2,9 @@
 
 #include <cstddef>
 
-#include "BiochemicalSolver.hpp"
 #include "IndexedMinHeap.hpp"
 #include "Data/Reaction.hpp"
-#include "ReversibleRNG.hpp"
+#include "Maths/ReversibleRNG.hpp"
 
 namespace ECellEngine::Solvers
 {

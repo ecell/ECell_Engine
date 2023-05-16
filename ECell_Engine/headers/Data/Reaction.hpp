@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "Operation.hpp"
+#include "Maths/Operation.hpp"
 
 using namespace ECellEngine::Maths;
 

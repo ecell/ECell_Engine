@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Data/Constant.hpp" //#include "Operand.hpp"
-#include "Function.hpp"
+#include "Maths/Function.hpp"
 
 namespace ECellEngine::Maths
 {

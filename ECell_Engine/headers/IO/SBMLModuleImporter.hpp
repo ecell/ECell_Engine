@@ -5,7 +5,7 @@
 
 #include <sbml/SBMLTypes.h>
 
-#include "Function.hpp"
+#include "Maths/Function.hpp"
 #include "IO/ModuleImporter.hpp"
 #include "Data/SBMLModule.hpp"
 

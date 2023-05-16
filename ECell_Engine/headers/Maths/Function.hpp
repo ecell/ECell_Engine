@@ -3,7 +3,7 @@
 #include <cmath>
 #include <vector>
 
-#include "Operand.hpp"
+#include "Maths/Operand.hpp"
 
 namespace ECellEngine::Maths
 {

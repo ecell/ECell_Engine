@@ -1,4 +1,4 @@
-#include "Function.hpp"
+#include "Maths/Function.hpp"
 
 ECellEngine::Maths::Add ECellEngine::Maths::Functions::add;
 ECellEngine::Maths::Minus ECellEngine::Maths::Functions::minus;

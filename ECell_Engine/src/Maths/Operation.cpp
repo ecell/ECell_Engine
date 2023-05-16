@@ -1,4 +1,4 @@
-#include "Operation.hpp"
+#include "Maths/Operation.hpp"
 
 void ECellEngine::Maths::Operation::GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector) const noexcept
 {

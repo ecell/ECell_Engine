@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Operand.hpp"
+#include "Maths/Operand.hpp"
 
 namespace ECellEngine::Data
 {

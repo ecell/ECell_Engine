@@ -24,19 +24,20 @@ add_library(ECellEngine SHARED
     "src/IO/SbmlParser.cpp"
     "src/IO/SbmlWriter.cpp"
     
+    "src/Maths/Function.cpp"
+    "src/Maths/MathUtility.cpp"
+    "src/Maths/Operand.cpp"
+    "src/Maths/Operation.cpp"
+    "src/Maths/revrand.c"
+
     "src/Logging/Logger.cpp"
 
     "src/Solver/BiochemicalSolver.cpp"
     "src/Solver/GillespieNRMRSolver.cpp"
     #"src/Solver/Gillespie_NRM_R.cpp"
 
-    "src/Function.cpp"
     "src/IndexedMinHeap.cpp"
-    "src/MathUtility.cpp"
-    "src/Operation.cpp"
-    "src/revrand.c"
     "src/sbml_example.cpp"
-    "src/Operand.cpp"
 )
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)
