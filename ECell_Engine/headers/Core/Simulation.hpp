@@ -5,6 +5,7 @@
 #include <vector> //for std::vector<>
 
 #include "Data/Module.hpp"
+#include "Data/DependenciesDatabase.hpp"
 #include "IO/ModuleImporterManager.hpp"
 
 #include "Solver/Solver.hpp"
@@ -30,6 +31,11 @@ namespace ECellEngine::Core
 		@brief The data state instance of this simulation.
 		*/
 		ECellEngine::Data::DataState dataState;
+
+		/*!
+		@brief The dependencies between the datastructures loaded in this simulation.
+		*/
+		ECellEngine::Data::DependenciesDatabase dependenciesDB;
 
 		/*!
 		@brief The manager to handle data import for this simulation.
@@ -105,6 +111,15 @@ namespace ECellEngine::Core
 		inline ECellEngine::Data::DataState* GetDataState()
 		{
 			return &dataState;
+		}
+
+		/*!
+		@brief Gets the dependencies of the datastructure loaded in this simulation.
+		@returns ::dependenciesDB
+		*/
+		inline const ECellEngine::Data::DependenciesDatabase& GetDependenciesDatabase() const noexcept
+		{
+			return dependenciesDB;
 		}
 
 		/*!
@@ -198,6 +213,15 @@ namespace ECellEngine::Core
 				 was found.
 		*/
 		const std::size_t FindSolverIdx(const char* _solverName);
+
+		/*!
+		@brief Computes all the dependencies between the datastructures loaded
+				in this simulation.
+		*/
+		inline void RefreshDependenciesDatabase() noexcept
+		{
+			dependenciesDB.RefreshDependencies(dataState);
+		}
 
 		/*!
 		@brief Removes (destroy) the module at position @p _idx in ::modules

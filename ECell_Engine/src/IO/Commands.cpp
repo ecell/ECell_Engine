@@ -185,6 +185,7 @@ bool ECellEngine::IO::AddModuleCommand::execute(const std::vector<std::string>& 
 
 	//TODO: check _args[2]
 	receiver->GetSimulation(std::stoi(_args[1]))->AddModule(_args[2]);
+	receiver->GetSimulation(std::stoi(_args[1]))->RefreshDependenciesDatabase();
 
 	return true;
 }
