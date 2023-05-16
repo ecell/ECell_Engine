@@ -8,11 +8,15 @@
 
 namespace ECellEngine::Editor::Utility
 {
-	//forward declaration
-	struct ModelNodeBasedViewerContext;
 	struct NodePinData;
 	struct NodeData;
 	struct LinkData;
+}
+
+namespace ECellEngine::Editor::Widget::MNBV
+{
+	//forward declaration
+	struct ModelNodeBasedViewerContext;
 	
 	/*!
 	@file ModelNodeBasedViewerGlobal.hpp
@@ -63,7 +67,7 @@ namespace ECellEngine::Editor::Utility
 	@see ECellEngine::Editor::Utility::FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
 	@see ECellEngine::Data::BinaryOperation::LowerBound(ForwardIt first, ForwardIt last, const T& value)
 	*/
-	NodeData* FindNodeInAll(const std::size_t _id);
+	Utility::NodeData* FindNodeInAll(const std::size_t _id);
 
 	/*!
 	@brief Searchs for a ECellEngine::Editor::Utility::NodeData with id @p _id
@@ -83,7 +87,7 @@ namespace ECellEngine::Editor::Utility
 	@see ECellEngine::Editor::Utility::FindNodeInAll(const std::size_t _id)
 	*/
 	template<class ForwardIt>
-	NodeData* FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last);
+	Utility::NodeData* FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last);
 
 	/*!
 	@brief Searchs for a ECellEngine::Editor::Utility::NodePinData with id @p _id
@@ -101,7 +105,7 @@ namespace ECellEngine::Editor::Utility
 	@see ECellEngine::Editor::Utility::FindNodePinIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
 	@see ECellEngine::Data::BinaryOperation::LowerBound(ForwardIt first, ForwardIt last, const T& value)
 	*/
-	NodePinData* FindNodePinInAll(const std::size_t _id);
+	Utility::NodePinData* FindNodePinInAll(const std::size_t _id);
 
 	/*!
 	@brief Searchs for a ECellEngine::Editor::Utility::NodePinData with id @p _id
@@ -120,7 +124,7 @@ namespace ECellEngine::Editor::Utility
 			 matching id if it was found. @a nullptr otherwise.
 	*/
 	template<class ForwardIt>
-	NodePinData* FindNodePinIn(const std::size_t _id, ForwardIt _first, ForwardIt _last);
+	Utility::NodePinData* FindNodePinIn(const std::size_t _id, ForwardIt _first, ForwardIt _last);
 
 	/*!
 	@brief Gets the pointer to the current active ECellEngine::Editor::Utility::ModelNodeBasedViewerContext.
@@ -132,13 +136,13 @@ namespace ECellEngine::Editor::Utility
 	@brief Gets the pointer to the list of the links (ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::links)
 			of the current mnbv context.
 	*/
-	std::vector<LinkData>* GetLinks();
+	std::vector<Utility::LinkData>* GetLinks();
 
 	/*!
 	@brief Gets the pointer to the member field ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::style
 			of the current active MNBV context.
 	*/
-	NodeEditorStyle* GetMNBVStyle();
+	Utility::NodeEditorStyle* GetMNBVStyle();
 
 	/*!
 	@brief Gets the value of the next unique id of the current MNBV context.
@@ -155,7 +159,7 @@ namespace ECellEngine::Editor::Utility
 			 is the pointer to the array itself.
 	@see ECellEngine::Editor::Utility::NodeEditorStyle::nodeColors
 	*/
-	ImVec4* GetNodeColors(NodeType _nodeType);
+	ImVec4* GetNodeColors(Utility::NodeType _nodeType);
 
 	/*!
 	@brief Translates a value of the enum ECellEngine::Editor::Utility::NodeColorType
@@ -163,23 +167,23 @@ namespace ECellEngine::Editor::Utility
 	@param _nodeColorType The type of node color for which we want to retrieve
 			the name.
 	*/
-	inline char* GetNodeColorTypeName(NodeColorType _nodeColorType)
+	inline char* GetNodeColorTypeName(Utility::NodeColorType _nodeColorType)
 	{
 		switch (_nodeColorType)
 		{
-		case NodeColorType_Bg:
+		case Utility::NodeColorType_Bg:
 			return "NodeColorType_Bg";
-		case NodeColorType_Border:
+		case Utility::NodeColorType_Border:
 			return "NodeColorType_Border";
-			/*case NodeColorType_BorderHovered:
+			/*case Utility::NodeColorType_BorderHovered:
 				return "NodeColorType_BorderHovered";*/
-				/*case NodeColorType_BorderSelected:
+				/*case Utility::NodeColorType_BorderSelected:
 					return "NodeColorType_BorderSelected";*/
-		case NodeColorType_HeaderBg:
+		case Utility::NodeColorType_HeaderBg:
 			return "NodeColorType_HeaderBg";
-		case NodeColorType_HeaderActivated:
+		case Utility::NodeColorType_HeaderActivated:
 			return "NodeColorType_HeaderActivated";
-		case NodeColorType_HeaderHovered:
+		case Utility::NodeColorType_HeaderHovered:
 			return "NodeColorType_HeaderHovered";
 		default:
 			return "Unknown NodeColorType";
@@ -191,23 +195,23 @@ namespace ECellEngine::Editor::Utility
 			to a character string.
 	@param _nodeType The type of node for which we want to retrieve the name.
 	*/
-	inline char* GetNodeTypeName(NodeType _nodeType)
+	inline char* GetNodeTypeName(Utility::NodeType _nodeType)
 	{
 		switch (_nodeType)
 		{
-		case NodeType_Default:
+		case Utility::NodeType_Default:
 			return "NodeType_Default";
-		case NodeType_Asset:
+		case Utility::NodeType_Asset:
 			return "NodeType_Asset";
-		case NodeType_Data:
+		case Utility::NodeType_Data:
 			return "NodeType_Data";
-		case NodeType_Parameter:
+		case Utility::NodeType_Parameter:
 			return "NodeType_Parameter";
-		case NodeType_Reaction:
+		case Utility::NodeType_Reaction:
 			return "NodeType_Reaction";
-		case NodeType_Solver:
+		case Utility::NodeType_Solver:
 			return "NodeType_Solver";
-		case NodeType_Species:
+		case Utility::NodeType_Species:
 			return "NodeType_Species";
 		default:
 			return "Unknown NodeType";
@@ -222,7 +226,7 @@ namespace ECellEngine::Editor::Utility
 			 is the pointer to the array itself.
 	@see ECellEngine::Editor::Utility::NodeEditorStyle::pinColors
 	*/
-	ImVec4* GetPinColors(PinType _pinType);
+	ImVec4* GetPinColors(Utility::PinType _pinType);
 
 	/*!
 	@brief Translates a value of the enum ECellEngine::Editor::Utility::PinColorType
@@ -230,15 +234,15 @@ namespace ECellEngine::Editor::Utility
 	@param _pinColorType The type of node pin color for which we want to retrieve
 			the name.
 	*/
-	inline char* GetPinColorTypeName(PinColorType _pinColorType)
+	inline char* GetPinColorTypeName(Utility::PinColorType _pinColorType)
 	{
 		switch (_pinColorType)
 		{
-		case PinColorType_BgActivated:
+		case Utility::PinColorType_BgActivated:
 			return "PinColorType_BgActivated";
-		case PinColorType_BgInactivated:
+		case Utility::PinColorType_BgInactivated:
 			return "PinColorType_BgInactivated";
-		case PinColorType_Border:
+		case Utility::PinColorType_Border:
 			return "PinColorType_Border";
 		default:
 			return "Unknown PinColorType";
@@ -250,23 +254,23 @@ namespace ECellEngine::Editor::Utility
 			to a character string.
 	@param _pinType The type of pin for which we want to retrieve the name.
 	*/
-	inline char* GetPinTypeName(PinType _pinType)
+	inline char* GetPinTypeName(Utility::PinType _pinType)
 	{
 		switch (_pinType)
 		{
-		case PinType_Default:
+		case Utility::PinType_Default:
 			return "PinType_Default";
-		case PinType_Asset:
+		case Utility::PinType_Asset:
 			return "PinType_Asset";
-		case PinType_Parameter:
+		case Utility::PinType_Parameter:
 			return "PinType_Parameter";
-		case PinType_Reaction:
+		case Utility::PinType_Reaction:
 			return "PinType_Reaction";
-		case PinType_Solver:
+		case Utility::PinType_Solver:
 			return "PinType_Solver";
-		case PinType_Species:
+		case Utility::PinType_Species:
 			return "PinType_Species";
-		case PinType_ValueFloat:
+		case Utility::PinType_ValueFloat:
 			return "PinType_ValueFloat";
 		default:
 			return "Unknown PinType";
@@ -282,7 +286,7 @@ namespace ECellEngine::Editor::Utility
 	@param _endPinType The type of pin that is used as the end of a
 			potential ECellEngine::Editor::Utility::LinkData.
 	*/
-	bool IsDynamicLinkAuthorized(PinType _startPinType, PinType _endPinType);
+	bool IsDynamicLinkAuthorized(Utility::PinType _startPinType, Utility::PinType _endPinType);
 
 	/*!
 	@brief Queues a command to send to the core of the engine to try to attach

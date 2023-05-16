@@ -10,7 +10,7 @@ void ECellEngine::Editor::Utility::AssetNodeData::InputUpdate(const NodeInputPin
 		//So, we know that we have the action to perform is to queue the TryAttachSolverToModuleCommand
 		//of the engine.
 		//This command will be process after the current context has been entirely draw in this frame.
-		QueueEngineTASToMCmd(data->GetName(), _data);
+		Widget::MNBV::QueueEngineTASToMCmd(data->GetName(), _data);
 	}
 }
 
@@ -21,7 +21,7 @@ void ECellEngine::Editor::Utility::ComputedParameterNodeData::OutputConnect(cons
 	if (_nodeOutputPin == outputPins[ComputedParameterNodeData::OutputPin_ComputedParameterValue])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
-		GetLinks()->back().OverrideStartFallbackPin(outputPins[ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);
+		Widget::MNBV::GetLinks()->back().OverrideStartFallbackPin(outputPins[ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);
 	}
 }
 
@@ -36,14 +36,14 @@ void ECellEngine::Editor::Utility::LinePlotNodeData::InputConnect(const NodeInpu
 	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_XAxis])
 	{
 		//we set the input pin of the collapsing header as the fallback
-		GetLinks()->back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
+		Widget::MNBV::GetLinks()->back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
 	}
 
 	//Y axis input pin
 	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_YAxis])
 	{
 		//we set the input pin of the collapsing header as the fallback
-		GetLinks()->back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
+		Widget::MNBV::GetLinks()->back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
 	}
 }
 
@@ -82,7 +82,7 @@ void ECellEngine::Editor::Utility::ReactionNodeData::OutputConnect(const NodeOut
 	if (_nodeOutputPin == outputPins[ReactionNodeData::OutputPin_KineticLawValue])
 	{
 		//we set the input pin of the kinetic law collapsing header as the fall back
-		GetLinks()->back().OverrideStartFallbackPin(outputPins[OutputPin_CollHdrKineticLaw].id, 1);
+		Widget::MNBV::GetLinks()->back().OverrideStartFallbackPin(outputPins[OutputPin_CollHdrKineticLaw].id, 1);
 	}
 }
 
@@ -97,7 +97,7 @@ void ECellEngine::Editor::Utility::SimpleParameterNodeData::InputConnect(const N
 	if (_nodeInputPin == inputPins[SimpleParameterNodeData::InputPin_ParameterValue])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
-		GetLinks()->back().OverrideEndFallbackPin(inputPins[SimpleParameterNodeData::InputPin_CollHdrDataFields].id, 1);
+		Widget::MNBV::GetLinks()->back().OverrideEndFallbackPin(inputPins[SimpleParameterNodeData::InputPin_CollHdrDataFields].id, 1);
 	}
 }
 
@@ -112,7 +112,7 @@ void ECellEngine::Editor::Utility::SimpleParameterNodeData::OutputConnect(const 
 	if (_nodeOutputPin == outputPins[SimpleParameterNodeData::OutputPin_ParameterValue])
 	{
 		//we set the output pin of the data field collapsing header as the fall back
-		GetLinks()->back().OverrideStartFallbackPin(outputPins[SimpleParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
+		Widget::MNBV::GetLinks()->back().OverrideStartFallbackPin(outputPins[SimpleParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
 	}
 }
 
@@ -146,7 +146,7 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::InputConnect(const NodeInput
 	if (_nodeInputPin == inputPins[SpeciesNodeData::InputPin_Quantity])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
-		GetLinks()->back().OverrideEndFallbackPin(inputPins[SpeciesNodeData::InputPin_CollHdrDataFields].id, 1);
+		Widget::MNBV::GetLinks()->back().OverrideEndFallbackPin(inputPins[SpeciesNodeData::InputPin_CollHdrDataFields].id, 1);
 	}
 }
 
@@ -161,7 +161,7 @@ void ECellEngine::Editor::Utility::SpeciesNodeData::OutputConnect(const NodeOutp
 	if (_nodeOutputPin == outputPins[SpeciesNodeData::OutputPin_Quantity])
 	{
 		//we set the output pin of the data field collapsing header as the fall back
-		GetLinks()->back().OverrideStartFallbackPin(outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields].id, 1);
+		Widget::MNBV::GetLinks()->back().OverrideStartFallbackPin(outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields].id, 1);
 	}
 }
 

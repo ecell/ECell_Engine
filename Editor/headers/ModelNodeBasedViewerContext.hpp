@@ -12,7 +12,7 @@
 #include "NodeEditorDraw.hpp"
 #include "NodeEditorStyle.hpp"
 
-namespace ECellEngine::Editor::Utility
+namespace ECellEngine::Editor::Widget::MNBV
 {
 	/*!
 	@brief A struct to handle the data (nodes and links) to be displayed
@@ -115,7 +115,7 @@ namespace ECellEngine::Editor::Utility
 				between a specific pair of pins.
 		@see ECellEngine::Editor::Utility::PinType.
 		*/
-		bool authorizedDynamicLinks[PinType_Count][PinType_Count]{};
+		bool authorizedDynamicLinks[Utility::PinType_Count][Utility::PinType_Count]{};
 
 		/*!
 		@brief A local struct to encapsulate the parameters mandatory to send a
@@ -154,8 +154,8 @@ namespace ECellEngine::Editor::Utility
 		ModelNodeBasedViewerContext() :
 			uniqueId{ 0 }, countTASToMCmds{ 0 }
 		{
-			authorizedDynamicLinks[PinType_Solver][PinType_Solver] = true;
-			authorizedDynamicLinks[PinType_ValueFloat][PinType_ValueFloat] = true;
+			authorizedDynamicLinks[Utility::PinType_Solver][Utility::PinType_Solver] = true;
+			authorizedDynamicLinks[Utility::PinType_ValueFloat][Utility::PinType_ValueFloat] = true;
 		}
 
 		/*!

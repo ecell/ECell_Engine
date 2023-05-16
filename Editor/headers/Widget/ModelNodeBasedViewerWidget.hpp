@@ -17,7 +17,7 @@ namespace ECellEngine::Editor::Widget
 #include "NodeEditorDraw.hpp"
 #include "Widget.hpp"
 
-namespace ECellEngine::Editor::Widget
+namespace ECellEngine::Editor::Widget::MNBV
 {
 	/*!
 	@brief Displays the assets imported in a simulation space as a graph.
@@ -56,7 +56,7 @@ namespace ECellEngine::Editor::Widget
 		/*!
 		@brief The reference to the parent window.
 		*/
-		ModelExplorerWidget* rootExplorer;		
+		ModelExplorerWidget* rootExplorer;
 
 		ModelNodeBasedViewerWidget(Editor& _editor, ModelExplorerWidget* _rootExplorer) :
 			Widget(_editor), rootExplorer{ _rootExplorer }

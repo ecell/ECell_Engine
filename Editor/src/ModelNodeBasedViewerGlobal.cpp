@@ -1,25 +1,25 @@
 #include "ModelNodeBasedViewerContext.hpp"
 
-static ECellEngine::Editor::Utility::ModelNodeBasedViewerContext* s_mnbvCtxt = nullptr;
+static ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* s_mnbvCtxt = nullptr;
 
-void ECellEngine::Editor::Utility::AddAssetNode(ECellEngine::Data::Module* _module)
+void ECellEngine::Editor::Widget::MNBV::AddAssetNode(ECellEngine::Data::Module* _module)
 {
     s_mnbvCtxt->assetNodes.push_back(ECellEngine::Editor::Utility::AssetNodeData(_module));
 }
 
-void ECellEngine::Editor::Utility::AddSolverNode(ECellEngine::Solvers::Solver* _solver)
+void ECellEngine::Editor::Widget::MNBV::AddSolverNode(ECellEngine::Solvers::Solver* _solver)
 {
     s_mnbvCtxt->solverNodes.push_back(ECellEngine::Editor::Utility::SolverNodeData(_solver));
 }
 
-void ECellEngine::Editor::Utility::CurrentMNBVContextDraw(ECellEngine::Core::Simulation* _simulation)
+void ECellEngine::Editor::Widget::MNBV::CurrentMNBVContextDraw(ECellEngine::Core::Simulation* _simulation)
 {
     s_mnbvCtxt->Draw(_simulation);
 }
 
-ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeInAll(const std::size_t _id)
+ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Widget::MNBV::FindNodeInAll(const std::size_t _id)
 {
-    NodeData* itND = nullptr;
+    Utility::NodeData* itND = nullptr;
 
     //Search in the list of Asset Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end());
@@ -88,7 +88,7 @@ ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeIn
 }
 
 template<class ForwardIt>
-ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
+ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Widget::MNBV::FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
 {
     if (_first != _last)
     {   
@@ -98,9 +98,9 @@ ECellEngine::Editor::Utility::NodeData* ECellEngine::Editor::Utility::FindNodeIn
     return nullptr;
 }
 
-ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNodePinInAll(const std::size_t _id)
+ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Widget::MNBV::FindNodePinInAll(const std::size_t _id)
 {
-    NodePinData* itNPD = nullptr;
+    Utility::NodePinData* itNPD = nullptr;
 
     //Search in the list of Asset Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end());
@@ -169,9 +169,9 @@ ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNod
 }
 
 template<class ForwardIt>
-ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNodePinIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
+ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Widget::MNBV::FindNodePinIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
 {
-    NodePinData* itNPD;
+    Utility::NodePinData* itNPD;
 
     //if length of the space to search is greater than 0
     //The list/array has at least 1 element
@@ -216,60 +216,60 @@ ECellEngine::Editor::Utility::NodePinData* ECellEngine::Editor::Utility::FindNod
     return nullptr;
 }
 
-ECellEngine::Editor::Utility::ModelNodeBasedViewerContext* ECellEngine::Editor::Utility::GetCurrentMNBVContext()
+ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* ECellEngine::Editor::Widget::MNBV::GetCurrentMNBVContext()
 {
     return s_mnbvCtxt;
 }
 
-std::vector<ECellEngine::Editor::Utility::LinkData>* ECellEngine::Editor::Utility::GetLinks()
+std::vector<ECellEngine::Editor::Utility::LinkData>* ECellEngine::Editor::Widget::MNBV::GetLinks()
 {
     return &s_mnbvCtxt->links;
 }
 
-ECellEngine::Editor::Utility::NodeEditorStyle* ECellEngine::Editor::Utility::GetMNBVStyle()
+ECellEngine::Editor::Utility::NodeEditorStyle* ECellEngine::Editor::Widget::MNBV::GetMNBVStyle()
 {
     return &s_mnbvCtxt->style;
 }
 
-ImVec4* ECellEngine::Editor::Utility::GetNodeColors(NodeType _nodeType)
+ImVec4* ECellEngine::Editor::Widget::MNBV::GetNodeColors(Utility::NodeType _nodeType)
 {
     return s_mnbvCtxt->style.nodeColors[_nodeType];
 }
 
-ImVec4* ECellEngine::Editor::Utility::GetPinColors(PinType _pinType)
+ImVec4* ECellEngine::Editor::Widget::MNBV::GetPinColors(Utility::PinType _pinType)
 {
     return s_mnbvCtxt->style.pinColors[_pinType];
 }
 
-void ECellEngine::Editor::Utility::SetCurrentMNBVContext(ECellEngine::Editor::Utility::ModelNodeBasedViewerContext* _ctxt)
+void ECellEngine::Editor::Widget::MNBV::SetCurrentMNBVContext(ModelNodeBasedViewerContext* _ctxt)
 {
     s_mnbvCtxt = _ctxt;
 }
 
-std::size_t& ECellEngine::Editor::Utility::GetMNBVCtxtNextId()
+std::size_t& ECellEngine::Editor::Widget::MNBV::GetMNBVCtxtNextId()
 {
     return ++(s_mnbvCtxt->uniqueId);
 }
 
-bool ECellEngine::Editor::Utility::IsDynamicLinkAuthorized(PinType _startPinType, PinType _endPinType)
+bool ECellEngine::Editor::Widget::MNBV::IsDynamicLinkAuthorized(Utility::PinType _startPinType, Utility::PinType _endPinType)
 {
     return s_mnbvCtxt->authorizedDynamicLinks[_startPinType][_endPinType];
 }
 
-void ECellEngine::Editor::Utility::QueueEngineTASToMCmd(const char* _moduleName, const char* _solverName)
+void ECellEngine::Editor::Widget::MNBV::QueueEngineTASToMCmd(const char* _moduleName, const char* _solverName)
 {
     s_mnbvCtxt->TASToMCmds.insert(s_mnbvCtxt->TASToMCmds.begin(),
-        ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::EngineTASToMCmdParameter(_moduleName, _solverName));
+        ModelNodeBasedViewerContext::EngineTASToMCmdParameter(_moduleName, _solverName));
     s_mnbvCtxt->countTASToMCmds++;
 }
 
-void ECellEngine::Editor::Utility::RemoveAssetNode(const std::size_t _idx)
+void ECellEngine::Editor::Widget::MNBV::RemoveAssetNode(const std::size_t _idx)
 {
     auto it = s_mnbvCtxt->assetNodes.begin() + _idx;
     s_mnbvCtxt->assetNodes.erase(it);
 }
 
-void ECellEngine::Editor::Utility::SendEngineTASToMCmd(const char* _simuIdx, CommandsManager* _cmdsManager)
+void ECellEngine::Editor::Widget::MNBV::SendEngineTASToMCmd(const char* _simuIdx, CommandsManager* _cmdsManager)
 {
     while (s_mnbvCtxt->countTASToMCmds > 0)
     {

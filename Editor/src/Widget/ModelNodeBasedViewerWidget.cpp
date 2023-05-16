@@ -1,12 +1,12 @@
 #include "Widget/ModelExplorerWidget.hpp"//forward declaration
 #include "Editor.hpp"
 
-ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::~ModelNodeBasedViewerWidget()
+ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::~ModelNodeBasedViewerWidget()
 {
     rootExplorer->RemoveNodeEditorContext(neCtxtIdx);
 }
 
-void ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::Awake()
+void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Awake()
 {
     ax::NodeEditor::Config nodeConfig;
 
@@ -46,7 +46,7 @@ void ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::Awake()
     ax::NodeEditor::SetCurrentEditor(nullptr);
 }
 
-void ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::Draw()
+void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
 {
     if (ImGui::Begin("Model Viewer"))
     {
@@ -56,7 +56,7 @@ void ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::Draw()
 
         ImGui::Separator();
         ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(neCtxtIdx));
-        ECellEngine::Editor::Utility::SetCurrentMNBVContext(rootExplorer->GetModelNodeBasedViewerContext(mnbvCtxIdx));
+        SetCurrentMNBVContext(rootExplorer->GetModelNodeBasedViewerContext(mnbvCtxIdx));
 
         // Start interaction with editor.
         ax::NodeEditor::Begin("Model Exploration Space");
@@ -66,20 +66,20 @@ void ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::Draw()
         //the simulation space.
         HandleSimuDataRefDrop();
 
-        ECellEngine::Editor::Utility::CurrentMNBVContextDraw(editor.engine.GetSimulationsManager()->GetSimulation(0));
+        CurrentMNBVContextDraw(editor.engine.GetSimulationsManager()->GetSimulation(0));
 
-        ECellEngine::Editor::Utility::SendEngineTASToMCmd("0", editor.engine.GetCommandsManager());
+        SendEngineTASToMCmd("0", editor.engine.GetCommandsManager());
 
         // End of interaction with editor.
         ax::NodeEditor::End();
-        ECellEngine::Editor::Utility::SetCurrentMNBVContext(nullptr);
+        SetCurrentMNBVContext(nullptr);
         ax::NodeEditor::SetCurrentEditor(nullptr);
 
         ImGui::End();
     }
 }
 
-void ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::HandleSimuDataRefDrop()
+void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::HandleSimuDataRefDrop()
 {
     if (ImGui::BeginDragDropTarget())
     {
@@ -87,14 +87,14 @@ void ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget::HandleSimuDataRefD
         {
             IM_ASSERT(payload->DataSize == sizeof(std::size_t));
             const std::size_t dataIdx = *(const std::size_t*)payload->Data;
-            ECellEngine::Editor::Utility::AddAssetNode(editor.engine.GetSimulationsManager()->GetSimulation(0)->GetModule(dataIdx).get());
+            AddAssetNode(editor.engine.GetSimulationsManager()->GetSimulation(0)->GetModule(dataIdx).get());
         }
 
         if(const ImGuiPayload * payload = ImGui::AcceptDragDropPayload("DND_SOLVER"))
         {
             IM_ASSERT(payload->DataSize == sizeof(std::size_t));
             const std::size_t dataIdx = *(const std::size_t*)payload->Data;
-            ECellEngine::Editor::Utility::AddSolverNode(editor.engine.GetSimulationsManager()->GetSimulation(0)->GetSolver(dataIdx).get());
+            AddSolverNode(editor.engine.GetSimulationsManager()->GetSimulation(0)->GetSolver(dataIdx).get());
         }
 
         ImGui::EndDragDropTarget();

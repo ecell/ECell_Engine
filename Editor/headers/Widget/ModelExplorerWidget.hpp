@@ -88,13 +88,13 @@ namespace ECellEngine::Editor::Widget
 				Model Explorer.
 		@see ECellEngine::Editor::Utility::ModelNodeBasedViewerContext
 		*/
-		std::vector<ECellEngine::Editor::Utility::ModelNodeBasedViewerContext> mnbvCtxts;
+		std::vector<MNBV::ModelNodeBasedViewerContext> mnbvCtxts;
 
 		/*!
 		@brief The list of model viewers opened to explore the data added
 				in the current simulation.
 		*/
-		std::vector<ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget> mnbViewers;
+		std::vector<MNBV::ModelNodeBasedViewerWidget> mnbViewers;
 
 		/*!
 		@brief Draws the popup window used to select which solver to add in the
@@ -135,7 +135,7 @@ namespace ECellEngine::Editor::Widget
 		ModelExplorerWidget(Editor& _editor) :
 			Widget(_editor), modelHierarchy(_editor)
 		{
-			mnbViewers.push_back(ECellEngine::Editor::Widget::ModelNodeBasedViewerWidget(editor, this));
+			mnbViewers.push_back(MNBV::ModelNodeBasedViewerWidget(editor, this));
 		}
 
 		/*!
@@ -154,7 +154,7 @@ namespace ECellEngine::Editor::Widget
 		*/
 		inline void AddModelNodeBasedViewerContext()
 		{
-			mnbvCtxts.push_back(ECellEngine::Editor::Utility::ModelNodeBasedViewerContext());
+			mnbvCtxts.push_back(MNBV::ModelNodeBasedViewerContext());
 		}
 
 		/*!
@@ -186,7 +186,7 @@ namespace ECellEngine::Editor::Widget
 				@p _idx in ::mnbViewers.
 		@param _idx The index of the viewer to retrieve in ::mnbViewers.
 		*/
-		inline ModelNodeBasedViewerWidget* GetMNBViewer(const std::size_t _idx) noexcept
+		inline MNBV::ModelNodeBasedViewerWidget* GetMNBViewer(const std::size_t _idx) noexcept
 		{
 			return &mnbViewers[_idx];
 		}
@@ -206,7 +206,7 @@ namespace ECellEngine::Editor::Widget
 				@p _idx in ::mnbvCtxts.
 		@param _idx The index of the style struct to retrieve in ::mnbvCtxts.
 		*/
-		inline ECellEngine::Editor::Utility::ModelNodeBasedViewerContext* GetModelNodeBasedViewerContext(std::size_t _idx)
+		inline MNBV::ModelNodeBasedViewerContext* GetModelNodeBasedViewerContext(std::size_t _idx)
 		{
 			return &mnbvCtxts[_idx];
 		}
