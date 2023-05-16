@@ -22,15 +22,15 @@ namespace ECellEngine::Editor::Widget::MNBV
 	/*!
 	@file ModelNodeBasedViewerGlobal.hpp
 	@brief Global API to access, query, add, remove, ... the nodes and links of
-			ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext.
-	@details Make sure to use ECellEngine::Editor::Utility::MNBV::SetCurrentMNBVContext(ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext* _ctxt)
+			ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext.
+	@details Make sure to use ECellEngine::Editor::Widget::MNBV::SetCurrentMNBVContext(ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* _ctxt)
 			 before using these global functions.
 	*/
 
 
 	/*!
 	@brief Adds an ECellEngine::Editor::Utility::MNBV::AssetNodeData in
-			ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext::assetNodes.
+			ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::assetNodes.
 	@details After being added, the asset node data will be drawn in the editor.
 	@param _data The data source of the asset node to add. It probably comes
 			from a ECellEngine::Data::DataState.
@@ -58,14 +58,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 
 	/*!
 	@brief Searchs for a ECellEngine::Editor::Utility::MNBV::NodeData with id @p _id
-			in all the nodes of the current ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext.
+			in all the nodes of the current ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext.
 	@details Performs a binary search on each node list of the current
-			ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext. It stops
+			ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext. It stops
 			as soon as it found a match.
 	@param _id The unique id of the target node.
 	@returns A pointer to the ECellEngine::Editor::Utility::MNBV::NodeData with the
 			 matching id if it was found. @a nullptr otherwise.
-	@see ECellEngine::Editor::Utility::MNBV::FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
+	@see ECellEngine::Editor::Widget::MNBV::FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
 	@see ECellEngine::Data::BinaryOperation::LowerBound(ForwardIt first, ForwardIt last, const T& value)
 	*/
 	Utility::MNBV::NodeData* FindNodeInAll(const std::size_t _id);
@@ -85,16 +85,16 @@ namespace ECellEngine::Editor::Widget::MNBV
 			set of node data in which we are searching.
 	@returns A pointer to the ECellEngine::Editor::Utility::MNBV::NodeData with the
 			 matching id if it was found. @a nullptr otherwise.
-	@see ECellEngine::Editor::Utility::MNBV::FindNodeInAll(const std::size_t _id)
+	@see ECellEngine::Editor::Widget::MNBV::FindNodeInAll(const std::size_t _id)
 	*/
 	template<class ForwardIt>
 	Utility::MNBV::NodeData* FindNodeIn(const std::size_t _id, ForwardIt _first, ForwardIt _last);
 
 	/*!
 	@brief Searchs for a ECellEngine::Editor::Utility::MNBV::NodePinData with id @p _id
-			in all the nodes of the current ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext.
+			in all the nodes of the current ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext.
 	@details Performs a binary search on each input and output node pin lists of
-			each node list of the current ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext.
+			each node list of the current ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext.
 			This is possible because nodes ids are in ascending order with node pin
 			ids. So, the strategy is to look for the lower nodeDataId that satisfies
 			@p _id <= @a <tt> nodeData.id </tt>. Then, we know that the target node
@@ -103,7 +103,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 	@param _id The unique id of the target node pin.
 	@returns A pointer to the ECellEngine::Editor::Utility::MNBV::NodePinData with the
 			 matching id if it was found. @a nullptr otherwise.
-	@see ECellEngine::Editor::Utility::MNBV::FindNodePinIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
+	@see ECellEngine::Editor::Widget::MNBV::FindNodePinIn(const std::size_t _id, ForwardIt _first, ForwardIt _last)
 	@see ECellEngine::Data::BinaryOperation::LowerBound(ForwardIt first, ForwardIt last, const T& value)
 	*/
 	Utility::MNBV::NodePinData* FindNodePinInAll(const std::size_t _id);
@@ -128,26 +128,26 @@ namespace ECellEngine::Editor::Widget::MNBV
 	Utility::MNBV::NodePinData* FindNodePinIn(const std::size_t _id, ForwardIt _first, ForwardIt _last);
 
 	/*!
-	@brief Gets the pointer to the current active ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext.
-	@see ECellEngine::Editor::Utility::MNBV::SetCurrentMNBVContext(ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext* _ctxt)
+	@brief Gets the pointer to the current active ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext.
+	@see ECellEngine::Editor::Utility::MNBV::SetCurrentMNBVContext(ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* _ctxt)
 	*/
 	ModelNodeBasedViewerContext* GetCurrentMNBVContext();
 
 	/*!
-	@brief Gets the pointer to the list of the links (ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext::links)
+	@brief Gets the pointer to the list of the links (ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::links)
 			of the current mnbv context.
 	*/
 	std::vector<Utility::MNBV::LinkData>* GetLinks();
 
 	/*!
-	@brief Gets the pointer to the member field ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext::style
+	@brief Gets the pointer to the member field ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::style
 			of the current active MNBV context.
 	*/
 	Utility::MNBV::NodeEditorStyle* GetMNBVStyle();
 
 	/*!
 	@brief Gets the value of the next unique id of the current MNBV context.
-	@details Effectively increments the member field ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext::uniqueId
+	@details Effectively increments the member field ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::uniqueId
 			 and returns the value.
 	*/
 	std::size_t& GetMNBVCtxtNextId();
@@ -281,7 +281,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 	/*!
 	@brief Checks whether a Link a user tries to make between two pin is authorized.
 	@details Simply checks the value in the hand-built matrix
-			 ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext::authorizedDynamicLinks.
+			 ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::authorizedDynamicLinks.
 	@param _startPinType The type of pin that is used as the start of a
 			potential ECellEngine::Editor::Utility::MNBV::LinkData.
 	@param _endPinType The type of pin that is used as the end of a
@@ -293,7 +293,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 	@brief Queues a command to send to the core of the engine to try to attach
 			the solver of name @p _solverName to the module of name @p _moduleName.
 	@details In fact, it doesn't queue the command but an instance of
-			ECellEngine::Editor::Utility::MNBV::ModelNodeBasedViewerContext::EngineTASToMCmdParameter
+			ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EngineTASToMCmdParameter
 			which stores the parameters of the command. The queued commands are
 			sent to the engine once the MNBV context has finished drawing the
 			node and processing the users interactions of this frame.

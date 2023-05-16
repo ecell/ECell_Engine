@@ -2,7 +2,7 @@
 /*!
 @file
 @brief The source of the data structures describing nodes, pins and links
-		that are used to know how to draw these entities in ECellEngine::Editor::Utility::ModelNodeBasedViewerWidget
+		that are used to know how to draw these entities in ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget
 */
 
 #include "implot.h"

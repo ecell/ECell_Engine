@@ -75,7 +75,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 #pragma region Nodes
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::AssetNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::AssetNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _assetNodeInfo The struct with information about what to draw.
@@ -83,7 +83,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo);
 
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::ComputedParameterNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ComputedParameterNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _parameterNodeInfo The struct with information about what to draw.
@@ -91,7 +91,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo);
 
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::LinePlotNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::LinePlotNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _linePlotNodeInfo The struct with information about what to draw.
@@ -99,7 +99,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void LinePlotNode(const char* _name, LinePlotNodeData& _linePlotNodeInfo);
 		
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::ReactionNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ReactionNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _reactionNodeInfo The struct with information about what to draw.
@@ -107,7 +107,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo);
 
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SimpleParameterNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _parameterNodeInfo The struct with information about what to draw.
@@ -115,7 +115,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
 
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SimulationTimeNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _parameterNodeInfo The struct with information about what to draw.
@@ -123,7 +123,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void SimulationTimeNode(const char* _name, SimulationTimeNodeData& _parameterNodeInfo);
 		
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SolverNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SolverNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _solverNodeInfo The struct with information about what to draw.
@@ -131,7 +131,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo);
 
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::SpeciesNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SpeciesNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _speciesNodeInfo The struct with information about what to draw.
@@ -139,7 +139,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo);
 
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::ValueFloatNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _valueFloatNodeInfo The struct with information about what to draw.
@@ -153,8 +153,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Draws a Link in the node Editor.
 		@details Draws the first successful link according to the order (i.e.
-				 priority) of ids in ECellEngine::Editor::Utility::LinkData::startIds
-				 and ECellEngine::Editor::Utility::LinkData::endIds.
+				 priority) of ids in ECellEngine::Editor::Utility::MNBV::LinkData::startIds
+				 and ECellEngine::Editor::Utility::MNBV::LinkData::endIds.
 		*/
 		static void Link(LinkData& linkInfo);
 
@@ -274,8 +274,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _flags Pointer to the int encoding the flags (e.g. enum).
 		@param _flag The flag to control and visualize with the checkbox.
 		@param _tooltip The message to display when hovering over the checkbox.
-		@see ECellEngine::Editor::Utility::NodeDrawer::NodeAllImPlotAxisFlags(ImPlot::ImploImPlotAxisFlags* _flags)
-		@see ECellEngine::Editor::Utility::NodeDrawer::NodeAllImPlotFlags(ImPlot::ImploImPlotAxisFlags* _flags)
+		@see ECellEngine::Editor::Utility::MNBV::NodeDrawer::NodeAllImPlotAxisFlags(ImPlot::ImploImPlotAxisFlags* _flags)
+		@see ECellEngine::Editor::Utility::MNBV::NodeDrawer::NodeAllImPlotFlags(ImPlot::ImploImPlotAxisFlags* _flags)
 		*/
 		static void NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr);
 
@@ -284,7 +284,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@details This gives access to the flags at runtime within a node to customize
 				 the visuals of the axis of a plot.
 		@param _flags Pointer to the int encoding the flags (e.g. enum).
-		@see ECellEngine::Editor::Utility::NodeDrawer::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr)
+		@see ECellEngine::Editor::Utility::MNBV::NodeDrawer::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr)
 		*/
 		static void NodeAllImPlotAxisFlags(ImPlotAxisFlags* _flags);
 
@@ -293,7 +293,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@details This gives access to the flags at runtime within a node to customize
 				 the visuals of the plot.
 		@param _flags Pointer to the int encoding the flags (e.g. enum).
-		@see ECellEngine::Editor::Utility::NodeDrawer::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr)
+		@see ECellEngine::Editor::Utility::MNBV::NodeDrawer::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr)
 		*/
 		static void NodeAllImPlotFlags(ImPlotFlags* _flags);
 
