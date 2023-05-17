@@ -90,7 +90,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ComputedParameterNode(c
             }
         }
 
-        if (_parameterNodeInfo.reactionDep.size())
+        if (_parameterNodeInfo.reactionKLDep.size())
         {
             if (NodeCollapsingHeader_InOut("Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[ComputedParameterNodeData::CollapsingHeader_KineticLaws],
                 _parameterNodeInfo.utilityState, ComputedParameterNodeData::State_CollHdrKineticLaws,
@@ -99,7 +99,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ComputedParameterNode(c
                 ImVec2(itemsWidth, 0.f), false))
             {
             
-                NodeStringListBox(_parameterNodeInfo.nlbsDataRDep, startX, headerWidth, itemsWidth);
+                NodeStringListBox(_parameterNodeInfo.nlbsDataRKLDep, startX, headerWidth, itemsWidth);
             }
         }
     }
@@ -379,24 +379,27 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SimpleParameterNode(con
 
         NodeText_In("Asset", startX, _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
 
-        if (NodeCollapsingHeader_InOut("Computed Parameters", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_ComputedParameters],
-            _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrComputedParameters,
-            startX, headerWidth,
-            _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrComputedParameters], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrComputedParameters], Widget::MNBV::GetPinColors(PinType_Parameter),
-            ImVec2(itemsWidth, 0.f), false))
+        if (_parameterNodeInfo.computedParameterDep.size())
         {
-            //NodeStringListBox(_parameterNodeInfo.nlbsData[0], GetPinDrawOffset(), itemsWidth, 0);
-            ImGui::Text("A List box will be here.");
+            if (NodeCollapsingHeader_InOut("Computed Parameters", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_ComputedParameters],
+                _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrComputedParameters,
+                startX, headerWidth,
+                _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrComputedParameters], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrComputedParameters], Widget::MNBV::GetPinColors(PinType_Parameter),
+                ImVec2(itemsWidth, 0.f), false))
+            {
+                NodeStringListBox(_parameterNodeInfo.nlbsDataCPDep, startX, headerWidth, itemsWidth);
+            }
         }
-
-        if (NodeCollapsingHeader_InOut("Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_KineticLaws],
-            _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrKineticLaws,
-            startX, headerWidth,
-            _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrKineticLaws], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrKineticLaws], Widget::MNBV::GetPinColors(PinType_Parameter),
-            ImVec2(itemsWidth, 0.f), false))
+        if (_parameterNodeInfo.reactionKLDep.size())
         {
-            //NodeStringListBox(_parameterNodeInfo.nlbsData[0], GetPinDrawOffset(), itemsWidth, 0);
-            ImGui::Text("A List box will be here.");
+            if (NodeCollapsingHeader_InOut("Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_KineticLaws],
+                _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrKineticLaws,
+                startX, headerWidth,
+                _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrKineticLaws], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrKineticLaws], Widget::MNBV::GetPinColors(PinType_Parameter),
+                ImVec2(itemsWidth, 0.f), false))
+            {
+                NodeStringListBox(_parameterNodeInfo.nlbsDataRKLDep, startX, headerWidth, itemsWidth);
+            }
         }
     }
 

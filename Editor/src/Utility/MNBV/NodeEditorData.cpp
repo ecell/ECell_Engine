@@ -1,5 +1,7 @@
 #include "Utility/MNBV/NodeEditorData.hpp"
 
+#pragma region NodeListBoxStringData<DataType>
+
 const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::string>::At(std::size_t _idx) const noexcept
 {
 	return data->at(_idx).c_str();
@@ -14,6 +16,8 @@ const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::weak_
 {
 	return data->at(_idx).lock()->name.c_str();
 }
+
+#pragma endregion
 
 void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, char* _data)
 {
@@ -54,7 +58,7 @@ void ECellEngine::Editor::Utility::MNBV::ComputedParameterNodeData::OutputUpdate
 void ECellEngine::Editor::Utility::MNBV::ComputedParameterNodeData::ResetNLBSDUtilityStates() noexcept
 {
 	nlbsDataCPDep.ResetUtilityState();
-	nlbsDataRDep.ResetUtilityState();
+	nlbsDataRKLDep.ResetUtilityState();
 	nlbsData[NodeListBoxString_ComputedParameterOperands].ResetUtilityState();
 	nlbsData[NodeListBoxString_SimpleParameterOperands].ResetUtilityState();
 	nlbsData[NodeListBoxString_SpeciesOperands].ResetUtilityState();
@@ -147,8 +151,8 @@ void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::InputUpdate(co
 
 void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::ResetNLBSDUtilityStates() noexcept
 {
-	nlbsData[NodeListBoxString_ComputedParameterLinks].ResetUtilityState();
-	nlbsData[NodeListBoxString_KineticLaws].ResetUtilityState();
+	nlbsDataCPDep.ResetUtilityState();
+	nlbsDataRKLDep.ResetUtilityState();
 }
 
 void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
