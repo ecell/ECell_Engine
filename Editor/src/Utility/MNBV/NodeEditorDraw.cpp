@@ -85,7 +85,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ComputedParameterNode(c
         {
             if (_parameterNodeInfo.computedParameterDep.size())
             {
-                NodeStringListBox<std::weak_ptr<ECellEngine::Data::ComputedParameter>>(_parameterNodeInfo.nlbsDataCPDep, startX, headerWidth, itemsWidth);
+                NodeStringListBox(_parameterNodeInfo.nlbsDataCPDep, startX, headerWidth, itemsWidth);
             }
         }
 

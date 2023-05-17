@@ -583,6 +583,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in asset node data
 
 		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override {};//not used in asset node data
+
+		/*!
+		@brief Resets the state of the node list box string data of this node.
+		@see ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData::ResetUtilityState()
+		*/
+		void ResetNLBSDUtilityStates() noexcept;
 	};
 
 	/*!
@@ -810,6 +816,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
 
 		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+
+		/*!
+		@brief Resets the state of the node list box string data of this node.
+		@see ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData::ResetUtilityState()
+		*/
+		void ResetNLBSDUtilityStates() noexcept;
 	};
 
 	/*!
@@ -1205,6 +1217,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
 
 		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+
+		/*!
+		@brief Resets the state of the node list box string data of this node.
+		@see ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData::ResetUtilityState()
+		*/
+		void ResetNLBSDUtilityStates() noexcept;
 	};
 
 	/*!
@@ -1385,6 +1403,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
 
 		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+
+		/*!
+		@brief Resets the state of the node list box string data of this node.
+		@see ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData::ResetUtilityState()
+		*/
+		void ResetNLBSDUtilityStates() noexcept;
 	};
 
 	/*!

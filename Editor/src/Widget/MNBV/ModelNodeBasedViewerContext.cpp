@@ -91,15 +91,13 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_ModelLinks].id, 1);
 		}
 
-		it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Species].ResetUtilityState();
-		it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_SimpleParameters].ResetUtilityState();
-		it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_ComputedParameters].ResetUtilityState();
-		it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Reactions].ResetUtilityState();
+		it->ResetNLBSDUtilityStates();
 	}
 	
 	for (std::vector< Utility::MNBV::ComputedParameterNodeData>::iterator it = computedParameterNodes.begin(); it != computedParameterNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::ComputedParameterNode(it->data->name.c_str(), *it);
+		it->ResetNLBSDUtilityStates();
 	}
 
 	for (std::vector<Utility::MNBV::LinePlotNodeData>::iterator it = linePlotNodes.begin(); it != linePlotNodes.end(); it++)
@@ -110,11 +108,13 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 	for (std::vector< Utility::MNBV::ReactionNodeData>::iterator it = reactionNodes.begin(); it != reactionNodes.end(); ++it)
 	{
 		Utility::MNBV::NodeEditorDraw::ReactionNode(it->data->name.c_str(), *it);
+		it->ResetNLBSDUtilityStates();
 	}
 
 	for (std::vector< Utility::MNBV::SimpleParameterNodeData>::iterator it = simpleParameterNodes.begin(); it != simpleParameterNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::SimpleParameterNode(it->data->name.c_str(), *it);
+		it->ResetNLBSDUtilityStates();
 	}
 
 	for (std::vector< Utility::MNBV::SimulationTimeNodeData>::iterator it = simulationTimeNodes.begin(); it != simulationTimeNodes.end(); it++)
@@ -130,6 +130,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 	for (std::vector< Utility::MNBV::SpeciesNodeData>::iterator it = speciesNodes.begin(); it != speciesNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::SpeciesNode(it->data->name.c_str(), *it);
+		//it->ResetNLBSDUtilityStates();
 	}
 	
 	for (std::vector< Utility::MNBV::ValueFloatNodeData>::iterator it = valueFloatNodes.begin(); it != valueFloatNodes.end(); it++)
