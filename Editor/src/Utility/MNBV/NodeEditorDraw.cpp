@@ -77,26 +77,28 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ComputedParameterNode(c
 
         NodeText_In("Asset", startX, _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
 
-        if (NodeCollapsingHeader_InOut("Computed Parameters", _parameterNodeInfo.collapsingHeadersIds[ComputedParameterNodeData::CollapsingHeader_ComputedParameters],
-            _parameterNodeInfo.utilityState, ComputedParameterNodeData::State_CollHdrComputedParameters,
-            startX, headerWidth,
-            _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_CollHdrComputedParameters], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_CollHdrComputedParameters], Widget::MNBV::GetPinColors(PinType_Parameter),
-            ImVec2(itemsWidth, 0.f), false))
+        if (_parameterNodeInfo.computedParameterDep.size())
         {
-            if (_parameterNodeInfo.computedParameterDep.size())
+            if (NodeCollapsingHeader_InOut("Computed Parameters", _parameterNodeInfo.collapsingHeadersIds[ComputedParameterNodeData::CollapsingHeader_ComputedParameters],
+                _parameterNodeInfo.utilityState, ComputedParameterNodeData::State_CollHdrComputedParameters,
+                startX, headerWidth,
+                _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_CollHdrComputedParameters], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_CollHdrComputedParameters], Widget::MNBV::GetPinColors(PinType_Parameter),
+                ImVec2(itemsWidth, 0.f), false))
             {
+            
                 NodeStringListBox(_parameterNodeInfo.nlbsDataCPDep, startX, headerWidth, itemsWidth);
             }
         }
 
-        if (NodeCollapsingHeader_InOut("Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[ComputedParameterNodeData::CollapsingHeader_KineticLaws],
-            _parameterNodeInfo.utilityState, ComputedParameterNodeData::State_CollHdrKineticLaws,
-            startX, headerWidth,
-            _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_CollHdrKineticLaws], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_CollHdrKineticLaws], Widget::MNBV::GetPinColors(PinType_Parameter),
-            ImVec2(itemsWidth, 0.f), false))
+        if (_parameterNodeInfo.reactionDep.size())
         {
-            if (_parameterNodeInfo.reactionDep.size())
+            if (NodeCollapsingHeader_InOut("Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[ComputedParameterNodeData::CollapsingHeader_KineticLaws],
+                _parameterNodeInfo.utilityState, ComputedParameterNodeData::State_CollHdrKineticLaws,
+                startX, headerWidth,
+                _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_CollHdrKineticLaws], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_CollHdrKineticLaws], Widget::MNBV::GetPinColors(PinType_Parameter),
+                ImVec2(itemsWidth, 0.f), false))
             {
+            
                 NodeStringListBox(_parameterNodeInfo.nlbsDataRDep, startX, headerWidth, itemsWidth);
             }
         }
