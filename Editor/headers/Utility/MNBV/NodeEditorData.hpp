@@ -92,6 +92,21 @@ namespace ECellEngine::Editor::Utility::MNBV
 			return (utilityState >> 4) & 1;
 		}
 
+		const DataType& GetDoubleClickedItem() const noexcept
+		{
+			return data->at(doubleClickedItem);
+		}
+
+		const DataType& GetHoveredItem() const noexcept
+		{
+			return data->at(hoveredItem);
+		}
+
+		const DataType& GetSelectedItem() const noexcept
+		{
+			return data->at(selectedItem);
+		}
+
 		inline void SetItemHovered() noexcept
 		{
 			utilityState |= 1 << 0;
@@ -685,6 +700,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		std::shared_ptr<ECellEngine::Data::ComputedParameter> data;
 
+		/*!
+		@brief Reference to the dependency database of the simulation this node
+				part of.
+		*/
 		const ECellEngine::Data::DependenciesDatabase& depDB;
 
 		/*!
