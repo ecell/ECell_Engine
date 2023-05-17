@@ -471,41 +471,72 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Species));
     ax::NodeEditor::BeginNode(_speciesNodeInfo.id);
 
-    const float headerSize = NodeHeader("Species:", _name, Widget::MNBV::GetNodeColors(NodeType_Species));
-    const float itemsWidth = GetNodeCenterAreaWidth(headerSize);
+    const float headerWidth = NodeHeader("Species:", _name, Widget::MNBV::GetNodeColors(NodeType_Species));
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
     if (NodeCollapsingHeader_InOut("Model Links", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_ModelLinks],
         _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrModelLinks,
-        startX, headerSize,
+        startX, headerWidth,
         _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrModelLinks], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrModelLinks], Widget::MNBV::GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
-        const static float icpTextWidth = ImGui::CalcTextSize("In Computed Parameters").x;
-        const static float irTextWidth = ImGui::CalcTextSize("Is Reactant").x;
-        const static float ipTextWidth = ImGui::CalcTextSize("Is Product").x;
-        const static float iklTextWidth = ImGui::CalcTextSize("In Kinetic Law").x;
-
         NodeText_In("Asset", startX, _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
 
-        NodeText_InOut("In Computed Parameters", icpTextWidth,
-            startX, headerSize,
-            _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_NLBSInComputedParameter], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_NLBSInComputedParameter], Widget::MNBV::GetPinColors(PinType_Parameter));
+        if (_speciesNodeInfo.computedParameterDep.size())
+        {
+            if (NodeCollapsingHeader_InOut("In Computed Parameters", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_InComputedParameter],
+                _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrInComputedParameter,
+                startX, headerWidth,
+                _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrInComputedParameter], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrInComputedParameter], Widget::MNBV::GetPinColors(PinType_Parameter),
+                ImVec2(itemsWidth, 0.f), false))
+            {
 
-        NodeText_InOut("As Reactant", irTextWidth,
-            startX, headerSize,
-            _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_NLBSAsReactant], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_NLBSAsReactant], Widget::MNBV::GetPinColors(PinType_Reaction));
+                NodeStringListBox(_speciesNodeInfo.nlbsDataCPDep, startX, headerWidth, itemsWidth);
+            }
+        }
+        
+        if (_speciesNodeInfo.reactionRDep.size())
+        {
+            if (NodeCollapsingHeader_InOut("As Reactant", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_AsReactant],
+                _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrAsReactant,
+                startX, headerWidth,
+                _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrAsReactant], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrAsReactant], Widget::MNBV::GetPinColors(PinType_Reaction),
+                ImVec2(itemsWidth, 0.f), false))
+            {
 
-        NodeText_InOut("As Product", ipTextWidth,
-            startX, headerSize,
-            _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_NLBSAsProduct], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_NLBSAsProduct], Widget::MNBV::GetPinColors(PinType_Reaction));
+                NodeStringListBox(_speciesNodeInfo.nlbsDataRRDep, startX, headerWidth, itemsWidth);
+            }
+        }
+        
+        if (_speciesNodeInfo.reactionPDep.size())
+        {
+            if (NodeCollapsingHeader_InOut("As Product", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_AsProduct],
+                _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrAsProduct,
+                startX, headerWidth,
+                _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrAsProduct], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrAsProduct], Widget::MNBV::GetPinColors(PinType_Reaction),
+                ImVec2(itemsWidth, 0.f), false))
+            {
 
-        NodeText_InOut("In Kinetic Law", iklTextWidth,
-            startX, headerSize,
-            _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_NLBSInKineticLaw], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_NLBSInKineticLaw], Widget::MNBV::GetPinColors(PinType_Reaction));
+                NodeStringListBox(_speciesNodeInfo.nlbsDataRPDep, startX, headerWidth, itemsWidth);
+            }
+        }
+        
+        if (_speciesNodeInfo.reactionKLDep.size())
+        {
+            if (NodeCollapsingHeader_InOut("In Kinetic Law", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_InKineticLaw],
+                _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrInKineticLaw,
+                startX, headerWidth,
+                _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrInKineticLaw], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrInKineticLaw], Widget::MNBV::GetPinColors(PinType_Reaction),
+                ImVec2(itemsWidth, 0.f), false))
+            {
+
+                NodeStringListBox(_speciesNodeInfo.nlbsDataRKLDep, startX, headerWidth, itemsWidth);
+            }
+        }
     }
 
-    NodeHorizontalSeparator(headerSize);
+    NodeHorizontalSeparator(headerWidth);
 
     if (_speciesNodeInfo.speciesQuantityBuffer != _speciesNodeInfo.data->Get())
     {
@@ -515,12 +546,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 
     if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_DataFields],
         _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrDataFields,
-        startX, headerSize,
+        startX, headerWidth,
         _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrDataFields], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields], Widget::MNBV::GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
         if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &_speciesNodeInfo.speciesQuantityBuffer,
-            itemsWidth, startX, headerSize,
+            itemsWidth, startX, headerWidth,
             _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Quantity], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_Quantity], Widget::MNBV::GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {

@@ -223,14 +223,13 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputUpdate(const Nod
 	}
 }
 
-//void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::ResetNLBSDUtilityStates()
-//{
-//	nlbsData[NodeListBoxString_].ResetUtilityState();
-//	nlbsData[NodeListBoxString_Reactants].ResetUtilityState();
-//	nlbsData[NodeListBoxString_ComputedParameterOperands].ResetUtilityState();
-//	nlbsData[NodeListBoxString_SimpleParameterOperands].ResetUtilityState();
-//	nlbsData[NodeListBoxString_SpeciesOperands].ResetUtilityState();
-//}
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::ResetNLBSDUtilityStates() noexcept
+{
+	nlbsDataCPDep.ResetUtilityState();
+	nlbsDataRRDep.ResetUtilityState();
+	nlbsDataRPDep.ResetUtilityState();
+	nlbsDataRKLDep.ResetUtilityState();
+}
 
 void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
