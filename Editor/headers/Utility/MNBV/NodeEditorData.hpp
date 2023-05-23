@@ -395,9 +395,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 		}
 
 		/*!
-		@brief The logic to add a new input pin as subscriber to this
+		@brief The logic to add a new input pin as ::subscriber to this
 				output pin.
-		@details Typically happens every time a link is created.
+		@details Typically happens every time a dynamic link is created.
 		*/
 		inline void AddSubscriber(NodeInputPinData* _newSubscriber)
 		{
@@ -423,6 +423,26 @@ namespace ECellEngine::Editor::Utility::MNBV
 			for (std::vector<NodeInputPinData*>::iterator it = subscribers.begin(); it != subscribers.end(); ++it)
 			{
 				(*it)->Receive(_data);
+			}
+		}
+
+		/*!
+		@brief The logic to erase an input pin from the ::subscribers of this
+				output pin.
+		@details Typically happens every time a dynamic link is created.
+		*/
+		inline void EraseSubscriber(NodeInputPinData* _subscriber)
+		{
+			for (std::vector<NodeInputPinData*>::iterator it = subscribers.begin(); it != subscribers.end();)
+			{
+				if ((*it)->id == _subscriber->id)
+				{
+					it = subscribers.erase(it);
+				}
+				else
+				{
+					++it;
+				}
 			}
 		}
 	};

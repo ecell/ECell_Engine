@@ -703,15 +703,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinkDestruction(std::ve
             // If you agree that link can be deleted, accept deletion.
             if (ax::NodeEditor::AcceptDeletedItem())
             {
-                // Then remove link from your data.
-                for (std::vector<ECellEngine::Editor::Utility::MNBV::LinkData>::iterator it = _links.begin(); it != _links.end(); it++)
-                {
-                    if ((*it).id == deletedLinkId)
-                    {
-                        _links.erase(it);
-                        break;
-                    }
-                }
+                Editor::Widget::MNBV::EraseDynamicLink((std::size_t)deletedLinkId);
             }
 
             // You may reject link deletion by calling:

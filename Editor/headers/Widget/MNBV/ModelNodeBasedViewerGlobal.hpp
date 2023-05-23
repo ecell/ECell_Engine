@@ -57,6 +57,12 @@ namespace ECellEngine::Editor::Widget::MNBV
 	void CurrentMNBVContextDraw(ECellEngine::Core::Simulation* _simulation);
 
 	/*!
+	@brief The logic to delete the visuals of a link and clean the data
+			subscription.
+	@_linkId The id of the link to erase.
+	*/
+	void EraseDynamicLink(const std::size_t _linkId);
+	/*!
 	@brief Searchs for a ECellEngine::Editor::Utility::MNBV::NodeData with id @p _id
 			in all the nodes of the current ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext.
 	@details Performs a binary search on each node list of the current
