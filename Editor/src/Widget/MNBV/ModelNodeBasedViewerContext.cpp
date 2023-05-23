@@ -150,6 +150,31 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 	for (std::vector< Utility::MNBV::SimpleParameterNodeData>::iterator it = simpleParameterNodes.begin(); it != simpleParameterNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::SimpleParameterNode(it->data->name.c_str(), *it);
+
+		//------------------- Interaction with List Box for Is-Part-Of Dependencies
+
+		//If double click on ComputedParameter dependency selectable in the list box, spawn the corresponding computed parameter node.
+		if (it->nlbsDataCPDep.IsAnItemDoubleClicked())
+		{
+			std::shared_ptr<ECellEngine::Data::ComputedParameter> computedParameter = it->nlbsDataCPDep.GetDoubleClickedItem().lock();
+			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(computedParameter, _simulation->GetDependenciesDatabase()));
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::SimpleParameterNodeData::OutputPin_CollHdrComputedParameters].id, computedParameterNodes.back().inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_NLBSSimpleParameters].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::SimpleParameterNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(computedParameterNodes.back().inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);//fallback of the new node
+		}
+
+		//If double click on reaction kinetic law dependency in the list box, spawn the corresponding reaction node.
+		if (it->nlbsDataRKLDep.IsAnItemDoubleClicked())
+		{
+			std::shared_ptr<ECellEngine::Data::Reaction> reaction = it->nlbsDataRKLDep.GetDoubleClickedItem().lock();;
+			reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction.get()));
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::SimpleParameterNodeData::OutputPin_CollHdrKineticLaws].id, reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_NLBSSimpleParameters].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::SimpleParameterNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_KineticLawOperands].id, 1);//fallback of the new node
+		}
+
 		it->ResetNLBSDUtilityStates();
 	}
 
