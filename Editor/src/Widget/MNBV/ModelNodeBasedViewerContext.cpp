@@ -97,6 +97,42 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 	for (std::vector< Utility::MNBV::ComputedParameterNodeData>::iterator it = computedParameterNodes.begin(); it != computedParameterNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::ComputedParameterNode(it->data->name.c_str(), *it);
+
+		//------------------- Interaction with List Box for Is-Part-Of Dependencies
+
+		//If double click on ComputedParameter dependency selectable in the list box, spawn the corresponding computed parameter node.
+		if (it->nlbsDataCPDep.IsAnItemDoubleClicked())
+		{
+			//Here, we need to be carefull how we add the new computed parameter node because we are
+			//currently going through the list that contains them. So, if we add a new CompParamData
+			//and it triggers aresize of the vector, then the iterator will be invalidated.
+			//To solve this, we do not emplace_back() the new data directly but create a buffer
+			//(computedParameterNodeData) which we push_back() at the end. Finally, we know that
+			//there won't be another doubleclick within this frame so we skip the rest of the loop and
+			//set it to computedParameterNodes.end() (it is valid again).
+
+			std::shared_ptr<ECellEngine::Data::ComputedParameter> computedParameter = it->nlbsDataCPDep.GetDoubleClickedItem().lock();
+			Utility::MNBV::ComputedParameterNodeData computedParameterNodeData = Utility::MNBV::ComputedParameterNodeData(computedParameter, _simulation->GetDependenciesDatabase());
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::ComputedParameterNodeData::OutputPin_CollHdrComputedParameters].id, computedParameterNodeData.inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_NLBSComputedParameters].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(computedParameterNodeData.inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);//fallback of the new node
+
+			it->ResetNLBSDUtilityStates();
+			computedParameterNodes.push_back(computedParameterNodeData);
+			it = computedParameterNodes.end() - 1;
+		}
+
+		//If double click on reaction kinetic law dependency in the list box, spawn the corresponding reaction node.
+		if (it->nlbsDataRKLDep.IsAnItemDoubleClicked())
+		{
+			std::shared_ptr<ECellEngine::Data::Reaction> reaction = it->nlbsDataRKLDep.GetDoubleClickedItem().lock();;
+			reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction.get()));
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::ComputedParameterNodeData::OutputPin_CollHdrKineticLaws].id, reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_NLBSComputedParameters].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_KineticLawOperands].id, 1);//fallback of the new node
+		}
 		it->ResetNLBSDUtilityStates();
 	}
 
