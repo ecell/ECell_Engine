@@ -46,7 +46,7 @@ void ECellEngine::Editor::Utility::MNBV::ComputedParameterNodeData::OutputConnec
 	if (_nodeOutputPin == outputPins[ComputedParameterNodeData::OutputPin_ComputedParameterValue])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
-		Widget::MNBV::GetLinks()->back().OverrideStartFallbackPin(outputPins[ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);
 	}
 }
 
@@ -70,14 +70,14 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(const No
 	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_XAxis])
 	{
 		//we set the input pin of the collapsing header as the fallback
-		Widget::MNBV::GetLinks()->back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
+		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
 	}
 
 	//Y axis input pin
 	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_YAxis])
 	{
 		//we set the input pin of the collapsing header as the fallback
-		Widget::MNBV::GetLinks()->back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
+		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
 	}
 }
 
@@ -116,7 +116,7 @@ void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(const N
 	if (_nodeOutputPin == outputPins[ReactionNodeData::OutputPin_KineticLawValue])
 	{
 		//we set the input pin of the kinetic law collapsing header as the fall back
-		Widget::MNBV::GetLinks()->back().OverrideStartFallbackPin(outputPins[OutputPin_CollHdrKineticLaw].id, 1);
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[OutputPin_CollHdrKineticLaw].id, 1);
 	}
 }
 
@@ -140,7 +140,7 @@ void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::InputConnect(c
 	if (_nodeInputPin == inputPins[SimpleParameterNodeData::InputPin_ParameterValue])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
-		Widget::MNBV::GetLinks()->back().OverrideEndFallbackPin(inputPins[SimpleParameterNodeData::InputPin_CollHdrDataFields].id, 1);
+		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[SimpleParameterNodeData::InputPin_CollHdrDataFields].id, 1);
 	}
 }
 
@@ -161,7 +161,7 @@ void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::OutputConnect(
 	if (_nodeOutputPin == outputPins[SimpleParameterNodeData::OutputPin_ParameterValue])
 	{
 		//we set the output pin of the data field collapsing header as the fall back
-		Widget::MNBV::GetLinks()->back().OverrideStartFallbackPin(outputPins[SimpleParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[SimpleParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
 	}
 }
 
@@ -195,7 +195,7 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputConnect(const Nod
 	if (_nodeInputPin == inputPins[SpeciesNodeData::InputPin_Quantity])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
-		Widget::MNBV::GetLinks()->back().OverrideEndFallbackPin(inputPins[SpeciesNodeData::InputPin_CollHdrDataFields].id, 1);
+		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[SpeciesNodeData::InputPin_CollHdrDataFields].id, 1);
 	}
 }
 
@@ -210,7 +210,7 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(const No
 	if (_nodeOutputPin == outputPins[SpeciesNodeData::OutputPin_Quantity])
 	{
 		//we set the output pin of the data field collapsing header as the fall back
-		Widget::MNBV::GetLinks()->back().OverrideStartFallbackPin(outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields].id, 1);
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields].id, 1);
 	}
 }
 

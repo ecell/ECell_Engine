@@ -134,10 +134,17 @@ namespace ECellEngine::Editor::Widget::MNBV
 	ModelNodeBasedViewerContext* GetCurrentMNBVContext();
 
 	/*!
-	@brief Gets the pointer to the list of the links (ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::links)
+	@brief Gets the pointer to the list of dynamic links (ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::dynamicLinks)
 			of the current mnbv context.
 	*/
-	std::vector<Utility::MNBV::LinkData>* GetLinks();
+	std::vector<Utility::MNBV::LinkData>& GetDynamicLinks();
+
+	/*!
+	@brief Gets the list of static links (ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::staticLinks)
+			of the current mnbv context.
+	*/
+	std::vector<Utility::MNBV::LinkData>& GetStaticLinks();
+
 
 	/*!
 	@brief Gets the pointer to the member field ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::style

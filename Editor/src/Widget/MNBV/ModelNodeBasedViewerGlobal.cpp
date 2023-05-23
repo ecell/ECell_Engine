@@ -221,9 +221,14 @@ ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* ECellEngine::Edi
     return s_mnbvCtxt;
 }
 
-std::vector<ECellEngine::Editor::Utility::MNBV::LinkData>* ECellEngine::Editor::Widget::MNBV::GetLinks()
+std::vector<ECellEngine::Editor::Utility::MNBV::LinkData>& ECellEngine::Editor::Widget::MNBV::GetDynamicLinks()
 {
-    return &s_mnbvCtxt->links;
+    return s_mnbvCtxt->dynamicLinks;
+}
+
+std::vector<ECellEngine::Editor::Utility::MNBV::LinkData>& ECellEngine::Editor::Widget::MNBV::GetStaticLinks()
+{
+    return s_mnbvCtxt->staticLinks;
 }
 
 ECellEngine::Editor::Utility::MNBV::NodeEditorStyle* ECellEngine::Editor::Widget::MNBV::GetMNBVStyle()

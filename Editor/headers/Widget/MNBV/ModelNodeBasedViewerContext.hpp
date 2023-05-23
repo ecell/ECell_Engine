@@ -104,11 +104,18 @@ namespace ECellEngine::Editor::Widget::MNBV
 #pragma endregion
 
 		/*!
-		@brief The list of links in this context.
-		@details It contains the information used to draw the links between pins
-				 of nodes in this context.
+		@brief The list of dynamic links in this context.
+		@details It contains the links that were created by the user to connect
+				nodes as he needed.
 		*/
-		std::vector<Utility::MNBV::LinkData> links;
+		std::vector<Utility::MNBV::LinkData> dynamicLinks;
+
+		/*!
+		@brief The list of static links in this context.
+		@details It contains the links that were created programatically alongside
+				 nodes to represent the data relationships.
+		*/
+		std::vector<Utility::MNBV::LinkData> staticLinks;
 
 		/*!
 		@brief The matrix to encode whether a link can be created by the user
