@@ -16,9 +16,16 @@ void ECellEngine::Data::ComputedParameter::GetInvolvedSimpleParameters(std::vect
 
 void ECellEngine::Data::ComputedParameter::GetInvolvedComputedParameters(std::vector<std::string>& out_involvedComputedParameters, bool clearOutVector) const noexcept
 {
-	Operand::GetInvolvedComputedParameters(out_involvedComputedParameters, clearOutVector);
-	
 	out_involvedComputedParameters.emplace_back(name);
+
+	//The base Operand::GetInvolvedComputedParameters(...) is used to control the clearing
+	//of out_involvedComputedParameters. We must put this clearing check after the 
+	//out_involvedComputedParameters.emplace_back(name) because a computed parameter (an
+	//operation in general) cannot be part of itself. So, we take advantage of the fact that 
+	//out_involvedComputedParameters is cleared only when we start resolving new dependencies.
+	//We can then keep a computed parameter out of its own dependencies by clearing right
+	//after we added its name.
+	Operand::GetInvolvedComputedParameters(out_involvedComputedParameters, clearOutVector);
 
 	operation.GetInvolvedComputedParameters(out_involvedComputedParameters, false);
 }
