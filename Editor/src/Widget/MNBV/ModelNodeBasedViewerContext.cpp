@@ -133,6 +133,54 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
 			links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_KineticLawOperands].id, 1);//fallback of the new node
 		}
+
+		//------------------- Interaction with List Box for Contains Dependencies (Operands of the operation)
+
+		//If double click on ComputedParameter operand selectable in the list box, spawn the corresponding computed parameter node.
+		if (it->nlbsData[Utility::MNBV::ComputedParameterNodeData::NodeListBoxString_ComputedParameterOperands].IsAnItemDoubleClicked())
+		{
+			//Here, we need to be carefull how we add the new computed parameter node because we are
+			//currently going through the list that contains them. So, if we add a new CompParamData
+			//and it triggers aresize of the vector, then the iterator will be invalidated.
+			//To solve this, we do not emplace_back() the new data directly but create a buffer
+			//(computedParameterNodeData) which we push_back() at the end. Finally, we know that
+			//there won't be another doubleclick within this frame so we skip the rest of the loop and
+			//set it to computedParameterNodes.end() (it is valid again).
+
+			std::shared_ptr<ECellEngine::Data::ComputedParameter> computedParameter = _simulation->GetDataState()->GetComputedParameter(it->nlbsData[Utility::MNBV::ComputedParameterNodeData::NodeListBoxString_ComputedParameterOperands].GetDoubleClickedItem());
+			Utility::MNBV::ComputedParameterNodeData computedParameterNodeData = Utility::MNBV::ComputedParameterNodeData(computedParameter, _simulation->GetDependenciesDatabase());
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::ComputedParameterNodeData::OutputPin_NLBSComputedParameters].id, computedParameterNodeData.inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_CollHdrComputedParameters].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(computedParameterNodeData.inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of the new node
+			
+			it->ResetNLBSDUtilityStates();
+			computedParameterNodes.push_back(computedParameterNodeData);
+			it = computedParameterNodes.end()-1;
+		}
+
+		//If double click on SimpleParameter operand selectable in the list box, spawn the corresponding simple parameter node.
+		if (it->nlbsData[Utility::MNBV::ComputedParameterNodeData::NodeListBoxString_SimpleParameterOperands].IsAnItemDoubleClicked())
+		{
+			std::shared_ptr<ECellEngine::Data::SimpleParameter> simpleParameter = _simulation->GetDataState()->GetSimpleParameter(it->nlbsData[Utility::MNBV::ComputedParameterNodeData::NodeListBoxString_SimpleParameterOperands].GetDoubleClickedItem());
+			simpleParameterNodes.emplace_back(Utility::MNBV::SimpleParameterNodeData(simpleParameter, _simulation->GetDependenciesDatabase()));
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::ComputedParameterNodeData::OutputPin_NLBSSimpleParameters].id, simpleParameterNodes.back().inputPins[Utility::MNBV::SimpleParameterNodeData::InputPin_CollHdrComputedParameters].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(simpleParameterNodes.back().inputPins[Utility::MNBV::SimpleParameterNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of the new node
+		}
+
+		//If double click on Species operand selectable in the list box, spawn the corresponding species node.
+		if (it->nlbsData[Utility::MNBV::ComputedParameterNodeData::NodeListBoxString_SpeciesOperands].IsAnItemDoubleClicked())
+		{
+			std::shared_ptr<ECellEngine::Data::Species> species = _simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::ComputedParameterNodeData::NodeListBoxString_SpeciesOperands].GetDoubleClickedItem());
+			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, _simulation->GetDependenciesDatabase()));
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::ComputedParameterNodeData::OutputPin_NLBSSpecies].id, speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_CollHdrInComputedParameter].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of the new node
+		}
+
 		it->ResetNLBSDUtilityStates();
 	}
 
