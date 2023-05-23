@@ -191,6 +191,51 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 	for (std::vector< Utility::MNBV::SpeciesNodeData>::iterator it = speciesNodes.begin(); it != speciesNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::SpeciesNode(it->data->name.c_str(), *it);
+
+		//If double click on ComputedParameter dependency selectable in the list box, spawn the corresponding computed parameter node.
+		if (it->nlbsDataCPDep.IsAnItemDoubleClicked())
+		{
+			std::shared_ptr<ECellEngine::Data::ComputedParameter> computedParameter = it->nlbsDataCPDep.GetDoubleClickedItem().lock();
+			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(computedParameter, _simulation->GetDependenciesDatabase()));
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::SpeciesNodeData::OutputPin_CollHdrInComputedParameter].id, computedParameterNodes.back().inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_NLBSSpecies].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(computedParameterNodes.back().inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);//fallback of the new node
+		}
+
+		//If double click on reaction products dependency in the list box, spawn the corresponding reaction node.
+		if (it->nlbsDataRPDep.IsAnItemDoubleClicked())
+		{
+			std::shared_ptr<ECellEngine::Data::Reaction> reaction = it->nlbsDataRPDep.GetDoubleClickedItem().lock();;
+			reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction.get()));
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::SpeciesNodeData::OutputPin_CollHdrAsProduct].id, reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_CollHdrProducts].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of the new node
+		}
+
+		//If double click on reaction reactants dependency in the list box, spawn the corresponding reaction node.
+		if (it->nlbsDataRRDep.IsAnItemDoubleClicked())
+		{
+			std::shared_ptr<ECellEngine::Data::Reaction> reaction = it->nlbsDataRRDep.GetDoubleClickedItem().lock();;
+			reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction.get()));
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::SpeciesNodeData::OutputPin_CollHdrAsReactant].id, reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_CollHdrReactants].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of the new node
+		}
+
+		//If double click on reaction kinetic law dependency in the list box, spawn the corresponding reaction node.
+		if (it->nlbsDataRKLDep.IsAnItemDoubleClicked())
+		{
+			std::shared_ptr<ECellEngine::Data::Reaction> reaction = it->nlbsDataRKLDep.GetDoubleClickedItem().lock();;
+			reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction.get()));
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::SpeciesNodeData::OutputPin_CollHdrInKineticLaw].id, reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_NLBSSpecies].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_KineticLawOperands].id, 1);//fallback of the new node
+		}
+
 		it->ResetNLBSDUtilityStates();
 	}
 	
