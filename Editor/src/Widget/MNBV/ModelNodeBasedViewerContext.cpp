@@ -195,6 +195,28 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 
 		//------------------- Interaction with List Box for Contains Dependencies (Operands of the kinetic law)
 
+		//If double click on Species operand selectable in the list box of products, spawn the corresponding species node.
+		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Products].IsAnItemDoubleClicked())
+		{
+			std::shared_ptr<ECellEngine::Data::Species> species = _simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Products].GetDoubleClickedItem());
+			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, _simulation->GetDependenciesDatabase()));
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_CollHdrProducts].id, speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_CollHdrAsProduct].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of the new node
+		}
+
+		//If double click on Species operand selectable in the list box of reactants, spawn the corresponding species node.
+		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Reactants].IsAnItemDoubleClicked())
+		{
+			std::shared_ptr<ECellEngine::Data::Species> species = _simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Reactants].GetDoubleClickedItem());
+			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, _simulation->GetDependenciesDatabase()));
+
+			links.emplace_back(Utility::MNBV::LinkData(it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_CollHdrReactants].id, speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_CollHdrAsReactant].id));
+			links.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
+			links.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of the new node
+		}
+
 		//If double click on ComputedParameter operand selectable in the list box, spawn the corresponding computed parameter node.
 		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_ComputedParameterOperands].IsAnItemDoubleClicked())
 		{
