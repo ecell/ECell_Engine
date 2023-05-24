@@ -737,10 +737,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::shared_ptr<ECellEngine::Data::ComputedParameter> data;
 
 		/*!
-		@brief Reference to the dependency database of the simulation this node
+		@brief Pointer to the dependency database of the simulation this node
 				part of.
 		*/
-		const ECellEngine::Data::DependenciesDatabase& depDB;
+		const ECellEngine::Data::DependenciesDatabase* depDB;
 
 		/*!
 		@brief All the input pins.
@@ -818,7 +818,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		ComputedParameterNodeData(std::shared_ptr<ECellEngine::Data::ComputedParameter> _data, const ECellEngine::Data::DependenciesDatabase& _depDB) :
+		ComputedParameterNodeData(std::shared_ptr<ECellEngine::Data::ComputedParameter> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
@@ -850,9 +850,18 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds[CollapsingHeader_DataFields] = Widget::MNBV::GetMNBVCtxtNextId();//Data Fields collapsing header
 			collapsingHeadersIds[CollapsingHeader_EquationOperands] = Widget::MNBV::GetMNBVCtxtNextId();//Equation Operands collapsing header
 
-			computedParameterDep = depDB.GetComputedParameterDependencies().find(data)->second.partOfComputedParameter;
+			auto search = depDB->GetComputedParameterDependencies().find(data);
+			if ( search != depDB->GetComputedParameterDependencies().end())
+			{
+				computedParameterDep = search->second.partOfComputedParameter;
+				reactionKLDep = search->second.partOfReactionKineticLaw;
+			}
+			else
+			{
+				computedParameterDep = {};
+				reactionKLDep = {};
+			}
 			nlbsDataCPDep = { &computedParameterDep , Widget::MNBV::GetMNBVCtxtNextId() };
-			reactionKLDep = depDB.GetComputedParameterDependencies().find(data)->second.partOfReactionKineticLaw;
 			nlbsDataRKLDep = { &reactionKLDep , Widget::MNBV::GetMNBVCtxtNextId() };
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);//Node String List Box for Species Operands
 			nlbsData[NodeListBoxString_SpeciesOperands] = { &speciesOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Node String List Box for Species Operands
@@ -861,12 +870,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			_data->GetOperation().GetOperandsNames<ECellEngine::Data::ComputedParameter>(computedParametersOperands);//Node String List Box for Computed Parameter Operands
 			nlbsData[NodeListBoxString_ComputedParameterOperands] = { &computedParametersOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Node String List Box for Computed Parameter Operands
 		}
-
-		/*!
-		@remarks Needed because of the reference ::depDB.
-		@remarks Used in vector erase when deleting this data from the context list.
-		*/
-		const ComputedParameterNodeData& operator=(const ComputedParameterNodeData& _cpnd) { return *this; };
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in computed parameter node data
 
@@ -1029,12 +1032,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 				outputPins[i].node = this;
 			}
 		}
-
-		/*!
-		@remarks Needed because of the reference ::depDB.
-		@remarks Used in vector erase when deleting this data from the context list.
-		*/
-		//const LinePlotNodeData& operator=(const LinePlotNodeData& _cpnd) { return *this; };
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override;
 
@@ -1364,10 +1361,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::shared_ptr<ECellEngine::Data::SimpleParameter> data;
 
 		/*!
-		@brief Reference to the dependency database of the simulation this node
+		@brief Pointer to the dependency database of the simulation this node
 				part of.
 		*/
-		const ECellEngine::Data::DependenciesDatabase& depDB;
+		const ECellEngine::Data::DependenciesDatabase* depDB;
 
 		/*!
 		@brief All the input pins.
@@ -1431,7 +1428,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
-		SimpleParameterNodeData(std::shared_ptr<ECellEngine::Data::SimpleParameter> _data, const ECellEngine::Data::DependenciesDatabase& _depDB) :
+		SimpleParameterNodeData(std::shared_ptr<ECellEngine::Data::SimpleParameter> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{_depDB}
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
@@ -1455,17 +1452,21 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds[CollapsingHeader_KineticLaws] = Widget::MNBV::GetMNBVCtxtNextId();//Kinetic Laws section
 			collapsingHeadersIds[CollapsingHeader_DataFields] = Widget::MNBV::GetMNBVCtxtNextId();//Data Fields collapsing header
 
-			computedParameterDep = depDB.GetSimpleParameterDependencies().at(data).partOfComputedParameter;
+			auto search = depDB->GetSimpleParameterDependencies().find(data);
+			if (search != depDB->GetSimpleParameterDependencies().end())
+			{
+				computedParameterDep = search->second.partOfComputedParameter;
+				reactionKLDep = search->second.partOfReactionKineticLaw;
+			}
+			else
+			{
+				computedParameterDep = {};
+				reactionKLDep = {};
+			}
+
 			nlbsDataCPDep = { &computedParameterDep, Widget::MNBV::GetMNBVCtxtNextId() }; //Computed Parameters section
-			reactionKLDep = depDB.GetSimpleParameterDependencies().at(data).partOfReactionKineticLaw;
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };//Kinetic Laws section
 		}
-
-		/*!
-		@remarks Needed because of the reference ::depDB.
-		@remarks Used in vector erase when deleting this data from the context list.
-		*/
-		const SimpleParameterNodeData& operator=(const SimpleParameterNodeData& _cpnd) { return *this; };
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override;
 
@@ -1736,10 +1737,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::shared_ptr<ECellEngine::Data::Species> data;
 
 		/*!
-		@brief Reference to the dependency database of the simulation this node
+		@brief Pointer to the dependency database of the simulation this node
 				part of.
 		*/
-		const ECellEngine::Data::DependenciesDatabase& depDB;
+		const ECellEngine::Data::DependenciesDatabase* depDB;
 
 		/*!
 		@brief A buffer for the quantity value of a species to detect when the
@@ -1818,7 +1819,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep.data = &reactionKLDep;
 		}
 
-		SpeciesNodeData(std::shared_ptr<ECellEngine::Data::Species> _data, const ECellEngine::Data::DependenciesDatabase& _depDB) :
+		SpeciesNodeData(std::shared_ptr<ECellEngine::Data::Species> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
@@ -1847,21 +1848,25 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds[CollapsingHeader_InKineticLaw] = Widget::MNBV::GetMNBVCtxtNextId();//Collapsing Header Reaction's Kinetic Law
 			collapsingHeadersIds[CollapsingHeader_DataFields] = Widget::MNBV::GetMNBVCtxtNextId();//Collapsing Header Data Fields
 
-			computedParameterDep = depDB.GetSpeciesDependencies().at(data).partOfComputedParameter;
+			auto search = depDB->GetSpeciesDependencies().find(data);
+			if (search != depDB->GetSpeciesDependencies().end())
+			{
+				computedParameterDep = search->second.partOfComputedParameter;
+				reactionRDep = search->second.partOfReactionAsReactant;
+				reactionPDep = search->second.partOfReactionAsProduct;
+				reactionKLDep = search->second.partOfReactionKineticLaw;
+			}
+			else
+			{
+				computedParameterDep = {};
+				reactionKLDep = {};
+			}
+
 			nlbsDataCPDep = { &computedParameterDep, Widget::MNBV::GetMNBVCtxtNextId() };
-			reactionRDep = depDB.GetSpeciesDependencies().at(data).partOfReactionAsReactant;
 			nlbsDataRRDep = { &reactionRDep, Widget::MNBV::GetMNBVCtxtNextId() };
-			reactionPDep = depDB.GetSpeciesDependencies().at(data).partOfReactionAsProduct;
 			nlbsDataRPDep = { &reactionPDep, Widget::MNBV::GetMNBVCtxtNextId() };
-			reactionKLDep = depDB.GetSpeciesDependencies().at(data).partOfReactionKineticLaw;
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };
 		}
-
-		/*!
-		@remarks Needed because of the reference ::depDB.
-		@remarks Used in vector erase when deleting this data from the context list.
-		*/
-		const SpeciesNodeData& operator=(const SpeciesNodeData& _cpnd) { return *this; };
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override;
 

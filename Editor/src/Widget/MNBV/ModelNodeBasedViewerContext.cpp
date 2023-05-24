@@ -55,7 +55,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Species].IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::Species> species = _simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Species].GetDoubleClickedItem());
-			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, _simulation->GetDependenciesDatabase()));
+			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::AssetNodeData::OutputPin_CollHdrSpecies],&speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_Asset]));
 			staticLinks.back().OverrideEndFallbackPin(speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);
@@ -65,7 +65,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_SimpleParameters].IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::SimpleParameter> simpleParameter = _simulation->GetDataState()->GetSimpleParameter(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_SimpleParameters].GetDoubleClickedItem());
-			simpleParameterNodes.emplace_back(Utility::MNBV::SimpleParameterNodeData(simpleParameter, _simulation->GetDependenciesDatabase()));
+			simpleParameterNodes.emplace_back(Utility::MNBV::SimpleParameterNodeData(simpleParameter, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::AssetNodeData::OutputPin_CollHdrSimpleParameters], &simpleParameterNodes.back().inputPins[Utility::MNBV::SimpleParameterNodeData::InputPin_Asset]));
 			staticLinks.back().OverrideEndFallbackPin(simpleParameterNodes.back().inputPins[Utility::MNBV::SimpleParameterNodeData::CollapsingHeader_ModelLinks].id, 1);
@@ -75,7 +75,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_ComputedParameters].IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::ComputedParameter> computedParameter = _simulation->GetDataState()->GetComputedParameter(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_ComputedParameters].GetDoubleClickedItem());
-			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(computedParameter, _simulation->GetDependenciesDatabase()));
+			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(computedParameter, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::AssetNodeData::OutputPin_CollHdrComputedParameters], &computedParameterNodes.back().inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_Asset]));
 			staticLinks.back().OverrideEndFallbackPin(computedParameterNodes.back().inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_CollHdrModelLinks].id, 1);
@@ -112,7 +112,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			//set it to computedParameterNodes.end() (it is valid again).
 
 			std::shared_ptr<ECellEngine::Data::ComputedParameter> computedParameter = it->nlbsDataCPDep.GetDoubleClickedItem().lock();
-			Utility::MNBV::ComputedParameterNodeData computedParameterNodeData = Utility::MNBV::ComputedParameterNodeData(computedParameter, _simulation->GetDependenciesDatabase());
+			Utility::MNBV::ComputedParameterNodeData computedParameterNodeData = Utility::MNBV::ComputedParameterNodeData(computedParameter, &_simulation->GetDependenciesDatabase());
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ComputedParameterNodeData::OutputPin_CollHdrComputedParameters], &computedParameterNodeData.inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_NLBSComputedParameters]));
 			staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
@@ -148,7 +148,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			//set it to computedParameterNodes.end() (it is valid again).
 
 			std::shared_ptr<ECellEngine::Data::ComputedParameter> computedParameter = _simulation->GetDataState()->GetComputedParameter(it->nlbsData[Utility::MNBV::ComputedParameterNodeData::NodeListBoxString_ComputedParameterOperands].GetDoubleClickedItem());
-			Utility::MNBV::ComputedParameterNodeData computedParameterNodeData = Utility::MNBV::ComputedParameterNodeData(computedParameter, _simulation->GetDependenciesDatabase());
+			Utility::MNBV::ComputedParameterNodeData computedParameterNodeData = Utility::MNBV::ComputedParameterNodeData(computedParameter, &_simulation->GetDependenciesDatabase());
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ComputedParameterNodeData::OutputPin_NLBSComputedParameters], &computedParameterNodeData.inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_CollHdrComputedParameters]));
 			staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);//fallback of this node
@@ -163,7 +163,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsData[Utility::MNBV::ComputedParameterNodeData::NodeListBoxString_SimpleParameterOperands].IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::SimpleParameter> simpleParameter = _simulation->GetDataState()->GetSimpleParameter(it->nlbsData[Utility::MNBV::ComputedParameterNodeData::NodeListBoxString_SimpleParameterOperands].GetDoubleClickedItem());
-			simpleParameterNodes.emplace_back(Utility::MNBV::SimpleParameterNodeData(simpleParameter, _simulation->GetDependenciesDatabase()));
+			simpleParameterNodes.emplace_back(Utility::MNBV::SimpleParameterNodeData(simpleParameter, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ComputedParameterNodeData::OutputPin_NLBSSimpleParameters], &simpleParameterNodes.back().inputPins[Utility::MNBV::SimpleParameterNodeData::InputPin_CollHdrComputedParameters]));
 			staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);//fallback of this node
@@ -174,7 +174,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsData[Utility::MNBV::ComputedParameterNodeData::NodeListBoxString_SpeciesOperands].IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::Species> species = _simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::ComputedParameterNodeData::NodeListBoxString_SpeciesOperands].GetDoubleClickedItem());
-			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, _simulation->GetDependenciesDatabase()));
+			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ComputedParameterNodeData::OutputPin_NLBSSpecies], &speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_CollHdrInComputedParameter]));
 			staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);//fallback of this node
@@ -199,7 +199,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Products].IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::Species> species = _simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Products].GetDoubleClickedItem());
-			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, _simulation->GetDependenciesDatabase()));
+			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_CollHdrProducts], &speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_CollHdrAsProduct]));
 			staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
@@ -210,7 +210,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Reactants].IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::Species> species = _simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Reactants].GetDoubleClickedItem());
-			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, _simulation->GetDependenciesDatabase()));
+			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_CollHdrReactants], &speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_CollHdrAsReactant]));
 			staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
@@ -221,7 +221,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_ComputedParameterOperands].IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::ComputedParameter> computedParameter = _simulation->GetDataState()->GetComputedParameter(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_ComputedParameterOperands].GetDoubleClickedItem());
-			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(computedParameter, _simulation->GetDependenciesDatabase()));
+			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(computedParameter, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_NLBSComputedParameters], &computedParameterNodes.back().inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_CollHdrKineticLaws]));
 			staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_KineticLawOperands].id, 1);//fallback of this node
@@ -232,7 +232,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_SimpleParameterOperands].IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::SimpleParameter> simpleParameter = _simulation->GetDataState()->GetSimpleParameter(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_SimpleParameterOperands].GetDoubleClickedItem());
-			simpleParameterNodes.emplace_back(Utility::MNBV::SimpleParameterNodeData(simpleParameter, _simulation->GetDependenciesDatabase()));
+			simpleParameterNodes.emplace_back(Utility::MNBV::SimpleParameterNodeData(simpleParameter, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_NLBSSimpleParameters], &simpleParameterNodes.back().inputPins[Utility::MNBV::SimpleParameterNodeData::InputPin_CollHdrKineticLaws]));
 			staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_KineticLawOperands].id, 1);//fallback of this node
@@ -243,7 +243,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_SpeciesOperands].IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::Species> species = _simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_SpeciesOperands].GetDoubleClickedItem());
-			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, _simulation->GetDependenciesDatabase()));
+			speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_NLBSSpecies], &speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_CollHdrInKineticLaw]));
 			staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_KineticLawOperands].id, 1);//fallback of this node
@@ -263,7 +263,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsDataCPDep.IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::ComputedParameter> computedParameter = it->nlbsDataCPDep.GetDoubleClickedItem().lock();
-			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(computedParameter, _simulation->GetDependenciesDatabase()));
+			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(computedParameter, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::SimpleParameterNodeData::OutputPin_CollHdrComputedParameters], &computedParameterNodes.back().inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_NLBSSimpleParameters]));
 			staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::SimpleParameterNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
@@ -302,7 +302,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		if (it->nlbsDataCPDep.IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::ComputedParameter> computedParameter = it->nlbsDataCPDep.GetDoubleClickedItem().lock();
-			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(computedParameter, _simulation->GetDependenciesDatabase()));
+			computedParameterNodes.emplace_back(Utility::MNBV::ComputedParameterNodeData(computedParameter, &_simulation->GetDependenciesDatabase()));
 
 			staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::SpeciesNodeData::OutputPin_CollHdrInComputedParameter], &computedParameterNodes.back().inputPins[Utility::MNBV::ComputedParameterNodeData::InputPin_NLBSSpecies]));
 			staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
