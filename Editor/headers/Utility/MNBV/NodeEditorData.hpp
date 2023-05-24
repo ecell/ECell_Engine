@@ -139,77 +139,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 	};
 #pragma endregion
 
-#pragma region Base Node, Pin & Link
-	/*!
-	@brief Information about connection between pins.
-	@details Note that connection (aka. link) has its own ID. This is useful
-			 later with dealing with selections, deletion or other operations.
-	@remarks Originally from: https://github.com/thedmd/imgui-node-editor/blob/master/examples/basic-interaction-example/basic-interaction-example.cpp
-	*/
-	struct LinkData
-	{
-		/*!
-		@brief The id of this link
-		*/
-		ax::NodeEditor::LinkId id;
-
-		/*!
-		@brief The ids of the pins to use to as the start of the link.
-		@details At index 0 is the main pin while index 1 contains the if of the
-				 fallback pin.
-		*/
-		ax::NodeEditor::PinId startIds[2];
-
-		/*!
-		@brief The ids of the pins to use to use as the end of the link.
-		@details At index 0 is the main pin while index 1 contains the if of the
-				 fallback pin.
-		*/
-		ax::NodeEditor::PinId endIds[2];
-
-		LinkData(ax::NodeEditor::PinId _startId, ax::NodeEditor::PinId _endId) :
-			id{ Widget::MNBV::GetMNBVCtxtNextId() }, startIds{ _startId, _startId }, endIds{ _endId, _endId }
-		{
-
-		}
-
-		inline operator std::size_t() { return (std::size_t)id; }
-
-		friend inline bool operator==(const LinkData& lhs, const LinkData& rhs) { return lhs.id.Get() == rhs.id.Get(); }
-		friend inline bool operator!=(const LinkData& lhs, const LinkData& rhs) { return !(lhs == rhs); }
-
-		friend inline bool operator< (const LinkData& lhs, const LinkData& rhs) { return lhs.id.Get() < rhs.id.Get(); }
-		friend inline bool operator> (const LinkData& lhs, const LinkData& rhs) { return rhs < lhs; }
-		friend inline bool operator<=(const LinkData& lhs, const LinkData& rhs) { return !(lhs > rhs); }
-		friend inline bool operator>=(const LinkData& lhs, const LinkData& rhs) { return !(lhs < rhs); }
-
-		/*!
-		@brief Sets the PinId @p _id as a candidate to be the start of the link
-				with a set @p _priority.
-		@param _id The new pin id to set as the start of this link.
-		@param _priority MUST be of value 0 or 1. It describes if this id should
-				be used as the first or second choice when trying to draw a link
-				from this ::LinKData
-		*/
-		inline void OverrideStartFallbackPin(ax::NodeEditor::PinId _id, unsigned short _priority)
-		{
-			startIds[_priority] = _id;
-		}
-
-		/*!
-		@brief Sets the PinId @p _id as a candidate to be the end of the link
-				with a set @p _priority.
-		@param _id The new pin id to set as the end of this link.
-		@param _priority MUST be of value 0 or 1. It describes if this id should
-				be used as the first or second choice when trying to draw a link
-				from this ::LinKData
-		*/
-		inline void OverrideEndFallbackPin(ax::NodeEditor::PinId _id, unsigned short _priority)
-		{
-			endIds[_priority] = _id;
-		}
-	};
-
+#pragma region Base Node, Pin
 	struct NodeInputPinData;
 	struct NodeOutputPinData;
 
@@ -444,6 +374,92 @@ namespace ECellEngine::Editor::Utility::MNBV
 					++it;
 				}
 			}
+		}
+	};
+
+	/*!
+	@brief Information about connection between pins.
+	@details Note that connection (aka. link) has its own ID. This is useful
+			 later with dealing with selections, deletion or other operations.
+	@remarks Originally from: https://github.com/thedmd/imgui-node-editor/blob/master/examples/basic-interaction-example/basic-interaction-example.cpp
+	*/
+	struct LinkData
+	{
+		/*!
+		@brief The id of this link
+		*/
+		ax::NodeEditor::LinkId id;
+
+		/*!
+		@brief Pointer to the pin data used as the start of this link.
+		*/
+		NodeOutputPinData* startPin;
+
+		/*!
+		@brief Pointer to the pin data used as the end of this link.
+		*/
+		NodeInputPinData* endPin;
+
+		/*!
+		@brief The ids of the pins to use as the start of the link.
+		@details At index 0 is the main pin while index 1 contains the if of the
+				 fallback pin.
+		*/
+		ax::NodeEditor::PinId startIds[2];
+
+		/*!
+		@brief The ids of the pins to use use as the end of the link.
+		@details At index 0 is the main pin while index 1 contains the if of the
+				 fallback pin.
+		*/
+		ax::NodeEditor::PinId endIds[2];
+
+		/*LinkData(ax::NodeEditor::PinId _startId, ax::NodeEditor::PinId _endId) :
+			id{ Widget::MNBV::GetMNBVCtxtNextId() }, startIds{ _startId, _startId }, endIds{ _endId, _endId }
+		{
+
+		}*/
+		LinkData(NodeOutputPinData* _startPin, NodeInputPinData* _endPin) :
+			id{ Widget::MNBV::GetMNBVCtxtNextId() }, startPin{ _startPin }, endPin{ _endPin },
+			startIds{ _startPin->id, _startPin->id }, endIds{ _endPin->id, _endPin->id }
+		{
+
+		}
+
+		inline operator std::size_t() { return (std::size_t)id; }
+
+		friend inline bool operator==(const LinkData& lhs, const LinkData& rhs) { return lhs.id.Get() == rhs.id.Get(); }
+		friend inline bool operator!=(const LinkData& lhs, const LinkData& rhs) { return !(lhs == rhs); }
+
+		friend inline bool operator< (const LinkData& lhs, const LinkData& rhs) { return lhs.id.Get() < rhs.id.Get(); }
+		friend inline bool operator> (const LinkData& lhs, const LinkData& rhs) { return rhs < lhs; }
+		friend inline bool operator<=(const LinkData& lhs, const LinkData& rhs) { return !(lhs > rhs); }
+		friend inline bool operator>=(const LinkData& lhs, const LinkData& rhs) { return !(lhs < rhs); }
+
+		/*!
+		@brief Sets the PinId @p _id as a candidate to be the start of the link
+				with a set @p _priority.
+		@param _id The new pin id to set as the start of this link.
+		@param _priority MUST be of value 0 or 1. It describes if this id should
+				be used as the first or second choice when trying to draw a link
+				from this ::LinKData
+		*/
+		inline void OverrideStartFallbackPin(ax::NodeEditor::PinId _id, unsigned short _priority)
+		{
+			startIds[_priority] = _id;
+		}
+
+		/*!
+		@brief Sets the PinId @p _id as a candidate to be the end of the link
+				with a set @p _priority.
+		@param _id The new pin id to set as the end of this link.
+		@param _priority MUST be of value 0 or 1. It describes if this id should
+				be used as the first or second choice when trying to draw a link
+				from this ::LinKData
+		*/
+		inline void OverrideEndFallbackPin(ax::NodeEditor::PinId _id, unsigned short _priority)
+		{
+			endIds[_priority] = _id;
 		}
 	};
 
@@ -846,6 +862,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_ComputedParameterOperands] = { &computedParametersOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Node String List Box for Computed Parameter Operands
 		}
 
+		/*!
+		@remarks Needed because of the reference ::depDB.
+		@remarks Used in vector erase when deleting this data from the context list.
+		*/
+		const ComputedParameterNodeData& operator=(const ComputedParameterNodeData& _cpnd) { return *this; };
+
 		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in computed parameter node data
 
 		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in computed parameter node data
@@ -938,7 +960,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		char lineLegend[64] = "f(x)";
 		float plotSize[2] = { ImPlot::GetStyle().PlotDefaultSize.x, ImPlot::GetStyle().PlotDefaultSize.y };
 
-		const ImGuiWindowFlags plotWindowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
+		static const ImGuiWindowFlags plotWindowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
 		ImPlotFlags plotFlags = ImPlotFlags_NoLegend | ImPlotFlags_NoInputs;
 		ImPlotAxisFlags xAxisFlags = ImPlotAxisFlags_AutoFit;
 		ImPlotAxisFlags yAxisFlags = ImPlotAxisFlags_AutoFit;
@@ -1007,6 +1029,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 				outputPins[i].node = this;
 			}
 		}
+
+		/*!
+		@remarks Needed because of the reference ::depDB.
+		@remarks Used in vector erase when deleting this data from the context list.
+		*/
+		//const LinePlotNodeData& operator=(const LinePlotNodeData& _cpnd) { return *this; };
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override;
 
@@ -1433,6 +1461,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };//Kinetic Laws section
 		}
 
+		/*!
+		@remarks Needed because of the reference ::depDB.
+		@remarks Used in vector erase when deleting this data from the context list.
+		*/
+		const SimpleParameterNodeData& operator=(const SimpleParameterNodeData& _cpnd) { return *this; };
+
 		void InputConnect(const NodeInputPinData& _nodeInput) override;
 
 		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Reaction Node Data
@@ -1822,6 +1856,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 			reactionKLDep = depDB.GetSpeciesDependencies().at(data).partOfReactionKineticLaw;
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };
 		}
+
+		/*!
+		@remarks Needed because of the reference ::depDB.
+		@remarks Used in vector erase when deleting this data from the context list.
+		*/
+		const SpeciesNodeData& operator=(const SpeciesNodeData& _cpnd) { return *this; };
 
 		void InputConnect(const NodeInputPinData& _nodeInput) override;
 

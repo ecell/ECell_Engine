@@ -19,15 +19,14 @@ void ECellEngine::Editor::Widget::MNBV::CurrentMNBVContextDraw(ECellEngine::Core
 
 void ECellEngine::Editor::Widget::MNBV::EraseDynamicLink(const std::size_t _linkId)
 {
-    // Then remove link from your data.
-    ECellEngine::Logging::Logger::GetSingleton().LogDebug("LinkDestruction: " + std::to_string(_linkId));
-
+    //Search the Link data to erase.
     std::vector<Utility::MNBV::LinkData>::iterator link = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->dynamicLinks.begin(), s_mnbvCtxt->dynamicLinks.end(), _linkId);
-    Utility::MNBV::NodeOutputPinData* outputPin = static_cast<Utility::MNBV::NodeOutputPinData*>(FindNodePinInAll((std::size_t)link->startIds[0]));
-    Utility::MNBV::NodeInputPinData* inputPin = static_cast<Utility::MNBV::NodeInputPinData*>(FindNodePinInAll((std::size_t)link->endIds[0]));
-
-    outputPin->EraseSubscriber(inputPin);
-
+    
+    //Erase the subscription of the end pin to the start pin.
+    // --> data will not be transmitted from the start pin to the end pin anymore.
+    link->startPin->EraseSubscriber(link->endPin);
+    
+    //Erase the link data.
     s_mnbvCtxt->dynamicLinks.erase(link);
 }
 ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV::FindNodeInAll(const std::size_t _id)

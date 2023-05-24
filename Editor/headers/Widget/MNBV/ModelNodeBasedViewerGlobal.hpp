@@ -59,7 +59,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 	/*!
 	@brief The logic to delete the visuals of a link and clean the data
 			subscription.
-	@_linkId The id of the link to erase.
+	@param _linkId The id of the link to erase.
 	*/
 	void EraseDynamicLink(const std::size_t _linkId);
 	/*!
