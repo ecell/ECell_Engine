@@ -1,6 +1,28 @@
 #include "Utility/MNBV/NodeEditorDraw.hpp"
 
 #pragma region Nodes
+
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeDestruction()
+{
+    if (ax::NodeEditor::BeginDelete())
+    {
+        // There may be many links marked for deletion, let's loop over them.
+        ax::NodeEditor::NodeId deletedNodeId;
+        while (ax::NodeEditor::QueryDeletedNode(&deletedNodeId))
+        {
+            // If you agree that link can be deleted, accept deletion.
+            if (ax::NodeEditor::AcceptDeletedItem())
+            {
+                ECellEngine::Editor::Widget::MNBV::EraseNode((std::size_t)deletedNodeId);
+            }
+
+            // You may reject link deletion by calling:
+            // ax::NodeEditor::RejectDeletedItem();
+        }
+    }
+    ax::NodeEditor::EndDelete(); // Wrap up deletion action
+}
+
 void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _name, AssetNodeData& _assetNodeInfo)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Asset));
@@ -693,7 +715,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinkCreation(std::vecto
     ax::NodeEditor::EndCreate(); // Wraps up object creation action handling.
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinkDestruction(std::vector<LinkData>& _links)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::DynamicLinkDestruction(std::vector<LinkData>& _dynamicLinks)
 {
     if (ax::NodeEditor::BeginDelete())
     {
@@ -701,14 +723,17 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinkDestruction(std::ve
         ax::NodeEditor::LinkId deletedLinkId;
         while (ax::NodeEditor::QueryDeletedLink(&deletedLinkId))
         {
-            // If you agree that link can be deleted, accept deletion.
-            if (ax::NodeEditor::AcceptDeletedItem())
-            {
-                Editor::Widget::MNBV::EraseDynamicLink((std::size_t)deletedLinkId);
-            }
+            //Search the Link data to erase.
+            std::vector<Utility::MNBV::LinkData>::iterator link = ECellEngine::Data::BinaryOperation::LowerBound(_dynamicLinks.begin(), _dynamicLinks.end(), (std::size_t)deletedLinkId);
 
-            // You may reject link deletion by calling:
-            // ax::NodeEditor::RejectDeletedItem();
+            if (link != _dynamicLinks.end() && link->id == deletedLinkId)
+            {
+                // If you agree that link can be deleted, accept deletion.
+                if (ax::NodeEditor::AcceptDeletedItem())
+                {
+                    Editor::Widget::MNBV::EraseDynamicLink(link);
+                }
+            }
         }
     }
     ax::NodeEditor::EndDelete(); // Wrap up deletion action
@@ -724,6 +749,40 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::Link(LinkData& linkInfo
 
     ax::NodeEditor::Link(linkInfo.id, linkInfo.startIds[1], linkInfo.endIds[1]);
 }
+
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::StaticLinkDestruction(std::vector<LinkData>& _staticLinks)
+{
+    if (ax::NodeEditor::BeginDelete())
+    {
+        // There may be many links marked for deletion, let's loop over them.
+        ax::NodeEditor::LinkId deletedLinkId;
+        while (ax::NodeEditor::QueryDeletedLink(&deletedLinkId))
+        {
+            //We do not destroy static links that are selected
+            if (!ax::NodeEditor::IsLinkSelected(deletedLinkId))
+            {
+                ax::NodeEditor::RejectDeletedItem();
+            }
+            else
+            {
+                //Search the Link data to erase.
+                std::vector<Utility::MNBV::LinkData>::iterator link = ECellEngine::Data::BinaryOperation::LowerBound(_staticLinks.begin(), _staticLinks.end(), (std::size_t)deletedLinkId);
+
+                if (link != _staticLinks.end() && link->id == deletedLinkId)
+                {
+                    // If you agree that link can be deleted, accept deletion.
+                    if (ax::NodeEditor::AcceptDeletedItem())
+                    {
+                        Editor::Widget::MNBV::EraseStaticLink(link);
+                    }
+                }
+            }
+            
+        }
+    }
+    ax::NodeEditor::EndDelete(); // Wrap up deletion action
+}
+
 #pragma endregion
 
 #pragma region Custom Node Widgets

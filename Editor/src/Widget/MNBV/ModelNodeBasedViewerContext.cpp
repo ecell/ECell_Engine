@@ -350,10 +350,6 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		Utility::MNBV::NodeEditorDraw::ValueFloatNode("Float", *it);
 	}
 
-	Utility::MNBV::NodeEditorDraw::LinkDestruction(dynamicLinks);
-
-	Utility::MNBV::NodeEditorDraw::LinkCreation(dynamicLinks);
-
 	for (std::vector< Utility::MNBV::LinkData>::iterator it = staticLinks.begin(); it != staticLinks.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::Link(*it);
@@ -363,4 +359,12 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 	{
 		Utility::MNBV::NodeEditorDraw::Link(*it);
 	}
+
+	Utility::MNBV::NodeEditorDraw::NodeDestruction();
+
+	Utility::MNBV::NodeEditorDraw::DynamicLinkDestruction(dynamicLinks);
+
+	Utility::MNBV::NodeEditorDraw::StaticLinkDestruction(staticLinks);
+
+	Utility::MNBV::NodeEditorDraw::LinkCreation(dynamicLinks);
 }

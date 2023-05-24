@@ -74,6 +74,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 #pragma endregion
 
 #pragma region Nodes
+
+		/*!
+		@brief The basic logic to destroy nodes.
+		*/
+		static void NodeDestruction();
+
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::AssetNodeData.
 		@param _name The name of the node. It will appear in the header of the
@@ -151,6 +157,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 #pragma region Node Pins
 		
 		/*!
+		@brief The basic logic to destroy dynamic links between nodes.
+		@details Those links can be destroyed by any method (user specific
+				selection or through the deletion of a node they are attached to).
+		@param _dynamicLinks The list where the links we try to destroy should be
+				stored.
+		*/
+		static void DynamicLinkDestruction(std::vector<LinkData>& _dynamiclinks);
+		
+		/*!
 		@brief Draws a Link in the node Editor.
 		@details Draws the first successful link according to the order (i.e.
 				 priority) of ids in ECellEngine::Editor::Utility::MNBV::LinkData::startIds
@@ -161,15 +176,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief The basic logic to create links between input and output
 				pins of nodes.
-		@param _links The current list of links.
+		@param _dynamicLinks The list of where to store user-created links.
 		*/
-		static void LinkCreation(std::vector<LinkData>& _links);
-
-		/*!
-		@brief The basic logic to destroy links between nodes.
-		@param _links The current list of links.
-		*/
-		static void LinkDestruction(std::vector<LinkData>& _links);
+		static void LinkCreation(std::vector<LinkData>& _dynamicLinks);
 
 		/*!
 		@brief Draw a square pin.
@@ -178,6 +187,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _pinColors The set of colors to cutomize the looks of this pin.
 		*/
 		static void Pin(const NodePinData& _pinData, const ImVec4 _pinColors[]);
+
+		/*!
+		@brief The basic logic to destroy links between nodes.
+		@details Those links can be destroyed only through the deletion of a
+				node they are attached to.
+		@param _staticLinks The list where the links we try to destroy should be
+				stored.
+		*/
+		static void StaticLinkDestruction(std::vector<LinkData>& _staticLinks);
 #pragma endregion
 
 #pragma region Layout

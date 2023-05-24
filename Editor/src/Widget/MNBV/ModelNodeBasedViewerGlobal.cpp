@@ -17,18 +17,106 @@ void ECellEngine::Editor::Widget::MNBV::CurrentMNBVContextDraw(ECellEngine::Core
     s_mnbvCtxt->Draw(_simulation);
 }
 
-void ECellEngine::Editor::Widget::MNBV::EraseDynamicLink(const std::size_t _linkId)
+void ECellEngine::Editor::Widget::MNBV::EraseDynamicLink(std::vector<Utility::MNBV::LinkData>::iterator& _dynamicLink)
 {
-    //Search the Link data to erase.
-    std::vector<Utility::MNBV::LinkData>::iterator link = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->dynamicLinks.begin(), s_mnbvCtxt->dynamicLinks.end(), _linkId);
-    
     //Erase the subscription of the end pin to the start pin.
-    // --> data will not be transmitted from the start pin to the end pin anymore.
-    link->startPin->EraseSubscriber(link->endPin);
-    
+        // --> data will not be transmitted from the start pin to the end pin anymore.
+    _dynamicLink->startPin->EraseSubscriber(_dynamicLink->endPin);
+
     //Erase the link data.
-    s_mnbvCtxt->dynamicLinks.erase(link);
+    s_mnbvCtxt->dynamicLinks.erase(_dynamicLink);
 }
+
+void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
+{
+    //Search in the list of Asset Nodes
+    std::vector<Utility::MNBV::AssetNodeData>::iterator itAND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end(), _nodeId);
+    if (itAND != s_mnbvCtxt->assetNodes.end() && (std::size_t)itAND->id == _nodeId)
+    {
+        s_mnbvCtxt->assetNodes.erase(itAND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: AssetNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
+    //Search in the list of Computed Parameter Nodes
+    std::vector<Utility::MNBV::ComputedParameterNodeData>::iterator itCPND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->computedParameterNodes.begin(), s_mnbvCtxt->computedParameterNodes.end(), _nodeId);
+    if (itCPND != s_mnbvCtxt->computedParameterNodes.end() && (std::size_t)itCPND->id == _nodeId)
+    {
+        s_mnbvCtxt->computedParameterNodes.erase(itCPND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: ComputedParameterNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
+    //Search in the list of Line Plot Nodes
+    std::vector<Utility::MNBV::LinePlotNodeData>::iterator itLPND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->linePlotNodes.begin(), s_mnbvCtxt->linePlotNodes.end(), _nodeId);
+    if (itLPND != s_mnbvCtxt->linePlotNodes.end() && (std::size_t)itLPND->id == _nodeId)
+    {
+        s_mnbvCtxt->linePlotNodes.erase(itLPND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: LinePlotNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
+    //Search in the list of Reaction Nodes
+    std::vector<Utility::MNBV::ReactionNodeData>::iterator itRND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->reactionNodes.begin(), s_mnbvCtxt->reactionNodes.end(), _nodeId);
+    if (itRND != s_mnbvCtxt->reactionNodes.end() && (std::size_t)itRND->id == _nodeId)
+    {
+        s_mnbvCtxt->reactionNodes.erase(itRND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: ReactionNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
+    //Search in the list of Simple Parameter Nodes
+    std::vector<Utility::MNBV::SimpleParameterNodeData>::iterator itSPaND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->simpleParameterNodes.begin(), s_mnbvCtxt->simpleParameterNodes.end(), _nodeId);
+    if (itSPaND != s_mnbvCtxt->simpleParameterNodes.end() && (std::size_t)itSPaND->id == _nodeId)
+    {
+        s_mnbvCtxt->simpleParameterNodes.erase(itSPaND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: SimpleParameterNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
+    //Search in the list of Simulation Time Nodes
+    std::vector<Utility::MNBV::SimulationTimeNodeData>::iterator itSTND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->simulationTimeNodes.begin(), s_mnbvCtxt->simulationTimeNodes.end(), _nodeId);
+    if (itSTND != s_mnbvCtxt->simulationTimeNodes.end() && (std::size_t)itSTND->id == _nodeId)
+    {
+        s_mnbvCtxt->simulationTimeNodes.erase(itSTND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: SimulationTimeNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
+    //Search in the list of Solver Nodes
+    std::vector<Utility::MNBV::SolverNodeData>::iterator itSoND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->solverNodes.begin(), s_mnbvCtxt->solverNodes.end(), _nodeId);
+    if (itSoND != s_mnbvCtxt->solverNodes.end() && (std::size_t)itSoND->id == _nodeId)
+    {
+        s_mnbvCtxt->solverNodes.erase(itSoND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: SolverNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
+    //Search in the list of Species Nodes
+    std::vector<Utility::MNBV::SpeciesNodeData>::iterator itSpND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->speciesNodes.begin(), s_mnbvCtxt->speciesNodes.end(), _nodeId);
+    if (itSpND != s_mnbvCtxt->speciesNodes.end() && (std::size_t)itSpND->id == _nodeId)
+    {
+        s_mnbvCtxt->speciesNodes.erase(itSpND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: SpeciesNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
+    //Search in the list of Value Float Nodes
+    std::vector<Utility::MNBV::ValueFloatNodeData>::iterator itVFND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->valueFloatNodes.begin(), s_mnbvCtxt->valueFloatNodes.end(), _nodeId);
+    if (itVFND != s_mnbvCtxt->valueFloatNodes.end() && (std::size_t)itVFND->id == _nodeId)
+    {
+        s_mnbvCtxt->valueFloatNodes.erase(itVFND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: ValueFloatNodeData " + std::to_string(_nodeId));
+        return;
+    }
+}
+
+void ECellEngine::Editor::Widget::MNBV::EraseStaticLink(std::vector<Utility::MNBV::LinkData>::iterator& _staticLink)
+{
+    //Erase the link data.
+    s_mnbvCtxt->staticLinks.erase(_staticLink);
+}
+
 ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV::FindNodeInAll(const std::size_t _id)
 {
     Utility::MNBV::NodeData* itND = nullptr;
@@ -105,7 +193,6 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
     if (_first != _last)
     {   
         return &*ECellEngine::Data::BinaryOperation::LowerBound(_first, _last, _id);
- 
     }
     return nullptr;
 }
