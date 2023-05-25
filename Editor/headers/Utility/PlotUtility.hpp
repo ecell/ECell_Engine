@@ -89,7 +89,7 @@ namespace ECellEngine::Editor::Utility
         */
         TabData(short _id)
         {
-            sprintf(name, "Tab %d", _id);
+            //sprintf(name, "Tab %d", _id);
         }
     };
 
@@ -204,7 +204,7 @@ namespace ECellEngine::Editor::Utility
         LinePlotTabData(short _id) :
             TabData(_id), xAxisGraphicsData("X Axis"), yAxisGraphicsData("Y Axis")
         {
-            sprintf(name, "Line Plot %d", _id);
+            //sprintf(name, "Line Plot %d", _id);
             x = 0.f;
             y = 0.f;
             timeOnX = false;
