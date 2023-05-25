@@ -562,7 +562,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The byte the encode the state variations of this node.
 		@details Manipulate the state with the enum values State_XXX
 		*/
-		unsigned char utilityState = 0;
+		unsigned short utilityState = 0;
 
 		/*!
 		@brief All the collapsing headers.
@@ -758,7 +758,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The byte the encode the state variations of this node.
 		@details Manipulate the state with the enum values State_XXX
 		*/
-		unsigned char utilityState = 0;
+		unsigned short utilityState = 0;
 
 		/*!
 		@brief All the collapsing headers.
@@ -929,6 +929,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			CollapsingHeader_PlotFlags,
 			CollapsingHeader_XAxisFlags,
 			CollapsingHeader_YAxisFlags,
+			CollapsingHeader_AxisScaleFlags,
 			CollapsingHeader_Plot,
 
 			CollapsingHeader_Count
@@ -946,7 +947,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 			State_CollHdrPlotFlags,
 			State_CollHdrXAxisFlags,
 			State_CollHdrYAxisFlags,
+			State_CollHdrAxisScaleFlags,
 			State_CollHdrPlot,
+			State_PlotIsOpen,
 
 			State_Count
 		};
@@ -965,6 +968,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		static const ImGuiWindowFlags plotWindowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
 		ImPlotFlags plotFlags = ImPlotFlags_NoLegend | ImPlotFlags_NoInputs;
+		ImPlotScale xAxisScale = ImPlotScale_Linear;
+		ImPlotScale yAxisScale = ImPlotScale_Linear;
 		ImPlotAxisFlags xAxisFlags = ImPlotAxisFlags_AutoFit;
 		ImPlotAxisFlags yAxisFlags = ImPlotAxisFlags_AutoFit;
 
@@ -981,10 +986,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		NodeOutputPinData outputPins[OutputPin_Count];//not used
 
 		/*!
-		@brief The byte the encode the state variations of this node.
+		@brief The 2 bytes to encode the state variations of this node.
 		@details Manipulate the state with the enum values State_XXX
 		*/
-		unsigned char utilityState = 0;
+		unsigned short utilityState = 0;
 
 		/*!
 		@brief All the collapsing headers.
@@ -1007,7 +1012,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds[CollapsingHeader_GeneralParameters] = Widget::MNBV::GetMNBVCtxtNextId();//General (Parameters) Collapsing header
 			collapsingHeadersIds[CollapsingHeader_PlotFlags] = Widget::MNBV::GetMNBVCtxtNextId();//Plot Flags (Parameters) Collapsing header
 			collapsingHeadersIds[CollapsingHeader_XAxisFlags] = Widget::MNBV::GetMNBVCtxtNextId();//X Axis Flags (Parameters) Collapsing header
-			collapsingHeadersIds[CollapsingHeader_YAxisFlags] = Widget::MNBV::GetMNBVCtxtNextId();//Y Axis Falgs (Parameters) Collapsing header
+			collapsingHeadersIds[CollapsingHeader_YAxisFlags] = Widget::MNBV::GetMNBVCtxtNextId();//Y Axis Flags (Parameters) Collapsing header
+			collapsingHeadersIds[CollapsingHeader_AxisScaleFlags] = Widget::MNBV::GetMNBVCtxtNextId();//X & Y Axis Scale Flags (Parameters) Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Plot] = Widget::MNBV::GetMNBVCtxtNextId();//Plot Collapsing Header
 
 			dataPoints.AddPoint(0, 0);
@@ -1045,10 +1051,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		inline bool IsPlotOpen() noexcept
 		{
-			return (utilityState >> 6) & 1;
+			return (utilityState >> State_PlotIsOpen) & 1;
 		}
 
-		inline void ResetNewPointBuffer()
+		inline void ResetNewPointBuffer() noexcept
 		{
 			newPointConstructionCounter = 0;
 		}
@@ -1059,7 +1065,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@remarks It could be moved outside of this class in the future since the
 				 code works with any data and is not pecific to this context.
 		*/
-		inline void SwitchState(const short _stateBitPos)
+		inline void SwitchState(const short _stateBitPos) noexcept
 		{
 			utilityState ^= (1 << _stateBitPos);
 		}
@@ -1177,7 +1183,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The byte the encode the state variations of this node.
 		@details Manipulate the state with the enum values State_XXX
 		*/
-		unsigned char utilityState = 0;
+		unsigned short utilityState = 0;
 
 		/*!
 		@brief All the collapsing headers.
@@ -1382,7 +1388,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The byte the encode the state variations of this node.
 		@details Manipulate the state with the enum values State_XXX
 		*/
-		unsigned char utilityState = 0;
+		unsigned short utilityState = 0;
 
 		/*!
 		@brief All the collapsing headers.
@@ -1764,7 +1770,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The byte the encode the state variations of this node.
 		@details Manipulate the state with the enum values State_XXX
 		*/
-		unsigned char utilityState = 0;
+		unsigned short utilityState = 0;
 
 		/*!
 		@brief All the collapsing headers.

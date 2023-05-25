@@ -229,12 +229,19 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
         {
             NodeAllImPlotAxisFlags(&_linePlotNodeData.yAxisFlags);
         }
+        
+        if (NodeCollapsingHeader("Axis Scale Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_AxisScaleFlags],
+            _linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrAxisScaleFlags,
+            startX, headerWidth, ImVec2(headerWidth, 0.f)))
+        {
+            NodeAllImPlotAxisScale(_linePlotNodeData.xAxisScale, _linePlotNodeData.yAxisScale);
+        }
     }
 
     NodeHorizontalSeparator(headerWidth);
 
     if (NodeCollapsingHeader_In("Plot", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_Plot],
-        _linePlotNodeData.utilityState, LinePlotNodeData::CollapsingHeader_Plot,
+        _linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrPlot,
         startX, headerWidth,
         _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_CollHdrPlot], Widget::MNBV::GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0.f)))
@@ -255,14 +262,14 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
             ImGui::SameLine();
             if (ImGui::Button("Close", ImVec2(0.5f * (headerWidth - style.ItemSpacing.x), 0.f)))
             {
-                _linePlotNodeData.SwitchState(6);
+                _linePlotNodeData.SwitchState(LinePlotNodeData::State_PlotIsOpen);
             }
         }
         else
         {
             if (ImGui::Button("Open", ImVec2(headerWidth, 0.f)))
             {
-                _linePlotNodeData.SwitchState(6);
+                _linePlotNodeData.SwitchState(LinePlotNodeData::State_PlotIsOpen);
                 ImGui::SetNextWindowPos(ax::NodeEditor::CanvasToScreen(ImGui::GetCursorPos()));
             }
         }
@@ -279,6 +286,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
             if (ImPlot::BeginPlot(_linePlotNodeData.plotTitle, ImVec2(_linePlotNodeData.plotSize[0], _linePlotNodeData.plotSize[1]), _linePlotNodeData.plotFlags))
             {
                 ImPlot::SetupAxes(_linePlotNodeData.xAxisLabel, _linePlotNodeData.yAxisLabel, _linePlotNodeData.xAxisFlags, _linePlotNodeData.yAxisFlags);
+                ImPlot::SetupAxisScale(ImAxis_X1, _linePlotNodeData.xAxisScale);
+                ImPlot::SetupAxisScale(ImAxis_Y1, _linePlotNodeData.yAxisScale);
                 ImPlot::PlotLine(_linePlotNodeData.lineLegend,
                     &_linePlotNodeData.dataPoints.Data[0].x, &_linePlotNodeData.dataPoints.Data[0].y,
                     _linePlotNodeData.dataPoints.Data.Size, _linePlotNodeData.dataPoints.Offset, 2 * sizeof(float));
@@ -811,8 +820,6 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeAllImPlotAxisFlags(
     NodeCheckBoxFlag("ImPlotAxisFlags_NoMenus", _flags, ImPlotAxisFlags_NoMenus, "The user will not be able to open context menus with right-click.");
     NodeCheckBoxFlag("ImPlotAxisFlags_Opposite", _flags, ImPlotAxisFlags_Opposite, "Axis ticks and labels will be rendered on conventionally opposite side (i.e, right or top).");
     NodeCheckBoxFlag("ImPlotAxisFlags_Foreground", _flags, ImPlotAxisFlags_Foreground, "Grid lines will be displayed in the foreground (i.e. on top of data) in stead of the background.");
-    NodeCheckBoxFlag("ImPlotAxisFlags_LogScale", _flags, ImPlotAxisFlags_LogScale, "A logartithmic (base 10) axis scale will be used (mutually exclusive with ImPlotAxisFlags_Time).");
-    NodeCheckBoxFlag("ImPlotAxisFlags_Time", _flags, ImPlotAxisFlags_Time, "Axis will display date/time formatted labels (mutually exclusive with ImPlotAxisFlags_LogScale).");
     NodeCheckBoxFlag("ImPlotAxisFlags_Invert", _flags, ImPlotAxisFlags_Invert, "The axis will be inverted.");
     NodeCheckBoxFlag("ImPlotAxisFlags_AutoFit", _flags, ImPlotAxisFlags_AutoFit, "Axis will be auto-fitting to data extents.");
     NodeCheckBoxFlag("ImPlotAxisFlags_RangeFit", _flags, ImPlotAxisFlags_RangeFit, "Axis will only fit points if the point is in the visible range of the **orthogonal** axis.");
@@ -835,12 +842,83 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeAllImPlotFlags(ImPl
     NodeCheckBoxFlag("ImPlotFlags_NoFrame", _flags, ImPlotFlags_NoFrame, "The ImGui frame will not be rendered.");
     NodeCheckBoxFlag("ImPlotFlags_Equal", _flags, ImPlotFlags_Equal, "X and Y axes pairs will be constrained to have the same units/pixel.");
     NodeCheckBoxFlag("ImPlotFlags_Crosshairs", _flags, ImPlotFlags_Crosshairs, "The default mouse cursor will be replaced with a crosshair when hovered.");
-    NodeCheckBoxFlag("ImPlotFlags_AntiAliased", _flags, ImPlotFlags_AntiAliased, "Plot items will be software anti-aliased (not recommended for high density plots, prefer MSAA).");
+    //NodeCheckBoxFlag("ImPlotFlags_AntiAliased", _flags, ImPlotFlags_AntiAliased, "Plot items will be software anti-aliased (not recommended for high density plots, prefer MSAA).");
     NodeCheckBoxFlag("ImPlotFlags_CanvasOnly", _flags, ImPlotFlags_CanvasOnly, "ImPlotFlags_NoTitle | ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText");
 }
 
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeAllImPlotAxisScale(ImPlotScale& _xAxisScale, ImPlotScale& _yAxisScale)
+{
+    /*if (ImGui::RadioButton("ImPlotScale_SymLog", _xAxisScale == ImPlotScale_SymLog && _yAxisScale == ImPlotScale_SymLog))
+    {
+        _xAxisScale = ImPlotScale_SymLog;
+        _yAxisScale = ImPlotScale_SymLog;
+    }
+    if (ImGui::IsItemHovered())
+    {
+        ax::NodeEditor::Suspend();
+        ImGui::SetTooltip("Symmetric log scale for the X and Y axis.");
+        ax::NodeEditor::Resume();
+    }*/
+
+    if (ImGui::RadioButton("ImPlotScale_Linear for X", _xAxisScale == ImPlotScale_Linear))
+    {
+        _xAxisScale = ImPlotScale_Linear;
+    }
+    if (ImGui::IsItemHovered())
+	{
+        ax::NodeEditor::Suspend();
+		ImGui::SetTooltip("Default linear scale.");
+        ax::NodeEditor::Resume();
+	}
+
+    if (ImGui::RadioButton("ImPlotScale_Log10 for X", _xAxisScale == ImPlotScale_Log10))
+    {
+        _xAxisScale = ImPlotScale_Log10;
+    }
+    if(ImGui::IsItemHovered())
+	{
+		ax::NodeEditor::Suspend();
+		ImGui::SetTooltip("Base 10 logartithmic scale.");
+		ax::NodeEditor::Resume();
+	}
+
+    if (ImGui::RadioButton("ImPlotScale_Time for X", _xAxisScale == ImPlotScale_Time))
+    {
+        _xAxisScale = ImPlotScale_Time;
+    }
+    if (ImGui::IsItemHovered())
+    {
+        ax::NodeEditor::Suspend();
+        ImGui::SetTooltip("Date/time scale.");
+        ax::NodeEditor::Resume();
+    }
+
+    if (ImGui::RadioButton("ImPlotScale_Linear for Y", _yAxisScale == ImPlotScale_Linear))
+    {
+        _yAxisScale = ImPlotScale_Linear;
+    }
+    if (ImGui::IsItemHovered())
+	{
+        ax::NodeEditor::Suspend();
+		ImGui::SetTooltip("Default linear scale.");
+        ax::NodeEditor::Resume();
+	}
+
+    if (ImGui::RadioButton("ImPlotScale_Log10 for Y", _yAxisScale == ImPlotScale_Log10))
+    {
+        _yAxisScale = ImPlotScale_Log10;
+    }
+    if(ImGui::IsItemHovered())
+	{
+		ax::NodeEditor::Suspend();
+		ImGui::SetTooltip("Base 10 logartithmic scale.");
+		ax::NodeEditor::Resume();
+	}    
+    
+}
+
 bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader(const char* _label, const std::size_t _id,
-    unsigned char& _utilityState, const short _stateBitPos,
+    unsigned short& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength,
     const ImVec2& _size)
 {
@@ -856,7 +934,7 @@ bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader(co
 }
 
 bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_In(const char* _label, const std::size_t _id,
-    unsigned char& _utilityState, const short _stateBitPos,
+    unsigned short& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength,
     const NodePinData& _pin, const ImVec4 _pinColors[],
     const ImVec2& _size, const bool _hidePinsOnExpand)
@@ -881,7 +959,7 @@ bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_In
 }
 
 bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_InOut(const char* _label, const std::size_t _id,
-    unsigned char& _utilityState, const short _stateBitPos,
+    unsigned short& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength,
     const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
     const ImVec2& _size, const bool _hidePinsOnExpand)
@@ -909,7 +987,7 @@ bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_In
 }
 
 bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_Out(const char* _label, const std::size_t _id,
-    unsigned char& _utilityState, const short _stateBitPos,
+    unsigned short& _utilityState, const short _stateBitPos,
     const float _startX, const float _drawLength,
     const NodePinData& _pin, const ImVec4 _pinColors[],
     const ImVec2& _size, const bool _hidePinsOnExpand)
