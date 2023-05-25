@@ -194,10 +194,11 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
 bool ECellEngine::IO::SBMLModuleImporter::IsASTNodeOperation(const ASTNode* _node)
 {
     return (_node->getType() == ASTNodeType_t::AST_PLUS ||
-           _node->getType() == ASTNodeType_t::AST_MINUS ||
-           _node->getType() == ASTNodeType_t::AST_TIMES ||
-           _node->getType() == ASTNodeType_t::AST_DIVIDE ||
-           _node->getType() == ASTNodeType_t::AST_FUNCTION_POWER);
+            _node->getType() == ASTNodeType_t::AST_MINUS ||
+            _node->getType() == ASTNodeType_t::AST_TIMES ||
+            _node->getType() == ASTNodeType_t::AST_DIVIDE ||
+            _node->getType() == ASTNodeType_t::AST_FUNCTION_POWER ||
+            _node->getType() == ASTNodeType_t::AST_FUNCTION_ROOT);
 }
 
 void ECellEngine::IO::SBMLModuleImporter::AssignOperationFunction(Operation& _op, const ASTNode* _node)
@@ -223,6 +224,10 @@ void ECellEngine::IO::SBMLModuleImporter::AssignOperationFunction(Operation& _op
     case ASTNodeType_t::AST_FUNCTION_POWER:
         _op.Set(&functions.power);
         break;
+
+    case ASTNodeType_t::AST_FUNCTION_ROOT:
+        _op.Set(&functions.root);
+		break;
     }
 }
 
@@ -347,12 +352,15 @@ const std::shared_ptr<ECellEngine::Data::Module> ECellEngine::IO::SBMLModuleImpo
         Model* sbmlModel = sbmlDoc->getModel();
 
         //Build species
+        ECellEngine::Logging::Logger::GetSingleton().LogTrace("Building species...");
         InitializeSpecies(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
 
         //Build parameters ; simple (constants) and computed
+        ECellEngine::Logging::Logger::GetSingleton().LogTrace("Building parameters...");
         InitializeParameters(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
 
         //Build reactions
+        ECellEngine::Logging::Logger::GetSingleton().LogTrace("Building reactions...");
         InitializeReactions(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
         
         return sbmlModule;

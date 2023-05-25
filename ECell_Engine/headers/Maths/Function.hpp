@@ -60,6 +60,19 @@ namespace ECellEngine::Maths
         }
     };
 
+    struct Root : public Function
+    {
+        /*!
+        @brief Computes the root of a number.
+        @details The degree of the root is the first operand; 
+                 the number to compute the root of is the second operand.
+        */
+        inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
+        {
+            return std::pow(_operands[1]->Get(), 1.0f / _operands[0]->Get());
+        }
+    };
+
     struct Functions
     {
         static Add add;
@@ -68,6 +81,7 @@ namespace ECellEngine::Maths
         static Divide divide;
         static Power power;
         static Identity identity;
+        static Root root;
     };
 
     static Functions functions;
