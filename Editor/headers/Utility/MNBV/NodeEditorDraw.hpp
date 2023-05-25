@@ -298,6 +298,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr);
 
 		/*!
+		@brief Draws all the relevant flags encoded in ImPlot::ImPlotFlags.
+		@details This gives access to the flags at runtime within a node to customize
+				 the visuals of the plot.
+		@param _flags Pointer to the int encoding the flags (e.g. enum).
+		@see ECellEngine::Editor::Utility::MNBV::NodeDrawer::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr)
+		*/
+		static void NodeAllImPlotFlags(ImPlotFlags* _flags);
+
+		/*!
 		@brief Draws all the relevant flags encoded in ImPlot::ImPlotAxisFlags.
 		@details This gives access to the flags at runtime within a node to customize
 				 the visuals of the axis of a plot.
@@ -307,13 +316,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void NodeAllImPlotAxisFlags(ImPlotAxisFlags* _flags);
 
 		/*!
-		@brief Draws all the relevant flags encoded in ImPlot::ImPlotFlags.
+		@brief Draws all the scales encoded in ImPlot::ImPlotScale.
 		@details This gives access to the flags at runtime within a node to customize
-				 the visuals of the plot.
-		@param _flags Pointer to the int encoding the flags (e.g. enum).
-		@see ECellEngine::Editor::Utility::MNBV::NodeDrawer::NodeCheckBoxFlag(const char* _label, int* _flags, const int _flag, const char* _tooltip = nullptr)
+				 the visuals of the axis of a plot.
+		@param _xAxisScale Reference to the current scale of the X Axis.
+		@param _yAxisScale Reference to the current scale of the Y Axis.
 		*/
-		static void NodeAllImPlotFlags(ImPlotFlags* _flags);
+		static void NodeAllImPlotAxisScale(ImPlotScale& _xAxisScale, ImPlotScale& _yAxisScale);
 
 		/*!
 		@brief Custom collapsing header for nodes with no pins.
@@ -327,7 +336,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _label The text to display in the collapsing header.
 		@param _id Unique integer ID to identify the collapsing header. This is
 				mandatory to not mess up ImGui's internal identification system.
-		@param _utilityState The reference to the character containing the encoding
+		@param _utilityState The reference to the byte(s) containing the encoding
 				of the the open/close state of this header.
 		@param _stateBitPos The position of the bit in @p _utilityState that
 				encodes the open/close state of this header
@@ -338,7 +347,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _size The size of the button representing the collapsing header.
 		*/
 		static bool NodeCollapsingHeader(const char* _label, const std::size_t _id,
-			unsigned char& _utilityState, const short _stateBitPos,
+			unsigned short& _utilityState, const short _stateBitPos,
 			const float _startX, const float _drawLength,
 			const ImVec2& _size = ImVec2(0, 0));
 
@@ -354,7 +363,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _label The text to display in the collapsing header.
 		@param _id Unique integer ID to identify the collapsing header. This is
 				mandatory to not mess up ImGui's internal identification system.
-		@param _utilityState The reference to the character containing the encoding
+		@param _utilityState The reference to the byte(s) containing the encoding
 				of the the open/close state of this header.
 		@param _stateBitPos The position of the bit in @p _utilityState that
 				encodes the open/close state of this header
@@ -370,7 +379,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 				is open (displaying the content bellowit).
 		*/
 		static bool NodeCollapsingHeader_In(const char* _label, const std::size_t _id,
-			unsigned char& _utilityState, const short _stateBitPos,
+			unsigned short& _utilityState, const short _stateBitPos,
 			const float _startX, const float _drawLength,
 			const NodePinData& _pin, const ImVec4 _pinColors[],
 			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
@@ -388,7 +397,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _label The text to display in the collapsing header.
 		@param _id Unique integer ID to identify the collapsing header. This is
 				mandatory to not mess up ImGui's internal identification system.
-		@param _utilityState The reference to the character containing the encoding
+		@param _utilityState The reference to the byte(s) containing the encoding
 				of the the open/close state of this header.
 		@param _stateBitPos The position of the bit in @p _utilityState that
 				encodes the open/close state of this header
@@ -405,7 +414,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 				is open (displaying the content bellowit).
 		*/
 		static bool NodeCollapsingHeader_InOut(const char* _label, const std::size_t _id,
-			unsigned char& _utilityState, const short _stateBitPos,
+			unsigned short& _utilityState, const short _stateBitPos,
 			const float _startX, const float _drawLength,
 			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
 			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
@@ -424,7 +433,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _label The text to display in the collapsing header.
 		@param _id Unique integer ID to identify the collapsing header. This is
 				mandatory to not mess up ImGui's internal identification system.
-		@param _utilityState The reference to the character containing the encoding
+		@param _utilityState The reference to the byte(s) containing the encoding
 				of the the open/close state of this header.
 		@param _stateBitPos The position of the bit in @p _utilityState that
 				encodes the open/close state of this header
@@ -440,7 +449,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 				is open (displaying the content bellowit).
 		*/
 		static bool NodeCollapsingHeader_Out(const char* _label, const std::size_t _id,
-			unsigned char& _utilityState, const short _stateBitPos,
+			unsigned short& _utilityState, const short _stateBitPos,
 			const float _startX, const float _drawLength,
 			const NodePinData& _pin, const ImVec4 _pinColors[],
 			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
