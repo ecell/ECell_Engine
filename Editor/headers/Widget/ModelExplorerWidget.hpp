@@ -14,7 +14,6 @@
 #include "ModelHierarchyWidget.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerWidget.hpp"
-#include "Widget.hpp"
 
 namespace ECellEngine::Editor::Widget
 {
