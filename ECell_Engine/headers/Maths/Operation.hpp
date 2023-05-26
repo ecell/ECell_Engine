@@ -135,28 +135,6 @@ namespace ECellEngine::Maths
 			}
 		}
 
-		Operation& operator=(const Operation&& _op) noexcept
-		{
-			if (this == &_op)
-			{
-				return *this;
-			}
-
-			name = _op.name;
-			structure = _op.structure;
-			function = _op.function;
-			constants = _op.constants;
-			operations = _op.operations;
-			operands = _op.operands;
-
-			if (operands.capacity() > 1)
-			{
-				UpdateOperands();
-			}
-
-			return *this;
-		}
-
 		/*!
 		@brief Adds a constant in ::constants from its @p _value
 		@details Also writes in ::structure to encode this new operand's
