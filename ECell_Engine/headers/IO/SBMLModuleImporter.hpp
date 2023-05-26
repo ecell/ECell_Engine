@@ -7,7 +7,7 @@
 
 #include "Maths/Function.hpp"
 #include "IO/ModuleImporter.hpp"
-#include "Data/SBMLModule.hpp"
+#include "Data/BiochemicalModule.hpp"
 
 namespace ECellEngine::IO
 {
@@ -48,19 +48,24 @@ namespace ECellEngine::IO
 		void AssignOperationFunction(Operation& _op, const ASTNode* _node);
 
 		/*!
+		@brief Parses the list of assignement rules encoded in the sbml file.
+		*/
+		void InitializeEquations(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
+
+		/*!
 		@brief Parses the list of parameters encoded in the sbml file.
 		*/
-		void InitializeParameters(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
+		void InitializeParameters(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
 
 		/*!
 		@brief Parses the list of reactions encoded in the sbml file.
 		*/
-		void InitializeReactions(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
+		void InitializeReactions(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
 
 		/*!
 		@brief Parses the list of species encoded in the sbml file.
 		*/
-		void InitializeSpecies(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
+		void InitializeSpecies(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
 
 		/*!
 		@brief Tests if the ASTNode has a type that is considered as an operation.

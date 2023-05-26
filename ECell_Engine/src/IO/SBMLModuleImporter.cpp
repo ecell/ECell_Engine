@@ -1,36 +1,8 @@
 #include "IO/SBMLModuleImporter.hpp"
 
-void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule,
+void ECellEngine::IO::SBMLModuleImporter::InitializeEquations(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule,
     const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
-    unsigned int nbParameters = _model->getNumParameters();
-    const LIBSBML_CPP_NAMESPACE::Parameter* param;
-
-    unsigned int nbSimpleParameters = 0;
-    unsigned int nbComputedParameters = 0;
-    for (unsigned int i = 0; i < nbParameters; i++)
-    {
-        param = _model->getParameter(i);
-        if (param->getConstant())
-        {
-            nbSimpleParameters++;
-        }
-        else
-        {
-            nbComputedParameters++;
-        }
-    }
-
-    for (unsigned int i = 0; i < nbParameters; i++)
-    {
-        param = _model->getParameter(i);
-        if (param->getConstant())
-        {
-            _sbmlModule.AddSimpleParameter(param->getId(), (const float)param->getValue());
-            _docIdsToDataStateNames[param->getId()] = param->getId();
-        }
-    }
-
     //Processes the parameters defined through rules
     unsigned int nbRules = _model->getNumRules();
     const LIBSBML_CPP_NAMESPACE::Rule* rule;
@@ -39,31 +11,49 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(ECellEngine::Data
     {
         //std::cout << std::endl;
         rule = _model->getRule(i);
-        if (rule->isParameter())
+        astNode = rule->getMath();
+        //covers the case when we have a rule of the form 'a = b'
+        //In this situation we do not do the tree parsing but we create the
+        //operation directly with the root node.
+        if (astNode->getType() == ASTNodeType_t::AST_NAME)
         {
-            astNode = rule->getMath();
-            //covers the case when we have a rule of the form 'a = b'
-            //In this situation we do not do the tree parsing but we create the
-            //operation directly with the root node.
-            if (astNode->getType() == ASTNodeType_t::AST_NAME)
-            {
-                Operation root = Operation(rule->getVariable());
-                root.Set(&functions.identity);
-                root.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(astNode->getName())->second));
-                _sbmlModule.AddComputedParameters(rule->getVariable(), root);
-            }
-            else
-            {
-                Operation root = ASTNodeToOperation(astNode, rule->getVariable(), _dataState, _docIdsToDataStateNames);
-                _sbmlModule.AddComputedParameters(rule->getVariable(), root);
-            }
-            _dataState.GetComputedParameter(rule->getVariable())->ComputeOperation();
-            _docIdsToDataStateNames[rule->getVariable()] = rule->getVariable();
+            Operation root = Operation(rule->getVariable());
+            root.Set(&functions.identity);
+            root.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(astNode->getName())->second));
+            _sbmlModule.AddEquation(rule->getVariable(), root);
         }
+        else
+        {
+            Operation root = ASTNodeToOperation(astNode, rule->getVariable(), _dataState, _docIdsToDataStateNames);
+            _sbmlModule.AddEquation(rule->getVariable(), root);
+        }
+        _dataState.GetEquation(rule->getVariable())->Compute();
+        _docIdsToDataStateNames[rule->getVariable()] = rule->getVariable();
     }
 }
 
-void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model,
+void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule,
+    const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
+{
+    unsigned int nbParameters = _model->getNumParameters();
+    const LIBSBML_CPP_NAMESPACE::Parameter* param;
+
+    for (unsigned int i = 0; i < nbParameters; i++)
+    {
+        param = _model->getParameter(i);
+        if (param->isSetValue())
+        {
+			_sbmlModule.AddParameter(param->getId(), (const float)param->getValue());
+        }
+		else
+        {
+            _sbmlModule.AddParameter(param->getId(), 0.0f);
+        }
+        _docIdsToDataStateNames[param->getId()] = param->getId();
+    }
+}
+
+void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model,
     std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
     unsigned int nbReactions = _model->getNumReactions();
@@ -114,7 +104,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
     }
 }
 
-void ECellEngine::IO::SBMLModuleImporter::InitializeSpecies(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::SBMLModule& _sbmlModule, const Model* _model,
+void ECellEngine::IO::SBMLModuleImporter::InitializeSpecies(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model,
     std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
     unsigned int nbSpecies = _model->getNumSpecies();
@@ -348,16 +338,20 @@ const std::shared_ptr<ECellEngine::Data::Module> ECellEngine::IO::SBMLModuleImpo
     {
         //std::cout << " The SBML validation process for file at: " << _filePath << " is a SUCCESS." << std::endl;
 
-        std::shared_ptr<ECellEngine::Data::SBMLModule> sbmlModule = std::make_shared<ECellEngine::Data::SBMLModule>(_dataState);
+        std::shared_ptr<ECellEngine::Data::BiochemicalModule> sbmlModule = std::make_shared<ECellEngine::Data::BiochemicalModule>(_dataState);
         Model* sbmlModel = sbmlDoc->getModel();
 
         //Build species
         ECellEngine::Logging::Logger::GetSingleton().LogTrace("Building species...");
         InitializeSpecies(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
 
-        //Build parameters ; simple (constants) and computed
+        //Build parameters
         ECellEngine::Logging::Logger::GetSingleton().LogTrace("Building parameters...");
         InitializeParameters(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
+
+        //Build equations
+        ECellEngine::Logging::Logger::GetSingleton().LogTrace("Building equations...");
+        InitializeEquations(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
 
         //Build reactions
         ECellEngine::Logging::Logger::GetSingleton().LogTrace("Building reactions...");
