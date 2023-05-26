@@ -7,9 +7,9 @@ const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::strin
 	return data->at(_idx).c_str();
 }
 
-const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::weak_ptr<ECellEngine::Data::ComputedParameter>>::At(std::size_t _idx) const noexcept
+const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::weak_ptr<ECellEngine::Maths::Equation>>::At(std::size_t _idx) const noexcept
 {
-	return data->at(_idx).lock()->name.c_str();
+	return data->at(_idx).lock()->GetOperand()->name.c_str();
 }
 
 const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::weak_ptr<ECellEngine::Data::Reaction>>::At(std::size_t _idx) const noexcept
@@ -35,32 +35,32 @@ void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputUpdate(const NodeIn
 void ECellEngine::Editor::Utility::MNBV::AssetNodeData::ResetNLBSDUtilityStates() noexcept
 {
 	nlbsData[NodeListBoxString_Species].ResetUtilityState();
-	nlbsData[NodeListBoxString_SimpleParameters].ResetUtilityState();
-	nlbsData[NodeListBoxString_ComputedParameters].ResetUtilityState();
+	nlbsData[NodeListBoxString_Parameters].ResetUtilityState();
+	nlbsData[NodeListBoxString_Equations].ResetUtilityState();
 	nlbsData[NodeListBoxString_Reactions].ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::ComputedParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Computed parameter operation value
-	if (_nodeOutputPin == outputPins[ComputedParameterNodeData::OutputPin_ComputedParameterValue])
+	if (_nodeOutputPin == outputPins[EquationNodeData::OutputPin_EquationValue])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
-		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[ComputedParameterNodeData::CollapsingHeader_EquationOperands].id, 1);
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[EquationNodeData::CollapsingHeader_EquationOperands].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::ComputedParameterNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ComputedParameterNodeData::OutputUpdate");
+	ECellEngine::Logging::Logger::GetSingleton().LogDebug("EquationNodeData::OutputUpdate");
 }
 
-void ECellEngine::Editor::Utility::MNBV::ComputedParameterNodeData::ResetNLBSDUtilityStates() noexcept
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::ResetNLBSDUtilityStates() noexcept
 {
-	nlbsDataCPDep.ResetUtilityState();
+	nlbsDataEqDep.ResetUtilityState();
 	nlbsDataRKLDep.ResetUtilityState();
-	nlbsData[NodeListBoxString_ComputedParameterOperands].ResetUtilityState();
-	nlbsData[NodeListBoxString_SimpleParameterOperands].ResetUtilityState();
+	nlbsData[NodeListBoxString_EquationOperands].ResetUtilityState();
+	nlbsData[NodeListBoxString_ParameterOperands].ResetUtilityState();
 	nlbsData[NodeListBoxString_SpeciesOperands].ResetUtilityState();
 }
 
@@ -129,45 +129,45 @@ void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::ResetNLBSDUtilityStat
 {
 	nlbsData[NodeListBoxString_Products].ResetUtilityState();
 	nlbsData[NodeListBoxString_Reactants].ResetUtilityState();
-	nlbsData[NodeListBoxString_ComputedParameterOperands].ResetUtilityState();
-	nlbsData[NodeListBoxString_SimpleParameterOperands].ResetUtilityState();
+	nlbsData[NodeListBoxString_EquationOperands].ResetUtilityState();
+	nlbsData[NodeListBoxString_ParameterOperands].ResetUtilityState();
 	nlbsData[NodeListBoxString_SpeciesOperands].ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
 {
 	//Simple parameter value
-	if (_nodeInputPin == inputPins[SimpleParameterNodeData::InputPin_ParameterValue])
+	if (_nodeInputPin == inputPins[ParameterNodeData::InputPin_ParameterValue])
 	{
 		//we set the input pin of the data field collapsing header as the fall back
-		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[SimpleParameterNodeData::InputPin_CollHdrDataFields].id, 1);
+		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[ParameterNodeData::InputPin_CollHdrDataFields].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
 {
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SimpleParameterNodeData::InputUpdate; data=" + std::to_string(_data));
+	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ParameterNodeData::InputUpdate; data=" + std::to_string(_data));
 }
 
-void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::ResetNLBSDUtilityStates() noexcept
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::ResetNLBSDUtilityStates() noexcept
 {
-	nlbsDataCPDep.ResetUtilityState();
+	nlbsDataEqDep.ResetUtilityState();
 	nlbsDataRKLDep.ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
 {
 	//Simple parameter value
-	if (_nodeOutputPin == outputPins[SimpleParameterNodeData::OutputPin_ParameterValue])
+	if (_nodeOutputPin == outputPins[ParameterNodeData::OutputPin_ParameterValue])
 	{
 		//we set the output pin of the data field collapsing header as the fall back
-		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[SimpleParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[ParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
 {
-	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SimpleParameterNodeData::OutputUpdate");
+	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ParameterNodeData::OutputUpdate");
 }
 
 void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
@@ -225,7 +225,7 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputUpdate(const Nod
 
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::ResetNLBSDUtilityStates() noexcept
 {
-	nlbsDataCPDep.ResetUtilityState();
+	nlbsDataEqDep.ResetUtilityState();
 	nlbsDataRRDep.ResetUtilityState();
 	nlbsDataRPDep.ResetUtilityState();
 	nlbsDataRKLDep.ResetUtilityState();
