@@ -258,6 +258,15 @@ namespace ECellEngine::Maths
 		void LinkLocalOperands();
 
 		/*!
+		@brief DO NOT USE for this class.
+		@details Does nothing; simply raises an error in the logger.
+		*/
+		inline virtual void Set(const float _value) noexcept
+		{
+			ECellEngine::Logging::Logger::GetSingleton().LogError("Operation::Set(const float _value) should not be used.");
+		};
+
+		/*!
 		@brief Sets the ::function that will be called when computing this
 				operation.
 		@param _function The pointer to the relevant mathematical function
