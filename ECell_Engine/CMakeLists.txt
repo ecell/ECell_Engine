@@ -14,7 +14,7 @@ add_library(ECellEngine SHARED
     "src/Data/DataState.cpp"
     "src/Data/DependenciesDatabase.cpp"
     "src/Data/Parameter.cpp"
-    "src/Data/SimpleParameter.cpp"
+    
     "src/Data/Species.cpp"
 
     "src/IO/Commands.cpp"
