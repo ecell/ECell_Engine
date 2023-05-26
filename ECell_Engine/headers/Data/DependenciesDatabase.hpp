@@ -4,10 +4,9 @@
 #include <vector>
 #include <unordered_map>
 
-#include "Data/Reaction.hpp"
+//#include "Data/Reaction.hpp"
 #include "Data/DataState.hpp"
-#include "Data/SimpleParameter.hpp"
-#include "Data/ComputedParameter.hpp"
+//#include "Data/Parameter.hpp"
 
 namespace ECellEngine::Data
 {
@@ -39,7 +38,7 @@ namespace ECellEngine::Data
 			/*!
 			@brief Collection of computed parameters that contain the linked species.
 			*/
-			std::vector<std::weak_ptr<ComputedParameter>>	partOfComputedParameter;
+			std::vector<std::weak_ptr<Maths::Equation>>	partOfEquation;
 		};
 
 		struct ParameterDependencies
@@ -52,7 +51,7 @@ namespace ECellEngine::Data
 			/*!
 			@brief Collection of computed parameters that contain the linked parameter in their internal operands.
 			*/
-			std::vector<std::weak_ptr<ComputedParameter>>	partOfComputedParameter;
+			std::vector<std::weak_ptr<Maths::Equation>>	partOfEquation;
 		};
 
 		/*!
@@ -64,13 +63,13 @@ namespace ECellEngine::Data
 		@brief Collection associating a simple parameter to all its tracked
 				dependencies (see ParameterDependencies).
 		*/
-		std::unordered_map<std::shared_ptr<SimpleParameter>, ParameterDependencies>		simpleParameterDependencies;
+		std::unordered_map<std::shared_ptr<Parameter>, ParameterDependencies>		parameterDependencies;
 
 		/*!
 		@brief Collection associating a computed parameter to all its tracked
 				dependencies (see ParameterDependencies).
 		*/
-		std::unordered_map<std::shared_ptr<ComputedParameter>, ParameterDependencies>	computedParameterDependencies;
+		std::unordered_map<std::shared_ptr<Maths::Equation>, ParameterDependencies>	equationDependencies;
 
 		/*!
 		@brief Explore content of a computed parameter and fills the species and
@@ -79,7 +78,7 @@ namespace ECellEngine::Data
 		@param dataState The data state.
 		@param computedParameter The target computed parameter.
 		*/
-		void RefreshComputedParameterDependencies(const DataState& dataState, std::shared_ptr<ComputedParameter> computedParameter) noexcept;
+		void RefreshEquationDependencies(const DataState& dataState, std::shared_ptr<Maths::Equation> computedParameter) noexcept;
 
 		/*!
 		@brief Explore the @p reaction's reactants, products and kinetic law to fill
@@ -101,19 +100,19 @@ namespace ECellEngine::Data
 		}
 
 		/*!
-		@brief Gets the reference to ::simpleParameterDependencies.
+		@brief Gets the reference to ::parameterDependencies.
 		*/
-		inline const std::unordered_map<std::shared_ptr<SimpleParameter>, ParameterDependencies>& GetSimpleParameterDependencies() const noexcept
+		inline const std::unordered_map<std::shared_ptr<Parameter>, ParameterDependencies>& GetParameterDependencies() const noexcept
 		{
-			return simpleParameterDependencies;
+			return parameterDependencies;
 		}
 
 		/*!
-		@brief Gets the reference to ::computedParameterDependencies.
+		@brief Gets the reference to ::equationDependencies.
 		*/
-		inline const std::unordered_map<std::shared_ptr<ComputedParameter>, ParameterDependencies>& GetComputedParameterDependencies() const noexcept
+		inline const std::unordered_map<std::shared_ptr<Maths::Equation>, ParameterDependencies>& GetEquationDependencies() const noexcept
 		{
-			return computedParameterDependencies;
+			return equationDependencies;
 		}
 
 		void RefreshDependencies(const DataState& dataState) noexcept;

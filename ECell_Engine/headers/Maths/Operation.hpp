@@ -244,11 +244,11 @@ namespace ECellEngine::Maths
 			return (operands.size() + operations.size() + constants.size() >= 2);
 		}
 
+		void GetInvolvedEquations(std::vector<std::string>& out_involvedEquations, bool clearOutVector = true) const noexcept override;
+		
+		void GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
+		
 		void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
-
-		void GetInvolvedSimpleParameters(std::vector<std::string>& out_involvedSimpleParameters, bool clearOutVector = true) const noexcept override;
-
-		void GetInvolvedComputedParameters(std::vector<std::string>& out_involvedComputedParameters, bool clearOutVector = true) const noexcept override;
 
 		/*!
 		@brief Recursively pushes operands in ::operands and trims unsused

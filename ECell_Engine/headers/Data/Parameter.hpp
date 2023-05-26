@@ -26,6 +26,6 @@ namespace ECellEngine::Data
 			value = _value;
 		}
 
-		void GetInvolvedSimpleParameters(std::vector<std::string>& out_involvedSimpleParameters, bool clearOutVector = true) const noexcept override;
+		void GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
 	};
 }

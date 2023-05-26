@@ -10,23 +10,23 @@ void ECellEngine::Maths::Operation::GetInvolvedSpecies(std::vector<std::string>&
 	}
 }
 
-void ECellEngine::Maths::Operation::GetInvolvedSimpleParameters(std::vector<std::string>& out_involvedSimpleParameters, bool clearOutVector) const noexcept
+void ECellEngine::Maths::Operation::GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector) const noexcept
 {
-	Operand::GetInvolvedSimpleParameters(out_involvedSimpleParameters, clearOutVector);
+	Operand::GetInvolvedParameters(out_involvedParameters, clearOutVector);
 
 	for (Operand* operand : operands)
 	{
-		operand->GetInvolvedSimpleParameters(out_involvedSimpleParameters, false);
+		operand->GetInvolvedParameters(out_involvedParameters, false);
 	}
 }
 
-void ECellEngine::Maths::Operation::GetInvolvedComputedParameters(std::vector<std::string>& out_involvedComputedParameters, bool clearOutVector) const noexcept
+void ECellEngine::Maths::Operation::GetInvolvedEquations(std::vector<std::string>& out_involvedEquations, bool clearOutVector) const noexcept
 {
-	Operand::GetInvolvedComputedParameters(out_involvedComputedParameters, clearOutVector);
+	Operand::GetInvolvedEquations(out_involvedEquations, clearOutVector);
 
 	for (Operand* operand : operands)
 	{
-		operand->GetInvolvedComputedParameters(out_involvedComputedParameters, false);
+		operand->GetInvolvedEquations(out_involvedEquations, false);
 	}
 }
 

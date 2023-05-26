@@ -22,7 +22,7 @@ namespace ECellEngine::Maths
 		/*!
 		@brief Returns the operation (right hand side) of the equation.
 		*/
-		inline Operation& GetOperation() noexcept const
+		inline Operation& GetOperation() noexcept
 		{
 			return rhs;
 		}
@@ -31,7 +31,7 @@ namespace ECellEngine::Maths
 		@brief Returns the operand (left hand side) of the equation.
 		@details This is the operand that is being assigned to.
 		*/
-		inline const Operand* GetOperand() noexcept const
+		inline const Operand* GetOperand() const noexcept
 		{
 			return lhs;
 		}
@@ -39,7 +39,7 @@ namespace ECellEngine::Maths
 		/*
 		@brief Returns the value of the operand (left hand side) of the equation.
 		*/
-		inline const float Get() noexcept const
+		inline const float Get() const noexcept
 		{
 			return lhs->Get();
 		}
