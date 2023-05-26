@@ -1,19 +1,31 @@
 #pragma once
 
-#include <string>
-
 #include "Maths/Operand.hpp"
 
 namespace ECellEngine::Data
 {
-    struct Parameter : public ECellEngine::Maths::Operand
-    {
-        Parameter(const std::string _name) :
-            ECellEngine::Maths::Operand(_name)
-        {
+	struct Parameter : public ECellEngine::Maths::Operand
+	{
+	private:
+		float value;
 
-        }
+	public:
+		Parameter(const std::string _name, const float _value) :
+			ECellEngine::Maths::Operand{ _name }, value{ _value }
+		{
 
-        virtual float Get() const noexcept override = 0;
-    };
+		}
+
+		inline virtual float Get() const noexcept override
+		{
+			return value;
+		}
+
+		inline void Set(const float _value) noexcept override
+		{
+			value = _value;
+		}
+
+		void GetInvolvedSimpleParameters(std::vector<std::string>& out_involvedSimpleParameters, bool clearOutVector = true) const noexcept override;
+	};
 }

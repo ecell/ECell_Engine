@@ -10,7 +10,7 @@ add_library(ECellEngine SHARED
     "src/Core/Timer.cpp"
 
     "src/Data/Constant.cpp"
-    "src/Data/ComputedParameter.cpp"
+    
     "src/Data/DataState.cpp"
     "src/Data/DependenciesDatabase.cpp"
     "src/Data/Parameter.cpp"

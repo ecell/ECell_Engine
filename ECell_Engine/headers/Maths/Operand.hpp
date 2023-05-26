@@ -43,5 +43,7 @@ namespace ECellEngine::Maths
         @param clearOutVector Should the provided vector be cleared before filling.
         */
         virtual void GetInvolvedComputedParameters(std::vector<std::string>& out_involvedComputedParameters, bool clearOutVector = true) const noexcept;
+    
+        virtual void Set(const float _value) noexcept = 0;
     };
 }
