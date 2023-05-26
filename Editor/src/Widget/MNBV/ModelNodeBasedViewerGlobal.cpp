@@ -38,12 +38,12 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
         return;
     }
 
-    //Search in the list of Computed Parameter Nodes
-    std::vector<Utility::MNBV::ComputedParameterNodeData>::iterator itCPND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->computedParameterNodes.begin(), s_mnbvCtxt->computedParameterNodes.end(), _nodeId);
-    if (itCPND != s_mnbvCtxt->computedParameterNodes.end() && (std::size_t)itCPND->id == _nodeId)
+    //Search in the list of Equation Nodes
+    std::vector<Utility::MNBV::EquationNodeData>::iterator itCPND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->equationNodes.begin(), s_mnbvCtxt->equationNodes.end(), _nodeId);
+    if (itCPND != s_mnbvCtxt->equationNodes.end() && (std::size_t)itCPND->id == _nodeId)
     {
-        s_mnbvCtxt->computedParameterNodes.erase(itCPND);
-        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: ComputedParameterNodeData " + std::to_string(_nodeId));
+        s_mnbvCtxt->equationNodes.erase(itCPND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: EquationNodeData " + std::to_string(_nodeId));
         return;
     }
 
@@ -65,12 +65,12 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
         return;
     }
 
-    //Search in the list of Simple Parameter Nodes
-    std::vector<Utility::MNBV::SimpleParameterNodeData>::iterator itSPaND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->simpleParameterNodes.begin(), s_mnbvCtxt->simpleParameterNodes.end(), _nodeId);
-    if (itSPaND != s_mnbvCtxt->simpleParameterNodes.end() && (std::size_t)itSPaND->id == _nodeId)
+    //Search in the list of Parameter Nodes
+    std::vector<Utility::MNBV::ParameterNodeData>::iterator itSPaND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->parameterNodes.begin(), s_mnbvCtxt->parameterNodes.end(), _nodeId);
+    if (itSPaND != s_mnbvCtxt->parameterNodes.end() && (std::size_t)itSPaND->id == _nodeId)
     {
-        s_mnbvCtxt->simpleParameterNodes.erase(itSPaND);
-        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: SimpleParameterNodeData " + std::to_string(_nodeId));
+        s_mnbvCtxt->parameterNodes.erase(itSPaND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: ParameterNodeData " + std::to_string(_nodeId));
         return;
     }
 
@@ -128,8 +128,8 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
         return itND;
     }
 
-    //Search in the list of Computed Parameter Nodes
-    itND = FindNodeIn(_id, s_mnbvCtxt->computedParameterNodes.begin(), s_mnbvCtxt->computedParameterNodes.end());
+    //Search in the list of Equation Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->equationNodes.begin(), s_mnbvCtxt->equationNodes.end());
     if (itND != nullptr)
     {
         return itND;
@@ -149,8 +149,8 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
         return itND;
     }
 
-    //Search in the list of Simple Parameter Nodes
-    itND = FindNodeIn(_id, s_mnbvCtxt->simpleParameterNodes.begin(), s_mnbvCtxt->simpleParameterNodes.end());
+    //Search in the list of Parameter Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->parameterNodes.begin(), s_mnbvCtxt->parameterNodes.end());
     if (itND != nullptr)
     {
         return itND;
@@ -208,8 +208,8 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
         return itNPD;
     }
 
-    //Search in the list of Computed Parameter Nodes
-    itNPD = FindNodePinIn(_id, s_mnbvCtxt->computedParameterNodes.begin(), s_mnbvCtxt->computedParameterNodes.end());
+    //Search in the list of Equation Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->equationNodes.begin(), s_mnbvCtxt->equationNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;
@@ -229,8 +229,8 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
         return itNPD;
     }
 
-    //Search in the list of Simple Parameter Nodes
-    itNPD = FindNodePinIn(_id, s_mnbvCtxt->simpleParameterNodes.begin(), s_mnbvCtxt->simpleParameterNodes.end());
+    //Search in the list of Parameter Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->parameterNodes.begin(), s_mnbvCtxt->parameterNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;
