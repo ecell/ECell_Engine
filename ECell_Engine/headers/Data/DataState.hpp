@@ -16,7 +16,7 @@ namespace ECellEngine::Data
 	{
 	private:
 		float elapsedTime;
-		std::unordered_map<std::string, std::shared_ptr<ECellEngine::Maths::Equation>> equations;
+		std::unordered_map<std::string, std::shared_ptr<Maths::Equation>> equations;
 		std::unordered_map<std::string, std::shared_ptr<Reaction>> reactions;
 		std::unordered_map<std::string, std::shared_ptr<Parameter>> parameters;
 		std::unordered_map<std::string, std::shared_ptr<Species>> species;
@@ -30,12 +30,12 @@ namespace ECellEngine::Data
 		}
 
 
-		inline std::shared_ptr<Equation> GetEquation(const std::string& _equation) const
+		inline std::shared_ptr<Maths::Equation> GetEquation(const std::string& _equation) const
 		{
 			return equations.at(_equation);
 		}
 
-		inline const std::unordered_map<std::string, std::shared_ptr<Equation>>& GetEquations() const
+		inline const std::unordered_map<std::string, std::shared_ptr<Maths::Equation>>& GetEquations() const
 		{
 			return equations;
 		}
@@ -83,16 +83,16 @@ namespace ECellEngine::Data
 		}
 
 		inline bool AddReaction(const std::string& _reactionName,
-								const std::vector<std::string> _products,
-								const std::vector<std::string> _reactants,
-								const Operation _kineticLaw)
+			const std::vector<std::string> _products,
+			const std::vector<std::string> _reactants,
+			const Operation _kineticLaw)
 		{
 			return reactions.emplace(_reactionName, std::make_shared<Reaction>(_reactionName, _products, _reactants, _kineticLaw)).second;
 		}
-		
-		inline bool AddEquation(const Operand* _lhs, const Operation _rhs)
+
+		inline bool AddEquation(Operand* _lhs, Operation& _rhs)
 		{
-			return equations.emplace(_lhs->name, std::make_shared<Equation>(_lhs->name, _lhs, _rhs)).second;
+			return equations.emplace(_lhs->name, std::make_shared<Maths::Equation>(_lhs, _rhs)).second;
 		}
 
 		inline bool AddParameter(const std::string& _parameterName, const float _value)

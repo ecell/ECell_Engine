@@ -12,7 +12,7 @@ namespace ECellEngine::Maths
 
 	public:
 
-		Equation(Operand* _lhs, Operation _rhs) :
+		Equation(Operand* _lhs, Operation& _rhs) :
 			lhs{ _lhs }, rhs{ _rhs }
 		{
 

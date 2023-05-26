@@ -62,7 +62,7 @@ namespace ECellEngine::Data
 			return species[_idx];
 		}
 
-		inline void AddEquation(const Operand* _lhs, const Operation _rhs)
+		inline void AddEquation(Operand* _lhs, Operation& _rhs)
 		{
 			if (dataState.AddEquation(_lhs, _rhs))
 			{
