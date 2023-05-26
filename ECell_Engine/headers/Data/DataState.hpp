@@ -90,9 +90,9 @@ namespace ECellEngine::Data
 			return reactions.emplace(_reactionName, std::make_shared<Reaction>(_reactionName, _products, _reactants, _kineticLaw)).second;
 		}
 		
-		inline bool AddEquation(const std::string& _equation, const Operation _parameterOp)
+		inline bool AddEquation(const Operand* _lhs, const Operation _rhs)
 		{
-			return equations.emplace(_equation, std::make_shared<Equation>(_equation, _parameterOp)).second;
+			return equations.emplace(_lhs->name, std::make_shared<Equation>(_lhs->name, _lhs, _rhs)).second;
 		}
 
 		inline bool AddParameter(const std::string& _parameterName, const float _value)

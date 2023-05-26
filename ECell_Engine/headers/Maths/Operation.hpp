@@ -106,6 +106,17 @@ namespace ECellEngine::Maths
 		std::vector<Operand*> operands;
 
 	public:
+
+		Operation() : Operand() {}
+
+		Operation(const std::string _name) : 
+			Operand (_name)
+		{
+			constants.reserve(2);
+			operations.reserve(2);
+			operands.reserve(2);
+		}
+
 		/*!
 		@brief Copy Constructor.
 		@details The copy constructor must be specifically declared to maintain the
@@ -124,14 +135,26 @@ namespace ECellEngine::Maths
 			}
 		}
 
-		Operation(const std::string _name) : 
-			Operand (_name)
+		Operation& operator=(const Operation&& _op) noexcept
 		{
-			function = nullptr;
-			structure = 0;
-			constants.reserve(2);
-			operations.reserve(2);
-			operands.reserve(2);
+			if (this == &_op)
+			{
+				return *this;
+			}
+
+			name = _op.name;
+			structure = _op.structure;
+			function = _op.function;
+			constants = _op.constants;
+			operations = _op.operations;
+			operands = _op.operands;
+
+			if (operands.capacity() > 1)
+			{
+				UpdateOperands();
+			}
+
+			return *this;
 		}
 
 		/*!

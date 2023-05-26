@@ -62,11 +62,11 @@ namespace ECellEngine::Data
 			return species[_idx];
 		}
 
-		inline void AddEquation(const std::string _equationName, const Operation _parameterOp)
+		inline void AddEquation(const Operand* _lhs, const Operation _rhs)
 		{
-			if (dataState.AddEquation(_equationName, _parameterOp))
+			if (dataState.AddEquation(_lhs, _rhs))
 			{
-				equations.push_back(_equationName);
+				equations.push_back(_lhs->name);
 			}
 		}
 

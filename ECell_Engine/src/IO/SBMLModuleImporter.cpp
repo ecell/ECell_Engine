@@ -7,6 +7,8 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeEquations(ECellEngine::Data:
     unsigned int nbRules = _model->getNumRules();
     const LIBSBML_CPP_NAMESPACE::Rule* rule;
     const LIBSBML_CPP_NAMESPACE::ASTNode* astNode;
+    Operation root;
+    Operand* lhs;
     for (unsigned int i = 0; i < nbRules; i++)
     {
         //std::cout << std::endl;
@@ -17,16 +19,24 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeEquations(ECellEngine::Data:
         //operation directly with the root node.
         if (astNode->getType() == ASTNodeType_t::AST_NAME)
         {
-            Operation root = Operation(rule->getVariable());
+            root = Operation(rule->getVariable());
             root.Set(&functions.identity);
             root.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(astNode->getName())->second));
-            _sbmlModule.AddEquation(rule->getVariable(), root);
         }
         else
         {
-            Operation root = ASTNodeToOperation(astNode, rule->getVariable(), _dataState, _docIdsToDataStateNames);
-            _sbmlModule.AddEquation(rule->getVariable(), root);
+            root = ASTNodeToOperation(astNode, rule->getVariable(), _dataState, _docIdsToDataStateNames);
         }
+        
+        if (rule->isParameter())
+        {
+            lhs = _dataState.GetParameter(rule->getVariable()).get();
+        }
+        else if (rule->isSpeciesConcentration())
+        {
+			lhs = _dataState.GetSpecies(rule->getVariable()).get();
+		}
+        _sbmlModule.AddEquation(lhs, root);
         _dataState.GetEquation(rule->getVariable())->Compute();
         _docIdsToDataStateNames[rule->getVariable()] = rule->getVariable();
     }

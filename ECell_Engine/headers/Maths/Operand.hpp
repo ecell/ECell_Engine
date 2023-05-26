@@ -8,7 +8,9 @@ namespace ECellEngine::Maths
 {
     struct Operand
     {
-        const std::string name;
+        std::string name;
+
+        Operand() = default;
 
         Operand(std::string _name) :
             name{_name}

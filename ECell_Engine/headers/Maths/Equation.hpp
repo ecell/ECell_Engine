@@ -11,20 +11,24 @@ namespace ECellEngine::Maths
 		Operation rhs;
 
 	public:
-		std::string name;
 
-		Equation(const std::string _name, Operand* _lhs, Operation _rhs) :
-			name{ _name }, lhs{ _lhs }, rhs{ _rhs }
+		Equation(Operand* _lhs, Operation _rhs) :
+			lhs{ _lhs }, rhs{ _rhs }
 		{
 
 		}
 
-		/*!
-		@brief Returns the operation (right hand side) of the equation.
+		/*
+		@brief Returns the value of the operand (left hand side) of the equation.
 		*/
-		inline Operation& GetOperation() noexcept
+		inline const float Get() const noexcept
 		{
-			return rhs;
+			return lhs->Get();
+		}
+
+		inline const std::string GetName() const noexcept
+		{
+			return lhs->name;
 		}
 
 		/*
@@ -36,12 +40,12 @@ namespace ECellEngine::Maths
 			return lhs;
 		}
 
-		/*
-		@brief Returns the value of the operand (left hand side) of the equation.
+		/*!
+		@brief Returns the operation (right hand side) of the equation.
 		*/
-		inline const float Get() const noexcept
+		inline Operation& GetOperation() noexcept
 		{
-			return lhs->Get();
+			return rhs;
 		}
 
 		/*
