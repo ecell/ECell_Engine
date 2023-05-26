@@ -31,14 +31,21 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeEquations(ECellEngine::Data:
         if (rule->isParameter())
         {
             lhs = _dataState.GetParameter(rule->getVariable()).get();
+            _sbmlModule.AddEquation(lhs, root);
+            _dataState.GetEquation(rule->getVariable())->Compute();
+            _docIdsToDataStateNames[rule->getVariable()] = rule->getVariable();
         }
         else if (rule->isSpeciesConcentration())
         {
 			lhs = _dataState.GetSpecies(rule->getVariable()).get();
+            _sbmlModule.AddEquation(lhs, root);
+            _dataState.GetEquation(rule->getVariable())->Compute();
+            _docIdsToDataStateNames[rule->getVariable()] = rule->getVariable();
 		}
-        _sbmlModule.AddEquation(lhs, root);
-        _dataState.GetEquation(rule->getVariable())->Compute();
-        _docIdsToDataStateNames[rule->getVariable()] = rule->getVariable();
+        else
+        {
+            ECellEngine::Logging::Logger::GetSingleton().LogError("Rule " + rule->getVariable() + " is neither a parameter nor a species concentration. This rule was skipped. Please, check that the variable name of this rule matches a parameter or species name.");
+        }
     }
 }
 
