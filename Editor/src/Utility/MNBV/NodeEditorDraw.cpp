@@ -46,24 +46,24 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _
         NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Species], startX, headerWidth, itemsWidth);
     }
 
-    // ----- String List Box and Pin to access the simple parameters of the asset -----
-    if (NodeCollapsingHeader_Out("Constant Parameters", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_SimpleParameters],
-        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrSimpleParameters,
+    // ----- String List Box and Pin to access the parameters of the asset -----
+    if (NodeCollapsingHeader_Out("Parameters", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_Parameters],
+        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrParameters,
         startX, headerWidth,
-        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrSimpleParameters], Widget::MNBV::GetPinColors(PinType_Parameter),
+        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrParameters], Widget::MNBV::GetPinColors(PinType_Parameter),
         ImVec2(itemsWidth, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_SimpleParameters], startX, headerWidth, itemsWidth);
+        NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Parameters], startX, headerWidth, itemsWidth);
     }
 
-    // ----- String List Box and Pin to access the computed parameters of the asset -----
-    if (NodeCollapsingHeader_Out("Computed Parameters", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_ComputedParameters],
-        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrComputedParameters,
+    // ----- String List Box and Pin to access the equations of the asset -----
+    if (NodeCollapsingHeader_Out("Equations", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_Equations],
+        _assetNodeInfo.utilityState, AssetNodeData::State_CollHdrEquations,
         startX, headerWidth,
-        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrComputedParameters], Widget::MNBV::GetPinColors(PinType_Parameter),
+        _assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrEquations], Widget::MNBV::GetPinColors(PinType_Parameter),
         ImVec2(itemsWidth, 0), false))
     {
-        NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_ComputedParameters], startX, headerWidth, itemsWidth);
+        NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Equations], startX, headerWidth, itemsWidth);
     }
 
     // ----- String List Box and Pin to access the reactions of the asset -----
@@ -81,96 +81,94 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _
 
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(const char* _name, EquationNodeData& _equationNodeInfo)
 {
-    PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Parameter));
-    ax::NodeEditor::BeginNode(_parameterNodeInfo.id);
+    PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Equation));
+    ax::NodeEditor::BeginNode(_equationNodeInfo.id);
 
-    const float headerWidth = NodeHeader("Computed Parameter:", _name, Widget::MNBV::GetNodeColors(NodeType_Parameter));
+    const float headerWidth = NodeHeader("Equation:", _name, Widget::MNBV::GetNodeColors(NodeType_Equation));
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
-    if (NodeCollapsingHeader_InOut("Model Links", _parameterNodeInfo.collapsingHeadersIds[ComputedParameterNodeData::CollapsingHeader_ModelLinks],
-        _parameterNodeInfo.utilityState, ComputedParameterNodeData::State_CollHdrModelLinks,
+    if (NodeCollapsingHeader_InOut("Model Links", _equationNodeInfo.collapsingHeadersIds[EquationNodeData::CollapsingHeader_ModelLinks],
+        _equationNodeInfo.utilityState, EquationNodeData::State_CollHdrModelLinks,
         startX, headerWidth,
-        _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_CollHdrModelLinks], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_CollHdrModelLinks], Widget::MNBV::GetPinColors(PinType_Default),
+        _equationNodeInfo.inputPins[EquationNodeData::InputPin_CollHdrModelLinks], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_CollHdrModelLinks], Widget::MNBV::GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0.f)))
     {
 
-        NodeText_In("Asset", startX, _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
+        NodeText_In("Asset", startX, _equationNodeInfo.inputPins[EquationNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
 
-        if (_parameterNodeInfo.computedParameterDep.size())
+        if (_equationNodeInfo.equationDep.size())
         {
-            if (NodeCollapsingHeader_InOut("In Computed Parameters", _parameterNodeInfo.collapsingHeadersIds[ComputedParameterNodeData::CollapsingHeader_ComputedParameters],
-                _parameterNodeInfo.utilityState, ComputedParameterNodeData::State_CollHdrComputedParameters,
+            if (NodeCollapsingHeader_InOut("In Equations", _equationNodeInfo.collapsingHeadersIds[EquationNodeData::CollapsingHeader_Equations],
+                _equationNodeInfo.utilityState, EquationNodeData::State_CollHdrEquations,
                 startX, headerWidth,
-                _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_CollHdrComputedParameters], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_CollHdrComputedParameters], Widget::MNBV::GetPinColors(PinType_Parameter),
+                _equationNodeInfo.inputPins[EquationNodeData::InputPin_CollHdrEquations], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_CollHdrEquations], Widget::MNBV::GetPinColors(PinType_Equation),
                 ImVec2(itemsWidth, 0.f), false))
             {
-            
-                NodeStringListBox(_parameterNodeInfo.nlbsDataCPDep, startX, headerWidth, itemsWidth);
+                NodeStringListBox(_equationNodeInfo.nlbsDataEqDep, startX, headerWidth, itemsWidth);
             }
         }
 
-        if (_parameterNodeInfo.reactionKLDep.size())
+        if (_equationNodeInfo.reactionKLDep.size())
         {
-            if (NodeCollapsingHeader_InOut("In Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[ComputedParameterNodeData::CollapsingHeader_KineticLaws],
-                _parameterNodeInfo.utilityState, ComputedParameterNodeData::State_CollHdrKineticLaws,
+            if (NodeCollapsingHeader_InOut("In Kinetic Laws", _equationNodeInfo.collapsingHeadersIds[EquationNodeData::CollapsingHeader_KineticLaws],
+                _equationNodeInfo.utilityState, EquationNodeData::State_CollHdrKineticLaws,
                 startX, headerWidth,
-                _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_CollHdrKineticLaws], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_CollHdrKineticLaws], Widget::MNBV::GetPinColors(PinType_Parameter),
+                _equationNodeInfo.inputPins[EquationNodeData::InputPin_CollHdrKineticLaws], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_CollHdrKineticLaws], Widget::MNBV::GetPinColors(PinType_Reaction),
                 ImVec2(itemsWidth, 0.f), false))
             {
-            
-                NodeStringListBox(_parameterNodeInfo.nlbsDataRKLDep, startX, headerWidth, itemsWidth);
+                NodeStringListBox(_equationNodeInfo.nlbsDataRKLDep, startX, headerWidth, itemsWidth);
             }
         }
     }
 
     NodeHorizontalSeparator(headerWidth);
 
-    if (NodeCollapsingHeader_InOut("Data Fields", _parameterNodeInfo.collapsingHeadersIds[ComputedParameterNodeData::CollapsingHeader_DataFields],
-        _parameterNodeInfo.utilityState, ComputedParameterNodeData::State_CollHdrDataFields,
+    if (NodeCollapsingHeader_InOut("Data Fields", _equationNodeInfo.collapsingHeadersIds[EquationNodeData::CollapsingHeader_DataFields],
+        _equationNodeInfo.utilityState, EquationNodeData::State_CollHdrDataFields,
         startX, headerWidth,
-        _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_CollHdrDataFields], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_CollHdrDataFields], Widget::MNBV::GetPinColors(PinType_Default),
+        _equationNodeInfo.inputPins[EquationNodeData::InputPin_CollHdrDataFields], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_CollHdrDataFields], Widget::MNBV::GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
 
-        if (NodeCollapsingHeader_InOut("Operands", _parameterNodeInfo.collapsingHeadersIds[ComputedParameterNodeData::CollapsingHeader_EquationOperands],
-            _parameterNodeInfo.utilityState, ComputedParameterNodeData::State_CollHdrEquationOperands,
+        if (NodeCollapsingHeader_InOut("Operands", _equationNodeInfo.collapsingHeadersIds[EquationNodeData::CollapsingHeader_EquationOperands],
+            _equationNodeInfo.utilityState, EquationNodeData::State_CollHdrEquationOperands,
             startX, headerWidth,
-            _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_CollHdrEquationOperands], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_CollHdrEquationOperands], Widget::MNBV::GetPinColors(PinType_Default),
+            _equationNodeInfo.inputPins[EquationNodeData::InputPin_CollHdrEquationOperands], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_CollHdrEquationOperands], Widget::MNBV::GetPinColors(PinType_Default),
             ImVec2(itemsWidth, 0.f)))
         {
-            if (_parameterNodeInfo.nlbsData[ComputedParameterNodeData::NodeListBoxString_SpeciesOperands].data->size())
+            if (_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_SpeciesOperands].data->size())
             {
                 const float spTextWidth = ImGui::CalcTextSize("Species").x;
                 NodeText_InOut("Species", spTextWidth, startX, headerWidth,
-                    _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_NLBSSpecies], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_NLBSSpecies], Widget::MNBV::GetPinColors(PinType_Species));
-                NodeStringListBox(_parameterNodeInfo.nlbsData[ComputedParameterNodeData::NodeListBoxString_SpeciesOperands], startX, headerWidth, itemsWidth);
+                    _equationNodeInfo.inputPins[EquationNodeData::InputPin_NLBSSpecies], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_NLBSSpecies], Widget::MNBV::GetPinColors(PinType_Species));
+                NodeStringListBox(_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_SpeciesOperands], startX, headerWidth, itemsWidth);
             }
 
-            if (_parameterNodeInfo.nlbsData[ComputedParameterNodeData::NodeListBoxString_SimpleParameterOperands].data->size())
+            if (_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_ParameterOperands].data->size())
             {
-                const float sparamTextWidth = ImGui::CalcTextSize("Simple Parameters").x;
-                NodeText_InOut("Simple Parameters", sparamTextWidth, startX, headerWidth,
-                    _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_NLBSSimpleParameters], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_NLBSSimpleParameters], Widget::MNBV::GetPinColors(PinType_Parameter));
-                NodeStringListBox(_parameterNodeInfo.nlbsData[ComputedParameterNodeData::NodeListBoxString_SimpleParameterOperands], startX, headerWidth, itemsWidth);
+                const float sparamTextWidth = ImGui::CalcTextSize("Parameters").x;
+                NodeText_InOut("Parameters", sparamTextWidth, startX, headerWidth,
+                    _equationNodeInfo.inputPins[EquationNodeData::InputPin_NLBSParameters], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_NLBSParameters], Widget::MNBV::GetPinColors(PinType_Parameter));
+                NodeStringListBox(_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_ParameterOperands], startX, headerWidth, itemsWidth);
             }
 
-            if (_parameterNodeInfo.nlbsData[ComputedParameterNodeData::NodeListBoxString_ComputedParameterOperands].data->size())
+            if (_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_EquationOperands].data->size())
             {
-                const float cparaTextWidth = ImGui::CalcTextSize("Computed Parameters").x;
-                NodeText_InOut("Computed Parameters", cparaTextWidth, startX, headerWidth,
-                    _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_NLBSComputedParameters], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_NLBSComputedParameters], Widget::MNBV::GetPinColors(PinType_Parameter));
-                NodeStringListBox(_parameterNodeInfo.nlbsData[ComputedParameterNodeData::NodeListBoxString_ComputedParameterOperands], startX, headerWidth, itemsWidth);
+                const float cparaTextWidth = ImGui::CalcTextSize("Equations").x;
+                NodeText_InOut("Equations", cparaTextWidth, startX, headerWidth,
+                    _equationNodeInfo.inputPins[EquationNodeData::InputPin_NLBSEquations], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_NLBSEquations], Widget::MNBV::GetPinColors(PinType_Equation));
+                NodeStringListBox(_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_EquationOperands], startX, headerWidth, itemsWidth);
             }
         }
 
         //const static float inputFieldWidth = headerWidth -  + ImGui::GetStyle().ItemSpacing.x; //100.0f is the default length for a field
-        float value = _parameterNodeInfo.data->Get();
-        NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &value,
+        float value = _equationNodeInfo.data->Get();
+        NodeInputFloat_InOut("Value", _equationNodeInfo.id.Get(), &value,
             itemsWidth, startX, headerWidth,
-            _parameterNodeInfo.inputPins[ComputedParameterNodeData::InputPin_ComputedParameterValue], _parameterNodeInfo.outputPins[ComputedParameterNodeData::OutputPin_ComputedParameterValue], Widget::MNBV::GetPinColors(PinType_ValueFloat),
+            _equationNodeInfo.inputPins[EquationNodeData::InputPin_EquationValue], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_EquationValue], Widget::MNBV::GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_ReadOnly);
     }
 
@@ -364,20 +362,20 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(const char
                 NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_SpeciesOperands], startX, headerWidth, itemsWidth);
             }
 
-            if (_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_SimpleParameterOperands].data->size())
+            if (_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_ParameterOperands].data->size())
             {
-                const float sparamTextWidth = ImGui::CalcTextSize("Simple Parameters").x;
-                NodeText_InOut("Simple Parameters", sparamTextWidth, startX, headerWidth,
-                    _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_NLBSSimpleParameters], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_NLBSSimpleParameters], Widget::MNBV::GetPinColors(PinType_Parameter));
-                NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_SimpleParameterOperands], startX, headerWidth, itemsWidth);
+                const float sparamTextWidth = ImGui::CalcTextSize("Parameters").x;
+                NodeText_InOut("Parameters", sparamTextWidth, startX, headerWidth,
+                    _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_NLBSParameters], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_NLBSParameters], Widget::MNBV::GetPinColors(PinType_Parameter));
+                NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_ParameterOperands], startX, headerWidth, itemsWidth);
             }
 
-            if (_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_ComputedParameterOperands].data->size())
+            if (_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_EquationOperands].data->size())
             {
-                const float cparaTextWidth = ImGui::CalcTextSize("Computed Parameters").x;
-                NodeText_InOut("Computed Parameters", cparaTextWidth, startX, headerWidth,
-                    _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_NLBSComputedParameters], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_NLBSComputedParameters], Widget::MNBV::GetPinColors(PinType_Parameter));
-                NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_ComputedParameterOperands], startX, headerWidth, itemsWidth);
+                const float cparaTextWidth = ImGui::CalcTextSize("Equations").x;
+                NodeText_InOut("Equations", cparaTextWidth, startX, headerWidth,
+                    _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_NLBSEquations], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_NLBSEquations], Widget::MNBV::GetPinColors(PinType_Equation));
+                NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_EquationOperands], startX, headerWidth, itemsWidth);
             }
         }
 
@@ -392,7 +390,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(const char
     PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const char* _name, ParameterNodeData& _parameterNodeInfo)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Parameter));
     ax::NodeEditor::BeginNode(_parameterNodeInfo.id);
@@ -401,32 +399,32 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SimpleParameterNode(con
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
-    if (NodeCollapsingHeader_InOut("Model Links", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_ModelLinks],
-        _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrModelLinks,
+    if (NodeCollapsingHeader_InOut("Model Links", _parameterNodeInfo.collapsingHeadersIds[ParameterNodeData::CollapsingHeader_ModelLinks],
+        _parameterNodeInfo.utilityState, ParameterNodeData::State_CollHdrModelLinks,
         startX, headerWidth,
-        _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrModelLinks], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrModelLinks], Widget::MNBV::GetPinColors(PinType_Default),
+        _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_CollHdrModelLinks], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_CollHdrModelLinks], Widget::MNBV::GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0.f)))
     {
 
-        NodeText_In("Asset", startX, _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
+        NodeText_In("Asset", startX, _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
 
-        if (_parameterNodeInfo.computedParameterDep.size())
+        if (_parameterNodeInfo.equationDep.size())
         {
-            if (NodeCollapsingHeader_InOut("In Computed Parameters", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_ComputedParameters],
-                _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrComputedParameters,
+            if (NodeCollapsingHeader_InOut("In Equations", _parameterNodeInfo.collapsingHeadersIds[ParameterNodeData::CollapsingHeader_Equations],
+                _parameterNodeInfo.utilityState, ParameterNodeData::State_CollHdrEquations,
                 startX, headerWidth,
-                _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrComputedParameters], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrComputedParameters], Widget::MNBV::GetPinColors(PinType_Parameter),
+                _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_CollHdrEquations], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_CollHdrEquations], Widget::MNBV::GetPinColors(PinType_Parameter),
                 ImVec2(itemsWidth, 0.f), false))
             {
-                NodeStringListBox(_parameterNodeInfo.nlbsDataCPDep, startX, headerWidth, itemsWidth);
+                NodeStringListBox(_parameterNodeInfo.nlbsDataEqDep, startX, headerWidth, itemsWidth);
             }
         }
         if (_parameterNodeInfo.reactionKLDep.size())
         {
-            if (NodeCollapsingHeader_InOut("In Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_KineticLaws],
-                _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrKineticLaws,
+            if (NodeCollapsingHeader_InOut("In Kinetic Laws", _parameterNodeInfo.collapsingHeadersIds[ParameterNodeData::CollapsingHeader_KineticLaws],
+                _parameterNodeInfo.utilityState, ParameterNodeData::State_CollHdrKineticLaws,
                 startX, headerWidth,
-                _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrKineticLaws], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrKineticLaws], Widget::MNBV::GetPinColors(PinType_Parameter),
+                _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_CollHdrKineticLaws], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_CollHdrKineticLaws], Widget::MNBV::GetPinColors(PinType_Parameter),
                 ImVec2(itemsWidth, 0.f), false))
             {
                 NodeStringListBox(_parameterNodeInfo.nlbsDataRKLDep, startX, headerWidth, itemsWidth);
@@ -436,16 +434,16 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SimpleParameterNode(con
 
     NodeHorizontalSeparator(headerWidth);
 
-    if (NodeCollapsingHeader_InOut("Data Fields", _parameterNodeInfo.collapsingHeadersIds[SimpleParameterNodeData::CollapsingHeader_DataFields],
-        _parameterNodeInfo.utilityState, SimpleParameterNodeData::State_CollHdrDataFields,
+    if (NodeCollapsingHeader_InOut("Data Fields", _parameterNodeInfo.collapsingHeadersIds[ParameterNodeData::CollapsingHeader_DataFields],
+        _parameterNodeInfo.utilityState, ParameterNodeData::State_CollHdrDataFields,
         startX, headerWidth,
-        _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_CollHdrDataFields], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_CollHdrDataFields], Widget::MNBV::GetPinColors(PinType_Default),
+        _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_CollHdrDataFields], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_CollHdrDataFields], Widget::MNBV::GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
         float value = _parameterNodeInfo.data->Get();
         if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &value,
             itemsWidth, startX, headerWidth,
-            _parameterNodeInfo.inputPins[SimpleParameterNodeData::InputPin_ParameterValue], _parameterNodeInfo.outputPins[SimpleParameterNodeData::OutputPin_ParameterValue], Widget::MNBV::GetPinColors(PinType_ValueFloat),
+            _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_ParameterValue], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_ParameterValue], Widget::MNBV::GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _parameterNodeInfo.data->Set(value);
@@ -514,16 +512,16 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
     {
         NodeText_In("Asset", startX, _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
 
-        if (_speciesNodeInfo.computedParameterDep.size())
+        if (_speciesNodeInfo.equationDep.size())
         {
-            if (NodeCollapsingHeader_InOut("In Computed Parameters", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_InComputedParameter],
-                _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrInComputedParameter,
+            if (NodeCollapsingHeader_InOut("In Equations", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_InEquation],
+                _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrInEquation,
                 startX, headerWidth,
-                _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrInComputedParameter], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrInComputedParameter], Widget::MNBV::GetPinColors(PinType_Parameter),
+                _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrInEquation], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrInEquation], Widget::MNBV::GetPinColors(PinType_Equation),
                 ImVec2(itemsWidth, 0.f), false))
             {
 
-                NodeStringListBox(_speciesNodeInfo.nlbsDataCPDep, startX, headerWidth, itemsWidth);
+                NodeStringListBox(_speciesNodeInfo.nlbsDataEqDep, startX, headerWidth, itemsWidth);
             }
         }
         

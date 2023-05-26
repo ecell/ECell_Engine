@@ -106,6 +106,17 @@ namespace ECellEngine::Maths
 		std::vector<Operand*> operands;
 
 	public:
+
+		Operation() : Operand() {}
+
+		Operation(const std::string _name) : 
+			Operand (_name)
+		{
+			constants.reserve(2);
+			operations.reserve(2);
+			operands.reserve(2);
+		}
+
 		/*!
 		@brief Copy Constructor.
 		@details The copy constructor must be specifically declared to maintain the
@@ -122,16 +133,6 @@ namespace ECellEngine::Maths
 			{
 				UpdateOperands();
 			}
-		}
-
-		Operation(const std::string _name) : 
-			Operand (_name)
-		{
-			function = nullptr;
-			structure = 0;
-			constants.reserve(2);
-			operations.reserve(2);
-			operands.reserve(2);
 		}
 
 		/*!
@@ -244,11 +245,11 @@ namespace ECellEngine::Maths
 			return (operands.size() + operations.size() + constants.size() >= 2);
 		}
 
+		void GetInvolvedEquations(std::vector<std::string>& out_involvedEquations, bool clearOutVector = true) const noexcept override;
+		
+		void GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
+		
 		void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
-
-		void GetInvolvedSimpleParameters(std::vector<std::string>& out_involvedSimpleParameters, bool clearOutVector = true) const noexcept override;
-
-		void GetInvolvedComputedParameters(std::vector<std::string>& out_involvedComputedParameters, bool clearOutVector = true) const noexcept override;
 
 		/*!
 		@brief Recursively pushes operands in ::operands and trims unsused
@@ -256,6 +257,15 @@ namespace ECellEngine::Maths
 		@details Uses ::PushOperands and ::ShrinkLocalOperands.
 		*/
 		void LinkLocalOperands();
+
+		/*!
+		@brief DO NOT USE for this class.
+		@details Does nothing; simply raises an error in the logger.
+		*/
+		inline virtual void Set(const float _value) noexcept
+		{
+			ECellEngine::Logging::Logger::GetSingleton().LogError("Operation::Set(const float _value) should not be used.");
+		};
 
 		/*!
 		@brief Sets the ::function that will be called when computing this

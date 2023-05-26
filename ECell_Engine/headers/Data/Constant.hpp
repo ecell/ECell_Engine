@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Logging/Logger.hpp"
 #include "Maths/Operand.hpp"
 
 namespace ECellEngine::Data
@@ -19,5 +20,14 @@ namespace ECellEngine::Data
         {
             return value;
         }
+
+        /*
+        @brief DO NOT USE for this class.
+        @details Does nothing; simply raises an error in the logger.
+		*/
+        inline void Set(const float _val) noexcept override
+        {
+            ECellEngine::Logging::Logger::GetSingleton().LogError("Operation::Set(const float _value) should not be used.");
+		}
     };
 }

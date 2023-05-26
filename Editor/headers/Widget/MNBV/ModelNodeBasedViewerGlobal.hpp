@@ -3,7 +3,7 @@
 #include "Data/BinaryOperatedVector.hpp"
 #include "IO/CommandsManager.hpp"
 #include "Core/Simulation.hpp"
-#include "Data/SBMLModule.hpp"
+#include "Data/BiochemicalModule.hpp"
 #include "Utility/MNBV/NodeEditorStyle.hpp"
 
 namespace ECellEngine::Editor::Utility::MNBV
@@ -233,6 +233,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 			return "NodeType_Asset";
 		case Utility::MNBV::NodeType_Data:
 			return "NodeType_Data";
+		case Utility::MNBV::NodeType_Equation:
+			return "NodeType_Equation";
 		case Utility::MNBV::NodeType_Parameter:
 			return "NodeType_Parameter";
 		case Utility::MNBV::NodeType_Reaction:
@@ -290,6 +292,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 			return "PinType_Default";
 		case Utility::MNBV::PinType_Asset:
 			return "PinType_Asset";
+		case Utility::MNBV::PinType_Equation:
+			return "PinType_Equation";
 		case Utility::MNBV::PinType_Parameter:
 			return "PinType_Parameter";
 		case Utility::MNBV::PinType_Reaction:

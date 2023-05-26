@@ -17,6 +17,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		NodeType_Asset,
 		NodeType_Data,
+		NodeType_Equation,
 		NodeType_Parameter,
 		NodeType_Reaction,
 		NodeType_Solver,
@@ -34,6 +35,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		PinType_Default,
 
 		PinType_Asset,
+		PinType_Equation,
 		PinType_Parameter,
 		PinType_Reaction,
 		PinType_Solver,
@@ -131,6 +133,14 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nodeColors[NodeType_Data][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Data][NodeColorType_HeaderHovered] = ImVec4(1.0f, 1.0f, 1.0f, 0.5f);
 
+			nodeColors[NodeType_Equation][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Equation][NodeColorType_Border] = ImVec4(1.0f, 1.0f, 1.0f, 1.f);
+			//nodeColors[NodeType_Equation][NodeColorType_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
+			//nodeColors[NodeType_Equation][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
+			nodeColors[NodeType_Equation][NodeColorType_HeaderBg] = ImVec4(1.0f, 1.0f, 1.0f, 0.25f);
+			nodeColors[NodeType_Equation][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Equation][NodeColorType_HeaderHovered] = ImVec4(1.0f, 1.0f, 1.0f, 0.5f);
+
 			nodeColors[NodeType_Parameter][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Parameter][NodeColorType_Border] = ImVec4(0.05f, 0.463f, 0.297f, 1.f);
 			//nodeColors[NodeType_Parameter][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
@@ -170,6 +180,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 			pinColors[PinType_Asset][PinColorType_BgActivated] = nodeColors[NodeType_Asset][NodeColorType_Border];
 			pinColors[PinType_Asset][PinColorType_BgInactivated] = nodeColors[NodeType_Asset][NodeColorType_Bg];
 			pinColors[PinType_Asset][PinColorType_Border] = nodeColors[NodeType_Asset][NodeColorType_Border];
+			
+			pinColors[PinType_Equation][PinColorType_BgActivated] = nodeColors[NodeType_Equation][NodeColorType_Border];
+			pinColors[PinType_Equation][PinColorType_BgInactivated] = nodeColors[NodeType_Equation][NodeColorType_Bg];
+			pinColors[PinType_Equation][PinColorType_Border] = nodeColors[NodeType_Equation][NodeColorType_Border];
 
 			pinColors[PinType_Parameter][PinColorType_BgActivated] = nodeColors[NodeType_Parameter][NodeColorType_Border];
 			pinColors[PinType_Parameter][PinColorType_BgInactivated] = nodeColors[NodeType_Parameter][NodeColorType_Bg];
