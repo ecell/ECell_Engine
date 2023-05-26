@@ -1,34 +1,34 @@
 #include "Data/DependenciesDatabase.hpp"
 
-void ECellEngine::Data::DependenciesDatabase::RefreshComputedParameterDependencies(const DataState& dataState, std::shared_ptr<ComputedParameter> computedParameter) noexcept
+void ECellEngine::Data::DependenciesDatabase::RefreshEquationDependencies(const DataState& dataState, std::shared_ptr<Maths::Equation> _equation) noexcept
 {
 	std::vector<std::string> dependencies;
 
-	//Resolve species -> computed parameter dependencies
-	computedParameter->GetInvolvedSpecies(dependencies, true);
+	//Resolve species -> equation dependencies
+	_equation->GetOperation().GetInvolvedSpecies(dependencies, true);
 	for (const std::string& species : dependencies)
 	{
 		SpeciesDependencies& dependencies = speciesDependencies[dataState.GetSpecies(species)];
 
-		dependencies.partOfComputedParameter.emplace_back(computedParameter);
+		dependencies.partOfEquation.emplace_back(_equation);
 	}
 
-	//Resolve simple parameter -> computed parameter dependencies
-	computedParameter->GetInvolvedSimpleParameters(dependencies, true);
-	for (const std::string& dependentSimpleParam : dependencies)
+	//Resolve parameter -> equation dependencies
+	_equation->GetOperation().GetInvolvedParameters(dependencies, true);
+	for (const std::string& dependentParam : dependencies)
 	{
-		ParameterDependencies& dependencies = simpleParameterDependencies[dataState.GetSimpleParameter(dependentSimpleParam)];
+		ParameterDependencies& dependencies = parameterDependencies[dataState.GetParameter(dependentParam)];
 
-		dependencies.partOfComputedParameter.emplace_back(computedParameter);
+		dependencies.partOfEquation.emplace_back(_equation);
 	}
 
-	//Resolve computed parameter -> computed parameter dependencies
-	computedParameter->GetInvolvedComputedParameters(dependencies, true);
-	for (const std::string& dependentComputedParam : dependencies)
+	//Resolve equation -> equation dependencies
+	_equation->GetOperation().GetInvolvedEquations(dependencies, true);
+	for (const std::string& dependentEquation : dependencies)
 	{
-		ParameterDependencies& dependencies = computedParameterDependencies[dataState.GetComputedParameter(dependentComputedParam)];
+		ParameterDependencies& dependencies = equationDependencies[dataState.GetEquation(dependentEquation)];
 
-		dependencies.partOfComputedParameter.emplace_back(computedParameter);
+		dependencies.partOfEquation.emplace_back(_equation);
 	}
 }
 
@@ -63,20 +63,20 @@ void ECellEngine::Data::DependenciesDatabase::RefreshReactionDependencies(const 
 		dependencies.partOfReactionKineticLaw.emplace_back(reaction);
 	}
 
-	//Resolve simple parameter -> kinetic law dependencies
-	reaction->GetKineticLaw().GetInvolvedSimpleParameters(kineticLawDependencies, true);
-	for (const std::string& dependentSimpleParam : kineticLawDependencies)
+	//Resolve parameter -> kinetic law dependencies
+	reaction->GetKineticLaw().GetInvolvedParameters(kineticLawDependencies, true);
+	for (const std::string& dependentParam : kineticLawDependencies)
 	{
-		ParameterDependencies& dependencies = simpleParameterDependencies[dataState.GetSimpleParameter(dependentSimpleParam)];
+		ParameterDependencies& dependencies = parameterDependencies[dataState.GetParameter(dependentParam)];
 
 		dependencies.partOfReactionKineticLaw.emplace_back(reaction);
 	}
 
-	//Resolve computed parameter -> kinetic law dependencies
-	reaction->GetKineticLaw().GetInvolvedComputedParameters(kineticLawDependencies, true);
-	for (const std::string& dependentComputedParam : kineticLawDependencies)
+	//Resolve equation -> kinetic law dependencies
+	reaction->GetKineticLaw().GetInvolvedEquations(kineticLawDependencies, true);
+	for (const std::string& dependentEquation : kineticLawDependencies)
 	{
-		ParameterDependencies& dependencies = computedParameterDependencies[dataState.GetComputedParameter(dependentComputedParam)];
+		ParameterDependencies& dependencies = equationDependencies[dataState.GetEquation(dependentEquation)];
 
 		dependencies.partOfReactionKineticLaw.emplace_back(reaction);
 	}
@@ -85,8 +85,8 @@ void ECellEngine::Data::DependenciesDatabase::RefreshReactionDependencies(const 
 void ECellEngine::Data::DependenciesDatabase::RefreshDependencies(const DataState& dataState) noexcept
 {
 	speciesDependencies.clear();
-	simpleParameterDependencies.clear();
-	computedParameterDependencies.clear();
+	parameterDependencies.clear();
+	equationDependencies.clear();
 
 	//Refresh reaction dependencies (products, reactants and kinetic laws)
 	for (auto [reactionName, reaction] : dataState.GetReactions())
@@ -94,10 +94,10 @@ void ECellEngine::Data::DependenciesDatabase::RefreshDependencies(const DataStat
 		RefreshReactionDependencies(dataState, reaction);
 	}
 
-	//Refresh computed parameters dependencies
+	//Refresh equations dependencies
 	std::vector<std::string> computedParamInvolvedSpecies;
-	for (auto [computedParamName, computedParam] : dataState.GetComputedParameters())
+	for (auto [computedParamName, computedParam] : dataState.GetEquations())
 	{
-		RefreshComputedParameterDependencies(dataState, computedParam);
+		RefreshEquationDependencies(dataState, computedParam);
 	}
 }

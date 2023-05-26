@@ -89,12 +89,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo);
 
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ComputedParameterNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::EquationNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _parameterNodeInfo The struct with information about what to draw.
+		@param _equationNodeInfo The struct with information about what to draw.
 		*/
-		static void ComputedParameterNode(const char* _name, ComputedParameterNodeData& _parameterNodeInfo);
+		static void EquationNode(const char* _name, EquationNodeData& _equationNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::LinePlotNodeData.
@@ -113,20 +113,20 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo);
 
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SimpleParameterNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ParameterNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
 		@param _parameterNodeInfo The struct with information about what to draw.
 		*/
-		static void SimpleParameterNode(const char* _name, SimpleParameterNodeData& _parameterNodeInfo);
+		static void ParameterNode(const char* _name, ParameterNodeData& _parameterNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _parameterNodeInfo The struct with information about what to draw.
+		@param _simulationTimeNodeInfo The struct with information about what to draw.
 		*/
-		static void SimulationTimeNode(const char* _name, SimulationTimeNodeData& _parameterNodeInfo);
+		static void SimulationTimeNode(const char* _name, SimulationTimeNodeData& _simulationTimeNodeInfo);
 		
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SolverNodeData.

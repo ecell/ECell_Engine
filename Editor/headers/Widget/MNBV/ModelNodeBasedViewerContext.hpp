@@ -42,12 +42,12 @@ namespace ECellEngine::Editor::Widget::MNBV
 		std::vector<Utility::MNBV::AssetNodeData> assetNodes;
 
 		/*!
-		@brief The list of computed parameter nodes in this context.
+		@brief The list of equation nodes in this context.
 		@details It contains the information used to draw the nodes corresponding
-				 to each computed parameter of various assets imported in the current
+				 to each equation of various assets imported in the current
 				 simulation space.
 		*/
-		std::vector<Utility::MNBV::ComputedParameterNodeData> computedParameterNodes;
+		std::vector<Utility::MNBV::EquationNodeData> equationNodes;
 
 		/*!
 		@brief The list of nodes handling line plots in this context.
@@ -66,12 +66,12 @@ namespace ECellEngine::Editor::Widget::MNBV
 		std::vector<Utility::MNBV::ReactionNodeData> reactionNodes;
 
 		/*!
-		@brief The list of simple parameter nodes in this context.
+		@brief The list of parameter nodes in this context.
 		@details It contains the information used to draw the nodes corresponding
-				 to each simple parameter of various assets imported in the current
+				 to each parameter of various assets imported in the current
 				 simulation space.
 		*/
-		std::vector<Utility::MNBV::SimpleParameterNodeData> simpleParameterNodes;
+		std::vector<Utility::MNBV::ParameterNodeData> parameterNodes;
 		
 		/*!
 		@brief The list of simulation time nodes.

@@ -23,21 +23,21 @@ namespace ECellEngine::Data
 			return quantity;
 		}
 
-		inline void Set(const float& _val)
+		void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
+		
+		inline virtual void Set(const float _val) noexcept override
 		{
 			quantity = _val;
 		}
 
-		inline void Increment(const float& _inc)
+		inline void Increment(const float _inc)
 		{
 			quantity += _inc;
 		}
 
-		inline void Decrement(const float& _dec)
+		inline void Decrement(const float _dec)
 		{
 			quantity -= _dec;
 		}
-
-		void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
 	};
 }
