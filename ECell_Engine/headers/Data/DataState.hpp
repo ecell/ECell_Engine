@@ -5,10 +5,10 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Data/ComputedParameter.hpp"
 #include "Data/Reaction.hpp"
-#include "Data/SimpleParameter.hpp"
+#include "Data/Parameter.hpp"
 #include "Data/Species.hpp"
+#include "Maths/Equation.hpp"
 
 namespace ECellEngine::Data
 {
@@ -16,9 +16,9 @@ namespace ECellEngine::Data
 	{
 	private:
 		float elapsedTime;
+		std::unordered_map<std::string, std::shared_ptr<ECellEngine::Maths::Equation>> equations;
 		std::unordered_map<std::string, std::shared_ptr<Reaction>> reactions;
-		std::unordered_map<std::string, std::shared_ptr<ComputedParameter>> computedParameters;
-		std::unordered_map<std::string, std::shared_ptr<SimpleParameter>> simpleParameters;
+		std::unordered_map<std::string, std::shared_ptr<Parameter>> parameters;
 		std::unordered_map<std::string, std::shared_ptr<Species>> species;
 
 		std::unordered_multimap<std::string, std::string> operandsToOperations;
@@ -30,14 +30,14 @@ namespace ECellEngine::Data
 		}
 
 
-		inline std::shared_ptr<ComputedParameter> GetComputedParameter(const std::string& _parameterName) const
+		inline std::shared_ptr<Equation> GetEquation(const std::string& _equation) const
 		{
-			return computedParameters.at(_parameterName);
+			return equations.at(_equation);
 		}
 
-		inline const std::unordered_map<std::string, std::shared_ptr<ComputedParameter>>& GetComputedParameters() const
+		inline const std::unordered_map<std::string, std::shared_ptr<Equation>>& GetEquations() const
 		{
-			return computedParameters;
+			return equations;
 		}
 
 		inline float GetElapsedTime() const
@@ -62,14 +62,14 @@ namespace ECellEngine::Data
 			return reactions;
 		}
 
-		inline std::shared_ptr<SimpleParameter> GetSimpleParameter(const std::string& _parameterName) const
+		inline std::shared_ptr<Parameter> GetParameter(const std::string& _parameterName) const
 		{
-			return simpleParameters.at(_parameterName);
+			return parameters.at(_parameterName);
 		}
 
-		inline const std::unordered_map<std::string, std::shared_ptr<SimpleParameter>>& GetSimpleParameters() const
+		inline const std::unordered_map<std::string, std::shared_ptr<Parameter>>& GetParameters() const
 		{
-			return simpleParameters;
+			return parameters;
 		}
 
 		inline std::shared_ptr<Species> GetSpecies(const std::string& _speciesName) const
@@ -90,14 +90,14 @@ namespace ECellEngine::Data
 			return reactions.emplace(_reactionName, std::make_shared<Reaction>(_reactionName, _products, _reactants, _kineticLaw)).second;
 		}
 		
-		inline bool AddComputedParameter(const std::string& _parameterName, const Operation _parameterOp)
+		inline bool AddEquation(const std::string& _equation, const Operation _parameterOp)
 		{
-			return computedParameters.emplace(_parameterName, std::make_shared<ComputedParameter>(_parameterName, _parameterOp)).second;
+			return equations.emplace(_equation, std::make_shared<Equation>(_equation, _parameterOp)).second;
 		}
 
-		inline bool AddSimpleParameter(const std::string& _parameterName, const float _value)
+		inline bool AddParameter(const std::string& _parameterName, const float _value)
 		{
-			return simpleParameters.emplace(_parameterName, std::make_shared<SimpleParameter>(_parameterName, _value)).second;
+			return parameters.emplace(_parameterName, std::make_shared<Parameter>(_parameterName, _value)).second;
 		}
 		
 		inline bool AddSpecies(const std::string& _speciesName, const float _quantity)
@@ -112,9 +112,9 @@ namespace ECellEngine::Data
 
 		void ClearReactions(const std::vector<std::string>& _reactionNames);
 		
-		void ClearComputedParameters(const std::vector<std::string>& _parameterNames);
+		void ClearEquations(const std::vector<std::string>& _equations);
 		
-		void ClearSimpleParameters(const std::vector<std::string>& _parameterNames);
+		void ClearParameters(const std::vector<std::string>& _parameterNames);
 		
 		void ClearSpecies(const std::vector<std::string>& _speciesNames);
 
