@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Core/Watcher.hpp"
 #include "Data/Reaction.hpp"
 #include "Data/Parameter.hpp"
 #include "Data/Species.hpp"
@@ -22,6 +23,8 @@ namespace ECellEngine::Data
 		std::unordered_map<std::string, std::shared_ptr<Species>> species;
 
 		std::unordered_multimap<std::string, std::string> operandsToOperations;
+
+		std::vector<std::shared_ptr<Core::Watcher>> watchers;
 
 	public:
 		DataState()
@@ -103,6 +106,11 @@ namespace ECellEngine::Data
 		inline bool AddSpecies(const std::string& _speciesName, const float _quantity)
 		{
 			return species.emplace(_speciesName, std::make_shared<Species>(_speciesName, _quantity)).second;
+		}
+
+		inline std::shared_ptr<Core::Watcher> AddWatcher() noexcept
+		{
+			return watchers.emplace_back();
 		}
 
 		inline void SetElapsedTime(const float _elapsedTime)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "Core/Simulation.hpp"
 
 namespace ECellEngine::Core
