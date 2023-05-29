@@ -138,5 +138,5 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::Draw()
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::SetSimulation(std::size_t _simulationIndex)
 {
-	simulation = editor.engine.GetSimulationsManager()->GetSimulation(_simulationIndex);
+	simulation = ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(_simulationIndex);
 }

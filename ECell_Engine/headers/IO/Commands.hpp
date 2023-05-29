@@ -211,10 +211,10 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user add a module in a simulation.
 	*/
-	class AddModuleCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	class AddModuleCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager&>
 	{
 	public:
-		AddModuleCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+		AddModuleCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			CommandWithReceiver("addModule", _receiver)
 		{
 		}
@@ -232,10 +232,10 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user add a solver in a simulation.
 	*/
-	class AddSolverCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	class AddSolverCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager&>
 	{
 	public:
-		AddSolverCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+		AddSolverCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			CommandWithReceiver("addSolver", _receiver)
 		{
 		}
@@ -253,10 +253,10 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user pause a simulation.
 	*/
-	class PauseSimulationCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	class PauseSimulationCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager&>
 	{
 	public:
-		PauseSimulationCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+		PauseSimulationCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			CommandWithReceiver("pauseSimulation", _receiver)
 		{
 		}
@@ -274,10 +274,10 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user start (play) a simulation.
 	*/
-	class PlaySimulationCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	class PlaySimulationCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager&>
 	{
 	public:
-		PlaySimulationCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+		PlaySimulationCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			CommandWithReceiver("playSimulation", _receiver)
 		{
 		}
@@ -295,10 +295,10 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user run one step of a simulation backward.
 	*/
-	class StepSimulationBackwardCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	class StepSimulationBackwardCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager&>
 	{
 	public:
-		StepSimulationBackwardCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+		StepSimulationBackwardCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			CommandWithReceiver("stepSimulationBackward", _receiver)
 		{
 		}
@@ -316,10 +316,10 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user run one step of a simulation forward.
 	*/
-	class StepSimulationForwardCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	class StepSimulationForwardCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager&>
 	{
 	public:
-		StepSimulationForwardCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+		StepSimulationForwardCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			CommandWithReceiver("stepSimulationForward", _receiver)
 		{
 		}
@@ -337,10 +337,10 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user stop a simulation.
 	*/
-	class StopSimulationCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	class StopSimulationCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager&>
 	{
 	public:
-		StopSimulationCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+		StopSimulationCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			CommandWithReceiver("stopSimulation", _receiver)
 		{
 		}
@@ -358,10 +358,10 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user bind a solver to a module in a simulation.
 	*/
-	class TryAttachSolverToModuleCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager>
+	class TryAttachSolverToModuleCommand : public CommandWithReceiver<ECellEngine::Core::SimulationsManager&>
 	{
 	public:
-		TryAttachSolverToModuleCommand(ECellEngine::Core::SimulationsManager* _receiver) :
+		TryAttachSolverToModuleCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			CommandWithReceiver("tryAttachSolver", _receiver)
 		{
 		}

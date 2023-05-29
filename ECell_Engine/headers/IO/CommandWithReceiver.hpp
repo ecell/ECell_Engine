@@ -11,9 +11,9 @@ namespace ECellEngine::IO
 	class CommandWithReceiver : public Command
 	{
 	protected:
-		ReceiverType* receiver;
+		ReceiverType receiver;
 
-		CommandWithReceiver(char const* _commandName, ReceiverType* _receiver) :
+		CommandWithReceiver(char const* _commandName, ReceiverType _receiver) :
 			Command(_commandName), receiver(_receiver)
 		{
 		}

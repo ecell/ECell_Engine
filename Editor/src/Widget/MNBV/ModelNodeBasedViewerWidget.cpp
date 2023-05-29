@@ -66,7 +66,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
         //the simulation space.
         HandleSimuDataRefDrop();
 
-        CurrentMNBVContextDraw(editor.engine.GetSimulationsManager()->GetSimulation(0));
+        CurrentMNBVContextDraw(ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0));
 
         SendEngineTASToMCmd("0", editor.engine.GetCommandsManager());
 
@@ -87,14 +87,14 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::HandleSimuDa
         {
             IM_ASSERT(payload->DataSize == sizeof(std::size_t));
             const std::size_t dataIdx = *(const std::size_t*)payload->Data;
-            AddAssetNode(editor.engine.GetSimulationsManager()->GetSimulation(0)->GetModule(dataIdx).get());
+            AddAssetNode(ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetModule(dataIdx).get());
         }
 
-        if(const ImGuiPayload * payload = ImGui::AcceptDragDropPayload("DND_SOLVER"))
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_SOLVER"))
         {
             IM_ASSERT(payload->DataSize == sizeof(std::size_t));
             const std::size_t dataIdx = *(const std::size_t*)payload->Data;
-            AddSolverNode(editor.engine.GetSimulationsManager()->GetSimulation(0)->GetSolver(dataIdx).get());
+            AddSolverNode(ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetSolver(dataIdx).get());
         }
 
         ImGui::EndDragDropTarget();

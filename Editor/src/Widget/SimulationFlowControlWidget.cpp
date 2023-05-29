@@ -102,5 +102,5 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::Draw()
 void ECellEngine::Editor::Widget::SimulationFlowControlWidget::SetSimulation(std::size_t _simuIdx)
 {
     std::to_chars(simuIdxAsChar, simuIdxAsChar + 8, _simuIdx);
-    simulation = editor.engine.GetSimulationsManager()->GetSimulation(_simuIdx);
+    simulation = ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(_simuIdx);
 }

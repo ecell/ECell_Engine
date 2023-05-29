@@ -35,6 +35,6 @@ namespace ECellEngine::Core::Events
 		float newValue;
 
 	public:
-		virtual void Execute(ECellEngine::Core::SimulationsManager& simulationsManager, std::size_t targetSimulationIndex) noexcept override;
+		virtual void Execute(std::size_t targetSimulationIndex) noexcept override;
 	};
 }

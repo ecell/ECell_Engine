@@ -4,7 +4,7 @@
 
 namespace ECellEngine::Core
 {
-	class SimulationsManager;
+	//class SimulationsManager;
 
 	namespace Events
 	{
@@ -20,10 +20,9 @@ namespace ECellEngine::Core
 			/*!
 			@brief Execute the callback.
 
-			@param _simulationsManager Engine simulation manager.
 			@param _targetSimulationIndex Index of the simulation containing this event in the simulation manager.
 			*/
-			virtual void Execute(ECellEngine::Core::SimulationsManager& _simulationsManager, std::size_t _targetSimulationIndex) noexcept = 0;
+			virtual void Execute(std::size_t _targetSimulationIndex) noexcept = 0;
 		};
 	}
 }

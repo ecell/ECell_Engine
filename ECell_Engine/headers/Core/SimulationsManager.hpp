@@ -25,6 +25,8 @@ namespace ECellEngine::Core
 
 	public:
 
+		static SimulationsManager& GetSingleton() noexcept;
+
 		/*!
 		@brief Gets the number of simulation in ::simulations.
 		*/
