@@ -4,14 +4,9 @@
 #include <memory> //for std::shared_ptr
 #include <vector> //for std::vector<>
 
-#include "Data/Module.hpp"
 #include "Data/DependenciesDatabase.hpp"
 #include "IO/ModuleImporterManager.hpp"
-
-#include "Solver/Solver.hpp"
 #include "Solver/GillespieNRMRSolver.hpp"
-
-#include "Core/Timer.hpp"
 
 using namespace ECellEngine::IO;
 using namespace ECellEngine::Solvers;
