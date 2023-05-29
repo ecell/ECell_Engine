@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.12)
 
 # Add ECell_Engine source files
 add_library(ECellEngine SHARED
-    
+    "src/Core/Engine.cpp"
     "src/Core/Simulation.cpp"
     "src/Core/SimulationsManager.cpp"
     "src/Core/Timer.cpp"
