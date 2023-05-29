@@ -7,7 +7,7 @@
 namespace ECellEngine::Core::Events
 {
 	/*!
-	@brief Class used to execute arbitrary code (callback).
+	@brief An event to modify a value of in an instance of ECellEngine::Data::DataState (callback).
 	*/
 	class ModifyDataStateValueEvent : public Event
 	{

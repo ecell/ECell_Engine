@@ -7,6 +7,10 @@
 
 namespace ECellEngine::Core
 {
+	/*!
+	@brief Class that can be used to watch a condition and trigger events when
+			this condition is fulfilled.
+	*/
 	class Watcher
 	{
 	public:
@@ -22,7 +26,8 @@ namespace ECellEngine::Core
 
 	private:
 		/*!
-		@brief Collection of events that should be triggered when the condition held by this watcher is fulfilled.
+		@brief Collection of events that should be triggered when the condition
+				held by this watcher is fulfilled.
 		*/
 		std::vector<std::shared_ptr<Events::Event>> triggeredEvents;
 
@@ -55,14 +60,14 @@ namespace ECellEngine::Core
 		/*!
 		@brief Add an event to the list of internal events for this watcher.
 		*/
-		void AddEvent(std::shared_ptr<Events::Event> event) noexcept;
+		void AddEvent(std::shared_ptr<Events::Event> _event) noexcept;
 
 		/*!
 		@brief Remove an event from the list of internal events for this watcher.
 
 		@return true if an event was removed, else false.
 		*/
-		bool RemoveEvent(std::shared_ptr<Events::Event> event) noexcept;
+		bool RemoveEvent(std::shared_ptr<Events::Event> _event) noexcept;
 
 		/*!
 		@brief Get the list of all events contained in this watcher.

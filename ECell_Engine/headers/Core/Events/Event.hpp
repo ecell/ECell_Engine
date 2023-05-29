@@ -20,10 +20,10 @@ namespace ECellEngine::Core
 			/*!
 			@brief Execute the callback.
 
-			@param simulationsManager Engine simulation manager.
-			@param targetSimulationIndex Index of the simulation containing this event in the simulation manager.
+			@param _simulationsManager Engine simulation manager.
+			@param _targetSimulationIndex Index of the simulation containing this event in the simulation manager.
 			*/
-			virtual void Execute(ECellEngine::Core::SimulationsManager& simulationsManager, std::size_t targetSimulationIndex) noexcept = 0;
+			virtual void Execute(ECellEngine::Core::SimulationsManager& _simulationsManager, std::size_t _targetSimulationIndex) noexcept = 0;
 		};
 	}
 }

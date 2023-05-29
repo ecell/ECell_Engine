@@ -2,16 +2,16 @@
 
 #include "Core/SimulationsManager.hpp"
 
-void ECellEngine::Core::Events::ModifyDataStateValueEvent::Execute(ECellEngine::Core::SimulationsManager& simulationManager, std::size_t targetSimulationIndex) noexcept
+void ECellEngine::Core::Events::ModifyDataStateValueEvent::Execute(ECellEngine::Core::SimulationsManager& _simulationManager, std::size_t _targetSimulationIndex) noexcept
 {
 	switch (valueType)
 	{
 		case DataStateValueType::Species:
-			simulationManager.GetSimulation(targetSimulationIndex)->GetDataState()->GetSpecies(dataStateValueId)->Set(newValue);
+			_simulationManager.GetSimulation(_targetSimulationIndex)->GetDataState()->GetSpecies(dataStateValueId)->Set(newValue);
 			break;
 
 		case DataStateValueType::Parameter:
-			simulationManager.GetSimulation(targetSimulationIndex)->GetDataState()->GetParameter(dataStateValueId)->Set(newValue);
+			_simulationManager.GetSimulation(_targetSimulationIndex)->GetDataState()->GetParameter(dataStateValueId)->Set(newValue);
 			break;
 	}
 }
