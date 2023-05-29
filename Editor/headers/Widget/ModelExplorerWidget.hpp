@@ -9,9 +9,8 @@
 #include <string>
 #include <vector>
 
-#include "Data/DataState.hpp"
 #include "Logging/Logger.hpp"
-#include "ModelHierarchyWidget.hpp"
+#include "Widget/ModelHierarchyWidget.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerWidget.hpp"
 

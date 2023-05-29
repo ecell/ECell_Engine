@@ -8,14 +8,9 @@
 #include "implot.h"
 
 #include "Core/Engine.hpp"
-#include "Logging/Logger.hpp"
 #include "Logging/ExeConsoleLoggerSink.hpp"
 #include "Utility/BackendUtility.hpp"
-#include "Widget/ConsoleWidget.hpp"
-#include "Widget/MainWindow.hpp"
-#include "Widget/ModelExplorerWidget.hpp"
-#include "Widget/OptionsWidget.hpp"
-#include "Widget/SimulationFlowControlWidget.hpp"
+#include "Widget/Widget.hpp"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -23,8 +18,6 @@
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
-
-using namespace ECellEngine::Core;
 
 namespace ECellEngine::Editor
 {
@@ -68,22 +61,11 @@ namespace ECellEngine::Editor
 		void RecreateFontAtlas();
 
 	public:
-		Engine engine; /*!< ECellEngine instance. The heart of the simulation.*/
+		ECellEngine::Core::Engine engine; /*!< ECellEngine instance. The heart of the simulation.*/
 		
 		bool showDemoWindow; /*!< For debug & dev. Shows the demo windows of ImGui and ImPlot.*/
 
-		Editor()
-		{
-			ECellEngine::Logging::Logger::GetSingleton().AddSink(&exeLoggerSink);
-
-			AddWidget<Widget::MainWindow>();
-			AddWidget<Widget::ConsoleWidget>();
-			AddWidget<Widget::OptionsWidget>();
-			AddWidget<Widget::SimulationFlowControlWidget>();
-			AddWidget<Widget::ModelExplorerWidget>();
-
-			showDemoWindow = false;
-		}
+		Editor();
 
 		/*!
 		@brief Opens a new window in the editor.
