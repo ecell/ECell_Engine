@@ -19,7 +19,7 @@ const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::weak_
 
 #pragma endregion
 
-void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, char* _data)
+void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputUpdate(NodeInputPinData& _nodeInputPin, char* _data)
 {
 	//The node input pin representing the solver attached to this asset.
 	if (_nodeInputPin == inputPins[AssetNodeData::InputPin_Solver])
@@ -40,17 +40,20 @@ void ECellEngine::Editor::Utility::MNBV::AssetNodeData::ResetNLBSDUtilityStates(
 	nlbsData[NodeListBoxString_Reactions].ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData& _nodeOutputPin)
 {
 	//Computed parameter operation value
 	if (_nodeOutputPin == outputPins[EquationNodeData::OutputPin_EquationValue])
 	{
+		//this pin uses the local subscriber list
+		_nodeOutputPin.subscribers.push_back(_nodeInputPinData);
+
 		//we set the input pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[EquationNodeData::CollapsingHeader_EquationOperands].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputUpdate(NodeOutputPinData& _nodeOutputPin)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("EquationNodeData::OutputUpdate");
 }
@@ -64,7 +67,7 @@ void ECellEngine::Editor::Utility::MNBV::EquationNodeData::ResetNLBSDUtilityStat
 	nlbsData[NodeListBoxString_SpeciesOperands].ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
+void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInputPinData& _nodeInputPin)
 {
 	//X axis input pin
 	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_XAxis])
@@ -81,7 +84,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(const No
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
+void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputUpdate(NodeInputPinData& _nodeInputPin, float _data)
 {
 	//The node input pin corresponding to the X Axis data
 	if (_nodeInputPin == inputPins[LinePlotNodeData::InputPin_XAxis])
@@ -110,17 +113,20 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputUpdate(const Nod
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData& _nodeOutputPin)
 {
 	//Reaction kinetic law value
 	if (_nodeOutputPin == outputPins[ReactionNodeData::OutputPin_KineticLawValue])
 	{
+		//this pin uses the local subscriber list
+		_nodeOutputPin.subscribers.push_back(_nodeInputPinData);
+
 		//we set the input pin of the kinetic law collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[OutputPin_CollHdrKineticLaw].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputUpdate(NodeOutputPinData& _nodeOutputPin)
 {
 
 }
@@ -134,7 +140,7 @@ void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::ResetNLBSDUtilityStat
 	nlbsData[NodeListBoxString_SpeciesOperands].ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputConnect(NodeInputPinData& _nodeInputPin)
 {
 	//Simple parameter value
 	if (_nodeInputPin == inputPins[ParameterNodeData::InputPin_ParameterValue])
@@ -144,7 +150,7 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputConnect(const N
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputUpdate(NodeInputPinData& _nodeInputPin, float _data)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ParameterNodeData::InputUpdate; data=" + std::to_string(_data));
 }
@@ -155,28 +161,47 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::ResetNLBSDUtilitySta
 	nlbsDataRKLDep.ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData& _nodeOutputPin)
 {
 	//Simple parameter value
 	if (_nodeOutputPin == outputPins[ParameterNodeData::OutputPin_ParameterValue])
 	{
+		//this pin uses the local subscriber list
+		_nodeOutputPin.subscribers.push_back(_nodeInputPinData);
+
 		//we set the output pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[ParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputUpdate(NodeOutputPinData& _nodeOutputPin)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("ParameterNodeData::OutputUpdate");
 }
 
-void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput)
+{
+	//There is only one output pin in the SimulationTimeNodeData
+
+	//this pin uses the local subscriber list
+	_nodeOutput.subscribers.push_back(_nodeInput);
+}
+
+void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputUpdate(NodeOutputPinData& _nodeOutputPin)
 {
 	//There is only one output pin in the SImulationTimeNodeData
 	outputPins[OutputPin_SimulationTime].Broadcast(simulationTimer->elapsedTime);
 }
 
-void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput)
+{
+	//There is only one output pin in the SolverNodeData
+
+	//this pin uses the local subscriber list
+	_nodeOutput.subscribers.push_back(_nodeInput);
+}
+
+void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputUpdate(NodeOutputPinData& _nodeOutputPin)
 {
 	//The node output pin representing the solver.
 	//It is used to attach a solver to an asset.
@@ -189,7 +214,7 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputUpdate(const Node
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputConnect(const NodeInputPinData& _nodeInputPin)
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputConnect(NodeInputPinData& _nodeInputPin)
 {
 	//Quantity value
 	if (_nodeInputPin == inputPins[SpeciesNodeData::InputPin_Quantity])
@@ -199,22 +224,25 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputConnect(const Nod
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputUpdate(const NodeInputPinData& _nodeInputPin, float _data)
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputUpdate(NodeInputPinData& _nodeInputPin, float _data)
 {
 	ECellEngine::Logging::Logger::GetSingleton().LogDebug("SpeciesNodeData::InputUpdate; data=" + std::to_string(_data));
 }
 
-void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData& _nodeOutputPin)
 {
 	//Quantity value
 	if (_nodeOutputPin == outputPins[SpeciesNodeData::OutputPin_Quantity])
 	{
+		//this pin uses the local subscriber list
+		_nodeOutputPin.subscribers.push_back(_nodeInputPinData);
+
 		//we set the output pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputUpdate(NodeOutputPinData& _nodeOutputPin)
 {
 	//The node output pin corresponding to the Quantity
 	if (_nodeOutputPin == outputPins[SpeciesNodeData::OutputPin_Quantity])
@@ -231,7 +259,15 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::ResetNLBSDUtilityState
 	nlbsDataRKLDep.ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputUpdate(const NodeOutputPinData& _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput)
+{
+	//There is only one output pin in the ValueFloatNodeData
+
+	//this pin uses the local subscriber list
+	_nodeOutput.subscribers.push_back(_nodeInput);
+}
+
+void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputUpdate(NodeOutputPinData& _nodeOutputPin)
 {
 	//There is only one output pin in the ValueFloatNodeData
 	outputPins[ValueFloatNodeData::OutputPin_Value].Broadcast(value);

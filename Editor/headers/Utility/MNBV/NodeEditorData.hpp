@@ -181,7 +181,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _nodeInput The pin notifying this node that a link was made with
 				it as the end.
 		*/
-		virtual void InputConnect(const NodeInputPinData& _nodeInput) = 0;
+		virtual void InputConnect(NodeInputPinData& _nodeInput) = 0;
 
 		/*!
 		@brief Method to implement what to do when a pin (@p _nodeInput) received
@@ -189,7 +189,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _nodeInput The pin notifying this node that a char array has arrived
 				through it.
 		*/
-		virtual void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) = 0;
+		virtual void InputUpdate(NodeInputPinData& _nodeInput, char* _data) = 0;
 
 		/*!
 		@brief Method to implement what to do when a pin (@p _nodeInput) received
@@ -197,22 +197,24 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _nodeInput The pin notifying this node that a float has arrived
 				through it.
 		*/
-		virtual void InputUpdate(const NodeInputPinData& _nodeInput, float _data) = 0;
+		virtual void InputUpdate(NodeInputPinData& _nodeInput, float _data) = 0;
 
 		/*!
 		@brief Method to implement what to do when a new link is connected
 				to @p _nodeOutput.
-		@param _nodeInput The pin notifying this node that a link was made with
+		@param _nodeInput The pointer to the end pin of the link. It is used to 
+				manage the subscription of the end node to the start node.
+		@param _nodeOutput The pin notifying this node that a link was made with
 				it as the start.
 		*/
-		virtual void OutputConnect(const NodeOutputPinData& _nodeOutput) = 0;
+		virtual void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput) = 0;
 
 		/*!
 		@brief Method to implement what to do send data from a pin (@p _nodeOutput)
 				through all of its connected links.
 		@param _nodeOutput The start pin we want to broadcast data from.
 		*/
-		virtual void OutputUpdate(const NodeOutputPinData& _nodeOutput) = 0;
+		virtual void OutputUpdate(NodeOutputPinData& _nodeOutput) = 0;
 	};
 
 	/*
@@ -331,10 +333,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		inline void AddSubscriber(NodeInputPinData* _newSubscriber)
 		{
-			subscribers.push_back(_newSubscriber);
+			//subscribers.push_back(_newSubscriber);
 
 			//What to do on connection.
-			node->OutputConnect(*this);
+			node->OutputConnect(_newSubscriber, *this);
 			_newSubscriber->node->InputConnect(*_newSubscriber);
 
 			//Send data for the first time
@@ -625,15 +627,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in asset node data
+		void InputConnect( NodeInputPinData& _nodeInput) override {};//not used in asset node data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override;
+		void InputUpdate( NodeInputPinData& _nodeInput, char* _data) override;
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in asset node data
+		void InputUpdate( NodeInputPinData& _nodeInput, float _data) override {};//not used in asset node data
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in asset node data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput) override {};//not used in asset node data
 
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override {};//not used in asset node data
+		void OutputUpdate(NodeOutputPinData& _nodeOutput) override {};//not used in asset node data
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -791,7 +793,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds{ _cpnd.collapsingHeadersIds[0], _cpnd.collapsingHeadersIds[1] , _cpnd.collapsingHeadersIds[2] ,
 					  _cpnd.collapsingHeadersIds[3] , _cpnd.collapsingHeadersIds[4] },
 			nlbsData{ _cpnd.nlbsData[0], _cpnd.nlbsData[1] , _cpnd.nlbsData[2] },
-			nlbsDataEqDep{ _cpnd.nlbsDataEqDep }, nlbsDataRKLDep { _cpnd.nlbsDataRKLDep },
+			nlbsDataEqDep{ _cpnd.nlbsDataEqDep }, nlbsDataRKLDep{ _cpnd.nlbsDataRKLDep },
 			equationDep{ _cpnd.equationDep },
 			reactionKLDep{ _cpnd.reactionKLDep },
 			speciesOperands{ _cpnd.speciesOperands },
@@ -851,7 +853,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds[CollapsingHeader_EquationOperands] = Widget::MNBV::GetMNBVCtxtNextId();//Equation Operands collapsing header
 
 			auto search = depDB->GetEquationDependencies().find(data);
-			if ( search != depDB->GetEquationDependencies().end())
+			if (search != depDB->GetEquationDependencies().end())
 			{
 				equationDep = search->second.partOfEquation;
 				reactionKLDep = search->second.partOfReactionKineticLaw;
@@ -871,15 +873,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_EquationOperands] = { &equationsOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Node String List Box for Computed Parameter Operands
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in computed parameter node data
+		void InputConnect( NodeInputPinData& _nodeInput) override {};//not used in computed parameter node data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in computed parameter node data
+		void InputUpdate( NodeInputPinData& _nodeInput, char* _data) override {};//not used in computed parameter node data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in computed parameter node data
+		void InputUpdate( NodeInputPinData& _nodeInput, float _data) override {};//not used in computed parameter node data
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput) override;
 
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputUpdate(NodeOutputPinData& _nodeOutput) override;
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -1039,15 +1041,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override;
+		void InputConnect( NodeInputPinData& _nodeInput) override;
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};// not used in line plot node data
+		void InputUpdate( NodeInputPinData& _nodeInput, char* _data) override {};// not used in line plot node data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override;
+		void InputUpdate( NodeInputPinData& _nodeInput, float _data) override;
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};// not used in line plot node data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput) override {};// not used in line plot node data
 
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override {};// not used in line plot node data
+		void OutputUpdate(NodeOutputPinData& _nodeOutput) override {};// not used in line plot node data
 
 		inline bool IsPlotOpen() noexcept
 		{
@@ -1278,15 +1280,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_EquationOperands] = { &equationsOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Computed Parameter Operands from Kinetic Law
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Reaction Node Data
+		void InputConnect( NodeInputPinData& _nodeInput) override {};//not used in Reaction Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Reaction Node Data
+		void InputUpdate( NodeInputPinData& _nodeInput, char* _data) override {};//not used in Reaction Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Reaction Node Data
+		void InputUpdate( NodeInputPinData& _nodeInput, float _data) override {};//not used in Reaction Node Data
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput) override;
 
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputUpdate(NodeOutputPinData& _nodeOutput) override;
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -1414,7 +1416,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			utilityState{ _sprnd.utilityState },
 			collapsingHeadersIds{ _sprnd.collapsingHeadersIds[0], _sprnd.collapsingHeadersIds[1] , _sprnd.collapsingHeadersIds[2] ,
 					  _sprnd.collapsingHeadersIds[3] },
-			nlbsDataEqDep{ _sprnd.nlbsDataEqDep }, nlbsDataRKLDep{_sprnd.nlbsDataRKLDep},
+			nlbsDataEqDep{ _sprnd.nlbsDataEqDep }, nlbsDataRKLDep{ _sprnd.nlbsDataRKLDep },
 			equationDep{ _sprnd.equationDep }, reactionKLDep{ _sprnd.reactionKLDep }
 		{
 			for (int i = 0; i < InputPin_Count; i++)
@@ -1435,7 +1437,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@remarks @p _nodeId is incremented immediately after use.
 		*/
 		ParameterNodeData(std::shared_ptr<ECellEngine::Data::Parameter> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
-			NodeData(), data{ _data }, depDB{_depDB}
+			NodeData(), data{ _data }, depDB{ _depDB }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -1474,15 +1476,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };//Kinetic Laws section
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override;
+		void InputConnect( NodeInputPinData& _nodeInput) override;
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Reaction Node Data
+		void InputUpdate( NodeInputPinData& _nodeInput, char* _data) override {};//not used in Reaction Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override;
+		void InputUpdate( NodeInputPinData& _nodeInput, float _data) override;
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput) override;
 
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputUpdate(NodeOutputPinData& _nodeOutput) override;
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -1567,15 +1569,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Simulation Time Node Data
+		void InputConnect( NodeInputPinData& _nodeInput) override {};//not used in Simulation Time Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Simulation Time Node Data
+		void InputUpdate( NodeInputPinData& _nodeInput, char* _data) override {};//not used in Simulation Time Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Simulation Time Node Data
+		void InputUpdate( NodeInputPinData& _nodeInput, float _data) override {};//not used in Simulation Time Node Data
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in Simulation Time Node Data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput) override;
 
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputUpdate(NodeOutputPinData& _nodeOutput) override;
 	};
 
 	/*!
@@ -1652,15 +1654,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Solver Node Data
+		void InputConnect( NodeInputPinData& _nodeInput) override {};//not used in Solver Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Solver Node Data
+		void InputUpdate( NodeInputPinData& _nodeInput, char* _data) override {};//not used in Solver Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Solver Node Data
+		void InputUpdate( NodeInputPinData& _nodeInput, float _data) override {};//not used in Solver Node Data
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in Solver Node Data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput) override;
 
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputUpdate(NodeOutputPinData& _nodeOutput) override;
 	};
 
 	/*!
@@ -1874,15 +1876,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override;
+		void InputConnect( NodeInputPinData& _nodeInput) override;
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Species Node Data
+		void InputUpdate( NodeInputPinData& _nodeInput, char* _data) override {};//not used in Species Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override;
+		void InputUpdate( NodeInputPinData& _nodeInput, float _data) override;
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput) override;
 
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputUpdate(NodeOutputPinData& _nodeOutput) override;
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -1961,15 +1963,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Value Float Node Data
+		void InputConnect( NodeInputPinData& _nodeInput) override {};//not used in Value Float Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Value Float Node Data
+		void InputUpdate( NodeInputPinData& _nodeInput, char* _data) override {};//not used in Value Float Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Value Float Node Data
+		void InputUpdate( NodeInputPinData& _nodeInput, float _data) override {};//not used in Value Float Node Data
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in Value Float Node Data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData& _nodeOutput) override;
 
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputUpdate(NodeOutputPinData& _nodeOutput) override;
 	};
 #pragma endregion
 }
