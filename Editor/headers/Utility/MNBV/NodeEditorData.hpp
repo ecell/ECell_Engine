@@ -298,6 +298,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		inline void OnConnect(Data _data)
 		{
 			node->InputConnect(*this, _data);
+
+			isUsed = true;
 		}
 
 		/*!
@@ -308,6 +310,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		inline void OnDisconnect(NodeOutputPinData* _nodeOutput)
 		{
 			node->InputDisconnect(this, _nodeOutput);
+
+			isUsed = false;
 		}
 	};
 
@@ -348,6 +352,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			//What to do on connection.
 			node->OutputConnect(_inputNode, this);
 			//_inputNode->node->InputConnect(*_inputNode);
+
+			isUsed = true;
 		}
 
 		/*!
@@ -359,6 +365,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			//What to do on disconnection.
 			node->OutputDisconnect(_inputNode, this);
+
+			isUsed = false;
 		}
 	};
 
