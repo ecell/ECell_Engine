@@ -447,13 +447,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
         _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_CollHdrDataFields], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_CollHdrDataFields], Widget::MNBV::GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
-        float value = _parameterNodeInfo.data->Get();
-        if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &value,
+        if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &_parameterNodeInfo.parameterValueBuffer,
             itemsWidth, startX, headerWidth,
             _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_ParameterValue], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_ParameterValue], Widget::MNBV::GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            _parameterNodeInfo.data->Set(value);
+            _parameterNodeInfo.data->Set(_parameterNodeInfo.parameterValueBuffer);
         }
     }
 
