@@ -297,7 +297,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		template<class Data>
 		inline void OnConnect(Data _data)
 		{
-			node->InputConnect(*this, _data);
+			node->InputConnect(this, _data);
 
 			isUsed = true;
 		}
