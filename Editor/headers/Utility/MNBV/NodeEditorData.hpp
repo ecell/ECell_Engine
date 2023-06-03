@@ -1768,6 +1768,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::shared_ptr<ECellEngine::Data::Species> data;
 
 		/*!
+		@brief The copy of ECellEngine::Data::Species::quantity.
+		@remarks This is needed because the accessor to the value works by copy.
+		*/
+		float speciesQuantityBuffer = 0.f;
+
+		/*!
 		@brief Pointer to the dependency database of the simulation this node
 				part of.
 		*/
@@ -1914,6 +1920,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@see ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData::ResetUtilityState()
 		*/
 		void ResetNLBSDUtilityStates() noexcept;
+
+		/*!
+		@brief Updates the buffer of the parameter value.
+		*/
+		void Update();
 	};
 
 	/*!

@@ -198,12 +198,16 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInpu
 	//Quantity value
 	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_Quantity].id)
 	{
-		//TODO: transmit the pointer to the quantity value of the species data stored in this
-		//		node to the input pin.
+		_nodeInputPinData->OnConnect(&speciesQuantityBuffer);
 
 		//we set the output pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields].id, 1);
 	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::Update()
+{
+	speciesQuantityBuffer = data->Get();
 }
 
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::ResetNLBSDUtilityStates() noexcept

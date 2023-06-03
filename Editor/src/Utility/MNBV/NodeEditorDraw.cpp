@@ -568,12 +568,6 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 
     NodeHorizontalSeparator(headerWidth);
 
-    if (_speciesNodeInfo.speciesQuantityBuffer != _speciesNodeInfo.data->Get())
-    {
-        _speciesNodeInfo.speciesQuantityBuffer = _speciesNodeInfo.data->Get();
-        _speciesNodeInfo.OutputUpdate(_speciesNodeInfo.outputPins[6]);
-    }
-
     if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_DataFields],
         _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrDataFields,
         startX, headerWidth,
@@ -586,7 +580,6 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _speciesNodeInfo.data->Set(_speciesNodeInfo.speciesQuantityBuffer);
-            _speciesNodeInfo.OutputUpdate(_speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_Quantity]);
         }
     }
 
