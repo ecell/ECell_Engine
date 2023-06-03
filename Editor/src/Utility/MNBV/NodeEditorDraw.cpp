@@ -704,7 +704,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinkCreation(std::vecto
                         // Since we accepted new link, lets add one to our list of links.
                         _links.push_back(LinkData(outputPin, inputPin));
 
-                        outputPin->AddSubscriber(inputPin);
+                        outputPin->OnConnect(inputPin);
                     }
                 }
             }
