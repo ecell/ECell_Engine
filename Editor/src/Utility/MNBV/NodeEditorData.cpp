@@ -34,7 +34,7 @@ void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputConnect(NodeInputPi
 
 void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
-	//TODO: remove the link between the solver and the asset adata in the simulation
+	//TODO: remove the link between the solver and the asset data in the simulation
 	//		by calling the appropriate command in the engine (also TODO)
 	//		This can be done here or in SolverNodeData::OutputDisconnect()
 }
@@ -74,7 +74,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	//X axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
 	{
-		//TODO: assign the float pointer to the x axis value of the plot
+		ptrX = _data;
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
@@ -83,7 +83,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	//Y axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
 	{
-		//TODO: assign the float pointer to the y axis value of the plot
+		ptrX = _data;
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
@@ -95,7 +95,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	//X axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
 	{
-		//TODO: remove the float pointer to the x axis value of the plot that corresponds to the output pin
+		ptrX = nullptr;
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
@@ -104,10 +104,18 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	//Y axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
 	{
-		//TODO: remove the float pointer to the y axis value of the plot that corresponds to the output pin
+		ptrY = nullptr;
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::Update()
+{
+	if (ptrX && ptrY)
+	{
+		dataPoints.AddPoint(*ptrX, *ptrY);
 	}
 }
 

@@ -291,7 +291,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		/*!
 		@brief What to do when a link gets connected to the input pin.
-		@tparam Data The type of data the pin receives. Supports char* and float.
+		@tparam Data The type of data the pin receives. Supports char* and float*.
 		@param _data The data the pin receives from its output Node.
 		*/
 		template<class Data>
@@ -950,8 +950,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		char* name = "Line Plot";
 
 		ScrollingBuffer dataPoints;
-		float newPointBuffer[2] = { 0, 0 };
-		unsigned short newPointConstructionCounter = 0;
+		float* ptrX = nullptr;
+		float* ptrY = nullptr;
+		//float newPointBuffer[2] = { 0, 0 };
+		//unsigned short newPointConstructionCounter = 0;
 
 		char plotTitle[64] = "PlotTitle";
 		char xAxisLabel[64] = "x";
@@ -1047,11 +1049,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			return (utilityState >> State_PlotIsOpen) & 1;
 		}
 
-		inline void ResetNewPointBuffer() noexcept
-		{
-			newPointConstructionCounter = 0;
-		}
-
 		/*!
 		@brief Utility function to switch the value 0 -> 1 or 1 -> 0 of the bit
 				at position @p _stateBitPos in ::utilityState.
@@ -1062,6 +1059,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			utilityState ^= (1 << _stateBitPos);
 		}
+
+		/*!
+		@brief Updates the scrolling buffers containing the data points.
+		*/
+		void Update();
 	};
 
 	/*!
