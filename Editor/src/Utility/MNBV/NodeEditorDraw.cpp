@@ -310,6 +310,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(const char
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Reaction));
     ax::NodeEditor::BeginNode(_reactionNodeInfo.id);
 
+    _reactionNodeInfo.Update();
+
     const float headerWidth = NodeHeader("Reaction:", _name, Widget::MNBV::GetNodeColors(NodeType_Reaction));
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();

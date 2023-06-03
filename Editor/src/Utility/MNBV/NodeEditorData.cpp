@@ -128,8 +128,7 @@ void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(NodeInp
 	//Reaction kinetic law value
 	if (_nodeOutputPin->id == outputPins[ReactionNodeData::OutputPin_KineticLawValue].id)
 	{
-		//TODO: transmit to the input pin the pointer in this reaction node to the result
-		//		of the kinetic law equation
+		_nodeInputPinData->OnConnect(&kineticLawValueBuffer);
 
 		//we set the input pin of the kinetic law collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[OutputPin_CollHdrKineticLaw].id, 1);
@@ -143,6 +142,11 @@ void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::ResetNLBSDUtilityStat
 	nlbsData[NodeListBoxString_EquationOperands].ResetUtilityState();
 	nlbsData[NodeListBoxString_ParameterOperands].ResetUtilityState();
 	nlbsData[NodeListBoxString_SpeciesOperands].ResetUtilityState();
+}
+
+void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::Update()
+{
+	kineticLawValueBuffer = data->GetKineticLawValue();
 }
 
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::ResetNLBSDUtilityStates() noexcept

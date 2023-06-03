@@ -1176,6 +1176,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 		ECellEngine::Data::Reaction* data;
 
 		/*!
+		@brief The local copy of ECellEngine::Data::Reaction::kineticLawValueCache of ::data.
+		@remarks This is needed because the accessor to the kinetic law value
+				 returns a copy of the value and not a pointer.
+		*/
+		float kineticLawValueBuffer = 0.0f;
+
+		/*!
 		@brief All the input pins.
 		@details Access the pins with the enum values InputPin_XXX
 		*/
@@ -1301,6 +1308,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@see ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData::ResetUtilityState()
 		*/
 		void ResetNLBSDUtilityStates() noexcept;
+
+		/*!
+		@brief Updates the ::kineticLawValueBuffer.
+		*/
+		void Update();
 	};
 
 	/*!
