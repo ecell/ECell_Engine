@@ -1004,7 +1004,7 @@ bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_Ou
 bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeDragFloat_Out(const char* _label, const std::size_t _id, float* valueBuffer,
     const float _inputFieldWidth, const float _startX, const float _drawLength,
     const NodePinData& _pin, const ImVec4 _pinColors[],
-    const ImGuiInputTextFlags _flags)
+    const ImGuiSliderFlags _flags)
 {
     ImGui::SetCursorPosX(_startX);
 
