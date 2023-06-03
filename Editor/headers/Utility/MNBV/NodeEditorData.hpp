@@ -1556,12 +1556,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		ECellEngine::Core::Timer* simulationTimer;
 
 		/*!
-		@brief A buffer for the elapsed time value in the ::simulationTimer to
-				detect when it has been changed.
-		*/
-		float elapsedTimeBuffer = 0.f;
-
-		/*!
 		@brief All the input pins.
 		@details Access the pins with the enum values InputPin_XXX
 		*/

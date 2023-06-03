@@ -470,16 +470,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SimulationTimeNode(cons
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
-    NodeInputFloat_Out("Elapsed Time", _simulationTimeNodeInfo.id.Get(), &_simulationTimeNodeInfo.elapsedTimeBuffer,
+    NodeInputFloat_Out("Elapsed Time", _simulationTimeNodeInfo.id.Get(), &_simulationTimeNodeInfo.simulationTimer->elapsedTime,
         itemsWidth, startX, headerWidth,
         _simulationTimeNodeInfo.outputPins[SimulationTimeNodeData::OutputPin_SimulationTime], Widget::MNBV::GetPinColors(PinType_ValueFloat),
         ImGuiInputTextFlags_ReadOnly);
-
-    if (_simulationTimeNodeInfo.elapsedTimeBuffer != _simulationTimeNodeInfo.simulationTimer->elapsedTime)
-    {
-        _simulationTimeNodeInfo.elapsedTimeBuffer = _simulationTimeNodeInfo.simulationTimer->elapsedTime;
-        _simulationTimeNodeInfo.OutputUpdate(_simulationTimeNodeInfo.outputPins[SimulationTimeNodeData::OutputPin_SimulationTime]);
-    }
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();

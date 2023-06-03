@@ -176,7 +176,7 @@ void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputConnect(N
 {
 	//There is only one output pin in the SimulationTimeNodeData
 
-	//TODO: transmit to the input pin the pointer to the float value of the simulation elapsed time.
+	_nodeInputPinData->OnConnect(&(simulationTimer->elapsedTime));
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutput)
