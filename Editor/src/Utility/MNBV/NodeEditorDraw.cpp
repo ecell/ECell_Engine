@@ -86,6 +86,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(const char
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Equation));
     ax::NodeEditor::BeginNode(_equationNodeInfo.id);
 
+    _equationNodeInfo.Update();
+
     const float headerWidth = NodeHeader("Equation:", _name, Widget::MNBV::GetNodeColors(NodeType_Equation));
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
@@ -277,6 +279,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
     {
         ImGuiStyle& imguiStyle = ImGui::GetStyle();
         ImPlotStyle& implotStyle = ImPlot::GetStyle();
+        
+        _linePlotNodeData.Update();
+
         ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.plotSize[0] + 2 * imguiStyle.WindowPadding.x,
             _linePlotNodeData.plotSize[1] + 2 * imguiStyle.WindowPadding.y));
         if (ImGui::Begin(_name, NULL, _linePlotNodeData.plotWindowFlags))
@@ -286,11 +291,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
                 ImPlot::SetupAxes(_linePlotNodeData.xAxisLabel, _linePlotNodeData.yAxisLabel, _linePlotNodeData.xAxisFlags, _linePlotNodeData.yAxisFlags);
                 ImPlot::SetupAxisScale(ImAxis_X1, _linePlotNodeData.xAxisScale);
                 ImPlot::SetupAxisScale(ImAxis_Y1, _linePlotNodeData.yAxisScale);
-                ImPlot::PlotLine(_linePlotNodeData.lineLegend,
-                    &_linePlotNodeData.dataPoints.Data[0].x, &_linePlotNodeData.dataPoints.Data[0].y,
-                    _linePlotNodeData.dataPoints.Data.Size, _linePlotNodeData.dataPoints.Offset, 2 * sizeof(float));
 
-                _linePlotNodeData.ResetNewPointBuffer();
+                ImPlot::PlotLine(_linePlotNodeData.lineLegend,
+                    &(_linePlotNodeData.dataPoints.Data[0].x), &(_linePlotNodeData.dataPoints.Data[0].y),
+                    _linePlotNodeData.dataPoints.Data.Size, ImPlotLineFlags_None, _linePlotNodeData.dataPoints.Offset, 2 * sizeof(float));
 
                 ImPlot::EndPlot();
             }
@@ -306,6 +310,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(const char
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Reaction));
     ax::NodeEditor::BeginNode(_reactionNodeInfo.id);
+
+    _reactionNodeInfo.Update();
 
     const float headerWidth = NodeHeader("Reaction:", _name, Widget::MNBV::GetNodeColors(NodeType_Reaction));
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
@@ -395,7 +401,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Parameter));
     ax::NodeEditor::BeginNode(_parameterNodeInfo.id);
 
-    const float headerWidth = NodeHeader("Simple Parameter:", _name, Widget::MNBV::GetNodeColors(NodeType_Parameter));
+    _parameterNodeInfo.Update();
+
+    const float headerWidth = NodeHeader("Parameter:", _name, Widget::MNBV::GetNodeColors(NodeType_Parameter));
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
@@ -440,13 +448,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
         _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_CollHdrDataFields], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_CollHdrDataFields], Widget::MNBV::GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0)))
     {
-        float value = _parameterNodeInfo.data->Get();
-        if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &value,
+        if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &_parameterNodeInfo.parameterValueBuffer,
             itemsWidth, startX, headerWidth,
             _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_ParameterValue], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_ParameterValue], Widget::MNBV::GetPinColors(PinType_ValueFloat),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
-            _parameterNodeInfo.data->Set(value);
+            _parameterNodeInfo.data->Set(_parameterNodeInfo.parameterValueBuffer);
         }
     }
 
@@ -463,16 +470,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SimulationTimeNode(cons
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
-    NodeInputFloat_Out("Elapsed Time", _simulationTimeNodeInfo.id.Get(), &_simulationTimeNodeInfo.elapsedTimeBuffer,
+    NodeInputFloat_Out("Elapsed Time", _simulationTimeNodeInfo.id.Get(), &_simulationTimeNodeInfo.simulationTimer->elapsedTime,
         itemsWidth, startX, headerWidth,
         _simulationTimeNodeInfo.outputPins[SimulationTimeNodeData::OutputPin_SimulationTime], Widget::MNBV::GetPinColors(PinType_ValueFloat),
         ImGuiInputTextFlags_ReadOnly);
-
-    if (_simulationTimeNodeInfo.elapsedTimeBuffer != _simulationTimeNodeInfo.simulationTimer->elapsedTime)
-    {
-        _simulationTimeNodeInfo.elapsedTimeBuffer = _simulationTimeNodeInfo.simulationTimer->elapsedTime;
-        _simulationTimeNodeInfo.OutputUpdate(_simulationTimeNodeInfo.outputPins[SimulationTimeNodeData::OutputPin_SimulationTime]);
-    }
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
@@ -499,6 +500,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Species));
     ax::NodeEditor::BeginNode(_speciesNodeInfo.id);
+
+    _speciesNodeInfo.Update();
 
     const float headerWidth = NodeHeader("Species:", _name, Widget::MNBV::GetNodeColors(NodeType_Species));
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
@@ -567,12 +570,6 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 
     NodeHorizontalSeparator(headerWidth);
 
-    if (_speciesNodeInfo.speciesQuantityBuffer != _speciesNodeInfo.data->Get())
-    {
-        _speciesNodeInfo.speciesQuantityBuffer = _speciesNodeInfo.data->Get();
-        _speciesNodeInfo.OutputUpdate(_speciesNodeInfo.outputPins[6]);
-    }
-
     if (NodeCollapsingHeader_InOut("Data Fields", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_DataFields],
         _speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrDataFields,
         startX, headerWidth,
@@ -585,7 +582,6 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _speciesNodeInfo.data->Set(_speciesNodeInfo.speciesQuantityBuffer);
-            _speciesNodeInfo.OutputUpdate(_speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_Quantity]);
         }
     }
 
@@ -602,13 +598,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ValueFloatNode(const ch
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
-    if (NodeDragFloat_Out("Value", _valueFloatNodeInfo.id.Get(), &_valueFloatNodeInfo.value,
+    NodeDragFloat_Out("Value", _valueFloatNodeInfo.id.Get(), &_valueFloatNodeInfo.value,
         itemsWidth, startX, headerWidth,
-        _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], Widget::MNBV::GetPinColors(PinType_ValueFloat),
-        ImGuiInputTextFlags_ReadOnly))
-    {
-        _valueFloatNodeInfo.OutputUpdate(_valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value]);
-    }
+        _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], Widget::MNBV::GetPinColors(PinType_ValueFloat));
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
@@ -713,7 +705,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinkCreation(std::vecto
                         // Since we accepted new link, lets add one to our list of links.
                         _links.push_back(LinkData(outputPin, inputPin));
 
-                        outputPin->AddSubscriber(inputPin);
+                        outputPin->OnConnect(inputPin);
                     }
                 }
             }
@@ -1013,7 +1005,7 @@ bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_Ou
 bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeDragFloat_Out(const char* _label, const std::size_t _id, float* valueBuffer,
     const float _inputFieldWidth, const float _startX, const float _drawLength,
     const NodePinData& _pin, const ImVec4 _pinColors[],
-    const ImGuiInputTextFlags _flags)
+    const ImGuiSliderFlags _flags)
 {
     ImGui::SetCursorPosX(_startX);
 
