@@ -1076,7 +1076,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Updates the scrolling buffers containing the data points.
 		*/
-		void Update();
+		void Update() noexcept;
 	};
 
 	/*!
@@ -1312,7 +1312,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Updates the ::kineticLawValueBuffer.
 		*/
-		void Update();
+		void Update() noexcept;
 	};
 
 	/*!
@@ -1519,7 +1519,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Updates the buffer of the parameter value.
 		*/
-		void Update();
+		void Update() noexcept;
 	};
 
 	/*!
@@ -1924,7 +1924,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Updates the buffer of the parameter value.
 		*/
-		void Update();
+		void Update() noexcept;
 	};
 
 	/*!

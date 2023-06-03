@@ -59,7 +59,7 @@ void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputConnect(NodeInp
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::EquationNodeData::Update()
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::Update() noexcept
 {
 	lhsValueBuffer = data->Get();
 }
@@ -115,7 +115,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::Update()
+void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::Update() noexcept
 {
 	if (ptrX && ptrY)
 	{
@@ -144,7 +144,7 @@ void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::ResetNLBSDUtilityStat
 	nlbsData[NodeListBoxString_SpeciesOperands].ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::Update()
+void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::Update() noexcept
 {
 	kineticLawValueBuffer = data->GetKineticLawValue();
 }
@@ -167,7 +167,7 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeIn
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::Update()
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::Update() noexcept
 {
 	parameterValueBuffer = data->Get();
 }
@@ -205,7 +205,7 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInpu
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::Update()
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::Update() noexcept
 {
 	speciesQuantityBuffer = data->Get();
 }
