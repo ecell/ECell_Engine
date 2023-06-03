@@ -222,5 +222,5 @@ void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputConnect(NodeI
 {
 	//There is only one output pin in the ValueFloatNodeData
 
-	//TODO: transmit to the input pin the pointer to the float value of the data stored in this node.
+	_nodeInputPinData->OnConnect(&value);
 }
