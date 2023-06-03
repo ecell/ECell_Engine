@@ -1780,12 +1780,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		const ECellEngine::Data::DependenciesDatabase* depDB;
 
 		/*!
-		@brief A buffer for the quantity value of a species to detect when the
-				value in the engine has been changed.
-		*/
-		float speciesQuantityBuffer = 0.f;
-
-		/*!
 		@brief All the input pins.
 		@details Access the pins with the enum values InputPin_XXX
 		*/
