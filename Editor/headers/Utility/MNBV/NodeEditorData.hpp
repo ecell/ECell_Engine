@@ -876,7 +876,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in equation data
 
-		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput);//not used in equation data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in equation data
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
@@ -1297,7 +1297,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in Reaction Node Data
 
-		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput);//not used in Reaction Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Reaction Node Data
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
@@ -1508,7 +1508,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;//not used in Parameter Node Data
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Parameter Node Data
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -1596,7 +1596,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in Simulation Time Node Data
 
-		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;//not used in Simulation Time Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Simulation Time Node Data
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
@@ -1681,7 +1681,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in Solver Node Data
 
-		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput)override;//not used in Solver Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Solver Node Data
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
