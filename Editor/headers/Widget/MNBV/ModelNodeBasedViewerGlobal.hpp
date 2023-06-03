@@ -235,6 +235,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 			return "NodeType_Data";
 		case Utility::MNBV::NodeType_Equation:
 			return "NodeType_Equation";
+		case Utility::MNBV::NodeType_Event:
+			return "NodeType_Event";
 		case Utility::MNBV::NodeType_Parameter:
 			return "NodeType_Parameter";
 		case Utility::MNBV::NodeType_Reaction:
@@ -294,6 +296,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 			return "PinType_Asset";
 		case Utility::MNBV::PinType_Equation:
 			return "PinType_Equation";
+		case Utility::MNBV::PinType_Event:
+			return "PinType_Event";
 		case Utility::MNBV::PinType_Parameter:
 			return "PinType_Parameter";
 		case Utility::MNBV::PinType_Reaction:
