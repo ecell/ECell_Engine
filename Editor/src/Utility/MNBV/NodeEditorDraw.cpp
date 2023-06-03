@@ -279,6 +279,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
     {
         ImGuiStyle& imguiStyle = ImGui::GetStyle();
         ImPlotStyle& implotStyle = ImPlot::GetStyle();
+        
+        _linePlotNodeData.Update();
+
         ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.plotSize[0] + 2 * imguiStyle.WindowPadding.x,
             _linePlotNodeData.plotSize[1] + 2 * imguiStyle.WindowPadding.y));
         if (ImGui::Begin(_name, NULL, _linePlotNodeData.plotWindowFlags))
@@ -288,12 +291,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
                 ImPlot::SetupAxes(_linePlotNodeData.xAxisLabel, _linePlotNodeData.yAxisLabel, _linePlotNodeData.xAxisFlags, _linePlotNodeData.yAxisFlags);
                 ImPlot::SetupAxisScale(ImAxis_X1, _linePlotNodeData.xAxisScale);
                 ImPlot::SetupAxisScale(ImAxis_Y1, _linePlotNodeData.yAxisScale);
-                
-                _linePlotNodeData.Update();
 
                 ImPlot::PlotLine(_linePlotNodeData.lineLegend,
-                    &_linePlotNodeData.dataPoints.Data[0].x, &_linePlotNodeData.dataPoints.Data[0].y,
-                    _linePlotNodeData.dataPoints.Data.Size, _linePlotNodeData.dataPoints.Offset, 2 * sizeof(float));
+                    &(_linePlotNodeData.dataPoints.Data[0].x), &(_linePlotNodeData.dataPoints.Data[0].y),
+                    _linePlotNodeData.dataPoints.Data.Size, ImPlotLineFlags_None, _linePlotNodeData.dataPoints.Offset, 2 * sizeof(float));
 
                 ImPlot::EndPlot();
             }
