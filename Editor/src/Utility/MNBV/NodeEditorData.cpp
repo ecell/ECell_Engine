@@ -183,10 +183,7 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInput
 {
 	//There is only one output pin in the SolverNodeData
 
-	//TODO: transmit or create the link between the solver and the asset in the simulation object.
-	//		To do so, you have to queue a TryAttachSolverToModule command. 
-	//		Warning, this is already implemented in the AssetNodeData::InputConnect() function.
-	//		See which one is preferable.
+	_nodeInputPinData->OnConnect(data->GetName());
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
