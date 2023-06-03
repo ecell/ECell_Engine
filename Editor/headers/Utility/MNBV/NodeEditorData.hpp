@@ -730,6 +730,14 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::shared_ptr<ECellEngine::Maths::Equation> data;
 
 		/*!
+		@brief The copy of the value of the Operation in the right hand side of
+				the equation ::data.
+		@remarks This is needed because the accessor to the value of lhs of the
+				 equation works by copy.
+		*/
+		float lhsValueBuffer = 0.0f;
+
+		/*!
 		@brief Pointer to the dependency database of the simulation this node
 				part of.
 		*/
@@ -879,6 +887,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@see ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData::ResetUtilityState()
 		*/
 		void ResetNLBSDUtilityStates() noexcept;
+
+		/*!
+		@brief Updates the data that this node represents (::lhsValueBuffer).
+		*/
+		void Update() noexcept;
 	};
 
 	/*!

@@ -52,12 +52,16 @@ void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputConnect(NodeInp
 	//Equation operation value
 	if (_nodeOutputPin->id == outputPins[EquationNodeData::OutputPin_EquationValue].id)
 	{
-		//TODO: transmit to the input pin the pointer in this equation node to the value
-		//		of the lhs of the equation
+		_nodeInputPinData->OnConnect(&lhsValueBuffer);
 
 		//we set the input pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[EquationNodeData::CollapsingHeader_EquationOperands].id, 1);
 	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::Update()
+{
+	lhsValueBuffer = data->Get();
 }
 
 void ECellEngine::Editor::Utility::MNBV::EquationNodeData::ResetNLBSDUtilityStates() noexcept

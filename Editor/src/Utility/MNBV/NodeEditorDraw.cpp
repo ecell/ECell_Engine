@@ -86,6 +86,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(const char
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Equation));
     ax::NodeEditor::BeginNode(_equationNodeInfo.id);
 
+    _equationNodeInfo.Update();
+
     const float headerWidth = NodeHeader("Equation:", _name, Widget::MNBV::GetNodeColors(NodeType_Equation));
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
