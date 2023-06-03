@@ -157,14 +157,19 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::ResetNLBSDUtilitySta
 
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
-	//Simple parameter value
+	//Parameter value
 	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ParameterValue].id)
 	{
-		//TODO: transmit to the input pin the pointer to the float value of the parameter data stored in this node.
+		_nodeInputPinData->OnConnect(&parameterValueBuffer);
 
 		//we set the output pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[ParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
 	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::Update()
+{
+	parameterValueBuffer = data->Get();
 }
 
 void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutput)
