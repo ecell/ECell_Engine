@@ -2027,6 +2027,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 		float lhs = 0.f;
 
 		/*!
+		@brief The display list of the comparators.
+		*/
+		const char* comparators[6] = { ">", ">=", "==", "!=", "<", "<=" };
+
+		/*!
 		@brief The value of the right hand side of the watcher.
 		*/
 		float rhs = 0.f;

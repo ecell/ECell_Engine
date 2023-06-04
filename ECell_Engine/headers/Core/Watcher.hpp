@@ -47,6 +47,20 @@ namespace ECellEngine::Core
 		float* rhs;
 
 	public:
+		Watcher() :
+			lhs(nullptr), comparator(Comparator::Greater), rhs(nullptr)
+		{
+			
+		}
+
+		/*!
+		@brief Gets the reference to the value of the comparator used between lhs and rhs.
+		*/
+		inline Comparator& GetComparator() noexcept
+		{
+			return comparator;
+		}
+
 		/*!
 		@brief Gets the pointer to the value of the left hand side of the comparison.
 		*/

@@ -621,12 +621,13 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::WatcherNode(WatcherNode
     {
         dragFlags |= ImGuiSliderFlags_ReadOnly;
     }
+    NodeComboBox("Comparator", _watcherNodeInfo.comparators, 6, (int&)_watcherNodeInfo.data->GetComparator(),
+        itemsWidth, startX, headerWidth);
+
 	NodeDragFloat_In("LHS", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_LHS], &_watcherNodeInfo.lhs,
         		0.5f*itemsWidth, startX,
         		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_LHS], Widget::MNBV::GetPinColors(PinType_ValueFloat),
                 dragFlags);
-
-    //TODO: Add a dropdown menu to select the comparator
 
     ImGui::SameLine();
 
