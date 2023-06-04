@@ -32,9 +32,9 @@ namespace ECellEngine::Core
 		std::vector<std::shared_ptr<Events::Event>> triggeredEvents;
 
 		/*!
-		@brief Left value.
+		@brief Pointer to the value to use as the left hand side in the comparison.
 		*/
-		float lhs;
+		float* lhs;
 
 		/*!
 		@brief Type of operator to use between lhs and rhs.
@@ -42,11 +42,51 @@ namespace ECellEngine::Core
 		Comparator comparator;
 
 		/*!
-		@brief Right value.
+		@brief Pointer to the value to use as the right hand side in the comparison.
 		*/
-		float rhs;
+		float* rhs;
 
 	public:
+		/*!
+		@brief Gets the pointer to the value of the left hand side of the comparison.
+		*/
+		inline float* GetLHS() const noexcept
+		{
+			return lhs;
+		}
+
+		/*!
+		@brief Gets the pointer to the value of the right hand side of the comparison.
+		*/
+		inline float* GetRHS() const noexcept
+		{
+			return rhs;
+		}
+
+		/*!
+		@brief Sets the value of the comparator to use between lhs and rhs.
+		*/
+		inline void SetComparator(const Comparator _comparator) noexcept
+		{
+			comparator = _comparator;
+		}
+
+		/*!
+		@brief Sets the pointer to the value of the left hand side of the comparison.
+		*/
+		inline void SetLHS(float* _lhs) noexcept
+		{
+			lhs = _lhs;
+		}
+
+		/*!
+		@brief Sets the pointer to the value of the right hand side of the comparison.
+		*/
+		inline void SetRHS(float* _rhs) noexcept
+		{
+			rhs = _rhs;
+		}
+
 		/*!
 		@brief Checks whether or not the lhs comparator rhs condition is true or not.
 		*/

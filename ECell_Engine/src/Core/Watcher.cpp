@@ -8,22 +8,22 @@ bool ECellEngine::Core::Watcher::IsConditionVerified() noexcept
 	switch (comparator)
 	{
 		case Comparator::Greater:
-			return lhs > rhs;
+			return *lhs > *rhs;
 
 		case Comparator::GreaterOrEqual:
-			return lhs >= rhs;
+			return *lhs >= *rhs;
 
 		case Comparator::Equal:
-			return lhs == rhs;
+			return *lhs == *rhs;
 
 		case Comparator::NotEqual:
-			return lhs != rhs;
+			return *lhs != *rhs;
 
 		case Comparator::Less:
-			return lhs < rhs;
+			return *lhs < *rhs;
 
 		case Comparator::LessOrEqual:
-			return lhs <= rhs;
+			return *lhs <= *rhs;
 
 		default:
 			//Should never reach this point
