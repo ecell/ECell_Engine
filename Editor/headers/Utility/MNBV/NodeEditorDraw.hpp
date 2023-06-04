@@ -461,6 +461,23 @@ namespace ECellEngine::Editor::Utility::MNBV
 			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
 
 		/*!
+		@brief Draw a combo box with a list of items.
+		@details The combo box is drawn at the center of the node.
+		@param _label The text to display before the combo box.
+		@param _items The list of items to display in the combo box.
+		@param _itemsCount The number of items in the list.
+		@param _currentItemIndex The index of the item to display as selected.
+		@param _comboBoxWidth The width of the combo box (label + button included).
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the combo box relatively
+				to @p _startX. Used for alignment calculations.
+		*/
+		static bool NodeComboBox(const char* _label, const char* _items[],
+			const int _itemsCount, int& _currentItemIndex,
+			const float _comboBoxWidth, const float _startX, const float _drawLength);
+
+		/*!
 		@brief Draw an drag field for 1 float with an input pin.
 		@details Aligns the DragField text label and the Input Field body
 				to the left of the node.

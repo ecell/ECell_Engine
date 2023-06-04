@@ -1043,6 +1043,42 @@ bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_Ou
     return open;
 }
 
+bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeComboBox(const char* _label, const char* _items[], const int _itemsCount, int& _currentItemIndex,
+    const float _comboBoxWidth, const float _startX, const float _drawLength)
+{
+    ImGui::SetCursorPosX(_startX);
+
+    AlignToCenter(_startX, _drawLength, _comboBoxWidth);
+    ImGui::AlignTextToFramePadding();
+    ImGui::Text(_label); ImGui::SameLine();
+
+    const float buttonWidth = _comboBoxWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x;
+	
+    bool open = ImGui::Button(_items[_currentItemIndex], ImVec2(buttonWidth, 0.f));
+
+    ax::NodeEditor::Suspend();
+    if (open)
+    {
+	    ImGui::OpenPopup("##combo");
+    }
+    
+    const char* previewValue = _items[_currentItemIndex];
+    if (ImGui::BeginPopup("##combo", ImGuiWindowFlags_NoMove))
+	{
+		for (int i = 0; i < _itemsCount; ++i)
+		{
+			if (ImGui::MenuItem(_items[i]))
+			{
+				_currentItemIndex = i;
+			}
+		}
+		ImGui::EndPopup();
+	}
+    ax::NodeEditor::Resume();
+
+	return previewValue != _items[_currentItemIndex];
+}
+
 bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeDragFloat_In(const char* _label, const std::size_t _id, float* valueBuffer,
     const float _inputFieldWidth, const float _startX,
     const NodePinData& _pin, const ImVec4 _pinColors[],
