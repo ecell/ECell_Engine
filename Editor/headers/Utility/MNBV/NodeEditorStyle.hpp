@@ -144,12 +144,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nodeColors[NodeType_Equation][NodeColorType_HeaderHovered] = ImVec4(1.0f, 1.0f, 1.0f, 0.5f);
 
 			nodeColors[NodeType_Event][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Event][NodeColorType_Border] = ImVec4(1.0f, 1.0f, 1.0f, 1.f);
+			nodeColors[NodeType_Event][NodeColorType_Border] = ImVec4(0.591f, 0.257f, 0.9f, 1.f);
 			//nodeColors[NodeType_Event][NodeColorType_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
 			//nodeColors[NodeType_Event][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Event][NodeColorType_HeaderBg] = ImVec4(1.0f, 1.0f, 1.0f, 0.25f);
+			nodeColors[NodeType_Event][NodeColorType_HeaderBg] = ImVec4(0.591f, 0.257f, 0.9f, 0.25f);
 			nodeColors[NodeType_Event][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Event][NodeColorType_HeaderHovered] = ImVec4(1.0f, 1.0f, 1.0f, 0.5f);
+			nodeColors[NodeType_Event][NodeColorType_HeaderHovered] = ImVec4(0.591f, 0.257f, 0.9f, 0.5f);
 
 			nodeColors[NodeType_Parameter][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Parameter][NodeColorType_Border] = ImVec4(0.05f, 0.463f, 0.297f, 1.f);

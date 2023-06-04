@@ -123,6 +123,30 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::Update() noexcept
 	}
 }
 
+void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputConnect(NodeInputPinData* _nodeInput, float* _data)
+{
+	//TODO: link the event's new value to the pointer _data
+}
+
+//TODO: This node will need to connect with Watchers; however, watchers cannot be identified with char* nor float*
+//		we will need another InputConnect. 
+
+void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput)
+{
+	//TODO: unlink the event's new value from the pointer _data
+}
+
+void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput)
+{
+	//TODO: Retrieve the node ID of the input pin to assigne the event's dataStateValueId
+	//TODO: Fallback to the ouput pin of the execution collapsing header
+}
+
+void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput)
+{
+	//TODO: Reset the event's dataStateValueId
+}
+
 void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
 	//Reaction kinetic law value

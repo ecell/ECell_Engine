@@ -306,6 +306,72 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
     PopNodeStyle();
 }
 
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEventNode(ModifyDataStateValueEventNodeData& _modifyDSValueEventNodeInfo)
+{
+    PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Event));
+    ax::NodeEditor::BeginNode(_modifyDSValueEventNodeInfo.id);
+
+    const float headerWidth = NodeHeader("Modify DataState Value Event", "", Widget::MNBV::GetNodeColors(NodeType_Event));
+    const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+    const float startX = ImGui::GetCursorPosX();
+
+    NodeDragFloat_In("New Value", _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue],
+        &_modifyDSValueEventNodeInfo.data->newValue,
+        itemsWidth, startX, _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue],
+        Widget::MNBV::GetPinColors(PinType_ValueFloat));
+
+    NodeHorizontalSeparator(headerWidth);
+
+    if (NodeCollapsingHeader_InOut("Execution", _modifyDSValueEventNodeInfo.collapsingHeadersIds[ModifyDataStateValueEventNodeData::CollapsingHeader_Execution],
+        _modifyDSValueEventNodeInfo.utilityState, ModifyDataStateValueEventNodeData::State_CollHdrExecution,
+        startX, headerWidth,
+        _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_CollHdrExecution],
+        _modifyDSValueEventNodeInfo.outputPins[ModifyDataStateValueEventNodeData::OutputPin_CollHdrExecution],
+        Widget::MNBV::GetPinColors(PinType_Default), ImVec2(itemsWidth, 0.f)))
+    {
+        ImGui::SetCursorPosX(startX + GetPinDrawOffset());
+        ImGui::Checkbox("##ManualExecution", &_modifyDSValueEventNodeInfo.activateManualExecution);
+        if (ImGui::IsItemHovered())
+		{
+            ax::NodeEditor::Suspend();
+			ImGui::SetTooltip("Activate Manual Execution");
+            ax::NodeEditor::Resume();
+		}
+
+        ImGui::SameLine();
+        if (!_modifyDSValueEventNodeInfo.activateManualExecution)
+        {
+            ImGui::BeginDisabled();
+        }
+        
+        if (ImGui::Button("Execute", ImVec2(itemsWidth - ImGui::GetTextLineHeight() - 2*ImGui::GetStyle().FramePadding.y - ImGui::GetStyle().ItemSpacing.x, 0.f)))
+		{
+            //TODO Simulation Index MUST NOT be hardcoded
+            //Give an accessor from the context? Since MNBV context is actually binded to only one simulation.
+			_modifyDSValueEventNodeInfo.data->Execute(0);
+		}
+
+        if (!_modifyDSValueEventNodeInfo.activateManualExecution)
+        {
+            ImGui::EndDisabled();
+        }
+
+        NodeText_In("Watchers", startX,
+            _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Watchers],
+            Widget::MNBV::GetPinColors(PinType_Event));
+
+        ImGui::SameLine();
+
+        NodeText_Out("Modify", ImGui::CalcTextSize("Modify").x, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+            _modifyDSValueEventNodeInfo.outputPins[ModifyDataStateValueEventNodeData::OutputPin_Modify],
+            Widget::MNBV::GetPinColors(PinType_ValueFloat));
+    }
+
+    ax::NodeEditor::EndNode();
+    PopNodeStyle();
+}
+    
+
 void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo)
 {
     PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Reaction));

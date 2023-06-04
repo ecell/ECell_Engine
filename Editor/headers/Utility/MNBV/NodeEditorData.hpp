@@ -1075,6 +1075,140 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 	/*!
 	@brief The logic to encode the data needed to draw the node representing
+			ECellEngine::Core::Events::ModifyDataStateValueEvent.
+	*/
+	struct ModifyDataStateValueEventNodeData final : public NodeData
+	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
+		enum InputPin
+		{
+			InputPin_NewFloatValue,
+			InputPin_Watchers,
+			InputPin_CollHdrExecution,
+
+			InputPin_Count
+		};
+
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
+		enum OutputPin
+		{
+			OutputPin_Modify,
+			OutputPin_CollHdrExecution,
+
+			OutputPin_Count
+		};
+
+		/*!
+		@brief The local enum to manage access to the collapsing headers.
+		@see ::collapsingHeaders
+		*/
+		enum CollapsingHeader
+		{
+			CollapsingHeader_Execution,
+
+			CollapsingHeader_Count
+		};
+
+		/*!
+		@brief The local enum to manage to the encoding of the state of this
+				node.
+		@see ::utilityState
+		*/
+		enum State
+		{
+			State_CollHdrExecution,
+
+			State_Count
+		};
+
+		/*!
+		@brief Pointer to the watcher represented by this node.
+		*/
+		ECellEngine::Core::Events::ModifyDataStateValueEvent* data;
+
+		/*!
+		@brief A boolean to control whether the user can use a button to
+				manually execute the event.
+		*/
+		bool activateManualExecution = false;
+
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
+		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
+		NodeOutputPinData outputPins[OutputPin_Count];
+
+		/*!
+		@brief The 2 bytes to encode the state variations of this node.
+		@details Manipulate the state with the enum values State_XXX
+		*/
+		unsigned short utilityState = 0;
+
+		/*!
+		@brief All the collapsing headers.
+		@details Access the pins with the enum values CollapsingHeader_XXX
+		*/
+		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
+
+		ModifyDataStateValueEventNodeData(const ModifyDataStateValueEventNodeData& _mdstvend) :
+			NodeData(_mdstvend), data{ _mdstvend.data },
+			inputPins{ _mdstvend.inputPins[0], _mdstvend.inputPins[1], _mdstvend.inputPins[2] },
+			outputPins{ _mdstvend.outputPins[0], _mdstvend.outputPins[1] },
+			collapsingHeadersIds{ _mdstvend.collapsingHeadersIds[0] }
+		{
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
+
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
+		}
+
+		ModifyDataStateValueEventNodeData(ECellEngine::Core::Events::ModifyDataStateValueEvent*_data, ImVec2& _position) :
+			NodeData(), data{ _data }
+		{
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			inputPins[InputPin_NewFloatValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//the new value we will use to modify the data state
+			inputPins[InputPin_Watchers] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Event, this);//the watchers that will trigger this event
+			inputPins[InputPin_CollHdrExecution] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
+			outputPins[OutputPin_Modify] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Event, this);//Connection to the value to modify
+			outputPins[OutputPin_CollHdrExecution] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Event, this);//the Execution Collapsing Header
+		
+			collapsingHeadersIds[CollapsingHeader_Execution] = Widget::MNBV::GetMNBVCtxtNextId();
+		}
+
+		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in ModifyDataStateValueEvent Node Data
+
+		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override;
+
+		//TODO: This node will need to connect with Watchers; however, watchers cannot be identified with char* nor float*
+		//		we will need another InputConnect. 
+
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+	};
+
+	/*!
+	@brief The logic to encode the data needed to draw the node representing
 			ECellEngine::Data::Reaction.
 	*/
 	struct ReactionNodeData final : public NodeData
@@ -2083,8 +2217,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
-
-		void Update() noexcept;
 	};
 #pragma endregion
 }

@@ -23,6 +23,14 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 
 		if (ImGui::BeginMenu("Events"))
 		{
+			if (ImGui::MenuItem("Modify Value in DataState Event Node"))
+			{
+				ax::NodeEditor::Resume();
+				//TODO: Use a command to add th event
+				modifyDataStateValueEventNodes.emplace_back(Utility::MNBV::ModifyDataStateValueEventNodeData(_simulation->GetDataState()->AddModifyDataStateValueEvent().get(), ImGui::GetIO().MousePos));
+				ax::NodeEditor::Suspend();
+			}
+			
 			if (ImGui::MenuItem("Watcher Node"))
 			{
 				ax::NodeEditor::Resume();
@@ -199,6 +207,11 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 	for (std::vector<Utility::MNBV::LinePlotNodeData>::iterator it = linePlotNodes.begin(); it != linePlotNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::LinePlotNode(it->name, *it);
+	}
+
+	for (std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData>::iterator it = modifyDataStateValueEventNodes.begin(); it != modifyDataStateValueEventNodes.end(); it++)
+	{
+		Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEventNode(*it);
 	}
 
 	for (std::vector< Utility::MNBV::ReactionNodeData>::iterator it = reactionNodes.begin(); it != reactionNodes.end(); ++it)

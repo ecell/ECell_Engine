@@ -58,6 +58,15 @@ namespace ECellEngine::Editor::Widget::MNBV
 		std::vector<Utility::MNBV::LinePlotNodeData> linePlotNodes;
 
 		/*!
+		@brief The list of event nodes that can modify data state values in this
+				context.
+		@details It contains the information used to draw the nodes to display
+				 the nodes that can modify data state values in this simulation
+				 space.
+		*/
+		std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData> modifyDataStateValueEventNodes;
+
+		/*!
 		@brief The list of reaction nodes in this context.
 		@details It contains the information used to draw the nodes corresponding
 				 to each reaction of various assets imported in the current
