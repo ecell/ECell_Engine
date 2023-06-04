@@ -110,7 +110,7 @@ namespace ECellEngine::Data
 
 		inline std::shared_ptr<Core::Watcher> AddWatcher() noexcept
 		{
-			return watchers.emplace_back();
+			return watchers.emplace_back(std::make_shared<ECellEngine::Core::Watcher>());
 		}
 
 		inline void SetElapsedTime(const float _elapsedTime)
