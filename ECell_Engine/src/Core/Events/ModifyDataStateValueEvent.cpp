@@ -7,11 +7,11 @@ void ECellEngine::Core::Events::ModifyDataStateValueEvent::Execute(std::size_t _
 	switch (valueType)
 	{
 		case DataStateValueType::Species:
-			SimulationsManager::GetSingleton().GetSimulation(_targetSimulationIndex)->GetDataState()->GetSpecies(dataStateValueId)->Set(newValue);
+			SimulationsManager::GetSingleton().GetSimulation(_targetSimulationIndex)->GetDataState()->GetSpecies(dataStateValueId)->Set(*newValue);
 			break;
 
 		case DataStateValueType::Parameter:
-			SimulationsManager::GetSingleton().GetSimulation(_targetSimulationIndex)->GetDataState()->GetParameter(dataStateValueId)->Set(newValue);
+			SimulationsManager::GetSingleton().GetSimulation(_targetSimulationIndex)->GetDataState()->GetParameter(dataStateValueId)->Set(*newValue);
 			break;
 	}
 }

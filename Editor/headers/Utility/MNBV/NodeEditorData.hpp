@@ -1139,6 +1139,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		bool activateManualExecution = false;
 
 		/*!
+		@brief The value to use when the  event is executed if no link is 
+				connected to the input pin.
+		*/
+		float newValue = 0.0f;
+
+		/*!
 		@brief All the input pins.
 		@details Access the pins with the enum values InputPin_XXX
 		*/

@@ -32,10 +32,10 @@ namespace ECellEngine::Core::Events
 		/*!
 		@brief Value to attribute.
 		*/
-		float newValue;
+		float* newValue;
 
 		ModifyDataStateValueEvent() :
-			Event(), valueType(DataStateValueType::Species), dataStateValueId(""), newValue(0.0f)
+			Event(), valueType(DataStateValueType::Species), dataStateValueId(""), newValue(nullptr)
 		{
 
 		}

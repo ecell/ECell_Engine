@@ -316,7 +316,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
     const float startX = ImGui::GetCursorPosX();
 
     NodeDragFloat_In("New Value", _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue],
-        &_modifyDSValueEventNodeInfo.data->newValue,
+        &_modifyDSValueEventNodeInfo.newValue,
         itemsWidth, startX, _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue],
         Widget::MNBV::GetPinColors(PinType_ValueFloat));
 
