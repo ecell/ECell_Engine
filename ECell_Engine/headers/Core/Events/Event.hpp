@@ -4,8 +4,6 @@
 
 namespace ECellEngine::Core
 {
-	//class SimulationsManager;
-
 	namespace Events
 	{
 		/*!

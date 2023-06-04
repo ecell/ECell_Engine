@@ -18,7 +18,7 @@ namespace ECellEngine::Core::Events
 			Parameter
 		};
 
-	private:
+	public:
 		/*!
 		@brief Type of the dataStateValueId field.
 		*/
@@ -34,7 +34,12 @@ namespace ECellEngine::Core::Events
 		*/
 		float newValue;
 
-	public:
+		ModifyDataStateValueEvent() :
+			Event(), valueType(DataStateValueType::Species), dataStateValueId(""), newValue(0.0f)
+		{
+
+		}
+
 		virtual void Execute(std::size_t targetSimulationIndex) noexcept override;
 	};
 }
