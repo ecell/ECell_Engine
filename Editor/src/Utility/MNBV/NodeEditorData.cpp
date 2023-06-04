@@ -224,3 +224,53 @@ void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputConnect(NodeI
 
 	_nodeInputPinData->OnConnect(&value);
 }
+
+void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputConnect(NodeInputPinData* _nodeInput, float* _data)
+{
+	//The LHS input pin
+	if (_nodeInput->id == inputPins[WatcherNodeData::InputPin_LHS].id)
+	{
+		data->SetLHS(_data);
+	}
+	
+	//The RHS input pin
+	if (_nodeInput->id == inputPins[WatcherNodeData::InputPin_RHS].id)
+	{
+		data->SetRHS(_data);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput)
+{
+	//The LHS input pin
+	if (_nodeInput->id == inputPins[WatcherNodeData::InputPin_LHS].id)
+	{
+		//We start by setting the local lhs value to the previous value of the lhs in the watcher.
+		lhs = *data->GetLHS();
+
+		//We then set the lhs of the watcher to the local lhs value.
+		data->SetLHS(&lhs);
+	}
+
+	//The RHS input pin
+	if (_nodeInput->id == inputPins[WatcherNodeData::InputPin_RHS].id)
+	{
+		//We start by setting the local rhs value to the previous value of the rhs in the watcher.
+		rhs = *data->GetRHS();
+
+		//We then set the rhs of the watcher to the local rhs value.
+		data->SetRHS(&rhs);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput)
+{
+	//TODO: Handle Connection to an Event node
+	//		In particular, add the event node to the subscribers of the watcher
+}
+
+void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput)
+{
+	//TODO: Handle disconnection to an Event node
+	//		In particular, remove the event node from the subscribers of the watcher
+}

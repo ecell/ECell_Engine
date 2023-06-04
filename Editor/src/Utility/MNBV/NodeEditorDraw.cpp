@@ -598,12 +598,53 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ValueFloatNode(const ch
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
-    NodeDragFloat_Out("Value", _valueFloatNodeInfo.id.Get(), &_valueFloatNodeInfo.value,
+    NodeDragFloat_Out("Value", _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], &_valueFloatNodeInfo.value,
         itemsWidth, startX, headerWidth,
         _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], Widget::MNBV::GetPinColors(PinType_ValueFloat));
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
+}
+
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::WatcherNode(WatcherNodeData& _watcherNodeInfo)
+{
+	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Event));
+	ax::NodeEditor::BeginNode(_watcherNodeInfo.id);
+
+    const float headerWidth = NodeHeader("Watcher", "", Widget::MNBV::GetNodeColors(NodeType_Event));
+	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+	const float startX = ImGui::GetCursorPosX();
+    const float triggerWidth = ImGui::CalcTextSize("Trigger").x;
+
+    ImGuiSliderFlags dragFlags = ImGuiSliderFlags_None;
+    if (_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_LHS].isUsed)
+    {
+        dragFlags |= ImGuiSliderFlags_ReadOnly;
+    }
+	NodeDragFloat_In("LHS", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_LHS], &_watcherNodeInfo.lhs,
+        		0.5f*itemsWidth, startX,
+        		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_LHS], Widget::MNBV::GetPinColors(PinType_ValueFloat),
+                dragFlags);
+
+    //TODO: Add a dropdown menu to select the comparator
+
+    ImGui::SameLine();
+
+    NodeText_Out("Trigger", triggerWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+        _watcherNodeInfo.outputPins[WatcherNodeData::OutputPin_Trigger], Widget::MNBV::GetPinColors(PinType_Event));
+
+    dragFlags = ImGuiSliderFlags_None;
+    if (_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_RHS].isUsed)
+    {
+        dragFlags |= ImGuiSliderFlags_ReadOnly;
+    }
+    NodeDragFloat_In("RHS", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_RHS], &_watcherNodeInfo.rhs,
+        0.5f*itemsWidth, startX,
+        _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_RHS], Widget::MNBV::GetPinColors(PinType_ValueFloat),
+        dragFlags);
+
+	ax::NodeEditor::EndNode();
+	PopNodeStyle();
 }
 #pragma endregion
 
@@ -1000,6 +1041,27 @@ bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeCollapsingHeader_Ou
     }
 
     return open;
+}
+
+bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeDragFloat_In(const char* _label, const std::size_t _id, float* valueBuffer,
+    const float _inputFieldWidth, const float _startX,
+    const NodePinData& _pin, const ImVec4 _pinColors[],
+    const ImGuiSliderFlags _flags)
+{
+    ImGui::SetCursorPosX(_startX);
+
+    Pin(_pin, _pinColors); ImGui::SameLine();
+
+    ImGui::PushID((int)_id);
+    ImGui::AlignTextToFramePadding();
+
+    ImGui::Text(_label); ImGui::SameLine();
+
+    ImGui::SetNextItemWidth(_inputFieldWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x);
+    bool edited = ImGui::DragFloat("##value", valueBuffer, 1.0f, 0.f, 0.f, "%.3f", _flags);
+    ImGui::PopID();
+
+    return edited;
 }
 
 bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeDragFloat_Out(const char* _label, const std::size_t _id, float* valueBuffer,

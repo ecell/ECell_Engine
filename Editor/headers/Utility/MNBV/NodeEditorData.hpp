@@ -590,9 +590,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		/*!
-		@remarks @p _nodeId is incremented immediately after use.
-		*/
 		AssetNodeData(ECellEngine::Data::Module* _data) :
 			NodeData(), data{ dynamic_cast<ECellEngine::Data::BiochemicalModule*>(_data) }
 		{
@@ -816,9 +813,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_EquationOperands].data = &equationsOperands;
 		}
 
-		/*!
-		@remarks @p _nodeId is incremented immediately after use.
-		*/
 		EquationNodeData(std::shared_ptr<ECellEngine::Maths::Equation> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
@@ -1248,9 +1242,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		/*!
-		@remarks @p _nodeId is incremented immediately after use.
-		*/
 		ReactionNodeData(ECellEngine::Data::Reaction* _data) :
 			NodeData(), data{ _data }
 		{
@@ -1457,9 +1448,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep.data = &reactionKLDep;
 		}
 
-		/*!
-		@remarks @p _nodeId is incremented immediately after use.
-		*/
 		ParameterNodeData(std::shared_ptr<ECellEngine::Data::Parameter> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
@@ -1607,7 +1595,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 	@brief The logic to encode the data needed to draw the node representing
 			ECellEngine::Data::Solver.
 	*/
-	struct SolverNodeData : public NodeData
+	struct SolverNodeData final : public NodeData
 	{
 		/*!
 		@brief The local enum to manage access to the input pins.
@@ -1664,9 +1652,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		/*!
-		@remarks @p _nodeId is incremented immediately after use.
-		*/
 		SolverNodeData(ECellEngine::Solvers::Solver* _data) :
 			NodeData(), data{ _data }
 		{
@@ -1692,7 +1677,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 	@brief The logic to encode the data needed to draw the node representing
 			ECellEngine::Data::Species.
 	*/
-	struct SpeciesNodeData : public NodeData
+	struct SpeciesNodeData final : public NodeData
 	{
 		/*!
 		@brief The local enum to manage access to the input pins.
@@ -1925,7 +1910,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 	@brief The logic to encode the data needed to draw the node to define and
 			use a custom float.
 	*/
-	struct ValueFloatNodeData : public NodeData
+	struct ValueFloatNodeData final : public NodeData
 	{
 		/*!
 		@brief The local enum to manage access to the input pins.
@@ -2000,6 +1985,101 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Value Float Node Data
+	};
+
+	/*!
+	@brief The logic to encode the data needed to draw the node representing
+			ECellEngine::Core::Watcher.
+	*/
+	struct WatcherNodeData final : public NodeData
+	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
+		enum InputPin
+		{
+			InputPin_LHS,
+			InputPin_RHS,
+
+			InputPin_Count
+		};
+
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
+		enum OutputPin
+		{
+			OutputPin_Trigger,
+
+			OutputPin_Count
+		};
+
+		/*!
+		@brief Pointer to the watcher represented by this node.
+		*/
+		ECellEngine::Core::Watcher* data;
+
+		/*!
+		@brief The value of the left hand side of the watcher.
+		*/
+		float lhs = 0.f;
+
+		/*!
+		@brief The value of the right hand side of the watcher.
+		*/
+		float rhs = 0.f;
+
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
+		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
+		NodeOutputPinData outputPins[OutputPin_Count];
+
+		WatcherNodeData(const WatcherNodeData& _wtnd) :
+			NodeData(_wtnd), data{ _wtnd.data },
+			inputPins{ _wtnd.inputPins[0], _wtnd.inputPins[1] },
+			outputPins{ _wtnd.outputPins[0] }
+		{
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
+
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
+		}
+
+		WatcherNodeData(ECellEngine::Core::Watcher* _data, ImVec2& _position) :
+			NodeData(), data{ _data }
+		{
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//the Left Hand Side of the comparison
+			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//the Right Hand Side of the comparison
+			outputPins[OutputPin_Trigger] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Event, this);//To all the event to trigger
+		}
+
+		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in Watcher Node Data
+
+		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override;
+
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void Update() noexcept;
 	};
 #pragma endregion
 }

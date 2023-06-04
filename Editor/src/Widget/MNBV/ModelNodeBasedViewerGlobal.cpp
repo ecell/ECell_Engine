@@ -109,6 +109,15 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
         //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: ValueFloatNodeData " + std::to_string(_nodeId));
         return;
     }
+    
+    //Search in the list of Watcher Nodes
+    std::vector<Utility::MNBV::WatcherNodeData>::iterator itWND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end(), _nodeId);
+    if (itWND != s_mnbvCtxt->watcherNodes.end() && (std::size_t)itWND->id == _nodeId)
+    {
+        s_mnbvCtxt->watcherNodes.erase(itWND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: WatcherNodeData " + std::to_string(_nodeId));
+        return;
+    }
 }
 
 void ECellEngine::Editor::Widget::MNBV::EraseStaticLink(std::vector<Utility::MNBV::LinkData>::iterator& _staticLink)
@@ -177,8 +186,15 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
         return itND;
     }
 
-    //Search in the list of Species Nodes
+    //Search in the list of Value Float Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->valueFloatNodes.begin(), s_mnbvCtxt->valueFloatNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Watcher Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end());
     if (itND != nullptr)
     {
         return itND;
@@ -257,8 +273,15 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
         return itNPD;
     }
 
-    //Search in the list of Species Nodes
+    //Search in the list of Value FLoat Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->valueFloatNodes.begin(), s_mnbvCtxt->valueFloatNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
+    //Search in the list of Watcher Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;

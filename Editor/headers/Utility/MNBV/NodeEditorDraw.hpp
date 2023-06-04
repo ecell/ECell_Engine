@@ -152,6 +152,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		static void ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo);
 
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::WatcherNodeData.
+		@param _watcherNodeInfo The struct with information about what to draw.
+		*/
+		static void WatcherNode(WatcherNodeData& _watcherNodeInfo);
+
 #pragma endregion
 
 #pragma region Node Pins
@@ -453,6 +459,27 @@ namespace ECellEngine::Editor::Utility::MNBV
 			const float _startX, const float _drawLength,
 			const NodePinData& _pin, const ImVec4 _pinColors[],
 			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
+
+		/*!
+		@brief Draw an drag field for 1 float with an input pin.
+		@details Aligns the DragField text label and the Input Field body
+				to the left of the node.
+		@param _label The text label of the Input Field to display.
+		@param _id The _id of the DragField for ImGui.
+		@param _valueBuffer The float buffer to hold the value given by the user
+				and displayed in the field.
+		@param _inputFieldWidth The total width of the drag field (text label
+				and body).
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _pin The pin data used for the input pin to draw.
+		@param _pinColors The set of colors to cutomize both pins.
+		@param _flags Flags to customize the behaviour of the drag field.
+		*/
+		static bool NodeDragFloat_In(const char* _label, const std::size_t _id, float* _valueBuffer,
+			const float _inputFieldWidth, const float _startX,
+			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const ImGuiSliderFlags _flags = ImGuiSliderFlags_None);
 
 		/*!
 		@brief Draw an drag field for 1 float with an output pin.

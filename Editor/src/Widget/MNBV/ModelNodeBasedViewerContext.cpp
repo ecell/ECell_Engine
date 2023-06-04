@@ -20,6 +20,18 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			}
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::BeginMenu("Events"))
+		{
+			if (ImGui::MenuItem("Watcher Node"))
+			{
+				ax::NodeEditor::Resume();
+				//TODO: Use a command to add a watcher
+				watcherNodes.emplace_back(Utility::MNBV::WatcherNodeData(_simulation->GetDataState()->AddWatcher().get(), ImGui::GetIO().MousePos));
+				ax::NodeEditor::Suspend();
+			}
+			ImGui::EndMenu();
+		}
 		
 		if (ImGui::BeginMenu("Plots"))
 		{
@@ -344,10 +356,15 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 
 		it->ResetNLBSDUtilityStates();
 	}
-	
+
 	for (std::vector< Utility::MNBV::ValueFloatNodeData>::iterator it = valueFloatNodes.begin(); it != valueFloatNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::ValueFloatNode("Float", *it);
+	}
+
+	for (std::vector< Utility::MNBV::WatcherNodeData>::iterator it = watcherNodes.begin(); it != watcherNodes.end(); it++)
+	{
+		Utility::MNBV::NodeEditorDraw::WatcherNode(*it);
 	}
 
 	for (std::vector< Utility::MNBV::LinkData>::iterator it = staticLinks.begin(); it != staticLinks.end(); it++)

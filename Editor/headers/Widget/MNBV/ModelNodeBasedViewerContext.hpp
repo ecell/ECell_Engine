@@ -101,6 +101,13 @@ namespace ECellEngine::Editor::Widget::MNBV
 				and use custom float values.
 		*/
 		std::vector<Utility::MNBV::ValueFloatNodeData> valueFloatNodes;
+
+		/*!
+		@brief The list of watchers in this context.
+		@details It contains the information used to draw the nodes to display
+				 the watchers of this simulation space.
+		*/
+		std::vector<Utility::MNBV::WatcherNodeData> watcherNodes;
 #pragma endregion
 
 		/*!
