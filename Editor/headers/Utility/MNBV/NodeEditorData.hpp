@@ -1130,7 +1130,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Pointer to the event represented by this node.
 		*/
-		ECellEngine::Core::Events::ModifyDataStateValueEvent* data;
+		std::shared_ptr<ECellEngine::Core::Events::ModifyDataStateValueEvent> data;
 
 		/*!
 		@brief A boolean to control whether the user can use a button to
@@ -1185,7 +1185,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		ModifyDataStateValueEventNodeData(ECellEngine::Core::Events::ModifyDataStateValueEvent*_data, ImVec2& _position) :
+		ModifyDataStateValueEventNodeData(std::shared_ptr<ECellEngine::Core::Events::ModifyDataStateValueEvent> _data, ImVec2& _position) :
 			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
@@ -2156,7 +2156,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Pointer to the watcher represented by this node.
 		*/
-		ECellEngine::Core::Watcher* data;
+		std::shared_ptr<ECellEngine::Core::Watcher> data;
 
 		/*!
 		@brief The value of the left hand side of the watcher.
@@ -2201,7 +2201,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		WatcherNodeData(ECellEngine::Core::Watcher* _data, ImVec2& _position) :
+		WatcherNodeData(std::shared_ptr<ECellEngine::Core::Watcher> _data, ImVec2& _position) :
 			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);

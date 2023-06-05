@@ -27,7 +27,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			{
 				ax::NodeEditor::Resume();
 				//TODO: Use a command to add th event
-				modifyDataStateValueEventNodes.emplace_back(Utility::MNBV::ModifyDataStateValueEventNodeData(_simulation->GetDataState()->AddModifyDataStateValueEvent().get(), ImGui::GetIO().MousePos));
+				modifyDataStateValueEventNodes.emplace_back(Utility::MNBV::ModifyDataStateValueEventNodeData(_simulation->GetDataState()->AddModifyDataStateValueEvent(), ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
 			}
 			
@@ -35,7 +35,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			{
 				ax::NodeEditor::Resume();
 				//TODO: Use a command to add a watcher
-				watcherNodes.emplace_back(Utility::MNBV::WatcherNodeData(_simulation->GetDataState()->AddWatcher().get(), ImGui::GetIO().MousePos));
+				watcherNodes.emplace_back(Utility::MNBV::WatcherNodeData(_simulation->GetDataState()->AddWatcher(), ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
 			}
 			ImGui::EndMenu();
