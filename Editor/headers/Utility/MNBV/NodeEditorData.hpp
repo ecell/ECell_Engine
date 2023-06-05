@@ -1172,6 +1172,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		ModifyDataStateValueEventNodeData(std::shared_ptr<ECellEngine::Core::Events::ModifyDataStateValueEvent> _data, ImVec2& _position) :
 			NodeData(), data{ _data }
 		{
+			data.get()->newValue = &newValue;
+
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_NewFloatValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the new value we will use to modify the data state
@@ -2174,6 +2176,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 		WatcherNodeData(std::shared_ptr<ECellEngine::Core::Watcher> _data, ImVec2& _position) :
 			NodeData(), data{ _data }
 		{
+			data->SetLHS(&lhs);
+			data->SetRHS(&rhs);
+
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the Left Hand Side of the comparison

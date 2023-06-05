@@ -1,7 +1,8 @@
-#include "Core/Watcher.hpp"
-
 #include <cassert>
 #include <algorithm> //std::find_if
+
+#include "Core/SimulationsManager.hpp"
+#include "Core/Watcher.hpp"
 
 bool ECellEngine::Core::Watcher::IsConditionVerified() noexcept
 {
@@ -39,7 +40,7 @@ void ECellEngine::Core::Watcher::CallEventsIfConditionVerified() noexcept
 		//Call events
 		for (std::shared_ptr<Events::Event>& event : triggeredEvents)
 		{
-			//event->Execute(simulationManager, targetSimulationIndex);
+			event->Execute(0);//TODO: Change this to use the index of the simulation where that event is coming from
 		}
 	}
 }
