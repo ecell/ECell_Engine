@@ -1158,6 +1158,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins{ _mdstvend.outputPins[0], _mdstvend.outputPins[1] },
 			collapsingHeadersIds{ _mdstvend.collapsingHeadersIds[0] }
 		{
+			data.get()->newValue = &newValue;
+
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
@@ -2162,6 +2164,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins{ _wtnd.inputPins[0], _wtnd.inputPins[1] },
 			outputPins{ _wtnd.outputPins[0] }
 		{
+			data->SetLHS(&lhs);
+			data->SetRHS(&rhs);
+			
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
