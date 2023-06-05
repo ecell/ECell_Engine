@@ -125,26 +125,55 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::Update() noexcept
 
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputConnect(NodeInputPinData* _nodeInput, float* _data)
 {
-	//TODO: link the event's new value to the pointer _data
-}
+	if (_nodeInput->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue].id)
+	{
+		data->newValue = _data;
+	}
 
-//TODO: This node will need to connect with Watchers; however, watchers cannot be identified with char* nor float*
-//		we will need another InputConnect. 
+	//We use this Float* _data based input connect to set the fallpack pin of the watcher input pin.
+	//But, this is clearly a hack since the connection to the watcher input pin is not a float*.
+	if (_nodeInput->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Watchers].id)
+	{
+		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[ModifyDataStateValueEventNodeData::InputPin_CollHdrExecution].id, 1);
+	}
+}
 
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput)
 {
-	//TODO: unlink the event's new value from the pointer _data
+	if (_nodeInput->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue].id)
+	{
+		newValue = *data->newValue;
+		data->newValue = &newValue;
+	}
 }
 
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput)
 {
-	//TODO: Retrieve the node ID of the input pin to assigne the event's dataStateValueId
-	//TODO: Fallback to the ouput pin of the execution collapsing header
+	//There is only one output pin (Modify Pin), so we don't need to check the id of the output pin
+
+	SpeciesNodeData* speciesNodeData = dynamic_cast<SpeciesNodeData*>(_nodeInput->node);
+	if (speciesNodeData != nullptr)
+	{
+		data->dataStateValueId = speciesNodeData->data.get()->name;
+		data->valueType = ECellEngine::Core::Events::ModifyDataStateValueEvent::DataStateValueType::Species;
+	}
+
+	ParameterNodeData* parameterNodeData = dynamic_cast<ParameterNodeData*>(_nodeInput->node);
+	if (parameterNodeData != nullptr)
+	{
+		data->dataStateValueId = parameterNodeData->data.get()->name;
+		data->valueType = ECellEngine::Core::Events::ModifyDataStateValueEvent::DataStateValueType::Parameter;
+	}
+	
+	Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[ModifyDataStateValueEventNodeData::OutputPin_CollHdrExecution].id, 1);
 }
 
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput)
 {
-	//TODO: Reset the event's dataStateValueId
+	//There is only one output pin (Modify Pin), so we don't need to check the id of the output pin
+
+	//Reset the data state value id
+	data->dataStateValueId = "";
 }
 
 void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
