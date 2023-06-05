@@ -177,21 +177,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		/*!
 		@brief Method to implement what to do when a pin (@p _nodeInput) receives
-				a link connection and a char array as data.
-		@param _nodeInput The pin notifying this node that a char array has arrived
+				a link connection with some data.
+		@param _nodeInput The pin notifying this node that a data has arrived
 				through it because of a new link connection.
-		@param _data The char array received through the link.
+		@param _nodeOuput The pin from which the data has arrived.
+		@param _data The data received through the link.
 		*/
-		virtual void InputConnect(NodeInputPinData* _nodeInput, char* _data) = 0;
-
-		/*!
-		@brief Method to implement what to do when a pin (@p _nodeInput) receives
-				a link connection and a float as data.
-		@param _nodeInput The pin notifying this node that a float has arrived
-				through it because of a new link connection.
-		@param _data The float received through the link.
-		*/
-		virtual void InputConnect(NodeInputPinData* _nodeInput, float* _data) = 0;
+		virtual void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) = 0;
 
 		/*!
 		@brief Method to implement what to do when a link is disconnected
@@ -291,13 +283,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		/*!
 		@brief What to do when a link gets connected to the input pin.
-		@tparam Data The type of data the pin receives. Supports char* and float*.
-		@param _data The data the pin receives from its output Node.
+		@tparam Data The type of data the pin receives.
 		*/
-		template<class Data>
-		inline void OnConnect(Data _data)
+		inline void OnConnect(NodeOutputPinData* _outputNode, void* _data)
 		{
-			node->InputConnect(this, _data);
+			node->InputConnect(this, _outputNode, _data);
 
 			isUsed = true;
 		}
@@ -615,10 +605,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override;
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
-		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in asset node data
-		
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in asset node data
@@ -866,9 +854,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_EquationOperands] = { &equationsOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Node String List Box for Computed Parameter Operands
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in equation data
-
-		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in equation data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in equation data
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in equation data
 
@@ -1041,9 +1027,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};// not used in line plot node data
-
-		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override;
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
@@ -1139,7 +1123,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		bool activateManualExecution = false;
 
 		/*!
-		@brief The value to use when the  event is executed if no link is 
+		@brief The value to use when the  event is executed if no link is
 				connected to the input pin.
 		*/
 		float newValue = 0.0f;
@@ -1195,13 +1179,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins[InputPin_CollHdrExecution] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
 			outputPins[OutputPin_Modify] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//Connection to the value to modify
 			outputPins[OutputPin_CollHdrExecution] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
-		
+
 			collapsingHeadersIds[CollapsingHeader_Execution] = Widget::MNBV::GetMNBVCtxtNextId();
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in ModifyDataStateValueEvent Node Data
-
-		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override;
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
@@ -1421,9 +1403,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_EquationOperands] = { &equationsOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Computed Parameter Operands from Kinetic Law
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in Reaction Node Data
-
-		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in Reaction Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Reaction Node Data
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Reaction Node Data
 
@@ -1625,9 +1605,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };//Kinetic Laws section
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in Parameter Node Data
-
-		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in Parameter Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Parameter Node Data
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Parameter Node Data
 
@@ -1717,9 +1695,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in Simulation Time Node Data
-
-		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in Simulation Time Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Simulation Time Node Data
 
@@ -1799,9 +1775,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in Solver Node Data
-
-		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in Solver Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Solver Node Data
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Solver Node Data
 
@@ -2021,9 +1995,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in Species Node Data
-
-		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in Species Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Species Node Data
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Species Node Data
 
@@ -2113,9 +2085,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in Value Float Node Data
-
-		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override {};//not used in Value Float Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Value Float Node Data
 
@@ -2211,9 +2181,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins[OutputPin_Trigger] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Watcher, this);//To all the event to trigger
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in Watcher Node Data
-
-		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override;
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
