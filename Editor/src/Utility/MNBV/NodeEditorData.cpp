@@ -145,6 +145,12 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Inpu
 		newValue = *data->newValue;
 		data->newValue = &newValue;
 	}
+
+	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Watchers].id)
+	{
+		WatcherNodeData* watcherNodeData = dynamic_cast<WatcherNodeData*>(_nodeOutputPinData->node);
+		watcherNodeData->data->RemoveEvent(data);
+	}
 }
 
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
@@ -328,6 +334,6 @@ void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::OutputDisconnect(NodeI
 {
 	//There is only one output pin in the WatcherNodeData and it is the output pin of the events to trigger.
 
-	//TODO: Handle disconnection to an Event node
-	//		In particular, remove the event node from the subscribers of the watcher
+	//We defer the unsubscription of the event to the watcher, to the event node.
+	_nodeInputPinData->OnDisconnect(_nodeOutputPinData);
 }
