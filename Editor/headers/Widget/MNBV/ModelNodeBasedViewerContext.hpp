@@ -178,7 +178,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 			uniqueId{ 0 }, countTASToMCmds{ 0 }
 		{
 			authorizedDynamicLinks[Utility::MNBV::PinType_Solver][Utility::MNBV::PinType_Solver] = true;
-			authorizedDynamicLinks[Utility::MNBV::PinType_ValueFloat][Utility::MNBV::PinType_ValueFloat] = true;
+			
+			authorizedDynamicLinks[Utility::MNBV::PinType_DataStateValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_EquationValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_FreeValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
+			
+			authorizedDynamicLinks[Utility::MNBV::PinType_ModifyDataStateEvent][Utility::MNBV::PinType_DataStateValueFloat] = true;
+			
+			authorizedDynamicLinks[Utility::MNBV::PinType_Watcher][Utility::MNBV::PinType_ModifyDataStateEvent] = true;
 		}
 
 		/*!

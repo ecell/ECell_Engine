@@ -170,7 +170,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(const char
         float value = _equationNodeInfo.data->Get();
         NodeInputFloat_InOut("Value", _equationNodeInfo.id.Get(), &value,
             itemsWidth, startX, headerWidth,
-            _equationNodeInfo.inputPins[EquationNodeData::InputPin_EquationValue], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_EquationValue], Widget::MNBV::GetPinColors(PinType_ValueFloat),
+            _equationNodeInfo.inputPins[EquationNodeData::InputPin_EquationValue], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_EquationValue], Widget::MNBV::GetPinColors(PinType_EquationValueFloat),
             ImGuiInputTextFlags_ReadOnly);
     }
 
@@ -246,8 +246,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
         _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_CollHdrPlot], Widget::MNBV::GetPinColors(PinType_Default),
         ImVec2(itemsWidth, 0.f)))
     {
-        NodeText_In(_linePlotNodeData.xAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_XAxis], Widget::MNBV::GetPinColors(PinType_ValueFloat));
-        NodeText_In(_linePlotNodeData.yAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_YAxis], Widget::MNBV::GetPinColors(PinType_ValueFloat));
+        NodeText_In(_linePlotNodeData.xAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_XAxis], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
+        NodeText_In(_linePlotNodeData.yAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_YAxis], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
 
         AlignToCenter(startX, headerWidth, headerWidth);
 
@@ -315,10 +315,11 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
     const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
     const float startX = ImGui::GetCursorPosX();
 
+    //TODO: Disable if something is pinned in
     NodeDragFloat_In("New Value", _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue],
         &_modifyDSValueEventNodeInfo.newValue,
         itemsWidth, startX, _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue],
-        Widget::MNBV::GetPinColors(PinType_ValueFloat));
+        Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
 
     NodeHorizontalSeparator(headerWidth);
 
@@ -358,13 +359,13 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 
         NodeText_In("Watchers", startX,
             _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Watchers],
-            Widget::MNBV::GetPinColors(PinType_Event));
+            Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
 
         ImGui::SameLine();
 
         NodeText_Out("Modify", ImGui::CalcTextSize("Modify").x, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
             _modifyDSValueEventNodeInfo.outputPins[ModifyDataStateValueEventNodeData::OutputPin_Modify],
-            Widget::MNBV::GetPinColors(PinType_ValueFloat));
+            Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
     }
 
     ax::NodeEditor::EndNode();
@@ -454,7 +455,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(const char
         float value = _reactionNodeInfo.data->GetKineticLawValue();
         NodeInputFloat_InOut("Value", _reactionNodeInfo.id.Get(), &value,
             itemsWidth, startX, headerWidth,
-            _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_KineticLawValue], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_KineticLawValue], Widget::MNBV::GetPinColors(PinType_ValueFloat),
+            _reactionNodeInfo.inputPins[ReactionNodeData::InputPin_KineticLawValue], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_KineticLawValue], Widget::MNBV::GetPinColors(PinType_EquationValueFloat),
             ImGuiInputTextFlags_ReadOnly);
     }
 
@@ -516,7 +517,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
     {
         if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &_parameterNodeInfo.parameterValueBuffer,
             itemsWidth, startX, headerWidth,
-            _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_ParameterValue], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_ParameterValue], Widget::MNBV::GetPinColors(PinType_ValueFloat),
+            _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_ParameterValue], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_ParameterValue], Widget::MNBV::GetPinColors(PinType_DataStateValueFloat),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _parameterNodeInfo.data->Set(_parameterNodeInfo.parameterValueBuffer);
@@ -538,7 +539,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SimulationTimeNode(cons
 
     NodeInputFloat_Out("Elapsed Time", _simulationTimeNodeInfo.id.Get(), &_simulationTimeNodeInfo.simulationTimer->elapsedTime,
         itemsWidth, startX, headerWidth,
-        _simulationTimeNodeInfo.outputPins[SimulationTimeNodeData::OutputPin_SimulationTime], Widget::MNBV::GetPinColors(PinType_ValueFloat),
+        _simulationTimeNodeInfo.outputPins[SimulationTimeNodeData::OutputPin_SimulationTime], Widget::MNBV::GetPinColors(PinType_DataStateValueFloat),
         ImGuiInputTextFlags_ReadOnly);
 
     ax::NodeEditor::EndNode();
@@ -644,7 +645,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
     {
         if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &_speciesNodeInfo.speciesQuantityBuffer,
             itemsWidth, startX, headerWidth,
-            _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Quantity], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_Quantity], Widget::MNBV::GetPinColors(PinType_ValueFloat),
+            _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Quantity], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_Quantity], Widget::MNBV::GetPinColors(PinType_DataStateValueFloat),
             ImGuiInputTextFlags_EnterReturnsTrue))
         {
             _speciesNodeInfo.data->Set(_speciesNodeInfo.speciesQuantityBuffer);
@@ -666,7 +667,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ValueFloatNode(const ch
 
     NodeDragFloat_Out("Value", _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], &_valueFloatNodeInfo.value,
         itemsWidth, startX, headerWidth,
-        _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], Widget::MNBV::GetPinColors(PinType_ValueFloat));
+        _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
 
     ax::NodeEditor::EndNode();
     PopNodeStyle();
@@ -692,13 +693,13 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::WatcherNode(WatcherNode
 
 	NodeDragFloat_In("LHS", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_LHS], &_watcherNodeInfo.lhs,
         		0.5f*itemsWidth, startX,
-        		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_LHS], Widget::MNBV::GetPinColors(PinType_ValueFloat),
+        		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_LHS], Widget::MNBV::GetPinColors(PinType_FreeValueFloat),
                 dragFlags);
 
     ImGui::SameLine();
 
     NodeText_Out("Trigger", triggerWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
-        _watcherNodeInfo.outputPins[WatcherNodeData::OutputPin_Trigger], Widget::MNBV::GetPinColors(PinType_Event));
+        _watcherNodeInfo.outputPins[WatcherNodeData::OutputPin_Trigger], Widget::MNBV::GetPinColors(PinType_Watcher));
 
     dragFlags = ImGuiSliderFlags_None;
     if (_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_RHS].isUsed)
@@ -707,7 +708,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::WatcherNode(WatcherNode
     }
     NodeDragFloat_In("RHS", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_RHS], &_watcherNodeInfo.rhs,
         0.5f*itemsWidth, startX,
-        _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_RHS], Widget::MNBV::GetPinColors(PinType_ValueFloat),
+        _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_RHS], Widget::MNBV::GetPinColors(PinType_FreeValueFloat),
         dragFlags);
 
 	ax::NodeEditor::EndNode();

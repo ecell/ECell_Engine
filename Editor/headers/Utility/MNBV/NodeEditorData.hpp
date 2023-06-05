@@ -827,7 +827,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins[InputPin_NLBSSpecies] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Node String List Box for Species Operands
 			inputPins[InputPin_NLBSParameters] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Simple Parameter Operands
 			inputPins[InputPin_NLBSEquations] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Computed Parameter Operands
-			inputPins[InputPin_EquationValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Operation Value Float
+			inputPins[InputPin_EquationValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Equation, this);//Operation Value Float
 
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
@@ -837,7 +837,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins[OutputPin_NLBSSpecies] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Node String List Box for Species Operands
 			outputPins[OutputPin_NLBSParameters] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Simple Parameter Operands
 			outputPins[OutputPin_NLBSEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Computed Parameter Operands
-			outputPins[OutputPin_EquationValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Operation Value Float
+			outputPins[OutputPin_EquationValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_EquationValueFloat, this);//Operation Value Float
 
 			collapsingHeadersIds[CollapsingHeader_ModelLinks] = Widget::MNBV::GetMNBVCtxtNextId();//ModelLinks Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Equations] = Widget::MNBV::GetMNBVCtxtNextId();//Computed Parameters section
@@ -1005,8 +1005,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_CollHdrPlot] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Plot Collapsing Header
-			inputPins[InputPin_XAxis] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//X
-			inputPins[InputPin_YAxis] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Y
+			inputPins[InputPin_XAxis] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//X
+			inputPins[InputPin_YAxis] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//Y
 
 			outputPins[OutputPin_None] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
 
@@ -1128,7 +1128,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		};
 
 		/*!
-		@brief Pointer to the watcher represented by this node.
+		@brief Pointer to the event represented by this node.
 		*/
 		ECellEngine::Core::Events::ModifyDataStateValueEvent* data;
 
@@ -1190,11 +1190,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			inputPins[InputPin_NewFloatValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//the new value we will use to modify the data state
-			inputPins[InputPin_Watchers] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Event, this);//the watchers that will trigger this event
+			inputPins[InputPin_NewFloatValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the new value we will use to modify the data state
+			inputPins[InputPin_Watchers] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//the watchers that will trigger this event
 			inputPins[InputPin_CollHdrExecution] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
-			outputPins[OutputPin_Modify] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Event, this);//Connection to the value to modify
-			outputPins[OutputPin_CollHdrExecution] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Event, this);//the Execution Collapsing Header
+			outputPins[OutputPin_Modify] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//Connection to the value to modify
+			outputPins[OutputPin_CollHdrExecution] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
 		
 			collapsingHeadersIds[CollapsingHeader_Execution] = Widget::MNBV::GetMNBVCtxtNextId();
 		}
@@ -1202,9 +1202,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in ModifyDataStateValueEvent Node Data
 
 		void InputConnect(NodeInputPinData* _nodeInput, float* _data) override;
-
-		//TODO: This node will need to connect with Watchers; however, watchers cannot be identified with char* nor float*
-		//		we will need another InputConnect. 
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
@@ -1396,7 +1393,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins[InputPin_NLBSSpecies] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Species Operands from Kinetic Law
 			inputPins[InputPin_NLBSParameters] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameter Operands from Kinetic Law
 			inputPins[InputPin_NLBSEquations] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameter Operands from Kinetic Law
-			inputPins[InputPin_KineticLawValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Kinetic Law Value Float field (must be Read Only)
+			inputPins[InputPin_KineticLawValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Equation, this);//Kinetic Law Value Float field (must be Read Only)
 
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			outputPins[OutputPin_CollHdrReactants] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reactants section Collapsing header
@@ -1406,7 +1403,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins[OutputPin_NLBSSpecies] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Species Operands from Kinetic Law
 			outputPins[OutputPin_NLBSParameters] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameter Operands from Kinetic Law
 			outputPins[OutputPin_NLBSEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameter Operands from Kinetic Law
-			outputPins[OutputPin_KineticLawValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Kinetic Law Value Float field (must be Read Only)
+			outputPins[OutputPin_KineticLawValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_EquationValueFloat, this);//Kinetic Law Value Float field (must be Read Only)
 
 			collapsingHeadersIds[CollapsingHeader_ModelLinks] = Widget::MNBV::GetMNBVCtxtNextId();//ModelLinks Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Reactants] = Widget::MNBV::GetMNBVCtxtNextId();//Reactants section Collapsing header
@@ -1599,13 +1596,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins[InputPin_CollHdrEquations] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
 			inputPins[InputPin_CollHdrKineticLaws] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
 			inputPins[InputPin_CollHdrDataFields] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
-			inputPins[InputPin_ParameterValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Value Float field
+			inputPins[InputPin_ParameterValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Value Float field
 
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
 			outputPins[OutputPin_CollHdrKineticLaws] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
 			outputPins[OutputPin_CollHdrDataFields] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
-			outputPins[OutputPin_ParameterValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Value Float field
+			outputPins[OutputPin_ParameterValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Value Float field
 
 			collapsingHeadersIds[CollapsingHeader_ModelLinks] = Widget::MNBV::GetMNBVCtxtNextId();//ModelLinks Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Equations] = Widget::MNBV::GetMNBVCtxtNextId();//Computed Parameters section
@@ -1701,7 +1698,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
-			outputPins[OutputPin_SimulationTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this); //simulation Time
+			outputPins[OutputPin_SimulationTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this); //simulation Time
 		}
 
 		SimulationTimeNodeData(const SimulationTimeNodeData& _stnd) :
@@ -1987,7 +1984,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins[InputPin_CollHdrAsProduct] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Products
 			inputPins[InputPin_CollHdrInKineticLaw] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Kinetic Law
 			inputPins[InputPin_CollHdrDataFields] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Data Fields
-			inputPins[InputPin_Quantity] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Quantity
+			inputPins[InputPin_Quantity] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Quantity
 
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Model Links
 			outputPins[OutputPin_CollHdrInEquation] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Computed parameters equation
@@ -1995,7 +1992,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins[OutputPin_CollHdrAsProduct] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Products
 			outputPins[OutputPin_CollHdrInKineticLaw] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Kinetic Law
 			outputPins[OutputPin_CollHdrDataFields] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Data Fields
-			outputPins[OutputPin_Quantity] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Quantity
+			outputPins[OutputPin_Quantity] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Quantity
 
 			collapsingHeadersIds[CollapsingHeader_ModelLinks] = Widget::MNBV::GetMNBVCtxtNextId();//Collapsing Header Model Links
 			collapsingHeadersIds[CollapsingHeader_InEquation] = Widget::MNBV::GetMNBVCtxtNextId();//Collapsing Header Computed parameters equation
@@ -2097,7 +2094,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
-			outputPins[OutputPin_Value] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this); //Value
+			outputPins[OutputPin_Value] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //Value
 		}
 
 		ValueFloatNodeData(const ValueFloatNodeData& _vfnd) :
@@ -2209,9 +2206,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//the Left Hand Side of the comparison
-			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//the Right Hand Side of the comparison
-			outputPins[OutputPin_Trigger] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Event, this);//To all the event to trigger
+			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the Left Hand Side of the comparison
+			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the Right Hand Side of the comparison
+			outputPins[OutputPin_Trigger] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Watcher, this);//To all the event to trigger
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, char* _data) override {};//not used in Watcher Node Data
