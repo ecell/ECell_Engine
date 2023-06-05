@@ -130,10 +130,10 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Inpu
 		data->newValue = (float*)_data;
 	}
 
-	//We use this Float* _data based input connect to set the fallpack pin of the watcher input pin.
-	//But, this is clearly a hack since the connection to the watcher input pin is not a float*.
 	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Watchers].id)
 	{
+		WatcherNodeData* watcherNodeData = dynamic_cast<WatcherNodeData*>(_nodeOutputPinData->node);
+		watcherNodeData->data->AddEvent(data);
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[ModifyDataStateValueEventNodeData::InputPin_CollHdrExecution].id, 1);
 	}
 }
@@ -320,11 +320,8 @@ void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::OutputConnect(NodeInpu
 {
 	//There is only one output pin in the WatcherNodeData and it is the output pin of the events to trigger.
 
-	//TODO: Handle Connection to an Event node
-	//		In particular, add the event node to the subscribers of the watcher
-
-
-	//data.get()->AddEvent();
+	//We defer the subscription of the event to the watcher, to the event node.
+	_nodeInputPinData->OnConnect(_nodeOutputPinData, nullptr);
 }
 
 void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
