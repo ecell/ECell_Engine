@@ -115,3 +115,36 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 		system.emplace_back(Maths::Equation(species.get(), rhs));
 	}
 }
+
+void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _timer)
+{
+	//implementation of the Runge-Kutta 4th order method
+    //https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
+
+	//Compute the time step
+	float halfdt = _timer.deltaTime / 2;
+	float k1, k2, k3, k4;
+	float yn;
+	for (auto& equation : system)
+	{
+		yn = equation.Get();
+
+		//k1 = f(y_n)
+		k1 = equation.GetOperation().Get();
+		
+		//k2 = f(y_n + 0.5 * dt * k1)
+		equation.GetOperand()->Set(yn + halfdt * k1);
+		k2 = equation.GetOperation().Get();
+		
+		//k3 = f(y_n + 0.5 * dt * k2)
+		equation.GetOperand()->Set(yn + halfdt * k2);
+		k3 = equation.GetOperation().Get();
+		
+		//k4 = f(y_n + dt * k3)
+		equation.GetOperand()->Set(yn + _timer.deltaTime * k3);
+		k4 = equation.GetOperation().Get();
+		
+		//y_n+1 = y_n + dt / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+		equation.GetOperand()->Set(yn + _timer.deltaTime / 6 * (k1 + 2 * k2 + 2 * k3 + k4));
+	}
+}

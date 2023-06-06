@@ -4,7 +4,7 @@
 
 namespace ECellEngine::Solvers
 {
-	class ODESolver : public BiochemicalSolver
+	class ODESolver final : public BiochemicalSolver
 	{
 	private:
 		/*!
@@ -32,7 +32,7 @@ namespace ECellEngine::Solvers
 
 		virtual void Initialize(const ECellEngine::Data::Module* _module) override;
 
-		virtual void Update(const ECellEngine::Core::Timer& _timer) override = 0;
+		virtual void Update(const ECellEngine::Core::Timer& _timer) override;
 
 	};
 }
