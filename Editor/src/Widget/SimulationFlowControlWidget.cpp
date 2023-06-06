@@ -1,4 +1,5 @@
-#include "Editor.hpp"//forward declaration initiated in the  base class "Widget"
+#include "Widget/SimulationFlowControlWidget.hpp"
+#include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"
 
 void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationControls()
 {
@@ -102,5 +103,5 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::Draw()
 void ECellEngine::Editor::Widget::SimulationFlowControlWidget::SetSimulation(std::size_t _simuIdx)
 {
     std::to_chars(simuIdxAsChar, simuIdxAsChar + 8, _simuIdx);
-    simulation = editor.engine.GetSimulationsManager()->GetSimulation(_simuIdx);
+    simulation = ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(_simuIdx);
 }

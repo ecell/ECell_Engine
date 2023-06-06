@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "imgui_internal.h"
+
 #include "Widget.hpp"
 
 namespace ECellEngine::Core

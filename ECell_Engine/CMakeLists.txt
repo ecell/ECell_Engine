@@ -8,14 +8,17 @@ add_library(ECellEngine SHARED
     "src/Core/Simulation.cpp"
     "src/Core/SimulationsManager.cpp"
     "src/Core/Timer.cpp"
+    "src/Core/Watcher.cpp"
+    "src/Core/Track.cpp"
+
+    "src/Core/Events/ModifyDataStateValueEvent.cpp"
 
     "src/Data/Constant.cpp"
-    
     "src/Data/DataState.cpp"
     "src/Data/DependenciesDatabase.cpp"
     "src/Data/Parameter.cpp"
-    
     "src/Data/Species.cpp"
+    "src/Data/IndexedMinHeap.cpp"
 
     "src/IO/Commands.cpp"
     "src/IO/CommandsManager.cpp"
@@ -35,9 +38,6 @@ add_library(ECellEngine SHARED
     "src/Solver/BiochemicalSolver.cpp"
     "src/Solver/GillespieNRMRSolver.cpp"
     #"src/Solver/Gillespie_NRM_R.cpp"
-
-    "src/Data/IndexedMinHeap.cpp"
-    
 )
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)

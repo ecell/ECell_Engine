@@ -24,14 +24,15 @@ void ECellEngine::Core::Engine::Start()
 	//commandsManager.registerCommand(std::make_shared<QuitCommand>(this));
 
 	//SimulationManager Commands
-	commandsManager.registerCommand(std::make_shared<AddModuleCommand>(&simulationManager));
-	commandsManager.registerCommand(std::make_shared<AddSolverCommand>(&simulationManager));
-	commandsManager.registerCommand(std::make_shared<PauseSimulationCommand>(&simulationManager));
-	commandsManager.registerCommand(std::make_shared<PlaySimulationCommand>(&simulationManager));
-	commandsManager.registerCommand(std::make_shared<StepSimulationBackwardCommand>(&simulationManager));
-	commandsManager.registerCommand(std::make_shared<StepSimulationForwardCommand>(&simulationManager));
-	commandsManager.registerCommand(std::make_shared<StopSimulationCommand>(&simulationManager));
-	commandsManager.registerCommand(std::make_shared<TryAttachSolverToModuleCommand>(&simulationManager));
+	SimulationsManager& simulationManager = SimulationsManager::GetSingleton();
+	commandsManager.registerCommand(std::make_shared<AddModuleCommand>(simulationManager));
+	commandsManager.registerCommand(std::make_shared<AddSolverCommand>(simulationManager));
+	commandsManager.registerCommand(std::make_shared<PauseSimulationCommand>(simulationManager));
+	commandsManager.registerCommand(std::make_shared<PlaySimulationCommand>(simulationManager));
+	commandsManager.registerCommand(std::make_shared<StepSimulationBackwardCommand>(simulationManager));
+	commandsManager.registerCommand(std::make_shared<StepSimulationForwardCommand>(simulationManager));
+	commandsManager.registerCommand(std::make_shared<StopSimulationCommand>(simulationManager));
+	commandsManager.registerCommand(std::make_shared<TryAttachSolverToModuleCommand>(simulationManager));
 
 	//Creates a new simulation by default.
 	simulationManager.NewSimulation();
@@ -48,5 +49,5 @@ void ECellEngine::Core::Engine::Stop()
 
 void ECellEngine::Core::Engine::Update(float _deltaTime)
 {
-	simulationManager.UpdatePlayingSimulations(_deltaTime);
+	SimulationsManager::GetSingleton().UpdatePlayingSimulations(_deltaTime);
 }

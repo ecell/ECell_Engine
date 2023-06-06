@@ -1,4 +1,4 @@
-#include "Editor.hpp"//forward declaration initiated in the  base class "Widget"
+#include "Widget/MainWindow.hpp"
 
 void ECellEngine::Editor::Widget::MainWindow::Awake()
 {

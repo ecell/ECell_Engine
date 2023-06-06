@@ -1,5 +1,5 @@
-#include "Widget/ModelExplorerWidget.hpp"//forward declaration
-#include "Editor.hpp"
+#include "Widget/ModelExplorerWidget.hpp"
+#include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::Awake()
 {
@@ -138,5 +138,5 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::Draw()
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::SetSimulation(std::size_t _simulationIndex)
 {
-	simulation = editor.engine.GetSimulationsManager()->GetSimulation(_simulationIndex);
+	simulation = ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(_simulationIndex);
 }

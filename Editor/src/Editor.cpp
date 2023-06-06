@@ -1,5 +1,24 @@
 #include "Editor.hpp"
 
+#include "Widget/ConsoleWidget.hpp"
+#include "Widget/MainWindow.hpp"
+#include "Widget/ModelExplorerWidget.hpp"
+#include "Widget/OptionsWidget.hpp"
+#include "Widget/SimulationFlowControlWidget.hpp"
+
+ECellEngine::Editor::Editor::Editor()
+{
+    ECellEngine::Logging::Logger::GetSingleton().AddSink(&exeLoggerSink);
+
+    AddWidget<Widget::MainWindow>();
+    AddWidget<Widget::ConsoleWidget>();
+    AddWidget<Widget::OptionsWidget>();
+    AddWidget<Widget::SimulationFlowControlWidget>();
+    AddWidget<Widget::ModelExplorerWidget>();
+
+    showDemoWindow = false;
+}
+
 void ECellEngine::Editor::Editor::InitializeImGui()
 {
     // Setup Dear ImGui context

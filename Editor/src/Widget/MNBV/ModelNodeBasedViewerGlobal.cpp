@@ -19,9 +19,9 @@ void ECellEngine::Editor::Widget::MNBV::CurrentMNBVContextDraw(ECellEngine::Core
 
 void ECellEngine::Editor::Widget::MNBV::EraseDynamicLink(std::vector<Utility::MNBV::LinkData>::iterator& _dynamicLink)
 {
-    //Erase the subscription of the end pin to the start pin.
-        // --> data will not be transmitted from the start pin to the end pin anymore.
-    _dynamicLink->startPin->EraseSubscriber(_dynamicLink->endPin);
+    //Call the methods that will clear the data links via the pins.
+    _dynamicLink->startPin->OnDisconnect(_dynamicLink->endPin);
+    _dynamicLink->endPin->OnDisconnect(_dynamicLink->startPin);
 
     //Erase the link data.
     s_mnbvCtxt->dynamicLinks.erase(_dynamicLink);
@@ -53,6 +53,15 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     {
         s_mnbvCtxt->linePlotNodes.erase(itLPND);
         //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: LinePlotNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
+    //Search in the list of Modify Value In DataState Event Nodes
+    std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData>::iterator itMDSTVEND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->modifyDataStateValueEventNodes.begin(), s_mnbvCtxt->modifyDataStateValueEventNodes.end(), _nodeId);
+    if (itMDSTVEND != s_mnbvCtxt->modifyDataStateValueEventNodes.end() && (std::size_t)itMDSTVEND->id == _nodeId)
+    {
+        s_mnbvCtxt->modifyDataStateValueEventNodes.erase(itMDSTVEND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: ModifyDataStateValueEventNodeData " + std::to_string(_nodeId));
         return;
     }
 
@@ -109,6 +118,15 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
         //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: ValueFloatNodeData " + std::to_string(_nodeId));
         return;
     }
+    
+    //Search in the list of Watcher Nodes
+    std::vector<Utility::MNBV::WatcherNodeData>::iterator itWND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end(), _nodeId);
+    if (itWND != s_mnbvCtxt->watcherNodes.end() && (std::size_t)itWND->id == _nodeId)
+    {
+        s_mnbvCtxt->watcherNodes.erase(itWND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: WatcherNodeData " + std::to_string(_nodeId));
+        return;
+    }
 }
 
 void ECellEngine::Editor::Widget::MNBV::EraseStaticLink(std::vector<Utility::MNBV::LinkData>::iterator& _staticLink)
@@ -137,6 +155,13 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
 
     //Search in the list of Line Plot Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->linePlotNodes.begin(), s_mnbvCtxt->linePlotNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Modify DataState Value Event Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->modifyDataStateValueEventNodes.begin(), s_mnbvCtxt->modifyDataStateValueEventNodes.end());
     if (itND != nullptr)
     {
         return itND;
@@ -177,8 +202,15 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
         return itND;
     }
 
-    //Search in the list of Species Nodes
+    //Search in the list of Value Float Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->valueFloatNodes.begin(), s_mnbvCtxt->valueFloatNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
+    //Search in the list of Watcher Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end());
     if (itND != nullptr)
     {
         return itND;
@@ -222,6 +254,13 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
         return itNPD;
     }
 
+    //Search in the list of Modify DataState Value Event Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->modifyDataStateValueEventNodes.begin(), s_mnbvCtxt->modifyDataStateValueEventNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
     //Search in the list of Reaction Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->reactionNodes.begin(), s_mnbvCtxt->reactionNodes.end());
     if (itNPD != nullptr)
@@ -257,8 +296,15 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
         return itNPD;
     }
 
-    //Search in the list of Species Nodes
+    //Search in the list of Value FLoat Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->valueFloatNodes.begin(), s_mnbvCtxt->valueFloatNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
+    //Search in the list of Watcher Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;

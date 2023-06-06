@@ -20,6 +20,26 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			}
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::BeginMenu("Events"))
+		{
+			if (ImGui::MenuItem("Modify Value in DataState Event Node"))
+			{
+				ax::NodeEditor::Resume();
+				//TODO: Use a command to add th event
+				modifyDataStateValueEventNodes.emplace_back(Utility::MNBV::ModifyDataStateValueEventNodeData(_simulation->GetDataState()->AddModifyDataStateValueEvent(), ImGui::GetIO().MousePos));
+				ax::NodeEditor::Suspend();
+			}
+			
+			if (ImGui::MenuItem("Watcher Node"))
+			{
+				ax::NodeEditor::Resume();
+				//TODO: Use a command to add a watcher
+				watcherNodes.emplace_back(Utility::MNBV::WatcherNodeData(_simulation->GetDataState()->AddWatcher(), ImGui::GetIO().MousePos));
+				ax::NodeEditor::Suspend();
+			}
+			ImGui::EndMenu();
+		}
 		
 		if (ImGui::BeginMenu("Plots"))
 		{
@@ -189,6 +209,11 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		Utility::MNBV::NodeEditorDraw::LinePlotNode(it->name, *it);
 	}
 
+	for (std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData>::iterator it = modifyDataStateValueEventNodes.begin(); it != modifyDataStateValueEventNodes.end(); it++)
+	{
+		Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEventNode(*it);
+	}
+
 	for (std::vector< Utility::MNBV::ReactionNodeData>::iterator it = reactionNodes.begin(); it != reactionNodes.end(); ++it)
 	{
 		Utility::MNBV::NodeEditorDraw::ReactionNode(it->data->name.c_str(), *it);
@@ -344,10 +369,15 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 
 		it->ResetNLBSDUtilityStates();
 	}
-	
+
 	for (std::vector< Utility::MNBV::ValueFloatNodeData>::iterator it = valueFloatNodes.begin(); it != valueFloatNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::ValueFloatNode("Float", *it);
+	}
+
+	for (std::vector< Utility::MNBV::WatcherNodeData>::iterator it = watcherNodes.begin(); it != watcherNodes.end(); it++)
+	{
+		Utility::MNBV::NodeEditorDraw::WatcherNode(*it);
 	}
 
 	for (std::vector< Utility::MNBV::LinkData>::iterator it = staticLinks.begin(); it != staticLinks.end(); it++)

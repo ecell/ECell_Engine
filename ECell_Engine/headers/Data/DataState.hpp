@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Core/Events/ModifyDataStateValueEvent.hpp"
+#include "Core/Watcher.hpp"
 #include "Data/Reaction.hpp"
 #include "Data/Parameter.hpp"
 #include "Data/Species.hpp"
@@ -22,6 +24,9 @@ namespace ECellEngine::Data
 		std::unordered_map<std::string, std::shared_ptr<Species>> species;
 
 		std::unordered_multimap<std::string, std::string> operandsToOperations;
+
+		std::vector<std::shared_ptr<Core::Events::ModifyDataStateValueEvent>> modifyDataStateValueEvents;
+		std::vector<std::shared_ptr<Core::Watcher>> watchers;
 
 	public:
 		DataState()
@@ -95,6 +100,11 @@ namespace ECellEngine::Data
 			return equations.emplace(_lhs->name, std::make_shared<Maths::Equation>(_lhs, _rhs)).second;
 		}
 
+		inline std::shared_ptr<Core::Events::ModifyDataStateValueEvent> AddModifyDataStateValueEvent()
+		{
+			return modifyDataStateValueEvents.emplace_back(std::make_shared<Core::Events::ModifyDataStateValueEvent>());
+		}
+
 		inline bool AddParameter(const std::string& _parameterName, const float _value)
 		{
 			return parameters.emplace(_parameterName, std::make_shared<Parameter>(_parameterName, _value)).second;
@@ -103,6 +113,11 @@ namespace ECellEngine::Data
 		inline bool AddSpecies(const std::string& _speciesName, const float _quantity)
 		{
 			return species.emplace(_speciesName, std::make_shared<Species>(_speciesName, _quantity)).second;
+		}
+
+		inline std::shared_ptr<Core::Watcher> AddWatcher() noexcept
+		{
+			return watchers.emplace_back(std::make_shared<ECellEngine::Core::Watcher>());
 		}
 
 		inline void SetElapsedTime(const float _elapsedTime)

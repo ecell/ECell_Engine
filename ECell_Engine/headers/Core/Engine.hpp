@@ -4,10 +4,8 @@
 #include <string>
 #include <thread>
 
-#include "IO/Commands.hpp"
 #include "IO/CommandsManager.hpp"
 #include "Logging/Logger.hpp"
-#include "Core/SimulationsManager.hpp"
 
 using namespace ECellEngine::IO;
 
@@ -24,19 +22,14 @@ namespace ECellEngine::Core
 		@brief The manager to call specific tasks from outside the engine's code.
 		*/
 		CommandsManager commandsManager;
-		
-		/*!
-		@brief The manager to control the execution and integrity of simulations.
-		*/
-		SimulationsManager simulationManager;
 
 	public:
-		Engine() = default;
-
 		/*
 		@brief True is ::Start() was called and ::Stop() has no yet been called.
 		*/
-		bool isRunning;
+		bool isRunning = false;
+		
+		Engine() = default;
 
 #pragma region Accessors
 
@@ -46,14 +39,6 @@ namespace ECellEngine::Core
 		inline CommandsManager* GetCommandsManager()
 		{
 			return &commandsManager;
-		}
-
-		/*!
-		@brief Gets the pointer to ::simulationManager private member.
-		*/
-		inline SimulationsManager* GetSimulationsManager()
-		{
-			return &simulationManager;
 		}
 
 #pragma endregion

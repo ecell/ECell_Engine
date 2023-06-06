@@ -26,6 +26,9 @@ namespace ECellEngine::Maths
 			return lhs->Get();
 		}
 
+		/*!
+		@brief Returns the name of the operand (left hand side) of the equation.
+		*/
 		inline const std::string GetName() const noexcept
 		{
 			return lhs->name;

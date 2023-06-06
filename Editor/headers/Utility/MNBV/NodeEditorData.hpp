@@ -176,43 +176,35 @@ namespace ECellEngine::Editor::Utility::MNBV
 		friend inline bool operator>=(const NodeData& lhs, const NodeData& rhs) { return !(lhs < rhs); }
 
 		/*!
-		@brief Method to implement what to do when a new link is connected
-				to @p _nodeInput.
-		@param _nodeInput The pin notifying this node that a link was made with
-				it as the end.
+		@brief Method to implement what to do when a pin (@p _nodeInput) receives
+				a link connection with some data.
+		@param _nodeInput The pin notifying this node that a data has arrived
+				through it because of a new link connection.
+		@param _nodeOuput The pin from which the data has arrived.
+		@param _data The data received through the link.
 		*/
-		virtual void InputConnect(const NodeInputPinData& _nodeInput) = 0;
+		virtual void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) = 0;
 
 		/*!
-		@brief Method to implement what to do when a pin (@p _nodeInput) received
-				a char array as data.
-		@param _nodeInput The pin notifying this node that a char array has arrived
-				through it.
+		@brief Method to implement what to do when a link is disconnected
+				between @p _nodeInput and @p _nodeOutput.
 		*/
-		virtual void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) = 0;
-
-		/*!
-		@brief Method to implement what to do when a pin (@p _nodeInput) received
-				a float as data.
-		@param _nodeInput The pin notifying this node that a float has arrived
-				through it.
-		*/
-		virtual void InputUpdate(const NodeInputPinData& _nodeInput, float _data) = 0;
+		virtual void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) = 0;
 
 		/*!
 		@brief Method to implement what to do when a new link is connected
-				to @p _nodeOutput.
-		@param _nodeInput The pin notifying this node that a link was made with
+				from @p _nodeOutput to @p _nodeInput.
+		@param _nodeInput The pointer to the end pin of the link.
+		@param _nodeOutput The pin notifying this node that a link was made with
 				it as the start.
 		*/
-		virtual void OutputConnect(const NodeOutputPinData& _nodeOutput) = 0;
+		virtual void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) = 0;
 
 		/*!
-		@brief Method to implement what to do send data from a pin (@p _nodeOutput)
-				through all of its connected links.
-		@param _nodeOutput The start pin we want to broadcast data from.
+		@brief Method to implement what to do when a link is disconnected
+				between @p _nodeOutput and @p _nodeInput.
 		*/
-		virtual void OutputUpdate(const NodeOutputPinData& _nodeOutput) = 0;
+		virtual void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) = 0;
 	};
 
 	/*
@@ -290,14 +282,26 @@ namespace ECellEngine::Editor::Utility::MNBV
 		}
 
 		/*!
-		@brief What to do when the pin receives data.
-		@tparam Data The type of data the pin receives. Supports char* and float.
-		@param _data The data the pin receives from its publisher.
+		@brief What to do when a link gets connected to the input pin.
+		@tparam Data The type of data the pin receives.
 		*/
-		template<class Data>
-		inline void Receive(Data _data)
+		inline void OnConnect(NodeOutputPinData* _outputNode, void* _data)
 		{
-			node->InputUpdate(*this, _data);
+			node->InputConnect(this, _outputNode, _data);
+
+			isUsed = true;
+		}
+
+		/*!
+		@brief What to do when a link gets disconnected from the input pin.
+		@param _nodeOutput The output pin data which was connected to this input
+				pin data.
+		*/
+		inline void OnDisconnect(NodeOutputPinData* _nodeOutput)
+		{
+			node->InputDisconnect(this, _nodeOutput);
+
+			isUsed = false;
 		}
 	};
 
@@ -314,7 +318,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The list of every input pins which shall receive the data when
 				this output pin data broadcasts.
 		*/
-		std::vector<NodeInputPinData*> subscribers;
+		//std::vector<NodeInputPinData*> subscribers;
 
 		NodeOutputPinData() = default;
 
@@ -325,55 +329,34 @@ namespace ECellEngine::Editor::Utility::MNBV
 		}
 
 		/*!
-		@brief The logic to add a new input pin as ::subscriber to this
-				output pin.
+		@brief What happens when a link is created between this pin and
+				@p _nodeInput.
+		@param _inputNode The input pin data which we connect to this output
+				pin data.
 		@details Typically happens every time a dynamic link is created.
 		*/
-		inline void AddSubscriber(NodeInputPinData* _newSubscriber)
+		inline void OnConnect(NodeInputPinData* _inputNode)
 		{
-			subscribers.push_back(_newSubscriber);
+			//subscribers.push_back(_inputNode);
 
 			//What to do on connection.
-			node->OutputConnect(*this);
-			_newSubscriber->node->InputConnect(*_newSubscriber);
+			node->OutputConnect(_inputNode, this);
+			//_inputNode->node->InputConnect(*_inputNode);
 
-			//Send data for the first time
-			node->OutputUpdate(*this);
+			isUsed = true;
 		}
 
 		/*!
-		@brief Broadcasts data to the ::subscribers.
-		@tparam Data The type of data the pin broadcasts. Supports char* and
-				float on the side of the subscribers.
-		@param _data The data the pin broadcasts to its ::subscribers.
+		@brief What to do when a link gets disconnected from this output pin.
+		@param _inputNode The input pin data which was connected to this output
+				pin data.
 		*/
-		template<class Data>
-		inline void Broadcast(Data _data)
+		inline void OnDisconnect(NodeInputPinData* _inputNode)
 		{
-			for (std::vector<NodeInputPinData*>::iterator it = subscribers.begin(); it != subscribers.end(); ++it)
-			{
-				(*it)->Receive(_data);
-			}
-		}
+			//What to do on disconnection.
+			node->OutputDisconnect(_inputNode, this);
 
-		/*!
-		@brief The logic to erase an input pin from the ::subscribers of this
-				output pin.
-		@details Typically happens every time a dynamic link is created.
-		*/
-		inline void EraseSubscriber(NodeInputPinData* _subscriber)
-		{
-			for (std::vector<NodeInputPinData*>::iterator it = subscribers.begin(); it != subscribers.end();)
-			{
-				if ((*it)->id == _subscriber->id)
-				{
-					it = subscribers.erase(it);
-				}
-				else
-				{
-					++it;
-				}
-			}
+			isUsed = false;
 		}
 	};
 
@@ -597,9 +580,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		/*!
-		@remarks @p _nodeId is incremented immediately after use.
-		*/
 		AssetNodeData(ECellEngine::Data::Module* _data) :
 			NodeData(), data{ dynamic_cast<ECellEngine::Data::BiochemicalModule*>(_data) }
 		{
@@ -625,15 +605,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in asset node data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override;
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in asset node data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in asset node data
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in asset node data
-
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override {};//not used in asset node data
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in asset node data
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -737,6 +715,14 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::shared_ptr<ECellEngine::Maths::Equation> data;
 
 		/*!
+		@brief The copy of the value of the Operation in the right hand side of
+				the equation ::data.
+		@remarks This is needed because the accessor to the value of lhs of the
+				 equation works by copy.
+		*/
+		float lhsValueBuffer = 0.0f;
+
+		/*!
 		@brief Pointer to the dependency database of the simulation this node
 				part of.
 		*/
@@ -791,7 +777,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds{ _cpnd.collapsingHeadersIds[0], _cpnd.collapsingHeadersIds[1] , _cpnd.collapsingHeadersIds[2] ,
 					  _cpnd.collapsingHeadersIds[3] , _cpnd.collapsingHeadersIds[4] },
 			nlbsData{ _cpnd.nlbsData[0], _cpnd.nlbsData[1] , _cpnd.nlbsData[2] },
-			nlbsDataEqDep{ _cpnd.nlbsDataEqDep }, nlbsDataRKLDep { _cpnd.nlbsDataRKLDep },
+			nlbsDataEqDep{ _cpnd.nlbsDataEqDep }, nlbsDataRKLDep{ _cpnd.nlbsDataRKLDep },
 			equationDep{ _cpnd.equationDep },
 			reactionKLDep{ _cpnd.reactionKLDep },
 			speciesOperands{ _cpnd.speciesOperands },
@@ -815,9 +801,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_EquationOperands].data = &equationsOperands;
 		}
 
-		/*!
-		@remarks @p _nodeId is incremented immediately after use.
-		*/
 		EquationNodeData(std::shared_ptr<ECellEngine::Maths::Equation> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
@@ -832,7 +815,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins[InputPin_NLBSSpecies] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Node String List Box for Species Operands
 			inputPins[InputPin_NLBSParameters] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Simple Parameter Operands
 			inputPins[InputPin_NLBSEquations] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Computed Parameter Operands
-			inputPins[InputPin_EquationValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Operation Value Float
+			inputPins[InputPin_EquationValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Equation, this);//Operation Value Float
 
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
@@ -842,7 +825,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins[OutputPin_NLBSSpecies] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Node String List Box for Species Operands
 			outputPins[OutputPin_NLBSParameters] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Simple Parameter Operands
 			outputPins[OutputPin_NLBSEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Node String List Box for Computed Parameter Operands
-			outputPins[OutputPin_EquationValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Operation Value Float
+			outputPins[OutputPin_EquationValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_EquationValueFloat, this);//Operation Value Float
 
 			collapsingHeadersIds[CollapsingHeader_ModelLinks] = Widget::MNBV::GetMNBVCtxtNextId();//ModelLinks Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Equations] = Widget::MNBV::GetMNBVCtxtNextId();//Computed Parameters section
@@ -851,7 +834,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds[CollapsingHeader_EquationOperands] = Widget::MNBV::GetMNBVCtxtNextId();//Equation Operands collapsing header
 
 			auto search = depDB->GetEquationDependencies().find(data);
-			if ( search != depDB->GetEquationDependencies().end())
+			if (search != depDB->GetEquationDependencies().end())
 			{
 				equationDep = search->second.partOfEquation;
 				reactionKLDep = search->second.partOfReactionKineticLaw;
@@ -871,21 +854,24 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_EquationOperands] = { &equationsOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Node String List Box for Computed Parameter Operands
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in computed parameter node data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in equation data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in computed parameter node data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in equation data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in computed parameter node data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
-
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in equation data
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
 		@see ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData::ResetUtilityState()
 		*/
 		void ResetNLBSDUtilityStates() noexcept;
+
+		/*!
+		@brief Updates the data that this node represents (::lhsValueBuffer).
+		*/
+		void Update() noexcept;
 	};
 
 	/*!
@@ -957,8 +943,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		char* name = "Line Plot";
 
 		ScrollingBuffer dataPoints;
-		float newPointBuffer[2] = { 0, 0 };
-		unsigned short newPointConstructionCounter = 0;
+		float* ptrX = nullptr;
+		float* ptrY = nullptr;
+		//float newPointBuffer[2] = { 0, 0 };
+		//unsigned short newPointConstructionCounter = 0;
 
 		char plotTitle[64] = "PlotTitle";
 		char xAxisLabel[64] = "x";
@@ -1003,8 +991,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_CollHdrPlot] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Plot Collapsing Header
-			inputPins[InputPin_XAxis] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//X
-			inputPins[InputPin_YAxis] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Y
+			inputPins[InputPin_XAxis] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//X
+			inputPins[InputPin_YAxis] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//Y
 
 			outputPins[OutputPin_None] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
 
@@ -1039,24 +1027,17 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override;
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};// not used in line plot node data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override;
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};// not used in line plot node data
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};// not used in line plot node data
-
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override {};// not used in line plot node data
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};// not used in line plot node data
 
 		inline bool IsPlotOpen() noexcept
 		{
 			return (utilityState >> State_PlotIsOpen) & 1;
-		}
-
-		inline void ResetNewPointBuffer() noexcept
-		{
-			newPointConstructionCounter = 0;
 		}
 
 		/*!
@@ -1069,6 +1050,150 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			utilityState ^= (1 << _stateBitPos);
 		}
+
+		/*!
+		@brief Updates the scrolling buffers containing the data points.
+		*/
+		void Update() noexcept;
+	};
+
+	/*!
+	@brief The logic to encode the data needed to draw the node representing
+			ECellEngine::Core::Events::ModifyDataStateValueEvent.
+	*/
+	struct ModifyDataStateValueEventNodeData final : public NodeData
+	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
+		enum InputPin
+		{
+			InputPin_NewFloatValue,
+			InputPin_Watchers,
+			InputPin_CollHdrExecution,
+
+			InputPin_Count
+		};
+
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
+		enum OutputPin
+		{
+			OutputPin_Modify,
+			OutputPin_CollHdrExecution,
+
+			OutputPin_Count
+		};
+
+		/*!
+		@brief The local enum to manage access to the collapsing headers.
+		@see ::collapsingHeaders
+		*/
+		enum CollapsingHeader
+		{
+			CollapsingHeader_Execution,
+
+			CollapsingHeader_Count
+		};
+
+		/*!
+		@brief The local enum to manage to the encoding of the state of this
+				node.
+		@see ::utilityState
+		*/
+		enum State
+		{
+			State_CollHdrExecution,
+
+			State_Count
+		};
+
+		/*!
+		@brief Pointer to the event represented by this node.
+		*/
+		std::shared_ptr<ECellEngine::Core::Events::ModifyDataStateValueEvent> data;
+
+		/*!
+		@brief A boolean to control whether the user can use a button to
+				manually execute the event.
+		*/
+		bool activateManualExecution = false;
+
+		/*!
+		@brief The value to use when the  event is executed if no link is
+				connected to the input pin.
+		*/
+		float newValue = 0.0f;
+
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
+		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
+		NodeOutputPinData outputPins[OutputPin_Count];
+
+		/*!
+		@brief The 2 bytes to encode the state variations of this node.
+		@details Manipulate the state with the enum values State_XXX
+		*/
+		unsigned short utilityState = 0;
+
+		/*!
+		@brief All the collapsing headers.
+		@details Access the pins with the enum values CollapsingHeader_XXX
+		*/
+		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
+
+		ModifyDataStateValueEventNodeData(const ModifyDataStateValueEventNodeData& _mdstvend) :
+			NodeData(_mdstvend), data{ _mdstvend.data },
+			inputPins{ _mdstvend.inputPins[0], _mdstvend.inputPins[1], _mdstvend.inputPins[2] },
+			outputPins{ _mdstvend.outputPins[0], _mdstvend.outputPins[1] },
+			collapsingHeadersIds{ _mdstvend.collapsingHeadersIds[0] }
+		{
+			data.get()->newValue = &newValue;
+
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
+
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
+		}
+
+		ModifyDataStateValueEventNodeData(std::shared_ptr<ECellEngine::Core::Events::ModifyDataStateValueEvent> _data, ImVec2& _position) :
+			NodeData(), data{ _data }
+		{
+			data.get()->newValue = &newValue;
+
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			inputPins[InputPin_NewFloatValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the new value we will use to modify the data state
+			inputPins[InputPin_Watchers] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//the watchers that will trigger this event
+			inputPins[InputPin_CollHdrExecution] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
+			outputPins[OutputPin_Modify] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//Connection to the value to modify
+			outputPins[OutputPin_CollHdrExecution] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
+
+			collapsingHeadersIds[CollapsingHeader_Execution] = Widget::MNBV::GetMNBVCtxtNextId();
+		}
+
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 	};
 
 	/*!
@@ -1168,6 +1293,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 		ECellEngine::Data::Reaction* data;
 
 		/*!
+		@brief The local copy of ECellEngine::Data::Reaction::kineticLawValueCache of ::data.
+		@remarks This is needed because the accessor to the kinetic law value
+				 returns a copy of the value and not a pointer.
+		*/
+		float kineticLawValueBuffer = 0.0f;
+
+		/*!
 		@brief All the input pins.
 		@details Access the pins with the enum values InputPin_XXX
 		*/
@@ -1233,9 +1365,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		/*!
-		@remarks @p _nodeId is incremented immediately after use.
-		*/
 		ReactionNodeData(ECellEngine::Data::Reaction* _data) :
 			NodeData(), data{ _data }
 		{
@@ -1250,7 +1379,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins[InputPin_NLBSSpecies] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Species Operands from Kinetic Law
 			inputPins[InputPin_NLBSParameters] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameter Operands from Kinetic Law
 			inputPins[InputPin_NLBSEquations] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameter Operands from Kinetic Law
-			inputPins[InputPin_KineticLawValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Kinetic Law Value Float field (must be Read Only)
+			inputPins[InputPin_KineticLawValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Equation, this);//Kinetic Law Value Float field (must be Read Only)
 
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			outputPins[OutputPin_CollHdrReactants] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reactants section Collapsing header
@@ -1260,7 +1389,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins[OutputPin_NLBSSpecies] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Species Operands from Kinetic Law
 			outputPins[OutputPin_NLBSParameters] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameter Operands from Kinetic Law
 			outputPins[OutputPin_NLBSEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameter Operands from Kinetic Law
-			outputPins[OutputPin_KineticLawValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Kinetic Law Value Float field (must be Read Only)
+			outputPins[OutputPin_KineticLawValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_EquationValueFloat, this);//Kinetic Law Value Float field (must be Read Only)
 
 			collapsingHeadersIds[CollapsingHeader_ModelLinks] = Widget::MNBV::GetMNBVCtxtNextId();//ModelLinks Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Reactants] = Widget::MNBV::GetMNBVCtxtNextId();//Reactants section Collapsing header
@@ -1278,21 +1407,24 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_EquationOperands] = { &equationsOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Computed Parameter Operands from Kinetic Law
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Reaction Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Reaction Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Reaction Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Reaction Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Reaction Node Data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
-
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Reaction Node Data
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
 		@see ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData::ResetUtilityState()
 		*/
 		void ResetNLBSDUtilityStates() noexcept;
+
+		/*!
+		@brief Updates the ::kineticLawValueBuffer.
+		*/
+		void Update() noexcept;
 	};
 
 	/*!
@@ -1367,6 +1499,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::shared_ptr<ECellEngine::Data::Parameter> data;
 
 		/*!
+		@brief The copy of ECellEngine::Data::Parameter::value.
+		@remarks This is needed because the accessor to the value works by copy.
+		*/
+		float parameterValueBuffer = 0.f;
+
+		/*!
 		@brief Pointer to the dependency database of the simulation this node
 				part of.
 		*/
@@ -1414,7 +1552,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			utilityState{ _sprnd.utilityState },
 			collapsingHeadersIds{ _sprnd.collapsingHeadersIds[0], _sprnd.collapsingHeadersIds[1] , _sprnd.collapsingHeadersIds[2] ,
 					  _sprnd.collapsingHeadersIds[3] },
-			nlbsDataEqDep{ _sprnd.nlbsDataEqDep }, nlbsDataRKLDep{_sprnd.nlbsDataRKLDep},
+			nlbsDataEqDep{ _sprnd.nlbsDataEqDep }, nlbsDataRKLDep{ _sprnd.nlbsDataRKLDep },
 			equationDep{ _sprnd.equationDep }, reactionKLDep{ _sprnd.reactionKLDep }
 		{
 			for (int i = 0; i < InputPin_Count; i++)
@@ -1431,11 +1569,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep.data = &reactionKLDep;
 		}
 
-		/*!
-		@remarks @p _nodeId is incremented immediately after use.
-		*/
 		ParameterNodeData(std::shared_ptr<ECellEngine::Data::Parameter> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
-			NodeData(), data{ _data }, depDB{_depDB}
+			NodeData(), data{ _data }, depDB{ _depDB }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -1445,13 +1580,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins[InputPin_CollHdrEquations] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
 			inputPins[InputPin_CollHdrKineticLaws] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
 			inputPins[InputPin_CollHdrDataFields] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
-			inputPins[InputPin_ParameterValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Value Float field
+			inputPins[InputPin_ParameterValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Value Float field
 
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
 			outputPins[OutputPin_CollHdrKineticLaws] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
 			outputPins[OutputPin_CollHdrDataFields] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
-			outputPins[OutputPin_ParameterValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Value Float field
+			outputPins[OutputPin_ParameterValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Value Float field
 
 			collapsingHeadersIds[CollapsingHeader_ModelLinks] = Widget::MNBV::GetMNBVCtxtNextId();//ModelLinks Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Equations] = Widget::MNBV::GetMNBVCtxtNextId();//Computed Parameters section
@@ -1474,21 +1609,24 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };//Kinetic Laws section
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override;
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Parameter Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Reaction Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Parameter Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override;
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
-
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Parameter Node Data
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
 		@see ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData::ResetUtilityState()
 		*/
 		void ResetNLBSDUtilityStates() noexcept;
+
+		/*!
+		@brief Updates the buffer of the parameter value.
+		*/
+		void Update() noexcept;
 	};
 
 	/*!
@@ -1525,12 +1663,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		ECellEngine::Core::Timer* simulationTimer;
 
 		/*!
-		@brief A buffer for the elapsed time value in the ::simulationTimer to
-				detect when it has been changed.
-		*/
-		float elapsedTimeBuffer = 0.f;
-
-		/*!
 		@brief All the input pins.
 		@details Access the pins with the enum values InputPin_XXX
 		*/
@@ -1548,7 +1680,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
-			outputPins[OutputPin_SimulationTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this); //simulation Time
+			outputPins[OutputPin_SimulationTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this); //simulation Time
 		}
 
 		SimulationTimeNodeData(const SimulationTimeNodeData& _stnd) :
@@ -1567,22 +1699,20 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Simulation Time Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Simulation Time Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Simulation Time Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Simulation Time Node Data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in Simulation Time Node Data
-
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Simulation Time Node Data
 	};
 
 	/*!
 	@brief The logic to encode the data needed to draw the node representing
 			ECellEngine::Data::Solver.
 	*/
-	struct SolverNodeData : public NodeData
+	struct SolverNodeData final : public NodeData
 	{
 		/*!
 		@brief The local enum to manage access to the input pins.
@@ -1639,9 +1769,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		/*!
-		@remarks @p _nodeId is incremented immediately after use.
-		*/
 		SolverNodeData(ECellEngine::Solvers::Solver* _data) :
 			NodeData(), data{ _data }
 		{
@@ -1652,22 +1779,20 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Solver Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Solver Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Solver Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Solver Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Solver Node Data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in Solver Node Data
-
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 	};
 
 	/*!
 	@brief The logic to encode the data needed to draw the node representing
 			ECellEngine::Data::Species.
 	*/
-	struct SpeciesNodeData : public NodeData
+	struct SpeciesNodeData final : public NodeData
 	{
 		/*!
 		@brief The local enum to manage access to the input pins.
@@ -1743,16 +1868,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::shared_ptr<ECellEngine::Data::Species> data;
 
 		/*!
+		@brief The copy of ECellEngine::Data::Species::quantity.
+		@remarks This is needed because the accessor to the value works by copy.
+		*/
+		float speciesQuantityBuffer = 0.f;
+
+		/*!
 		@brief Pointer to the dependency database of the simulation this node
 				part of.
 		*/
 		const ECellEngine::Data::DependenciesDatabase* depDB;
-
-		/*!
-		@brief A buffer for the quantity value of a species to detect when the
-				value in the engine has been changed.
-		*/
-		float speciesQuantityBuffer = 0.f;
 
 		/*!
 		@brief All the input pins.
@@ -1837,7 +1962,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins[InputPin_CollHdrAsProduct] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Products
 			inputPins[InputPin_CollHdrInKineticLaw] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Kinetic Law
 			inputPins[InputPin_CollHdrDataFields] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Data Fields
-			inputPins[InputPin_Quantity] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Quantity
+			inputPins[InputPin_Quantity] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Quantity
 
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Model Links
 			outputPins[OutputPin_CollHdrInEquation] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Computed parameters equation
@@ -1845,7 +1970,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins[OutputPin_CollHdrAsProduct] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Products
 			outputPins[OutputPin_CollHdrInKineticLaw] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reaction's Kinetic Law
 			outputPins[OutputPin_CollHdrDataFields] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Data Fields
-			outputPins[OutputPin_Quantity] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this);//Quantity
+			outputPins[OutputPin_Quantity] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Quantity
 
 			collapsingHeadersIds[CollapsingHeader_ModelLinks] = Widget::MNBV::GetMNBVCtxtNextId();//Collapsing Header Model Links
 			collapsingHeadersIds[CollapsingHeader_InEquation] = Widget::MNBV::GetMNBVCtxtNextId();//Collapsing Header Computed parameters equation
@@ -1874,28 +1999,31 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override;
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Species Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Species Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Species Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override;
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override;
-
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Species Node Data
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
 		@see ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData::ResetUtilityState()
 		*/
 		void ResetNLBSDUtilityStates() noexcept;
+
+		/*!
+		@brief Updates the buffer of the parameter value.
+		*/
+		void Update() noexcept;
 	};
 
 	/*!
 	@brief The logic to encode the data needed to draw the node to define and
 			use a custom float.
 	*/
-	struct ValueFloatNodeData : public NodeData
+	struct ValueFloatNodeData final : public NodeData
 	{
 		/*!
 		@brief The local enum to manage access to the input pins.
@@ -1942,7 +2070,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
-			outputPins[OutputPin_Value] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueFloat, this); //Value
+			outputPins[OutputPin_Value] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //Value
 		}
 
 		ValueFloatNodeData(const ValueFloatNodeData& _vfnd) :
@@ -1961,15 +2089,115 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		void InputConnect(const NodeInputPinData& _nodeInput) override {};//not used in Value Float Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, char* _data) override {};//not used in Value Float Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Value Float Node Data
 
-		void InputUpdate(const NodeInputPinData& _nodeInput, float _data) override {};//not used in Value Float Node Data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputConnect(const NodeOutputPinData& _nodeOutput) override {};//not used in Value Float Node Data
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Value Float Node Data
+	};
 
-		void OutputUpdate(const NodeOutputPinData& _nodeOutput) override;
+	/*!
+	@brief The logic to encode the data needed to draw the node representing
+			ECellEngine::Core::Watcher.
+	*/
+	struct WatcherNodeData final : public NodeData
+	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
+		enum InputPin
+		{
+			InputPin_LHS,
+			InputPin_RHS,
+
+			InputPin_Count
+		};
+
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
+		enum OutputPin
+		{
+			OutputPin_Trigger,
+
+			OutputPin_Count
+		};
+
+		/*!
+		@brief Pointer to the watcher represented by this node.
+		*/
+		std::shared_ptr<ECellEngine::Core::Watcher> data;
+
+		/*!
+		@brief The value of the left hand side of the watcher.
+		*/
+		float lhs = 0.f;
+
+		/*!
+		@brief The display list of the comparators.
+		*/
+		const char* comparators[6] = { ">", ">=", "==", "!=", "<", "<=" };
+
+		/*!
+		@brief The value of the right hand side of the watcher.
+		*/
+		float rhs = 0.f;
+
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
+		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
+		NodeOutputPinData outputPins[OutputPin_Count];
+
+		WatcherNodeData(const WatcherNodeData& _wtnd) :
+			NodeData(_wtnd), data{ _wtnd.data },
+			inputPins{ _wtnd.inputPins[0], _wtnd.inputPins[1] },
+			outputPins{ _wtnd.outputPins[0] }
+		{
+			data->SetLHS(&lhs);
+			data->SetRHS(&rhs);
+			
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
+
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
+		}
+
+		WatcherNodeData(std::shared_ptr<ECellEngine::Core::Watcher> _data, ImVec2& _position) :
+			NodeData(), data{ _data }
+		{
+			data->SetLHS(&lhs);
+			data->SetRHS(&rhs);
+
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the Left Hand Side of the comparison
+			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the Right Hand Side of the comparison
+			outputPins[OutputPin_Trigger] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Watcher, this);//To all the event to trigger
+		}
+
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 	};
 #pragma endregion
 }

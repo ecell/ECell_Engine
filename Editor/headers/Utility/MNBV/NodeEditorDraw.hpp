@@ -103,6 +103,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _linePlotNodeInfo The struct with information about what to draw.
 		*/
 		static void LinePlotNode(const char* _name, LinePlotNodeData& _linePlotNodeInfo);
+
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData.
+
+		@param _modifyDSValueEventNodeInfo The struct with information about what to draw.
+		*/
+		static void ModifyDataStateValueEventNode(ModifyDataStateValueEventNodeData& _modifyDSValueEventNodeInfo);
 		
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ReactionNodeData.
@@ -151,6 +158,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _valueFloatNodeInfo The struct with information about what to draw.
 		*/
 		static void ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo);
+
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::WatcherNodeData.
+		@param _watcherNodeInfo The struct with information about what to draw.
+		*/
+		static void WatcherNode(WatcherNodeData& _watcherNodeInfo);
 
 #pragma endregion
 
@@ -453,6 +466,44 @@ namespace ECellEngine::Editor::Utility::MNBV
 			const float _startX, const float _drawLength,
 			const NodePinData& _pin, const ImVec4 _pinColors[],
 			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
+
+		/*!
+		@brief Draw a combo box with a list of items.
+		@details The combo box is drawn at the center of the node.
+		@param _label The text to display before the combo box.
+		@param _items The list of items to display in the combo box.
+		@param _itemsCount The number of items in the list.
+		@param _currentItemIndex The index of the item to display as selected.
+		@param _comboBoxWidth The width of the combo box (label + button included).
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _drawLength The distance where to draw the combo box relatively
+				to @p _startX. Used for alignment calculations.
+		*/
+		static bool NodeComboBox(const char* _label, const char* _items[],
+			const int _itemsCount, int& _currentItemIndex,
+			const float _comboBoxWidth, const float _startX, const float _drawLength);
+
+		/*!
+		@brief Draw an drag field for 1 float with an input pin.
+		@details Aligns the DragField text label and the Input Field body
+				to the left of the node.
+		@param _label The text label of the Input Field to display.
+		@param _id The _id of the DragField for ImGui.
+		@param _valueBuffer The float buffer to hold the value given by the user
+				and displayed in the field.
+		@param _inputFieldWidth The total width of the drag field (text label
+				and body).
+		@param _startX The position from which the alignment calculations are
+				done. Typically the left side of the node.
+		@param _pin The pin data used for the input pin to draw.
+		@param _pinColors The set of colors to cutomize both pins.
+		@param _flags Flags to customize the behaviour of the drag field.
+		*/
+		static bool NodeDragFloat_In(const char* _label, const std::size_t _id, float* _valueBuffer,
+			const float _inputFieldWidth, const float _startX,
+			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const ImGuiSliderFlags _flags = ImGuiSliderFlags_None);
 
 		/*!
 		@brief Draw an drag field for 1 float with an output pin.

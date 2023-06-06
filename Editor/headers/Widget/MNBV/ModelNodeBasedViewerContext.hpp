@@ -58,6 +58,15 @@ namespace ECellEngine::Editor::Widget::MNBV
 		std::vector<Utility::MNBV::LinePlotNodeData> linePlotNodes;
 
 		/*!
+		@brief The list of event nodes that can modify data state values in this
+				context.
+		@details It contains the information used to draw the nodes to display
+				 the nodes that can modify data state values in this simulation
+				 space.
+		*/
+		std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData> modifyDataStateValueEventNodes;
+
+		/*!
 		@brief The list of reaction nodes in this context.
 		@details It contains the information used to draw the nodes corresponding
 				 to each reaction of various assets imported in the current
@@ -101,6 +110,13 @@ namespace ECellEngine::Editor::Widget::MNBV
 				and use custom float values.
 		*/
 		std::vector<Utility::MNBV::ValueFloatNodeData> valueFloatNodes;
+
+		/*!
+		@brief The list of watchers in this context.
+		@details It contains the information used to draw the nodes to display
+				 the watchers of this simulation space.
+		*/
+		std::vector<Utility::MNBV::WatcherNodeData> watcherNodes;
 #pragma endregion
 
 		/*!
@@ -162,7 +178,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 			uniqueId{ 0 }, countTASToMCmds{ 0 }
 		{
 			authorizedDynamicLinks[Utility::MNBV::PinType_Solver][Utility::MNBV::PinType_Solver] = true;
-			authorizedDynamicLinks[Utility::MNBV::PinType_ValueFloat][Utility::MNBV::PinType_ValueFloat] = true;
+			
+			authorizedDynamicLinks[Utility::MNBV::PinType_DataStateValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_EquationValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_FreeValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
+			
+			authorizedDynamicLinks[Utility::MNBV::PinType_ModifyDataStateEvent][Utility::MNBV::PinType_DataStateValueFloat] = true;
+			
+			authorizedDynamicLinks[Utility::MNBV::PinType_Watcher][Utility::MNBV::PinType_ModifyDataStateEvent] = true;
 		}
 
 		/*!

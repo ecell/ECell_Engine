@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include "Core/Simulation.hpp"
 
 namespace ECellEngine::Core
@@ -22,6 +24,8 @@ namespace ECellEngine::Core
 		std::vector<Simulation*> playingSimulations;
 
 	public:
+
+		static SimulationsManager& GetSingleton() noexcept;
 
 		/*!
 		@brief Gets the number of simulation in ::simulations.
