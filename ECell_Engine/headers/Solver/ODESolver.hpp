@@ -22,6 +22,9 @@ namespace ECellEngine::Solvers
 		*/
 		std::vector<Maths::Equation> system;
 
+		float solveDeltaTime = 0.01f;
+		float solveCurrentTime = 0.f;
+
 	public:
 		
 		ODESolver(ECellEngine::Data::DataState& _dataState, char* _name = "NewODESolver") :
