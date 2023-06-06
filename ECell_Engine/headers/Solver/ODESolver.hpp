@@ -7,7 +7,20 @@ namespace ECellEngine::Solvers
 	class ODESolver : public BiochemicalSolver
 	{
 	private:
-		std::vector<Maths::Operation> system;
+		/*!
+		@brief The system of differential equations.
+		@details Be wary that, the left hand side are the variables
+				to be solved by the differential equation (right hand side) and NOT
+				their derivative.
+
+				Indeed, the object Equation represents something of the form: lhs = rhs.
+				For a differential equation, we have something like: dx/dt = f(x, t).
+				But, in our case, we have something like: x = f(x, t).
+
+				This is for convenience, namely to easily access the variable to be
+				updated when solving the differential equation.
+		*/
+		std::vector<Maths::Equation> system;
 
 	public:
 		

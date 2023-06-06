@@ -31,8 +31,8 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 	for (auto [speciesName, species] : dataState.GetAllSpecies())
 	{
 		//Initialize the operation in-flux minus out-flux
-		Operation equationDiff;
-		equationDiff.Set(&ECellEngine::Maths::functions.minus);
+		Operation rhs;
+		rhs.Set(&ECellEngine::Maths::functions.minus);
 
 		//Sum all the in-flux
 		auto search = allInFlux.find(speciesName);
@@ -43,7 +43,7 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 			//If only one in-flux, then there is no need to sum
 			if (inFlux.size() == 1)
 			{
-				equationDiff.AddOperation(inFlux[0]);
+				rhs.AddOperation(inFlux[0]);
 			}
 			else
 			{
@@ -63,13 +63,13 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 				}
 				//By the end of the for loop, the first element of inFlux will be
 				//the sum of all the elements.
-				equationDiff.AddOperation(inFlux[0]);
+				rhs.AddOperation(inFlux[0]);
 			}
 		}
 		//If no in-flux, then it is 0.
 		else
 		{
-			equationDiff.AddNewConstant(0.f);
+			rhs.AddNewConstant(0.f);
 		}
 
 		//Sum all the out-flux.
@@ -81,7 +81,7 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 			//If only one out-flux, then there is no need to sum.
 			if (outFlux.size() == 1)
 			{
-				equationDiff.AddOperation(outFlux[0]);
+				rhs.AddOperation(outFlux[0]);
 			}
 			else
 			{
@@ -101,16 +101,17 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 				}
 				//by the end of the for loop, the first element of outFlux will be
 				//the sum of all the elements.
-				equationDiff.AddOperation(outFlux[0]);
+				rhs.AddOperation(outFlux[0]);
 			}
 		}
 		//If no out-flux, then it is 0.
 		else
 		{
-			equationDiff.AddNewConstant(0.f);
+			rhs.AddNewConstant(0.f);
 		}
 
-		equationDiff.LinkLocalOperands();
-		system.push_back(equationDiff);
+		rhs.LinkLocalOperands();
+		
+		system.emplace_back(Maths::Equation(species.get(), rhs));
 	}
 }
