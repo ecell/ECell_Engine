@@ -40,6 +40,44 @@ void ECellEngine::Maths::Operation::LinkLocalOperands()
 	}
 }
 
+void ECellEngine::Maths::Operation::InformStructureOfAddConstant() noexcept
+{
+	if (structure == 0)// 000 0 00 00
+	{
+		structure |= 1 << 0;// 000 0 00 01
+		if (operands.size() > 0)
+		{
+			structure |= 1 << 3;// 000 0 10 01
+		}
+	}
+	else
+	{
+		structure |= 1 << 1;// 000 0 XX 11
+	}
+}
+
+void ECellEngine::Maths::Operation::InformStructureOfAddOperation() noexcept
+{
+	if (structure == 0)// 000 0 00 00
+	{
+		structure |= 1 << 0;// 000 0 00 01 --> We add the first operand
+		structure |= 1 << 2;// 000 0 01 01 --> The first operand is an Operation
+
+		//if there is already one element in operands,
+		//we register the operation as the second operand.
+		// --> The bit 4 (so idx 3) is set to 1
+		if (operands.size() > 0)
+		{
+			structure |= 1 << 3;// 000 0 11 01
+		}
+	}
+	else
+	{
+		structure |= 1 << 1;// 000 0 XX 11 --> We add the second operand
+		structure |= 1 << 4;// 000 1 XX 11 --> The second operand is an Operation
+	}
+}
+
 void ECellEngine::Maths::Operation::PushOperands()
 {
 	if ((structure >> 0) & 1) //if there is at least 1 operand placement to decode
