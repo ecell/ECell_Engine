@@ -13,8 +13,12 @@ void ECellEngine::Core::Simulation::AddSolver(const std::string& _solverClassNam
 {
 	if (_solverClassName == "GillespieNRMRSolver")
 	{
-		std::shared_ptr<Solver> solver = std::make_shared<GillespieNRMRSolver>(dataState);
-		solvers.push_back(solver);
+		solvers.emplace_back(std::make_shared<GillespieNRMRSolver>(dataState));
+	}
+
+	if (_solverClassName == "ODESolver")
+	{
+		solvers.push_back(std::make_shared<ODESolver>(dataState));
 	}
 }
 

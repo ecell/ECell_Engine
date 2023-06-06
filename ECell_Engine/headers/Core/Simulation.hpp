@@ -7,6 +7,7 @@
 #include "Data/DependenciesDatabase.hpp"
 #include "IO/ModuleImporterManager.hpp"
 #include "Solver/GillespieNRMRSolver.hpp"
+#include "Solver/ODESolver.hpp"
 
 using namespace ECellEngine::IO;
 using namespace ECellEngine::Solvers;
