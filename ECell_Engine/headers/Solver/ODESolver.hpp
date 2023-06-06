@@ -30,7 +30,7 @@ namespace ECellEngine::Solvers
 		ODESolver(ECellEngine::Data::DataState& _dataState, char* _name = "NewODESolver") :
 			BiochemicalSolver(_dataState, _name)
 		{
-			system.reserve(dataState.GetAllSpecies().size());
+			
 		}
 
 		virtual void Initialize(const ECellEngine::Data::Module* _module) override;

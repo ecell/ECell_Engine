@@ -4,6 +4,9 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 {
 	BiochemicalSolver::Initialize(_module);
 
+	system.clear();
+	system.reserve(dataState.GetAllSpecies().size());
+
 	//Retrieve all the kinetic laws affecting species and differentiating
 	//in-flux (when species is produced) from out-flux (when species is
 	//consumed)
