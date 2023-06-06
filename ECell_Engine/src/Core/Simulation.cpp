@@ -1,24 +1,25 @@
 #include "Core/Simulation.hpp"
 
-void ECellEngine::Core::Simulation::AddModule(const std::string& _filePath)
+std::shared_ptr<ECellEngine::Data::Module> ECellEngine::Core::Simulation::AddModule(const std::string& _filePath)
 {
 	std::shared_ptr<ECellEngine::Data::Module> module = moduleImporterManager.TryImportModule(std::filesystem::path(_filePath), dataState);
 	if (module != nullptr)
 	{
 		modules.push_back(module);
 	}
+	return module;
 }
 
-void ECellEngine::Core::Simulation::AddSolver(const std::string& _solverClassName)
+std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::string& _solverClassName)
 {
 	if (_solverClassName == "GillespieNRMRSolver")
 	{
-		solvers.emplace_back(std::make_shared<GillespieNRMRSolver>(dataState));
+		return solvers.emplace_back(std::make_shared<GillespieNRMRSolver>(dataState));
 	}
 
 	if (_solverClassName == "ODESolver")
 	{
-		solvers.push_back(std::make_shared<ODESolver>(dataState));
+		return solvers.emplace_back(std::make_shared<ODESolver>(dataState));
 	}
 }
 
