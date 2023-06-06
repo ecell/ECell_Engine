@@ -21,9 +21,9 @@ namespace ECellEngine::Solvers
 
 	public:
 		Solver(ECellEngine::Data::DataState& _dataState, char* _name) :
-			dataState{ _dataState }, name{*_name}
+			dataState{ _dataState }
 		{
-
+			SetName(_name);
 		}
 
 		inline char* GetName() noexcept
