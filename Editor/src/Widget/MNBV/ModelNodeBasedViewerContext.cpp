@@ -52,6 +52,26 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("Solvers"))
+		{
+			if (ImGui::MenuItem("Gillespie Next Reaction Method"))
+			{
+				ax::NodeEditor::Resume();
+				//TODO: Use a command to add a solver
+				solverNodes.emplace_back(Utility::MNBV::SolverNodeData(_simulation->AddSolver("GillespieNRMRSolver"), ImGui::GetIO().MousePos));
+				ax::NodeEditor::Suspend();
+			}
+			
+			if (ImGui::MenuItem("ODE Runge-Kutta 4"))
+			{
+				ax::NodeEditor::Resume();
+				//TODO: Use a command to add a solver
+				solverNodes.emplace_back(Utility::MNBV::SolverNodeData(_simulation->AddSolver("ODESolver"), ImGui::GetIO().MousePos));
+				ax::NodeEditor::Suspend();
+			}
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("Time"))
 		{
 			if (ImGui::MenuItem("Simulation Elapsed Time"))
