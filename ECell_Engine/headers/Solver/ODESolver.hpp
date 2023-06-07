@@ -27,7 +27,7 @@ namespace ECellEngine::Solvers
 
 	public:
 		
-		ODESolver(ECellEngine::Data::DataState& _dataState, char* _name = "NewODESolver") :
+		ODESolver(ECellEngine::Data::DataState& _dataState, const std::string& _name) :
 			BiochemicalSolver(_dataState, _name)
 		{
 			

@@ -28,7 +28,7 @@ void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputConnect(NodeInputPi
 		//So, we know that the action to perform is to queue the TryAttachSolverToModuleCommand
 		//of the engine.
 		//This command will be processed after the current context has been entirely draw in this frame.
-		Widget::MNBV::QueueEngineTASToMCmd(data->GetName(), (char*)_data);
+		Widget::MNBV::QueueEngineTASToMCmd(data->GetName(), ((std::string*)_data)->c_str());
 	}
 }
 
@@ -242,7 +242,7 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInput
 {
 	//There is only one output pin in the SolverNodeData
 
-	_nodeInputPinData->OnConnect(_nodeOutputPinData, data->GetName());
+	_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->GetName());
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)

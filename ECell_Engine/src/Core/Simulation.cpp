@@ -14,12 +14,12 @@ std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::stri
 {
 	if (_solverClassName == "GillespieNRMRSolver")
 	{
-		return solvers.emplace_back(std::make_shared<GillespieNRMRSolver>(dataState));
+		return solvers.emplace_back(std::make_shared<GillespieNRMRSolver>(dataState, _solverClassName));
 	}
 
 	if (_solverClassName == "ODESolver")
 	{
-		return solvers.emplace_back(std::make_shared<ODESolver>(dataState));
+		return solvers.emplace_back(std::make_shared<ODESolver>(dataState, _solverClassName));
 	}
 }
 
@@ -51,7 +51,7 @@ ECellEngine::Solvers::Solver* ECellEngine::Core::Simulation::FindSolver(const ch
 {
 	for (std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator it = solvers.begin(); it != solvers.end(); ++it)
 	{
-		if (std::strcmp(it->get()->GetName(), _solverName) == 0)
+		if (it->get()->GetName() == _solverName)
 		{
 			return it->get();
 		}
@@ -63,7 +63,7 @@ const std::size_t ECellEngine::Core::Simulation::FindSolverIdx(const char* _solv
 {
 	for (std::size_t i = 0; i < solvers.size(); ++i)
 	{
-		if (std::strcmp(solvers[i].get()->GetName(), _solverName) == 0)
+		if (solvers[i].get()->GetName() == _solverName)
 		{
 			return i;
 		}

@@ -336,7 +336,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 
 	for (std::vector< Utility::MNBV::SolverNodeData>::iterator it = solverNodes.begin(); it != solverNodes.end(); it++)
 	{
-		Utility::MNBV::NodeEditorDraw::SolverNode(it->data->GetName(), *it);
+		Utility::MNBV::NodeEditorDraw::SolverNode(it->data->GetName().c_str(), *it);
 	}
 
 	for (std::vector< Utility::MNBV::SpeciesNodeData>::iterator it = speciesNodes.begin(); it != speciesNodes.end(); it++)
