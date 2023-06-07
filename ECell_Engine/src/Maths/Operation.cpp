@@ -80,7 +80,9 @@ void ECellEngine::Maths::Operation::InformStructureOfAddOperation() noexcept
 
 void ECellEngine::Maths::Operation::PushOperands()
 {
-	if ((structure >> 0) & 1) //if there is at least 1 operand placement to decode
+	// PushOperands is called for the 1st time here, and 
+	// if there is at least 1 operand placement to decode
+	if (((structure >> 5) ^ 1) & ((structure >> 0) & 1)) 
 	{
 		if ((structure >> 2) & 1) // if this is the code for Operation
 		{
@@ -114,6 +116,7 @@ void ECellEngine::Maths::Operation::PushOperands()
 			}
 		}
 	}
+	structure |= 1 << 5;// 001 X XX XX --> PushOperands has been called
 }
 
 void ECellEngine::Maths::Operation::UpdateOperands()

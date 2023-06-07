@@ -88,9 +88,14 @@ namespace ECellEngine::Maths
 				 to detect if a global variable from the datastate has already
 				 been added as a left operand to the operation.
 
-				 Finally, Bit 4 is equivalent to Bit 2 (distinguish between local
+				 Bit 4 is equivalent to Bit 2 (distinguish between local
 				 constant or another operation) but specifically when a local
 				 operand has already been added as the left operand.
+
+				 Bit 5 is to indicate that the Local Operand has already been
+				 pushed once in ::operands. It is used to avoid pushing it
+				 several times (this happens when an operation is reused to
+				 compose another operation).
 
 		@see The source code of ::AddConstant and ::AddOperation for a demonstration
 			 of how this byte is written.
