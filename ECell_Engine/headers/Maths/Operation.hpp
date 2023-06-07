@@ -256,6 +256,7 @@ namespace ECellEngine::Maths
 		inline void AddOperation(Operation& _operation)
 		{
 			operations.push_back(_operation);
+			InformStructureOfAddOperation();
 		}
 
 		/*!
