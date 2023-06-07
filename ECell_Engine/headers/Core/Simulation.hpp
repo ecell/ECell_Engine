@@ -7,6 +7,7 @@
 #include "Data/DependenciesDatabase.hpp"
 #include "IO/ModuleImporterManager.hpp"
 #include "Solver/GillespieNRMRSolver.hpp"
+#include "Solver/ODESolver.hpp"
 
 using namespace ECellEngine::IO;
 using namespace ECellEngine::Solvers;
@@ -90,18 +91,21 @@ namespace ECellEngine::Core
 		@brief Tries to add the file at path @p _filePath as an asset to the simulation.
 		@param _filePath The directory where to look for the target file. This is the 
 						 complete directory with the name the file at the end.
+		@return The shared pointer encapsulating the module if the file was successfully
+				loaded as an asset. Otherwise, returns nullptr.
 		@remaks This method is accessible from outside via the command
 				ECellEngine::IO::AddModuleCommand.
 		*/
-		void AddModule(const std::string& _filePath);
+		std::shared_ptr<ECellEngine::Data::Module> AddModule(const std::string& _filePath);
 
 		/*!
 		@brief Adds a solver of type indicated by @p _solverClassName.
 		@param _solverClassName The name of the type of solver to add. It must
 								match a name of class deriving from
 								ECellEngine::Solvers::Solver.
+		@return The shared pointer encapsulating the solver.
 		*/
-		void AddSolver(const std::string& _solverClassName);
+		std::shared_ptr<Solver> AddSolver(const std::string& _solverClassName);
 
 		inline ECellEngine::Data::DataState* GetDataState()
 		{

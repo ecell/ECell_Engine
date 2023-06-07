@@ -38,6 +38,7 @@ add_library(ECellEngine SHARED
     "src/Solver/BiochemicalSolver.cpp"
     "src/Solver/GillespieNRMRSolver.cpp"
     #"src/Solver/Gillespie_NRM_R.cpp"
+    "src/Solver/ODESolver.cpp"
 )
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)

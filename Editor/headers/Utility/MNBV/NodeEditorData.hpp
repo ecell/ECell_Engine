@@ -1739,7 +1739,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Pointer to the solver represented by this node.
 		*/
-		ECellEngine::Solvers::Solver* data;
+		std::shared_ptr<ECellEngine::Solvers::Solver> data;
 
 		/*!
 		@brief All the input pins.
@@ -1769,10 +1769,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		SolverNodeData(ECellEngine::Solvers::Solver* _data) :
+		SolverNodeData(std::shared_ptr<ECellEngine::Solvers::Solver> _data, ImVec2& _position) :
 			NodeData(), data{ _data }
 		{
-			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
+			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//not used
 			outputPins[OutputPin_Solver] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Solver, this);//this solver transmission

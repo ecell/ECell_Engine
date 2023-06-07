@@ -163,7 +163,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
             ASTNode* cNode = nodesStack.back(); //cNode stands for child Node
             if (IsASTNodeOperation(cNode))
             {
-                Operation* cOP = &pOP->AddOperation(_rootName);//cOP stands for child Operation
+                Operation* cOP = &pOP->AddNewOperation(_rootName);//cOP stands for child Operation
                 AssignOperationFunction(*cOP, cNode);
                 opsStack.push_back(cOP);
 
@@ -175,7 +175,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
             if (cNode->getType() == ASTNodeType_t::AST_INTEGER ||
                 cNode->getType() == ASTNodeType_t::AST_REAL)
             {
-                pOP->AddConstant((float)cNode->getValue());
+                pOP->AddNewConstant((float)cNode->getValue());
                 nodesStack.pop_back();
             }
 

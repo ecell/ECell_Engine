@@ -1,0 +1,41 @@
+#pragma once
+
+#include "Solver/BiochemicalSolver.hpp"
+
+namespace ECellEngine::Solvers
+{
+	class ODESolver final : public BiochemicalSolver
+	{
+	private:
+		/*!
+		@brief The system of differential equations.
+		@details Be wary that, the left hand side are the variables
+				to be solved by the differential equation (right hand side) and NOT
+				their derivative.
+
+				Indeed, the object Equation represents something of the form: lhs = rhs.
+				For a differential equation, we have something like: dx/dt = f(x, t).
+				But, in our case, we have something like: x = f(x, t).
+
+				This is for convenience, namely to easily access the variable to be
+				updated when solving the differential equation.
+		*/
+		std::vector<Maths::Equation> system;
+
+		float solveDeltaTime = 0.01f;
+		float solveCurrentTime = 0.f;
+
+	public:
+		
+		ODESolver(ECellEngine::Data::DataState& _dataState, const std::string& _name) :
+			BiochemicalSolver(_dataState, _name)
+		{
+			
+		}
+
+		virtual void Initialize(const ECellEngine::Data::Module* _module) override;
+
+		virtual void Update(const ECellEngine::Core::Timer& _timer) override;
+
+	};
+}

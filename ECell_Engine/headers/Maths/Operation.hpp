@@ -16,6 +16,19 @@ namespace ECellEngine::Maths
 	struct Operation : public Operand
 	{
 	private:
+
+		/*!
+		@brief Modifies ::structure to indicate that an constant was added.
+		@details Use it after ::AddConstant(const float _value).
+		*/
+		void InformStructureOfAddConstant() noexcept;
+
+		/*!
+		@brief Modifies ::structure to indicate that an operation was added.
+		@details Use it after ::AddNewOperation(std::string name).
+		*/
+		void InformStructureOfAddOperation() noexcept;
+
 		/*!
 		@brief Decodes ::structure to know in which order operands stored
 			   in ::constants or ::operations must be added in ::operands.
@@ -75,9 +88,14 @@ namespace ECellEngine::Maths
 				 to detect if a global variable from the datastate has already
 				 been added as a left operand to the operation.
 
-				 Finally, Bit 4 is equivalent to Bit 2 (distinguish between local
+				 Bit 4 is equivalent to Bit 2 (distinguish between local
 				 constant or another operation) but specifically when a local
 				 operand has already been added as the left operand.
+
+				 Bit 5 is to indicate that the Local Operand has already been
+				 pushed once in ::operands. It is used to avoid pushing it
+				 several times (this happens when an operation is reused to
+				 compose another operation).
 
 		@see The source code of ::AddConstant and ::AddOperation for a demonstration
 			 of how this byte is written.
@@ -136,72 +154,6 @@ namespace ECellEngine::Maths
 		}
 
 		/*!
-		@brief Adds a constant in ::constants from its @p _value
-		@details Also writes in ::structure to encode this new operand's
-				 information.
-		*/
-		inline ECellEngine::Data::Constant& AddConstant(const float _value)
-		{
-			constants.emplace_back(ECellEngine::Data::Constant(_value));
-
-			if (structure == 0)// 000 0 00 00
-			{
-				structure |= 1 << 0;// 000 0 00 01
-				if (operands.size() > 0)
-				{
-					structure |= 1 << 3;// 000 0 10 01
-				}
-			}
-			else
-			{
-				structure |= 1 << 1;// 000 0 XX 11
-			}
-
-			return constants.back();
-		}
-
-		/*!
-		@brief Adds an operand in ::operands.
-		@details Mostly to use when adding a global variable stored in the 
-				 datastate as an operand in this operation.
-		*/
-		inline void AddOperand(Operand* _operand)
-		{
-			operands.push_back(_operand);
-		}
-
-		/*!
-		@brief Adds an operation in ::operations from its @p _name
-		@details Also writes in ::structure to encode this new operand's
-				 information.
-		*/
-		inline Operation& AddOperation(const std::string _name)
-		{
-			operations.emplace_back(Operation(_name));
-
-			if (structure == 0)// 000 0 00 00
-			{
-				structure |= 1 << 0;// 000 0 00 01 --> We add the first operand
-				structure |= 1 << 2;// 000 0 01 01 --> The first operand is an Operation
-				
-				//if there is already one element in operands,
-				//we register the operation as the second operand.
-				// --> The bit 4 (so idx 3) is set to 1
-				if (operands.size() > 0)
-				{
-					structure |= 1 << 3;// 000 0 11 01
-				}
-			}
-			else
-			{
-				structure |= 1 << 1;// 000 0 XX 11 --> We add the second operand
-				structure |= 1 << 4;// 000 1 XX 11 --> The second operand is an Operation
-			}
-
-			return operations.back();
-		}
-
-		/*!
 		@brief Retrieves and fills the list @p _operandsNames with the names of
 			   all the operands' names of this operation (and the whole tree).
 		@paramt OperandType A specific type of operand to chose from. It MUST
@@ -235,28 +187,11 @@ namespace ECellEngine::Maths
 			return (*function)(operands);
 		}
 
-		/*!
-		@brief Checks if there is at least two operands stored in this operation.
-		@returns True if the sum of the size of ::operands, ::operations and
-				 ::constants is greater or equal to 2.
-		*/
-		inline bool IsFull()
-		{
-			return (operands.size() + operations.size() + constants.size() >= 2);
-		}
-
 		void GetInvolvedEquations(std::vector<std::string>& out_involvedEquations, bool clearOutVector = true) const noexcept override;
 		
 		void GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
 		
 		void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
-
-		/*!
-		@brief Recursively pushes operands in ::operands and trims unsused
-				memory space for every child operation of this operation.
-		@details Uses ::PushOperands and ::ShrinkLocalOperands.
-		*/
-		void LinkLocalOperands();
 
 		/*!
 		@brief DO NOT USE for this class.
@@ -278,5 +213,67 @@ namespace ECellEngine::Maths
 		{
 			function = _function;
 		}
+
+		/*!
+		@brief Adds a constant in ::constants from its @p _value
+		@details Also writes in ::structure to encode this new operand's
+				 information.
+		*/
+		inline ECellEngine::Data::Constant& AddNewConstant(const float _value)
+		{
+			constants.emplace_back(ECellEngine::Data::Constant(_value));
+			InformStructureOfAddConstant();
+			return constants.back();
+		}
+
+		/*!
+		@brief Adds an operation in ::operations from its @p _name
+		@details Also writes in ::structure to encode this new operand's
+				 information.
+		*/
+		inline Operation& AddNewOperation(const std::string _name)
+		{
+			operations.emplace_back(Operation(_name));
+
+			InformStructureOfAddOperation();
+
+			return operations.back();
+		}
+
+		/*!
+		@brief Adds an operand in ::operands.
+		@details Mostly to use when adding a global variable stored in the
+				 datastate as an operand in this operation.
+		*/
+		inline void AddOperand(Operand* _operand)
+		{
+			operands.push_back(_operand);
+		}
+
+		/*!
+		@brief Adds an operation in ::operations.
+		*/
+		inline void AddOperation(Operation& _operation)
+		{
+			operations.push_back(_operation);
+			InformStructureOfAddOperation();
+		}
+
+		/*!
+		@brief Checks if there is at least two operands stored in this operation.
+		@returns True if the sum of the size of ::operands, ::operations and
+				 ::constants is greater or equal to 2.
+		*/
+		inline bool IsFull()
+		{
+			return (operands.size() + operations.size() + constants.size() >= 2);
+		}
+
+		/*!
+		@brief Recursively pushes operands in ::operands and trims unsused
+				memory space for every child operation of this operation.
+		@details Uses ::PushOperands and ::ShrinkLocalOperands.
+		*/
+		void LinkLocalOperands();
 	};
 }

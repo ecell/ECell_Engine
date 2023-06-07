@@ -38,7 +38,7 @@ namespace ECellEngine::Maths
 		@brief Returns the operand (left hand side) of the equation.
 		@details This is the operand that is being assigned to.
 		*/
-		inline const Operand* GetOperand() const noexcept
+		inline Operand* GetOperand() noexcept
 		{
 			return lhs;
 		}

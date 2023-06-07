@@ -38,15 +38,6 @@ namespace ECellEngine::Editor::Widget::MNBV
 	void AddAssetNode(ECellEngine::Data::Module* _data);
 
 	/*!
-	@brief Adds an ECellEngine::Editor::Utility::MNBV::SolverNodeData in
-			ModelNodeBasedViewerContext::solverNodes.
-	@details After being added, the asset node data will be drawn in the editor.
-	@param _data The data source of the asset node to add. It probably comes
-			from a ECellEngine::Data::DataState.
-	*/
-	void AddSolverNode(ECellEngine::Solvers::Solver* _data);
-
-	/*!
 	@brief Asks the current Model Node Based Viewer (MNBV) Context to draw the
 			nodes registered to it.
 	@param  _simulation The pointer to the simulation from where the nodes

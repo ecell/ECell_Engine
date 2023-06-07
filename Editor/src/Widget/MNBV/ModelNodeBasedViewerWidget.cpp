@@ -90,13 +90,6 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::HandleSimuDa
             AddAssetNode(ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetModule(dataIdx).get());
         }
 
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_SOLVER"))
-        {
-            IM_ASSERT(payload->DataSize == sizeof(std::size_t));
-            const std::size_t dataIdx = *(const std::size_t*)payload->Data;
-            AddSolverNode(ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetSolver(dataIdx).get());
-        }
-
         ImGui::EndDragDropTarget();
     }
 }
