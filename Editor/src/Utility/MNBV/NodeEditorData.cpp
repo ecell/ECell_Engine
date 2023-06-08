@@ -78,12 +78,9 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	//X axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
 	{
-		ptrX = (float*)_data;
+		linePlot.ptrX = (float*)_data;
 
-		for (LineData& line : lines)
-		{
-			line.dataPoints.AddPoint(*ptrX, *line.ptrY);
-		}
+		linePlot.Update();
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
@@ -92,17 +89,13 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	//Y axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
 	{
-
-		std::vector<LineData>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(lines.begin(), lines.end(), (std::size_t)_nodeOutputPinData->node->id);
-		it = lines.insert(it, LineData(&_nodeOutputPinData->node->id, linesMaxNbDataPoints));
-
-		LineData& line = *it;
+		Plot::Line& line = linePlot.AddLine((std::size_t)_nodeInputPin->id);
 
 		line.ptrY = (float*)_data;
 
-		if (ptrX)
+		if (linePlot.ptrX)
 		{
-			line.dataPoints.AddPoint(*ptrX, *line.ptrY);
+			line.Update(*linePlot.ptrX);
 		}
 
 		//Some nodes are representing data that have names.
@@ -144,7 +137,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	//X axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
 	{
-		ptrX = nullptr;
+		linePlot.ptrX = nullptr;
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
@@ -153,26 +146,15 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	//Y axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
 	{
-		std::vector<LineData>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(lines.begin(), lines.end(), (std::size_t)_nodeOutputPinData->node->id);
-		
-		if (*it->id == _nodeOutputPinData->node->id)
+		std::vector<Plot::Line>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(linePlot.lines.begin(), linePlot.lines.end(), (std::size_t)_nodeOutputPinData->node->id);
+
+		if (it->id == (std::size_t)_nodeOutputPinData->node->id)
 		{
-			lines.erase(it);
+			linePlot.lines.erase(it);
 		}
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
-	}
-}
-
-void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::Update() noexcept
-{
-	if (ptrX)
-	{
-		for (LineData& line : lines)
-		{
-			line.dataPoints.AddPoint(*ptrX, *line.ptrY);
-		}
 	}
 }
 
