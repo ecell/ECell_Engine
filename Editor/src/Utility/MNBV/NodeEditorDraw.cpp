@@ -249,10 +249,30 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
 
 		for (unsigned short i = 0; i < _linePlotNodeData.lines.size(); i++)
 		{
-			char buffer[64] = "\0";
 			ImGui::PushID(i);
-			NodeInputText("##lineIdx", _linePlotNodeData.lines[i].lineLegend,
-				buffer, 64, itemsWidth, startX, headerWidth);
+			ApplyPinDrawOffset();
+			ImGui::SetNextItemWidth(0.5f*itemsWidth);
+			ImGui::InputText("##lineIdx", _linePlotNodeData.lines[i].lineLegend, 64, ImGuiInputTextFlags_EnterReturnsTrue);
+			if (ImGui::IsItemActive())
+			{
+				ax::NodeEditor::Suspend();
+				ImGui::SetTooltip("Press ENTER to confirm.");
+				ax::NodeEditor::Resume();
+			}
+
+			ImGui::SameLine();
+			bool open = ImGui::ColorButton("##lineColor", _linePlotNodeData.lines[i].color);
+			ax::NodeEditor::Suspend();
+			if (open)
+			{
+				ImGui::OpenPopup("##ColorPicker");
+			}
+			if (ImGui::BeginPopup("##ColorPicker"))
+			{
+				ImGui::ColorPicker4("##lineColorPicker", &_linePlotNodeData.lines[i].color.x);
+				ImGui::EndPopup();
+			}
+			ax::NodeEditor::Resume();
 			ImGui::PopID();
 		}
 
@@ -301,6 +321,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
 
 				for (unsigned short i = 0; i < _linePlotNodeData.lines.size(); ++i)
 				{
+					ImPlot::SetNextLineStyle(_linePlotNodeData.lines[i].color);
 					ImPlot::PlotLine(_linePlotNodeData.lines[i].lineLegend,
 						&_linePlotNodeData.lines[i].dataPoints.Data[0].x, &_linePlotNodeData.lines[i].dataPoints.Data[0].y,
 						_linePlotNodeData.lines[i].dataPoints.Data.Size, ImPlotLineFlags_None, _linePlotNodeData.lines[i].dataPoints.Offset, 2 * sizeof(float));

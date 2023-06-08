@@ -886,6 +886,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			const ax::NodeEditor::NodeId* id;
 			ScrollingBuffer dataPoints;
 			float* ptrY = nullptr;
+			ImVec4 color{ 1.f, 1.f, 1.f, 1.f };
 			char lineLegend[64] = "f(x)";
 
 			LineData(ax::NodeEditor::NodeId* _id, unsigned short _maxNbDataPoints) : id(_id)
