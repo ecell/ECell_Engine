@@ -247,11 +247,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 		NodeText_In(_linePlotNodeData.linePlot.xAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_XAxis], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
 		NodeText_In(_linePlotNodeData.linePlot.yAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_YAxis], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
 
+		//Draw Parameters for each line
 		for (unsigned short i = 0; i < _linePlotNodeData.linePlot.lines.size(); i++)
 		{
 			ImGui::PushID(i);
 			ApplyPinDrawOffset();
-			ImGui::SetNextItemWidth(0.5f * itemsWidth);
+			ImGui::SetNextItemWidth(0.25f * itemsWidth);
 			ImGui::InputText("##lineIdx", _linePlotNodeData.linePlot.lines[i].lineLegend, 64, ImGuiInputTextFlags_EnterReturnsTrue);
 			if (ImGui::IsItemActive())
 			{
@@ -273,6 +274,54 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 				ImGui::EndPopup();
 			}
 			ax::NodeEditor::Resume();
+
+			//ImGui::SameLine();
+			//ImGui::AlignTextToFramePadding(); ImGui::Text("Update:");
+			ImGui::SameLine();
+			bool EveryNthFrame = std::strcmp(_linePlotNodeData.linePlot.lines[i].GetCurrentUpdateSchemeName(), "EveryNthFrame") == 0;
+			bool EveryXSeconds = std::strcmp(_linePlotNodeData.linePlot.lines[i].GetCurrentUpdateSchemeName(), "EveryXSeconds") == 0;
+			float width = headerWidth - (ImGui::GetCursorPosX() - startX);
+			if (EveryNthFrame || EveryXSeconds)
+			{
+				width = 0.5f * (width - ImGui::GetStyle().ItemSpacing.x);
+			}
+			open = ImGui::Button(_linePlotNodeData.linePlot.lines[i].GetCurrentUpdateSchemeName(), ImVec2(width, 0.f));
+
+			if (EveryNthFrame)
+			{
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(width);
+				ImGui::DragInt("##nbFrames", (int*)_linePlotNodeData.linePlot.lines[i].updateController->Get(),
+					1.f, 1, INT32_MAX, "%d", ImGuiSliderFlags_AlwaysClamp);
+			}
+
+			else if (EveryXSeconds)
+			{
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(width);
+				ImGui::DragFloat("##xSeconds", (float*)_linePlotNodeData.linePlot.lines[i].updateController->Get(),
+					0.1f, 0.1f, FLT_MAX, "%.1f", ImGuiSliderFlags_AlwaysClamp);
+			}
+
+			ax::NodeEditor::Suspend();
+			if (open)
+			{
+				ImGui::OpenPopup("##combo");
+			}
+
+			if (ImGui::BeginPopup("##combo", ImGuiWindowFlags_NoMove))
+			{
+				for (int j = 0; j < Utility::Plot::UpdateScheme_Count; ++j)
+				{
+					if (ImGui::MenuItem(_linePlotNodeData.linePlot.lines[i].GetUpdateSchemeName(j)))
+					{
+						_linePlotNodeData.linePlot.lines[i].SwitchUpdateController(j);
+					}
+				}
+				ImGui::EndPopup();
+			}
+			ax::NodeEditor::Resume();
+
 			ImGui::PopID();
 		}
 

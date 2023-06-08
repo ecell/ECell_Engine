@@ -28,7 +28,7 @@ namespace ECellEngine::Editor::Utility::Plot
         ScrollingBuffer(const ScrollingBuffer& _sb) :
             MaxSize{ _sb.MaxSize }, Offset{ _sb.Offset }, Data{ _sb.Data }
         {
-
+            Data.reserve(MaxSize);
         }
 
         /*!

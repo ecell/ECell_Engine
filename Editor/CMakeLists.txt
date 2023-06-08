@@ -40,6 +40,7 @@ add_executable( ECellEngineEditor
 "src/Utility/Plot/Line.cpp"
 "src/Utility/Plot/LinePlot.cpp"
 "src/Utility/Plot/ScrollingBuffer.cpp"
+"src/Utility/Plot/UpdateController.cpp"
 
 "src/Widget/MNBV/ModelNodeBasedViewerContext.cpp"
 "src/Widget/MNBV/ModelNodeBasedViewerGlobal.cpp"

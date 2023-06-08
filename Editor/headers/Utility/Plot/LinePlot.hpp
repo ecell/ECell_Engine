@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "implot.h"
+
 #include "Utility/Plot/Line.hpp"
 
 namespace ECellEngine::Editor::Utility::Plot

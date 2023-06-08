@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include "Utility/Plot/PlotUtility.hpp"
+#include "Utility/Plot/UpdateController.hpp"
 #include "Utility/Plot/ScrollingBuffer.hpp"
 
 //forward declaration of NodeId
@@ -15,10 +15,22 @@ namespace ECellEngine::Editor::Utility::Plot
 {
 	struct Line
 	{
+	private:
+		UpdateController_Never updateControllerNever;
+		UpdateController_Always updateControllerAlways;
+		UpdateController_OnChange updateControllerOnChange;
+		UpdateController_EveryNthFrame updateControllerEveryNthFrame;
+		UpdateController_EveryXSeconds updateControllerEveryXSeconds;
+
+	public:
 		std::size_t id;
+
+		UpdateController* updateController = &updateControllerNever;
+		char* updateSchemeNames[5] { "Never", "Always", "OnChange", "EveryNthFrame", "EveryXSeconds" };
 
 		ScrollingBuffer dataPoints;
 		float* ptrY = nullptr;
+
 		ImVec4 color{ 1.f, 1.f, 1.f, 1.f };
 		char lineLegend[64] = "f(x)";
 
@@ -43,7 +55,19 @@ namespace ECellEngine::Editor::Utility::Plot
 			return lhs.id < rhs.id;
 		}
 
-		void Draw() noexcept;
+		inline const char* GetCurrentUpdateSchemeName() noexcept
+		{
+			return updateSchemeNames[updateController->scheme];
+		}
+
+		inline const char* GetUpdateSchemeName(unsigned short _updateSheme) noexcept
+		{
+			return updateSchemeNames[_updateSheme];
+		}
+
+		void Draw();
+
+		void SwitchUpdateController(unsigned short _updateScheme) noexcept;
 
 		void Update(float _x) noexcept;
 
