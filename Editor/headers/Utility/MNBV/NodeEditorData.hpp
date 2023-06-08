@@ -10,7 +10,7 @@
 
 #include "Data/BinaryOperatedVector.hpp"
 #include "Core/Timer.hpp"
-#include "Utility/PlotUtility.hpp"
+#include "Utility/Plot/LinePlot.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerGlobal.hpp"
 
 namespace ECellEngine::Editor::Utility::MNBV
@@ -880,6 +880,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 	*/
 	struct LinePlotNodeData final : public NodeData
 	{
+	public:
 		/*!
 		@brief The local enum to manage access to the input pins.
 		@see ::inputPins
@@ -940,26 +941,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			State_Count
 		};
 
-		char* name = "Line Plot";
-
-		ScrollingBuffer dataPoints;
-		float* ptrX = nullptr;
-		float* ptrY = nullptr;
-		//float newPointBuffer[2] = { 0, 0 };
-		//unsigned short newPointConstructionCounter = 0;
-
-		char plotTitle[64] = "PlotTitle";
-		char xAxisLabel[64] = "x";
-		char yAxisLabel[64] = "y";
-		char lineLegend[64] = "f(x)";
-		float plotSize[2] = { ImPlot::GetStyle().PlotDefaultSize.x, ImPlot::GetStyle().PlotDefaultSize.y };
-
-		static const ImGuiWindowFlags plotWindowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
-		ImPlotFlags plotFlags = ImPlotFlags_NoLegend | ImPlotFlags_NoInputs;
-		ImPlotScale xAxisScale = ImPlotScale_Linear;
-		ImPlotScale yAxisScale = ImPlotScale_Linear;
-		ImPlotAxisFlags xAxisFlags = ImPlotAxisFlags_AutoFit;
-		ImPlotAxisFlags yAxisFlags = ImPlotAxisFlags_AutoFit;
+		Plot::LinePlot linePlot;
 
 		/*!
 		@brief All the input pins.
@@ -985,8 +967,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
-		LinePlotNodeData(int _maxNbDataPoints, ImVec2& _position) :
-			NodeData(), dataPoints{ _maxNbDataPoints }
+		LinePlotNodeData(ImVec2& _position) :
+			NodeData()
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
@@ -1003,12 +985,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds[CollapsingHeader_YAxisFlags] = Widget::MNBV::GetMNBVCtxtNextId();//Y Axis Flags (Parameters) Collapsing header
 			collapsingHeadersIds[CollapsingHeader_AxisScaleFlags] = Widget::MNBV::GetMNBVCtxtNextId();//X & Y Axis Scale Flags (Parameters) Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Plot] = Widget::MNBV::GetMNBVCtxtNextId();//Plot Collapsing Header
-
-			dataPoints.AddPoint(0, 0);
 		}
 
 		LinePlotNodeData(const LinePlotNodeData& _lpnd) :
-			NodeData(_lpnd), dataPoints{ _lpnd.dataPoints },
+			NodeData(_lpnd),
 			inputPins{ _lpnd.inputPins[0], _lpnd.inputPins[1] , _lpnd.inputPins[2] },
 			outputPins{ _lpnd.outputPins[0] },
 			utilityState{ _lpnd.utilityState },
@@ -1050,11 +1030,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			utilityState ^= (1 << _stateBitPos);
 		}
-
-		/*!
-		@brief Updates the scrolling buffers containing the data points.
-		*/
-		void Update() noexcept;
 	};
 
 	/*!

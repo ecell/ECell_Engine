@@ -46,7 +46,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			if (ImGui::MenuItem("Line Plot Node"))
 			{
 				ax::NodeEditor::Resume();
-				linePlotNodes.emplace_back(Utility::MNBV::LinePlotNodeData(1024, ImGui::GetIO().MousePos));
+				linePlotNodes.emplace_back(Utility::MNBV::LinePlotNodeData(ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
 			}
 			ImGui::EndMenu();
@@ -226,7 +226,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 
 	for (std::vector<Utility::MNBV::LinePlotNodeData>::iterator it = linePlotNodes.begin(); it != linePlotNodes.end(); it++)
 	{
-		Utility::MNBV::NodeEditorDraw::LinePlotNode(it->name, *it);
+		Utility::MNBV::NodeEditorDraw::LinePlotNode(*it);
 	}
 
 	for (std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData>::iterator it = modifyDataStateValueEventNodes.begin(); it != modifyDataStateValueEventNodes.end(); it++)

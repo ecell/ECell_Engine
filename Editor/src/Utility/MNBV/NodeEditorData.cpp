@@ -78,7 +78,9 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	//X axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
 	{
-		ptrX = (float*)_data;
+		linePlot.ptrX = (float*)_data;
+
+		linePlot.Update();
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
@@ -87,7 +89,43 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	//Y axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
 	{
-		ptrY = (float*)_data;
+		Plot::Line& line = linePlot.AddLine((std::size_t)_nodeInputPin->id);
+
+		line.ptrY = (float*)_data;
+
+		if (linePlot.ptrX)
+		{
+			line.Update(*linePlot.ptrX);
+		}
+
+		//Some nodes are representing data that have names.
+		//We try to get the name of the node and use it as the legend of the line.
+		//TODO: When the project uses reflection, this should be done differently than
+		//		by using dynamic_cast.
+		EquationNodeData* end = dynamic_cast<EquationNodeData*>(_nodeOutputPinData->node);
+		if (end)
+		{
+			std::memcpy(line.lineLegend, end->data->GetOperand()->name.c_str(), 64);
+		}
+
+		ParameterNodeData* pnd = dynamic_cast<ParameterNodeData*>(_nodeOutputPinData->node);
+		if (pnd)
+		{
+			std::memcpy(line.lineLegend, pnd->data->name.c_str(), 64);
+		}
+
+		ReactionNodeData* rnd = dynamic_cast<ReactionNodeData*>(_nodeOutputPinData->node);
+		if (rnd)
+		{
+			std::memcpy(line.lineLegend, rnd->data->name.c_str(), 64);
+			std::strcat(line.lineLegend, " (rate)");
+		}
+
+		SpeciesNodeData* snd = dynamic_cast<SpeciesNodeData*>(_nodeOutputPinData->node);
+		if (snd)
+		{
+			std::memcpy(line.lineLegend, snd->data->name.c_str(), 64);
+		}
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
@@ -99,7 +137,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	//X axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
 	{
-		ptrX = nullptr;
+		linePlot.ptrX = nullptr;
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
@@ -108,18 +146,15 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	//Y axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
 	{
-		ptrY = nullptr;
+		std::vector<Plot::Line>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(linePlot.lines.begin(), linePlot.lines.end(), (std::size_t)_nodeOutputPinData->node->id);
+
+		if (it->id == (std::size_t)_nodeOutputPinData->node->id)
+		{
+			linePlot.lines.erase(it);
+		}
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
-	}
-}
-
-void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::Update() noexcept
-{
-	if (ptrX && ptrY)
-	{
-		dataPoints.AddPoint(*ptrX, *ptrY);
 	}
 }
 
