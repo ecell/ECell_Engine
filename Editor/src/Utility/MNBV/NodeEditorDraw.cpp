@@ -203,8 +203,6 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
 
 			NodeInputText("Y Axis Label", _linePlotNodeData.yAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
 
-			NodeInputText("Line Legend", _linePlotNodeData.lineLegend, buffer, 64, headerWidth, startX, headerWidth);
-
 			ImGui::SetNextItemWidth(headerWidth - ImGui::CalcTextSize("Plot Size").x - style.ItemSpacing.x);
 			ImGui::DragFloat2("Plot Size", _linePlotNodeData.plotSize, 1.f, 10.f, 1000.f);
 		}
@@ -249,6 +247,15 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
 		NodeText_In(_linePlotNodeData.xAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_XAxis], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
 		NodeText_In(_linePlotNodeData.yAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_YAxis], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
 
+		for (unsigned short i = 0; i < _linePlotNodeData.lines.size(); i++)
+		{
+			char buffer[64] = "\0";
+			ImGui::PushID(i);
+			NodeInputText("##lineIdx", _linePlotNodeData.lines[i].lineLegend,
+				buffer, 64, itemsWidth, startX, headerWidth);
+			ImGui::PopID();
+		}
+
 		AlignToCenter(startX, headerWidth, headerWidth);
 
 		if (_linePlotNodeData.IsPlotOpen())
@@ -275,12 +282,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
 		}
 	}
 
+	_linePlotNodeData.Update();
+
 	if (_linePlotNodeData.IsPlotOpen())
 	{
 		ImGuiStyle& imguiStyle = ImGui::GetStyle();
 		ImPlotStyle& implotStyle = ImPlot::GetStyle();
-		
-		_linePlotNodeData.Update();
 
 		ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.plotSize[0] + 2 * imguiStyle.WindowPadding.x,
 			_linePlotNodeData.plotSize[1] + 2 * imguiStyle.WindowPadding.y));
@@ -292,10 +299,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
 				ImPlot::SetupAxisScale(ImAxis_X1, _linePlotNodeData.xAxisScale);
 				ImPlot::SetupAxisScale(ImAxis_Y1, _linePlotNodeData.yAxisScale);
 
-				ImPlot::PlotLine(_linePlotNodeData.lineLegend,
-					&(_linePlotNodeData.dataPoints.Data[0].x), &(_linePlotNodeData.dataPoints.Data[0].y),
-					_linePlotNodeData.dataPoints.Data.Size, ImPlotLineFlags_None, _linePlotNodeData.dataPoints.Offset, 2 * sizeof(float));
-
+				for (unsigned short i = 0; i < _linePlotNodeData.lines.size(); ++i)
+				{
+					ImPlot::PlotLine(_linePlotNodeData.lines[i].lineLegend,
+						&_linePlotNodeData.lines[i].dataPoints.Data[0].x, &_linePlotNodeData.lines[i].dataPoints.Data[0].y,
+						_linePlotNodeData.lines[i].dataPoints.Data.Size, ImPlotLineFlags_None, _linePlotNodeData.lines[i].dataPoints.Offset, 2 * sizeof(float));
+				}
 				ImPlot::EndPlot();
 			}
 		}

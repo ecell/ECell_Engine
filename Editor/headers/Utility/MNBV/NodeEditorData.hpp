@@ -880,6 +880,34 @@ namespace ECellEngine::Editor::Utility::MNBV
 	*/
 	struct LinePlotNodeData final : public NodeData
 	{
+	private: 
+		struct LineData
+		{
+			const ax::NodeEditor::NodeId* id;
+			ScrollingBuffer dataPoints;
+			float* ptrY = nullptr;
+			char lineLegend[64] = "f(x)";
+
+			LineData(ax::NodeEditor::NodeId* _id, unsigned short _maxNbDataPoints) : id(_id)
+			{
+				dataPoints.Data.reserve(_maxNbDataPoints);
+				dataPoints.AddPoint(0.f, 0.f);
+			}
+
+			LineData(const LineData& _other) :
+				id(_other.id), dataPoints(_other.dataPoints), ptrY(_other.ptrY)
+			{
+				std::memcpy(lineLegend, _other.lineLegend, 64);
+			}
+
+			//Defining the operators to be able to use lower_bound (binary search)
+			//on the vector of lines.
+			inline operator std::size_t() { return (std::size_t)id; }
+			friend inline bool operator< (const LineData& lhs, const LineData& rhs) { return lhs.id->Get() < rhs.id->Get(); }
+
+		};
+
+	public:
 		/*!
 		@brief The local enum to manage access to the input pins.
 		@see ::inputPins
@@ -940,19 +968,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 			State_Count
 		};
 
-		char* name = "Line Plot";
-
-		ScrollingBuffer dataPoints;
-		float* ptrX = nullptr;
-		float* ptrY = nullptr;
-		//float newPointBuffer[2] = { 0, 0 };
-		//unsigned short newPointConstructionCounter = 0;
-
+		char name[64] = "Line Plot";
 		char plotTitle[64] = "PlotTitle";
 		char xAxisLabel[64] = "x";
 		char yAxisLabel[64] = "y";
-		char lineLegend[64] = "f(x)";
 		float plotSize[2] = { ImPlot::GetStyle().PlotDefaultSize.x, ImPlot::GetStyle().PlotDefaultSize.y };
+
+		float* ptrX = nullptr;
+		unsigned short linesMaxNbDataPoints = 1024;
+		std::vector<LineData> lines;
 
 		static const ImGuiWindowFlags plotWindowFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
 		ImPlotFlags plotFlags = ImPlotFlags_NoLegend | ImPlotFlags_NoInputs;
@@ -985,8 +1009,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
-		LinePlotNodeData(int _maxNbDataPoints, ImVec2& _position) :
-			NodeData(), dataPoints{ _maxNbDataPoints }
+		LinePlotNodeData(unsigned short _maxNbDataPoints, ImVec2& _position) :
+			NodeData(), linesMaxNbDataPoints{ _maxNbDataPoints }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
@@ -1003,12 +1027,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds[CollapsingHeader_YAxisFlags] = Widget::MNBV::GetMNBVCtxtNextId();//Y Axis Flags (Parameters) Collapsing header
 			collapsingHeadersIds[CollapsingHeader_AxisScaleFlags] = Widget::MNBV::GetMNBVCtxtNextId();//X & Y Axis Scale Flags (Parameters) Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Plot] = Widget::MNBV::GetMNBVCtxtNextId();//Plot Collapsing Header
-
-			dataPoints.AddPoint(0, 0);
 		}
 
 		LinePlotNodeData(const LinePlotNodeData& _lpnd) :
-			NodeData(_lpnd), dataPoints{ _lpnd.dataPoints },
+			NodeData(_lpnd), ptrX{_lpnd.ptrX}, lines { _lpnd.lines },
+			plotSize{ _lpnd.plotSize[0], _lpnd.plotSize[1] },
 			inputPins{ _lpnd.inputPins[0], _lpnd.inputPins[1] , _lpnd.inputPins[2] },
 			outputPins{ _lpnd.outputPins[0] },
 			utilityState{ _lpnd.utilityState },
@@ -1016,6 +1039,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 			_lpnd.collapsingHeadersIds[2], _lpnd.collapsingHeadersIds[3], _lpnd.collapsingHeadersIds[4],
 			_lpnd.collapsingHeadersIds[5] }
 		{
+			std::memcpy(plotTitle, _lpnd.plotTitle, 64);
+			std::memcpy(xAxisLabel, _lpnd.xAxisLabel, 64);
+			std::memcpy(yAxisLabel, _lpnd.yAxisLabel, 64);
+
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
