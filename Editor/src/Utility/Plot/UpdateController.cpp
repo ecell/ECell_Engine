@@ -3,17 +3,17 @@
 
 void ECellEngine::Editor::Utility::Plot::UpdateController_OnChange::Reset() noexcept
 {
-	lastY = *ptrY;
+	previous = *current;
 }
 
 void ECellEngine::Editor::Utility::Plot::UpdateController_OnChange::Set(void* _controlValue) noexcept
 {
-	ptrY = (float*)_controlValue;
+	current = (float*)_controlValue;
 }
 
 bool ECellEngine::Editor::Utility::Plot::UpdateController_OnChange::TestUpdate() noexcept
 {
-    return *ptrY != lastY;
+    return *current != previous;
 }
 
 void ECellEngine::Editor::Utility::Plot::UpdateController_EveryNthFrame::Reset() noexcept

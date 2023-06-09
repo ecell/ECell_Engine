@@ -2,140 +2,202 @@
 
 namespace ECellEngine::Editor::Utility::Plot
 {
-    enum UpdateScheme
-    {
-        UpdateScheme_Never,
-        UpdateScheme_Always,
-        UpdateScheme_OnChange,
-        UpdateScheme_EveryNthFrame,
-        UpdateScheme_EveryXSeconds,
+	/*!
+	@brief Enums to describe various conditions on which an update should be
+		   performed.
+	@details This is defined in the context of plotting data. It controls when
+			 data should be added to the structure that stores it and that is
+			 plotteds.
+	*/
+	enum UpdateScheme
+	{
+		UpdateScheme_Never,// = 0, Never add data to the structure that stores it.
+		UpdateScheme_Always,// = 1, Always add data to the structure that stores it.
+		UpdateScheme_OnChange,// = 2, Add data to the structure that stores it only when the new value is different from the previous one.
+		UpdateScheme_EveryNthFrame,// = 3, Add data to the structure that stores it every N frames.
+		UpdateScheme_EveryXSeconds,// = 4, Add data to the structure that stores it every X seconds.
 
-        UpdateScheme_Count
-    };
+		UpdateScheme_Count//The number of update schemes.
+	};
 
-    struct UpdateController
-    {
-        UpdateScheme scheme = UpdateScheme_Never;
+	/*!
+	@brief A base class for the update controllers.
+	*/
+	struct UpdateController
+	{
+		UpdateScheme scheme = UpdateScheme_Never;
 
-        virtual ~UpdateController() = default;
+		virtual ~UpdateController() = default;
 
-        virtual void* Get() noexcept = 0;
+		/*!
+		@brief Get the pointer to the threshold value that controls the update
+			   schem, if any.
+		*/
+		virtual void* Get() noexcept = 0;
 
-        virtual void Set(void* _controlValue) noexcept = 0;
+		/*!
+		@brief Set the threshold value that controls the update scheme, if any.
+		*/
+		virtual void Set(void* _controlValue) noexcept = 0;
 
-        virtual void Reset() noexcept = 0;
+		/*!
+		@brief Reset the update controller. In particular, reset the threshold
+			   value that controls the update scheme, if any.
+		*/
+		virtual void Reset() noexcept = 0;
 
-        inline virtual bool TestUpdate() noexcept = 0;
+		/*!
+		@brief Test if the update scheme is satisfied.
+		@returns True if the update scheme is satisfied, false otherwise.
+		*/
+		inline virtual bool TestUpdate() noexcept = 0;
 
-    };
+	};
 
-    struct UpdateController_Never final : public UpdateController
-    {
-        UpdateController_Never() noexcept
-        {
-            scheme = UpdateScheme_Never;
-        }
+	/*!
+	@brief An update controller that never updates.
+	*/
+	struct UpdateController_Never final : public UpdateController
+	{
+		UpdateController_Never() noexcept
+		{
+			scheme = UpdateScheme_Never;
+		}
 
-        inline void* Get() noexcept override
-        {
+		inline void* Get() noexcept override
+		{
 			return nullptr;
 		}
 
-        void Reset() noexcept override {};
+		void Reset() noexcept override {};
 
-        void Set(void* _controlValue) noexcept override {};
+		void Set(void* _controlValue) noexcept override {};
 
-        inline bool TestUpdate() noexcept override
-        {
-            return false;
-        };
-    };
+		inline bool TestUpdate() noexcept override
+		{
+			return false;
+		};
+	};
 
-    struct UpdateController_Always final : public UpdateController
-    {
-        UpdateController_Always() noexcept
-        {
+	/*!
+	@brief An update controller that always updates.
+	*/
+	struct UpdateController_Always final : public UpdateController
+	{
+		UpdateController_Always() noexcept
+		{
 			scheme = UpdateScheme_Always;
 		}
 
-        inline void* Get() noexcept override
-        {
-            return nullptr;
-        }
+		inline void* Get() noexcept override
+		{
+			return nullptr;
+		}
 
-        void Reset() noexcept override {};
+		void Reset() noexcept override {};
 
-        void Set(void* _controlValue) noexcept override {};
+		void Set(void* _controlValue) noexcept override {};
 
-        inline bool TestUpdate() noexcept override
-        {
+		inline bool TestUpdate() noexcept override
+		{
 			return true;
 		}
 	};
 
-    struct UpdateController_OnChange final : public UpdateController
-    {
-        float* ptrY = nullptr;
-        float lastY = 0.f;
+	/*!
+	@brief An update controller that updates only when the value changes.
+	*/
+	struct UpdateController_OnChange final : public UpdateController
+	{
+		/*!
+		@brief Pointer to the current value.
+		*/
+		float* current = nullptr;
 
-        UpdateController_OnChange() noexcept
-        {
-            scheme = UpdateScheme_OnChange;
-        }
+		/*!
+		@brief The previous value of ::current.
+		@details This is used to check if the value has changed.
+		*/
+		float previous = 0.f;
 
-        inline void* Get() noexcept override
-        {
+		UpdateController_OnChange() noexcept
+		{
+			scheme = UpdateScheme_OnChange;
+		}
+
+		inline void* Get() noexcept override
+		{
 			return nullptr;
 		}
 
-        void Reset() noexcept override;
+		void Reset() noexcept override;
 
-        void Set(void* _controlValue) noexcept override;
+		void Set(void* _controlValue) noexcept override;
 
-        bool TestUpdate() noexcept override;
+		bool TestUpdate() noexcept override;
 	};
 
-    struct UpdateController_EveryNthFrame final : public UpdateController
-    {
+	/*!
+	@brief An update controller that updates every N frames.
+	*/
+	struct UpdateController_EveryNthFrame final : public UpdateController
+	{
+		/*!
+		@brief The current frame count.
+		*/
 		int frameCount = 0;
+
+		/*
+		@brief The number of frames that must be reached before updating.
+		*/
 		int frameInterval = 100;
 
-        UpdateController_EveryNthFrame() noexcept
-        {
+		UpdateController_EveryNthFrame() noexcept
+		{
 			scheme = UpdateScheme_EveryNthFrame;
 		}
 
-        inline void* Get() noexcept override
-        {
-            return &frameInterval;
-        }
+		inline void* Get() noexcept override
+		{
+			return &frameInterval;
+		}
 
-        void Reset() noexcept override;
+		void Reset() noexcept override;
 
-        void Set(void* _controlValue) noexcept override;
+		void Set(void* _controlValue) noexcept override;
 
-        bool TestUpdate() noexcept override;
+		bool TestUpdate() noexcept override;
 	};
 
-    struct UpdateController_EveryXSeconds final : public UpdateController
-    {
+	/*!
+	@brief An update controller that updates every X seconds.
+	*/
+	struct UpdateController_EveryXSeconds final : public UpdateController
+	{
+		/*!
+		@brief The current time.
+		*/
 		float time = 0.f;
-        float timeInterval = 5.f;
 
-        UpdateController_EveryXSeconds() noexcept
-        {
-            scheme = UpdateScheme_EveryXSeconds;
-        }
+		/*!
+		@brief The time interval that must be reached before updating.
+		*/
+		float timeInterval = 5.f;
 
-        inline void* Get() noexcept override
-        {
+		UpdateController_EveryXSeconds() noexcept
+		{
+			scheme = UpdateScheme_EveryXSeconds;
+		}
+
+		inline void* Get() noexcept override
+		{
 			return &timeInterval;
 		}
 
-        void Reset() noexcept override;
+		void Reset() noexcept override;
 
-        void Set(void* _controlValue) noexcept override;
-        
-        bool TestUpdate() noexcept override;
+		void Set(void* _controlValue) noexcept override;
+		
+		bool TestUpdate() noexcept override;
 	};
 }
