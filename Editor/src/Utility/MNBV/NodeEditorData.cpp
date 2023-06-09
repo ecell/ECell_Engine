@@ -89,7 +89,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	//Y axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
 	{
-		Plot::Line& line = linePlot.AddLine((std::size_t)_nodeInputPin->id);
+		Plot::Line& line = linePlot.AddLine((std::size_t)_nodeOutputPinData->node->id);
 
 		line.ptrY = (float*)_data;
 
