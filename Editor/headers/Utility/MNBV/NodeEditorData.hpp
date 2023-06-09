@@ -188,8 +188,22 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Method to implement what to do when a link is disconnected
 				between @p _nodeInput and @p _nodeOutput.
+		@param _nodeInput The pin notifying this node that a link has been
+				disconnected.
+		@param _nodeOuput The pin from which the data has arrived.
 		*/
 		virtual void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) = 0;
+
+		/*!
+		@brief Method to refresh data links in the end node.
+		@details Typically used to correct invalidated pointers in the end
+				 node.
+		@param _nodeInput The pin notifying this node that the data transiting
+				through a link must be refreshed.
+		@param _nodeOuput The pin from which the data originates (or the node it
+				represents).
+		*/
+		virtual void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) = 0;
 
 		/*!
 		@brief Method to implement what to do when a new link is connected
@@ -203,8 +217,22 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Method to implement what to do when a link is disconnected
 				between @p _nodeOutput and @p _nodeInput.
+		@param _nodeInput The pointer to the end pin of the link.
+		@param _nodeOuput The pin notifying this node that a link has been
+				disconnected.
 		*/
 		virtual void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) = 0;
+
+		/*!
+		@brief Method to refresh data links in the start node.
+		@details Typically used to correct invalidated pointers in the start
+				 node.
+		@param _nodeInput The pin where which the data goes (or the node it
+				represents).
+		@param _nodeOuput The pin notifying this node that the data transiting
+				through a link must be refreshed..
+		*/
+		virtual void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) = 0;
 	};
 
 	/*
@@ -283,7 +311,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		/*!
 		@brief What to do when a link gets connected to the input pin.
-		@tparam Data The type of data the pin receives.
+		@param _data The pointer the the data this pin receives.
 		*/
 		inline void OnConnect(NodeOutputPinData* _outputNode, void* _data)
 		{
@@ -303,6 +331,17 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 			isUsed = false;
 		}
+
+		/*!
+		@brief To notify the node that the pointer ::_data has been invalidated
+				and needs to be refreshed.
+		@param _nodeOutput The output pin data which is connected to this input
+				pin data.
+		*/
+		inline void OnRefresh(NodeOutputPinData* _outputNode, void* _data)
+		{
+			node->InputRefresh(this, _outputNode, _data);
+		}
 	};
 
 	/*!
@@ -314,12 +353,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 	*/
 	struct NodeOutputPinData final : public NodePinData
 	{
-		/*!
-		@brief The list of every input pins which shall receive the data when
-				this output pin data broadcasts.
-		*/
-		//std::vector<NodeInputPinData*> subscribers;
-
 		NodeOutputPinData() = default;
 
 		NodeOutputPinData(std::size_t& _pinId, PinType _type, NodeData* _node) :
@@ -331,17 +364,14 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief What happens when a link is created between this pin and
 				@p _nodeInput.
+		@details Typically happens every time a dynamic link is created.
 		@param _inputNode The input pin data which we connect to this output
 				pin data.
-		@details Typically happens every time a dynamic link is created.
 		*/
 		inline void OnConnect(NodeInputPinData* _inputNode)
 		{
-			//subscribers.push_back(_inputNode);
-
 			//What to do on connection.
 			node->OutputConnect(_inputNode, this);
-			//_inputNode->node->InputConnect(*_inputNode);
 
 			isUsed = true;
 		}
@@ -357,6 +387,17 @@ namespace ECellEngine::Editor::Utility::MNBV
 			node->OutputDisconnect(_inputNode, this);
 
 			isUsed = false;
+		}
+
+		/*!
+		@brief To notify the node that the data exchange with @p _inputNode has
+				been invalidated and needs to be refreshed.
+		@param _inputNode The input pin data which is connected to this output
+				pin data.
+		*/
+		inline void OnRefresh(NodeInputPinData* _inputNode)
+		{
+			node->OutputRefresh(_inputNode, this);
 		}
 	};
 
@@ -397,14 +438,18 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		ax::NodeEditor::PinId endIds[2];
 
-		/*LinkData(ax::NodeEditor::PinId _startId, ax::NodeEditor::PinId _endId) :
-			id{ Widget::MNBV::GetMNBVCtxtNextId() }, startIds{ _startId, _startId }, endIds{ _endId, _endId }
+		LinkData(NodePinData* _startPin, NodePinData* _endPin) :
+			id{ Widget::MNBV::GetMNBVCtxtNextId() },
+			startPin{ (NodeOutputPinData*)_startPin },
+			endPin{ (NodeInputPinData*)_endPin },
+			startIds{ _startPin->id, _startPin->id }, endIds{ _endPin->id, _endPin->id }
 		{
 
-		}*/
-		LinkData(NodeOutputPinData* _startPin, NodeInputPinData* _endPin) :
-			id{ Widget::MNBV::GetMNBVCtxtNextId() }, startPin{ _startPin }, endPin{ _endPin },
-			startIds{ _startPin->id, _startPin->id }, endIds{ _endPin->id, _endPin->id }
+		}
+		LinkData(const LinkData& _other) :
+			id{ _other.id }, startPin{ _other.startPin }, endPin{ _other.endPin },
+			startIds{ _other.startIds[0], _other.startIds[1] },
+			endIds{ _other.endIds[0], _other.endIds[1] }
 		{
 
 		}
@@ -444,6 +489,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			endIds[_priority] = _id;
 		}
+
+		void Refresh();
 	};
 
 #pragma endregion
@@ -609,9 +656,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in asset node data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in asset node data
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in asset node data
+
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in asset node data
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -858,9 +909,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in equation data
 
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in equation data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in equation data
+
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -1011,9 +1066,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};// not used in line plot node data
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};// not used in line plot node data
+
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};// not used in line plot node data
 
 		inline bool IsPlotOpen() noexcept
 		{
@@ -1166,11 +1225,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
-	};
 
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Modify DataState Value Event Node Data
+	};
+	
 	/*!
 	@brief The logic to encode the data needed to draw the node representing
 			ECellEngine::Data::Reaction.
@@ -1386,9 +1449,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Reaction Node Data
 
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Reaction Node Data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Reaction Node Data
+
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -1588,9 +1655,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Parameter Node Data
 
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Parameter Node Data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Parameter Node Data
+
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -1678,9 +1749,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Simulation Time Node Data
 
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Simulation Time Node Data
+	
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 	};
 
 	/*!
@@ -1758,11 +1833,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Solver Node Data
 
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Solver Node Data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
-	};
 
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+	};
+	
 	/*!
 	@brief The logic to encode the data needed to draw the node representing
 			ECellEngine::Data::Species.
@@ -1978,9 +2057,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Species Node Data
 
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Species Node Data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Species Node Data
+
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override ;
 
 		/*!
 		@brief Resets the state of the node list box string data of this node.
@@ -2068,9 +2151,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Value Float Node Data
 
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Value Float Node Data
+	
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 	};
 
 	/*!
@@ -2141,7 +2228,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			data->SetLHS(&lhs);
 			data->SetRHS(&rhs);
-			
+
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
@@ -2170,9 +2257,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Watcher Node Data
 	};
 #pragma endregion
 }

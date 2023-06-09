@@ -1,5 +1,13 @@
 #include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 
+void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::ConserveLinkDataIntegrity()
+{
+	for (std::vector<Utility::MNBV::LinkData>::iterator it = dynamicLinks.begin(); it != dynamicLinks.end(); it++)
+	{
+		it->Refresh();
+	}
+}
+
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellEngine::Core::Simulation* _simulation)
 {
 	ax::NodeEditor::Suspend();
@@ -17,6 +25,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 				ax::NodeEditor::Resume();
 				valueFloatNodes.emplace_back(Utility::MNBV::ValueFloatNodeData(0.f, ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
+				ConserveLinkDataIntegrity();
 			}
 			ImGui::EndMenu();
 		}
@@ -29,6 +38,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 				//TODO: Use a command to add th event
 				modifyDataStateValueEventNodes.emplace_back(Utility::MNBV::ModifyDataStateValueEventNodeData(_simulation->GetDataState()->AddModifyDataStateValueEvent(), ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
+				ConserveLinkDataIntegrity();
 			}
 			
 			if (ImGui::MenuItem("Watcher Node"))
@@ -37,6 +47,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 				//TODO: Use a command to add a watcher
 				watcherNodes.emplace_back(Utility::MNBV::WatcherNodeData(_simulation->GetDataState()->AddWatcher(), ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
+				ConserveLinkDataIntegrity();
 			}
 			ImGui::EndMenu();
 		}
@@ -48,6 +59,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 				ax::NodeEditor::Resume();
 				linePlotNodes.emplace_back(Utility::MNBV::LinePlotNodeData(ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
+				ConserveLinkDataIntegrity();
 			}
 			ImGui::EndMenu();
 		}
@@ -60,6 +72,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 				//TODO: Use a command to add a solver
 				solverNodes.emplace_back(Utility::MNBV::SolverNodeData(_simulation->AddSolver("GillespieNRMRSolver"), ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
+				ConserveLinkDataIntegrity();
 			}
 			
 			if (ImGui::MenuItem("ODE Runge-Kutta 4"))
@@ -68,6 +81,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 				//TODO: Use a command to add a solver
 				solverNodes.emplace_back(Utility::MNBV::SolverNodeData(_simulation->AddSolver("ODESolver"), ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
+				ConserveLinkDataIntegrity();
 			}
 			ImGui::EndMenu();
 		}
@@ -79,6 +93,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 				ax::NodeEditor::Resume();
 				simulationTimeNodes.emplace_back(Utility::MNBV::SimulationTimeNodeData(_simulation->GetTimer(), ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
+				ConserveLinkDataIntegrity();
 			}
 			ImGui::EndMenu();
 		}

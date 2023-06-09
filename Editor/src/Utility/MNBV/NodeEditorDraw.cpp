@@ -872,13 +872,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinkCreation(std::vecto
 					// ax::NodeEditor::AcceptNewItem() return true when user release mouse button.
 					if (ax::NodeEditor::AcceptNewItem(ImVec4(0.0f, 1.f, 0.f, 1.0f), 2.0f))
 					{
-						NodeOutputPinData* outputPin = static_cast<NodeOutputPinData*>(startPin);
-						NodeInputPinData* inputPin = static_cast<NodeInputPinData*>(endPin);
-
 						// Since we accepted new link, lets add one to our list of links.
-						_links.push_back(LinkData(outputPin, inputPin));
+						LinkData& newLink = _links.emplace_back(LinkData(startPin, endPin));
 
-						outputPin->OnConnect(inputPin);
+						newLink.startPin->OnConnect(newLink.endPin);
 					}
 				}
 			}
