@@ -19,6 +19,17 @@ const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::weak_
 
 #pragma endregion
 
+#pragma region LinkData
+void ECellEngine::Editor::Utility::MNBV::LinkData::Refresh()
+{
+	startPin = (NodeOutputPinData*)Widget::MNBV::FindNodePinInAll((std::size_t)startIds[0]);
+	endPin = (NodeInputPinData*)Widget::MNBV::FindNodePinInAll((std::size_t)endIds[0]);
+
+	startPin->OnRefresh(endPin);
+}
+#pragma enregion
+
+#pragma region NodeData
 void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputConnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	//The node input pin representing the solver attached to this asset.
@@ -56,6 +67,15 @@ void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputConnect(NodeInp
 
 		//we set the input pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[EquationNodeData::CollapsingHeader_EquationOperands].id, 1);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
+{
+	//Equation operation value
+	if (_nodeOutputPin->id == outputPins[EquationNodeData::OutputPin_EquationValue].id)
+	{
+		_nodeInputPinData->OnRefresh(_nodeOutputPin, &lhsValueBuffer);
 	}
 }
 
@@ -158,6 +178,26 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	}
 }
 
+void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputRefresh(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
+{
+	//X axis input pin
+	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
+	{
+		linePlot.ptrX = (float*)_data;
+	}
+
+	//Y axis input pin
+	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
+	{
+		std::vector<Plot::Line>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(linePlot.lines.begin(), linePlot.lines.end(), (std::size_t)_nodeOutputPinData->node->id);
+
+		if (it->id == (std::size_t)_nodeOutputPinData->node->id)
+		{
+			it->ptrY = (float*)_data;
+		}
+	}
+}
+
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue].id)
@@ -185,6 +225,14 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Inpu
 	{
 		WatcherNodeData* watcherNodeData = dynamic_cast<WatcherNodeData*>(_nodeOutputPinData->node);
 		watcherNodeData->data->RemoveEvent(data);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
+{
+	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue].id)
+	{
+		data->newValue = (float*)_data;
 	}
 }
 
@@ -229,6 +277,15 @@ void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(NodeInp
 	}
 }
 
+void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
+{
+	//Reaction kinetic law value
+	if (_nodeOutputPin->id == outputPins[ReactionNodeData::OutputPin_KineticLawValue].id)
+	{
+		_nodeInputPinData->OnRefresh(_nodeOutputPin, &kineticLawValueBuffer);
+	}
+}
+
 void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::ResetNLBSDUtilityStates() noexcept
 {
 	nlbsData[NodeListBoxString_Products].ResetUtilityState();
@@ -261,6 +318,15 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeIn
 	}
 }
 
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
+{
+	//Parameter value
+	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ParameterValue].id)
+	{
+		_nodeInputPinData->OnRefresh(_nodeOutputPin, &parameterValueBuffer);
+	}
+}
+
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::Update() noexcept
 {
 	parameterValueBuffer = data->Get();
@@ -271,6 +337,13 @@ void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputConnect(N
 	//There is only one output pin in the SimulationTimeNodeData
 
 	_nodeInputPinData->OnConnect(_nodeOutputPinData, &(simulationTimer->elapsedTime));
+}
+
+void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+{
+	//There is only one output pin in the SimulationTimeNodeData
+
+	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &(simulationTimer->elapsedTime));
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
@@ -287,6 +360,13 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputDisconnect(NodeIn
 	//		This can be done here or in AssetNodeData::InputDisconnect()
 }
 
+void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+{
+	//There is only one output pin in the SolverNodeData
+
+	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &data->GetName());
+}
+
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
 	//Quantity value
@@ -296,6 +376,15 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInpu
 
 		//we set the output pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields].id, 1);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
+{
+	//Quantity value
+	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_Quantity].id)
+	{
+		_nodeInputPinData->OnRefresh(_nodeOutputPin, &speciesQuantityBuffer);
 	}
 }
 
@@ -317,6 +406,13 @@ void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputConnect(NodeI
 	//There is only one output pin in the ValueFloatNodeData
 
 	_nodeInputPinData->OnConnect(_nodeOutputPinData, &value);
+}
+
+void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+{
+	//There is only one output pin in the ValueFloatNodeData
+
+	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &value);
 }
 
 void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
@@ -357,6 +453,21 @@ void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputDisconnect(NodeIn
 	}
 }
 
+void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
+{
+	//The LHS input pin
+	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_LHS].id)
+	{
+		data->SetLHS((float*)_data);
+	}
+
+	//The RHS input pin
+	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_RHS].id)
+	{
+		data->SetRHS((float*)_data);
+	}
+}
+
 void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
 	//There is only one output pin in the WatcherNodeData and it is the output pin of the events to trigger.
@@ -372,3 +483,5 @@ void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::OutputDisconnect(NodeI
 	//We defer the unsubscription of the event to the watcher, to the event node.
 	_nodeInputPinData->OnDisconnect(_nodeOutputPinData);
 }
+
+#pragma endregion
