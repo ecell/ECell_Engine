@@ -117,6 +117,19 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 		
 		system.emplace_back(Maths::Equation(species.get(), rhs));
 	}
+
+	delete[] k1;
+	delete[] k2;
+	delete[] k3;
+	delete[] k4;
+	delete[] yn;
+
+	nbEquations = system.size();
+	k1 = new float[nbEquations];
+	k2 = new float[nbEquations];
+	k3 = new float[nbEquations];
+	k4 = new float[nbEquations];
+	yn = new float[nbEquations];
 }
 
 void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _timer)
@@ -126,33 +139,106 @@ void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _ti
 
 	while (solveCurrentTime < _timer.elapsedTime)
 	{
-		//Compute the time step
-		float halfdt = solveDeltaTime / 2;
-		float k1, k2, k3, k4;
-		float yn;
-		for (auto& equation : system)
+
+		for (unsigned short i = 0; i < nbEquations; ++i)
 		{
-			yn = equation.Get();
+			//y_n
+			yn[i] = system[i].Get();
 
 			//k1 = f(y_n)
-			k1 = equation.GetOperation().Get();
-		
+			k1[i] = system[i].GetOperation().Get();
+		}
+
+		for (unsigned short i = 0; i < nbEquations; ++i)
+		{
+			system[i].GetOperand()->Set(yn[i] + halfSolveDeltaTime * k1[i]);
+		}
+		for (unsigned short i = 0; i < nbEquations; ++i)
+		{
 			//k2 = f(y_n + 0.5 * dt * k1)
-			equation.GetOperand()->Set(yn + halfdt * k1);
-			k2 = equation.GetOperation().Get();
-		
+			k2[i] = system[i].GetOperation().Get();
+		}
+
+		for (unsigned short i = 0; i < nbEquations; ++i)
+		{
+			system[i].GetOperand()->Set(yn[i] + halfSolveDeltaTime * k2[i]);
+		}
+		for (unsigned short i = 0; i < nbEquations; ++i)
+		{
 			//k3 = f(y_n + 0.5 * dt * k2)
-			equation.GetOperand()->Set(yn + halfdt * k2);
-			k3 = equation.GetOperation().Get();
-		
+			k3[i] = system[i].GetOperation().Get();
+		}
+
+		for (unsigned short i = 0; i < nbEquations; ++i)
+		{
+			system[i].GetOperand()->Set(yn[i] + solveDeltaTime * k3[i]);
+		}
+		for (unsigned short i = 0; i < nbEquations; ++i)
+		{
 			//k4 = f(y_n + dt * k3)
-			equation.GetOperand()->Set(yn + solveDeltaTime * k3);
-			k4 = equation.GetOperation().Get();
-		
+			k4[i] = system[i].GetOperation().Get();
+		}
+
+		for (unsigned short i = 0; i < nbEquations; ++i)
+		{
 			//y_n+1 = y_n + dt / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
-			equation.GetOperand()->Set(yn + solveDeltaTime / 6 * (k1 + 2 * k2 + 2 * k3 + k4));
+			system[i].GetOperand()->Set(yn[i] + oneSixthSolveDeltaTime * (k1[i] + 2*k2[i] + 2*k3[i] + k4[i]));
 		}
 
 		solveCurrentTime += solveDeltaTime;
 	}
+
+	finaldt = _timer.elapsedTime - (solveCurrentTime - solveDeltaTime);
+	halfFinaldt = finaldt / 2;
+	oneSixthFinaldt = finaldt / 6;
+
+	for (unsigned short i = 0; i < nbEquations; ++i)
+	{
+		//y_n
+		yn[i] = system[i].Get();
+
+		//k1 = f(y_n)
+		k1[i] = system[i].GetOperation().Get();
+	}
+
+	for (unsigned short i = 0; i < nbEquations; ++i)
+	{
+		//k2 = f(y_n + 0.5 * dt * k1)
+		system[i].GetOperand()->Set(yn[i] + halfFinaldt * k1[i]);
+	}
+	for (unsigned short i = 0; i < nbEquations; ++i)
+	{
+		//k2 = f(y_n + 0.5 * dt * k1)
+		k2[i] = system[i].GetOperation().Get();
+	}
+
+	for (unsigned short i = 0; i < nbEquations; ++i)
+	{
+		//k3 = f(y_n + 0.5 * dt * k2)
+		system[i].GetOperand()->Set(yn[i] + halfFinaldt * k2[i]);
+	}
+	for (unsigned short i = 0; i < nbEquations; ++i)
+	{
+		//k3 = f(y_n + 0.5 * dt * k2)
+		k3[i] = system[i].GetOperation().Get();
+	}
+
+	for (unsigned short i = 0; i < nbEquations; ++i)
+	{
+		//k4 = f(y_n + dt * k3)
+		system[i].GetOperand()->Set(yn[i] + finaldt * k3[i]);
+	}
+	for (unsigned short i = 0; i < nbEquations; ++i)
+	{
+		//k4 = f(y_n + dt * k3)
+		k4[i] = system[i].GetOperation().Get();
+	}
+
+	for (unsigned short i = 0; i < nbEquations; ++i)
+	{
+		//y_n+1 = y_n + dt / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+		system[i].GetOperand()->Set(yn[i] + oneSixthFinaldt * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
+	}
+
+	solveCurrentTime = _timer.elapsedTime;
 }
