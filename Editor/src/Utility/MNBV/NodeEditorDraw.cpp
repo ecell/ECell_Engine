@@ -354,17 +354,18 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 	if (_linePlotNodeData.IsPlotOpen())
 	{
 		_linePlotNodeData.linePlot.Update();
-		
-		ImGuiStyle& imguiStyle = ImGui::GetStyle();
-		ImPlotStyle& implotStyle = ImPlot::GetStyle();
 
-		ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.linePlot.plotSize[0] + 2 * imguiStyle.WindowPadding.x,
-			_linePlotNodeData.linePlot.plotSize[1] + 2 * imguiStyle.WindowPadding.y));
+		ImVec2& windowPadding = ImGui::GetStyle().WindowPadding;
+
+		ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.linePlot.plotSize[0] + 2 * windowPadding.x,
+			_linePlotNodeData.linePlot.plotSize[1] + 2 * windowPadding.y));
+		ax::NodeEditor::Suspend();
 		if (ImGui::Begin("Line Plot##lineplot", NULL, _linePlotNodeData.linePlot.plotWindowFlags))
 		{
 			_linePlotNodeData.linePlot.Draw();
 		}
 		ImGui::End();
+		ax::NodeEditor::Resume();
 	}
 
 	ax::NodeEditor::EndNode();
