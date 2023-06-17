@@ -1,5 +1,34 @@
 #include "Solver/ODESolver.hpp"
 
+void ECellEngine::Solvers::ODESolver::BuildEquationRHS(Operation& _outRHS, std::vector<ECellEngine::Maths::Operation>& _fluxes)
+{
+	//If only one in-flux, then there is no need to sum
+	if (_fluxes.size() == 1)
+	{
+		_outRHS.AddOperation(_fluxes[0]);
+	}
+	else
+	{
+		//We create the sum of all in-flux by summing by pairs
+		//of in-flux until there is only one left.
+		unsigned short halfSize = _fluxes.size() / 2;
+		for (unsigned short step = 1; step <= halfSize; step *= 2)
+		{
+			Operation couple;
+			couple.Set(&ECellEngine::Maths::functions.add);
+			for (unsigned short i = 0; i < _fluxes.size(); i += step * 2)
+			{
+				couple.AddOperation(_fluxes[i]);
+				couple.AddOperation(_fluxes[i + step]);
+				_fluxes[i] = couple;
+			}
+		}
+		//By the end of the for loop, the first element of _fluxes will be
+		//the sum of all the elements.
+		_outRHS.AddOperation(_fluxes[0]);
+	}
+}
+
 void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module* _module)
 {
 	BiochemicalSolver::Initialize(_module);
@@ -33,89 +62,40 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 	//the species was indeed affected by a reaction (cf. above)
 	for (auto [speciesName, species] : dataState.GetAllSpecies())
 	{
+		ECellEngine::Logging::Logger::GetSingleton().LogDebug(speciesName);
 		//Initialize the operation in-flux minus out-flux
-		Operation rhs;
-		rhs.Set(&ECellEngine::Maths::functions.minus);
+		auto IFSearch = allInFlux.find(speciesName);
+		auto OFSearch = allOutFlux.find(speciesName);
 
-		//Sum all the in-flux
-		auto search = allInFlux.find(speciesName);
-		if (search != allInFlux.end())
+		bool hasIF = IFSearch != allInFlux.end();
+		bool hasOF = OFSearch != allOutFlux.end();
+
+		if (hasIF || hasOF)
 		{
-			std::vector<Operation>& inFlux = search->second;
-
-			//If only one in-flux, then there is no need to sum
-			if (inFlux.size() == 1)
+			Operation rhs;
+			if (hasIF && !hasOF)
 			{
-				rhs.AddOperation(inFlux[0]);
+				rhs.Set(&ECellEngine::Maths::functions.identity);
+				BuildEquationRHS(rhs, IFSearch->second);
+			}
+			else if (!hasIF && hasOF)
+			{
+				rhs.Set(&ECellEngine::Maths::functions.times);
+				rhs.AddNewConstant(-1);
+				BuildEquationRHS(rhs, OFSearch->second);
 			}
 			else
 			{
-				//We create the sum of all in-flux by summing by pairs
-				//of in-flux until there is only one left.
-				unsigned short halfSize = inFlux.size() / 2;
-				for (unsigned short step = 1; step <= halfSize; step *= 2)
-				{
-					Operation couple;
-					couple.Set(&ECellEngine::Maths::functions.add);
-					for (unsigned short i = 0; i < inFlux.size(); i += step * 2)
-					{
-						couple.AddOperation(inFlux[i]);
-						couple.AddOperation(inFlux[i + step]);
-						inFlux[i] = couple;
-					}
-				}
-				//By the end of the for loop, the first element of inFlux will be
-				//the sum of all the elements.
-				rhs.AddOperation(inFlux[0]);
+				rhs.Set(&ECellEngine::Maths::functions.minus);
+				BuildEquationRHS(rhs, IFSearch->second);
+				BuildEquationRHS(rhs, OFSearch->second);
 			}
-		}
-		//If no in-flux, then it is 0.
-		else
-		{
-			rhs.AddNewConstant(0.f);
-		}
 
-		//Sum all the out-flux.
-		search = allOutFlux.find(speciesName);
-		if (search != allOutFlux.end())
-		{
-			std::vector<Operation>& outFlux = search->second;
-
-			//If only one out-flux, then there is no need to sum.
-			if (outFlux.size() == 1)
-			{
-				rhs.AddOperation(outFlux[0]);
-			}
-			else
-			{
-				//We create the sum of all out-flux by summing by pairs
-				//of out-flux until there is only one left.
-				unsigned short halfSize = outFlux.size() / 2;
-				for (unsigned short step = 1; step <= halfSize; step *= 2)
-				{
-					Operation couple;
-					couple.Set(&ECellEngine::Maths::functions.add);
-					for (unsigned short i = 0; i < outFlux.size(); i += step * 2)
-					{
-						couple.AddOperation(outFlux[i]);
-						couple.AddOperation(outFlux[i + step]);
-						outFlux[i] = couple;
-					}
-				}
-				//by the end of the for loop, the first element of outFlux will be
-				//the sum of all the elements.
-				rhs.AddOperation(outFlux[0]);
-			}
-		}
-		//If no out-flux, then it is 0.
-		else
-		{
-			rhs.AddNewConstant(0.f);
-		}
-
-		rhs.LinkLocalOperands();
+			rhs.LinkLocalOperands();
 		
-		system.emplace_back(Maths::Equation(species.get(), rhs));
+			system.emplace_back(Maths::Equation(species.get(), rhs));
+			ECellEngine::Logging::Logger::GetSingleton().LogDebug(rhs.ToString());
+		}
 	}
 
 	delete[] k1;
@@ -151,31 +131,31 @@ void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _ti
 
 		for (unsigned short i = 0; i < nbEquations; ++i)
 		{
+			//k2 = f(y_n + 0.5 * dt * k1)
 			system[i].GetOperand()->Set(yn[i] + halfSolveDeltaTime * k1[i]);
 		}
 		for (unsigned short i = 0; i < nbEquations; ++i)
 		{
-			//k2 = f(y_n + 0.5 * dt * k1)
 			k2[i] = system[i].GetOperation().Get();
 		}
 
 		for (unsigned short i = 0; i < nbEquations; ++i)
 		{
+			//k3 = f(y_n + 0.5 * dt * k2)
 			system[i].GetOperand()->Set(yn[i] + halfSolveDeltaTime * k2[i]);
 		}
 		for (unsigned short i = 0; i < nbEquations; ++i)
 		{
-			//k3 = f(y_n + 0.5 * dt * k2)
 			k3[i] = system[i].GetOperation().Get();
 		}
 
 		for (unsigned short i = 0; i < nbEquations; ++i)
 		{
+			//k4 = f(y_n + dt * k3)
 			system[i].GetOperand()->Set(yn[i] + solveDeltaTime * k3[i]);
 		}
 		for (unsigned short i = 0; i < nbEquations; ++i)
 		{
-			//k4 = f(y_n + dt * k3)
 			k4[i] = system[i].GetOperation().Get();
 		}
 
@@ -208,7 +188,6 @@ void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _ti
 	}
 	for (unsigned short i = 0; i < nbEquations; ++i)
 	{
-		//k2 = f(y_n + 0.5 * dt * k1)
 		k2[i] = system[i].GetOperation().Get();
 	}
 
@@ -219,7 +198,6 @@ void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _ti
 	}
 	for (unsigned short i = 0; i < nbEquations; ++i)
 	{
-		//k3 = f(y_n + 0.5 * dt * k2)
 		k3[i] = system[i].GetOperation().Get();
 	}
 
@@ -230,7 +208,6 @@ void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _ti
 	}
 	for (unsigned short i = 0; i < nbEquations; ++i)
 	{
-		//k4 = f(y_n + dt * k3)
 		k4[i] = system[i].GetOperation().Get();
 	}
 

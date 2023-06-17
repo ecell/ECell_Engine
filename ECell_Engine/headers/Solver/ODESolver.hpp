@@ -37,6 +37,8 @@ namespace ECellEngine::Solvers
 		float* k4 = nullptr;
 		float* yn = nullptr;
 
+		void BuildEquationRHS(Operation& _outRHS, std::vector<Maths::Operation>& _flux);
+
 	public:
 		
 		ODESolver(ECellEngine::Data::DataState& _dataState, const std::string& _name) :

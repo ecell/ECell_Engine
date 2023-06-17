@@ -147,7 +147,7 @@ namespace ECellEngine::Maths
 			Operand{ _op.name }, structure{ _op.structure }, function{ _op.function },
 			constants{_op.constants}, operations{_op.operations}, operands{_op.operands}
 		{
-			if (operands.capacity() > 1)
+			if ((structure >> 5) & 1)
 			{
 				UpdateOperands();
 			}
