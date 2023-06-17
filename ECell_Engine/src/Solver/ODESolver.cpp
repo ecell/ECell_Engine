@@ -53,7 +53,7 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 				//We create the sum of all in-flux by summing by pairs
 				//of in-flux until there is only one left.
 				unsigned short halfSize = inFlux.size() / 2;
-				for (unsigned short step = 1; step < halfSize; step *= 2)
+				for (unsigned short step = 1; step <= halfSize; step *= 2)
 				{
 					Operation couple;
 					couple.Set(&ECellEngine::Maths::functions.add);
@@ -91,7 +91,7 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 				//We create the sum of all out-flux by summing by pairs
 				//of out-flux until there is only one left.
 				unsigned short halfSize = outFlux.size() / 2;
-				for (unsigned short step = 1; step < halfSize; step *= 2)
+				for (unsigned short step = 1; step <= halfSize; step *= 2)
 				{
 					Operation couple;
 					couple.Set(&ECellEngine::Maths::functions.add);
