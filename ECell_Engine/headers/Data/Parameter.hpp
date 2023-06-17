@@ -27,5 +27,10 @@ namespace ECellEngine::Data
 		}
 
 		void GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
+
+		inline const std::string ToString() const noexcept override
+		{
+			return "P:"+name;
+		}
 	};
 }

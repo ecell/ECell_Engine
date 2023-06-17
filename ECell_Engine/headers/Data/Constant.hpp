@@ -29,5 +29,10 @@ namespace ECellEngine::Data
         {
             ECellEngine::Logging::Logger::GetSingleton().LogError("Operation::Set(const float _value) should not be used.");
 		}
+
+        inline const std::string ToString() const noexcept override
+        {
+			return std::to_string(value);
+		}
     };
 }

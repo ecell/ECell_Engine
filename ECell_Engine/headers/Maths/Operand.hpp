@@ -48,5 +48,10 @@ namespace ECellEngine::Maths
 
     
         virtual void Set(const float _value) noexcept = 0;
+
+        /*!
+        @brief Generates the string representation of the operand.
+        */
+        virtual const std::string ToString() const noexcept = 0;
     };
 }

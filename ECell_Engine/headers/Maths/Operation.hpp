@@ -275,5 +275,10 @@ namespace ECellEngine::Maths
 		@details Uses ::PushOperands and ::ShrinkLocalOperands.
 		*/
 		void LinkLocalOperands();
+
+		inline const std::string ToString() const noexcept override
+		{
+			return function->ToString(operands);
+		}
 	};
 }
