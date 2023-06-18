@@ -47,7 +47,7 @@ namespace ECellEngine::Editor::Widget
 		char simuIdxAsChar[8] = "0";
 		ECellEngine::Core::Simulation* simulation = nullptr;
 		//short* simuDirection;
-		//float stepTime = 0.016;
+		float stepTime = 0.01;
 
 		const std::vector<std::string> pauseCommandArray = { "pauseSimulation" , simuIdxAsChar };
 		const std::vector<std::string> playCommandArray = { "playSimulation", simuIdxAsChar };
@@ -55,8 +55,8 @@ namespace ECellEngine::Editor::Widget
 
 		//const std::vector<std::string> goBackwardCommandArray = { "goBackward" };
 		//const std::vector<std::string> goForwardCommandArray = { "goForward" };
-		//std::vector<std::string> stepBackwardCommandArray = { "stepBackward", "0.0000001"};
-		//std::vector<std::string> stepForwardCommandArray = { "stepForward", "0.0000001" };
+		//std::vector<std::string> stepBackwardCommandArray = { "stepSimulationBackward", "0.0000001"};
+		std::vector<std::string> stepForwardCommandArray = { "stepSimulationForward", simuIdxAsChar, std::to_string(stepTime)};
 
 		void DrawSimulationControls();
 
