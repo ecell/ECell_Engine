@@ -21,7 +21,8 @@ namespace ECellEngine::Solvers
 				updated when solving the differential equation.
 		*/
 		std::vector<Maths::Equation> system;
-		unsigned short nbEquations;
+		const std::unordered_map<std::string, std::shared_ptr<Maths::Equation>>* externalEquations;
+		unsigned short systemSize;
 
 		float solveDeltaTime = 0.01f;
 		float halfSolveDeltaTime = solveDeltaTime * 0.5f;
@@ -36,6 +37,7 @@ namespace ECellEngine::Solvers
 		float* k3 = nullptr;
 		float* k4 = nullptr;
 		float* yn = nullptr;
+		float* yn_ext = nullptr;
 
 		void BuildEquationRHS(Operation& _outRHS, std::vector<Maths::Operation>& _flux);
 
@@ -54,6 +56,7 @@ namespace ECellEngine::Solvers
 			delete[] k3;
 			delete[] k4;
 			delete[] yn;
+			delete[] yn_ext;
 		}
 
 		virtual void Initialize(const ECellEngine::Data::Module* _module) override;

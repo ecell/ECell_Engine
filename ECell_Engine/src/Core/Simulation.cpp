@@ -141,9 +141,4 @@ void ECellEngine::Core::Simulation::Update(const float& _deltaTime)
 	{
 		solvers[(*it).second].get()->Update(timer);
 	}
-
-	for (auto [equationName, equation] : dataState.GetEquations())
-	{
-		equation->Compute();
-	}
 }

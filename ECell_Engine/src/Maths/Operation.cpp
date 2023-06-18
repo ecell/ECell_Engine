@@ -126,8 +126,7 @@ void ECellEngine::Maths::Operation::UpdateOperands()
 		if ((structure >> 2) & 1) // if this is the code for Operation
 		{
 			//((structure >> 3) & 1) indicates the operand (Operation or Cst) shall be
-			//inserted at the index 0 or 1. We add operands.begin() to convert to an
-			//iterator. 
+			//inserted at the index 0 or 1.
 			//&operations[0] is the pointer to the first Operation. It necessarily is
 			//the first operation since we are decoding the first Operand in structure.
 			operands[((structure >> 3) & 1)] = &operations[0];
