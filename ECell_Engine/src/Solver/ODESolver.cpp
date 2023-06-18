@@ -117,7 +117,7 @@ void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _ti
 	//implementation of the Runge-Kutta 4th order method
     //https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
 
-	while (solveCurrentTime < _timer.elapsedTime)
+	while (solveCurrentTime + solveDeltaTime < _timer.elapsedTime)
 	{
 
 		for (unsigned short i = 0; i < nbEquations; ++i)
@@ -166,56 +166,21 @@ void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _ti
 		}
 
 		solveCurrentTime += solveDeltaTime;
-	}
 
-	finaldt = _timer.elapsedTime - (solveCurrentTime - solveDeltaTime);
-	halfFinaldt = finaldt / 2;
-	oneSixthFinaldt = finaldt / 6;
+		std::string log = "t= " + std::to_string(solveCurrentTime) + "; ";
+		for (unsigned short i = 0; i < nbEquations; ++i)
+		{
+			log += + "; " + system[i].GetOperand()->name + "=" + std::to_string(system[i].Get());
+		}
 
-	for (unsigned short i = 0; i < nbEquations; ++i)
-	{
-		//y_n
-		yn[i] = system[i].Get();
+		/*ECellEngine::Logging::Logger::GetSingleton().LogDebug(
+			"t= " + std::to_string(solveCurrentTime) + "; " +
+			"yn+1=" + std::to_string(system[0].Get()) + "; " +
+			"k1=" + std::to_string(k1[0]) + "; " +
+			"k2=" + std::to_string(k2[0]) + "; " +
+			"k3=" + std::to_string(k3[0]) + "; " +
+			"k4=" + std::to_string(k4[0]));*/
+		ECellEngine::Logging::Logger::GetSingleton().LogDebug(log);
 
-		//k1 = f(y_n)
-		k1[i] = system[i].GetOperation().Get();
 	}
-
-	for (unsigned short i = 0; i < nbEquations; ++i)
-	{
-		//k2 = f(y_n + 0.5 * dt * k1)
-		system[i].GetOperand()->Set(yn[i] + halfFinaldt * k1[i]);
-	}
-	for (unsigned short i = 0; i < nbEquations; ++i)
-	{
-		k2[i] = system[i].GetOperation().Get();
-	}
-
-	for (unsigned short i = 0; i < nbEquations; ++i)
-	{
-		//k3 = f(y_n + 0.5 * dt * k2)
-		system[i].GetOperand()->Set(yn[i] + halfFinaldt * k2[i]);
-	}
-	for (unsigned short i = 0; i < nbEquations; ++i)
-	{
-		k3[i] = system[i].GetOperation().Get();
-	}
-
-	for (unsigned short i = 0; i < nbEquations; ++i)
-	{
-		//k4 = f(y_n + dt * k3)
-		system[i].GetOperand()->Set(yn[i] + finaldt * k3[i]);
-	}
-	for (unsigned short i = 0; i < nbEquations; ++i)
-	{
-		k4[i] = system[i].GetOperation().Get();
-	}
-
-	for (unsigned short i = 0; i < nbEquations; ++i)
-	{
-		//y_n+1 = y_n + dt / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
-		system[i].GetOperand()->Set(yn[i] + oneSixthFinaldt * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
-	}
-
-	solveCurrentTime = _timer.elapsedTime;
 }
