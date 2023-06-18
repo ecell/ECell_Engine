@@ -24,7 +24,7 @@ namespace ECellEngine::Solvers
 		const std::unordered_map<std::string, std::shared_ptr<Maths::Equation>>* externalEquations;
 		unsigned short systemSize;
 
-		float solveDeltaTime = 0.01f;
+		float solveDeltaTime = 0.001f;
 		float halfSolveDeltaTime = solveDeltaTime * 0.5f;
 		float oneSixthSolveDeltaTime = solveDeltaTime / 6.f;
 		float finaldt = 0;
