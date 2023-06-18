@@ -34,5 +34,10 @@ namespace ECellEngine::Data
         {
 			return std::to_string(value);
 		}
+        
+        inline const std::string ToStringValue() const noexcept override
+        {
+			return std::to_string(value);
+		}
     };
 }

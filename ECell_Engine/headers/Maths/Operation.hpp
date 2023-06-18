@@ -280,5 +280,10 @@ namespace ECellEngine::Maths
 		{
 			return function->ToString(operands);
 		}
+		
+		inline const std::string ToStringValue() const noexcept override
+		{
+			return '\n' + name + ":" + function->ToStringValue(operands) + "=" + std::to_string((*function)(operands));
+		}
 	};
 }

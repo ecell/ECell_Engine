@@ -44,5 +44,10 @@ namespace ECellEngine::Data
 		{
 			return "Sp:" + name;
 		}
+		
+		inline const std::string ToStringValue() const noexcept override
+		{
+			return "Sp:" + name + ":" + std::to_string(quantity);
+		}
 	};
 }
