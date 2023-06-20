@@ -98,11 +98,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::LinePlotNodeData.
-		@param _name The name of the node. It will appear in the header of the
-				node in the editor.
 		@param _linePlotNodeInfo The struct with information about what to draw.
 		*/
-		static void LinePlotNode(const char* _name, LinePlotNodeData& _linePlotNodeInfo);
+		static void LinePlotNode(LinePlotNodeData& _linePlotNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData.

@@ -147,7 +147,7 @@ namespace ECellEngine::Maths
 			Operand{ _op.name }, structure{ _op.structure }, function{ _op.function },
 			constants{_op.constants}, operations{_op.operations}, operands{_op.operands}
 		{
-			if (operands.capacity() > 1)
+			if ((structure >> 5) & 1)
 			{
 				UpdateOperands();
 			}
@@ -275,5 +275,15 @@ namespace ECellEngine::Maths
 		@details Uses ::PushOperands and ::ShrinkLocalOperands.
 		*/
 		void LinkLocalOperands();
+
+		inline const std::string ToString() const noexcept override
+		{
+			return function->ToString(operands);
+		}
+		
+		inline const std::string ToStringValue() const noexcept override
+		{
+			return '\n' + name + ":" + function->ToStringValue(operands) + "=" + std::to_string((*function)(operands));
+		}
 	};
 }

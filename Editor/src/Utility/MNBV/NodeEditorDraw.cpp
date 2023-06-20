@@ -178,12 +178,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(const char
 	PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char* _name, LinePlotNodeData& _linePlotNodeData)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNodeData& _linePlotNodeData)
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Default));
 	ax::NodeEditor::BeginNode(_linePlotNodeData.id);
 
-	const float headerWidth = NodeHeader("Plot:", _name, Widget::MNBV::GetNodeColors(NodeType_Reaction), 300.f, 1, 1);
+	const float headerWidth = NodeHeader("Line Plot", "", Widget::MNBV::GetNodeColors(NodeType_Reaction), 300.f, 1, 1);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth, 1);
 	const float startX = ImGui::GetCursorPosX();
 	ImGuiStyle& style = ImGui::GetStyle();
@@ -197,44 +197,42 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
 			startX, headerWidth, ImVec2(headerWidth, 0.f)))
 		{
 			char buffer[64] = "\0";
-			NodeInputText("Plot Title", _linePlotNodeData.plotTitle, buffer, 64, headerWidth, startX, headerWidth);
+			NodeInputText("Plot Title", _linePlotNodeData.linePlot.plotTitle, buffer, 64, headerWidth, startX, headerWidth);
 
-			NodeInputText("X Axis Label", _linePlotNodeData.xAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
+			NodeInputText("X Axis Label", _linePlotNodeData.linePlot.xAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
 
-			NodeInputText("Y Axis Label", _linePlotNodeData.yAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
-
-			NodeInputText("Line Legend", _linePlotNodeData.lineLegend, buffer, 64, headerWidth, startX, headerWidth);
+			NodeInputText("Y Axis Label", _linePlotNodeData.linePlot.yAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
 
 			ImGui::SetNextItemWidth(headerWidth - ImGui::CalcTextSize("Plot Size").x - style.ItemSpacing.x);
-			ImGui::DragFloat2("Plot Size", _linePlotNodeData.plotSize, 1.f, 10.f, 1000.f);
+			ImGui::DragFloat2("Plot Size", _linePlotNodeData.linePlot.plotSize, 1.f, 10.f, 1000.f);
 		}
 
 		if (NodeCollapsingHeader("Plot Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_PlotFlags],
 			_linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrPlotFlags,
 			startX, headerWidth, ImVec2(headerWidth, 0.f)))
 		{
-			NodeAllImPlotFlags(&_linePlotNodeData.plotFlags);
+			NodeAllImPlotFlags(&_linePlotNodeData.linePlot.plotFlags);
 		}
 
 		if (NodeCollapsingHeader("X Axis Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_XAxisFlags],
 			_linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrXAxisFlags,
 			startX, headerWidth, ImVec2(headerWidth, 0.f)))
 		{
-			NodeAllImPlotAxisFlags(&_linePlotNodeData.xAxisFlags);
+			NodeAllImPlotAxisFlags(&_linePlotNodeData.linePlot.xAxisFlags);
 		}
 
 		if (NodeCollapsingHeader("Y Axis Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_YAxisFlags],
 			_linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrYAxisFlags,
 			startX, headerWidth, ImVec2(headerWidth, 0.f)))
 		{
-			NodeAllImPlotAxisFlags(&_linePlotNodeData.yAxisFlags);
+			NodeAllImPlotAxisFlags(&_linePlotNodeData.linePlot.yAxisFlags);
 		}
-		
+
 		if (NodeCollapsingHeader("Axis Scale Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_AxisScaleFlags],
 			_linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrAxisScaleFlags,
 			startX, headerWidth, ImVec2(headerWidth, 0.f)))
 		{
-			NodeAllImPlotAxisScale(_linePlotNodeData.xAxisScale, _linePlotNodeData.yAxisScale);
+			NodeAllImPlotAxisScale(_linePlotNodeData.linePlot.xAxisScale, _linePlotNodeData.linePlot.yAxisScale);
 		}
 	}
 
@@ -246,8 +244,86 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
 		_linePlotNodeData.inputPins[LinePlotNodeData::InputPin_CollHdrPlot], Widget::MNBV::GetPinColors(PinType_Default),
 		ImVec2(itemsWidth, 0.f)))
 	{
-		NodeText_In(_linePlotNodeData.xAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_XAxis], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
-		NodeText_In(_linePlotNodeData.yAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_YAxis], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
+		NodeText_In(_linePlotNodeData.linePlot.xAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_XAxis], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
+		NodeText_In(_linePlotNodeData.linePlot.yAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_YAxis], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
+
+		//Draw Parameters for each line
+		for (unsigned short i = 0; i < _linePlotNodeData.linePlot.lines.size(); i++)
+		{
+			ImGui::PushID(i);
+			ApplyPinDrawOffset();
+			ImGui::SetNextItemWidth(0.25f * itemsWidth);
+			ImGui::InputText("##lineIdx", _linePlotNodeData.linePlot.lines[i].lineLegend, 64, ImGuiInputTextFlags_EnterReturnsTrue);
+			if (ImGui::IsItemActive())
+			{
+				ax::NodeEditor::Suspend();
+				ImGui::SetTooltip("Press ENTER to confirm.");
+				ax::NodeEditor::Resume();
+			}
+
+			ImGui::SameLine();
+			bool open = ImGui::ColorButton("##lineColor", _linePlotNodeData.linePlot.lines[i].color);
+			ax::NodeEditor::Suspend();
+			if (open)
+			{
+				ImGui::OpenPopup("##ColorPicker");
+			}
+			if (ImGui::BeginPopup("##ColorPicker"))
+			{
+				ImGui::ColorPicker4("##lineColorPicker", &_linePlotNodeData.linePlot.lines[i].color.x);
+				ImGui::EndPopup();
+			}
+			ax::NodeEditor::Resume();
+
+			//ImGui::SameLine();
+			//ImGui::AlignTextToFramePadding(); ImGui::Text("Update:");
+			ImGui::SameLine();
+			bool EveryNthFrame = std::strcmp(_linePlotNodeData.linePlot.lines[i].GetCurrentUpdateSchemeName(), "EveryNthFrame") == 0;
+			bool EveryXSeconds = std::strcmp(_linePlotNodeData.linePlot.lines[i].GetCurrentUpdateSchemeName(), "EveryXSeconds") == 0;
+			float width = headerWidth - (ImGui::GetCursorPosX() - startX);
+			if (EveryNthFrame || EveryXSeconds)
+			{
+				width = 0.5f * (width - ImGui::GetStyle().ItemSpacing.x);
+			}
+			open = ImGui::Button(_linePlotNodeData.linePlot.lines[i].GetCurrentUpdateSchemeName(), ImVec2(width, 0.f));
+
+			if (EveryNthFrame)
+			{
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(width);
+				ImGui::DragInt("##nbFrames", (int*)_linePlotNodeData.linePlot.lines[i].updateController->Get(),
+					1.f, 1, INT32_MAX, "%d", ImGuiSliderFlags_AlwaysClamp);
+			}
+
+			else if (EveryXSeconds)
+			{
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(width);
+				ImGui::DragFloat("##xSeconds", (float*)_linePlotNodeData.linePlot.lines[i].updateController->Get(),
+					0.1f, 0.1f, FLT_MAX, "%.1f", ImGuiSliderFlags_AlwaysClamp);
+			}
+
+			ax::NodeEditor::Suspend();
+			if (open)
+			{
+				ImGui::OpenPopup("##combo");
+			}
+
+			if (ImGui::BeginPopup("##combo", ImGuiWindowFlags_NoMove))
+			{
+				for (int j = 0; j < Utility::Plot::UpdateScheme_Count; ++j)
+				{
+					if (ImGui::MenuItem(_linePlotNodeData.linePlot.lines[i].GetUpdateSchemeName(j)))
+					{
+						_linePlotNodeData.linePlot.lines[i].SwitchUpdateController(j);
+					}
+				}
+				ImGui::EndPopup();
+			}
+			ax::NodeEditor::Resume();
+
+			ImGui::PopID();
+		}
 
 		AlignToCenter(startX, headerWidth, headerWidth);
 
@@ -255,8 +331,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
 		{
 			if (ImGui::Button("Show", ImVec2(0.5f * (headerWidth - style.ItemSpacing.x), 0.f)))
 			{
-				//ImGuiWindow* window = ImGui::FindWindowByName(_name);
-				ImGui::BringWindowToDisplayFront(ImGui::FindWindowByName(_name));
+				ImGui::BringWindowToDisplayFront(ImGui::FindWindowByName("Line Plot##lineplot"));
 				ImGui::SetNextWindowPos(ax::NodeEditor::CanvasToScreen(ImGui::GetCursorPos()));
 			}
 			ImGui::SameLine();
@@ -275,31 +350,22 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(const char
 		}
 	}
 
+
 	if (_linePlotNodeData.IsPlotOpen())
 	{
-		ImGuiStyle& imguiStyle = ImGui::GetStyle();
-		ImPlotStyle& implotStyle = ImPlot::GetStyle();
-		
-		_linePlotNodeData.Update();
+		_linePlotNodeData.linePlot.Update();
 
-		ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.plotSize[0] + 2 * imguiStyle.WindowPadding.x,
-			_linePlotNodeData.plotSize[1] + 2 * imguiStyle.WindowPadding.y));
-		if (ImGui::Begin(_name, NULL, _linePlotNodeData.plotWindowFlags))
+		ImVec2& windowPadding = ImGui::GetStyle().WindowPadding;
+
+		ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.linePlot.plotSize[0] + 2 * windowPadding.x,
+			_linePlotNodeData.linePlot.plotSize[1] + 2 * windowPadding.y));
+		ax::NodeEditor::Suspend();
+		if (ImGui::Begin("Line Plot##lineplot", NULL, _linePlotNodeData.linePlot.plotWindowFlags))
 		{
-			if (ImPlot::BeginPlot(_linePlotNodeData.plotTitle, ImVec2(_linePlotNodeData.plotSize[0], _linePlotNodeData.plotSize[1]), _linePlotNodeData.plotFlags))
-			{
-				ImPlot::SetupAxes(_linePlotNodeData.xAxisLabel, _linePlotNodeData.yAxisLabel, _linePlotNodeData.xAxisFlags, _linePlotNodeData.yAxisFlags);
-				ImPlot::SetupAxisScale(ImAxis_X1, _linePlotNodeData.xAxisScale);
-				ImPlot::SetupAxisScale(ImAxis_Y1, _linePlotNodeData.yAxisScale);
-
-				ImPlot::PlotLine(_linePlotNodeData.lineLegend,
-					&(_linePlotNodeData.dataPoints.Data[0].x), &(_linePlotNodeData.dataPoints.Data[0].y),
-					_linePlotNodeData.dataPoints.Data.Size, ImPlotLineFlags_None, _linePlotNodeData.dataPoints.Offset, 2 * sizeof(float));
-
-				ImPlot::EndPlot();
-			}
+			_linePlotNodeData.linePlot.Draw();
 		}
 		ImGui::End();
+		ax::NodeEditor::Resume();
 	}
 
 	ax::NodeEditor::EndNode();
@@ -807,13 +873,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinkCreation(std::vecto
 					// ax::NodeEditor::AcceptNewItem() return true when user release mouse button.
 					if (ax::NodeEditor::AcceptNewItem(ImVec4(0.0f, 1.f, 0.f, 1.0f), 2.0f))
 					{
-						NodeOutputPinData* outputPin = static_cast<NodeOutputPinData*>(startPin);
-						NodeInputPinData* inputPin = static_cast<NodeInputPinData*>(endPin);
-
 						// Since we accepted new link, lets add one to our list of links.
-						_links.push_back(LinkData(outputPin, inputPin));
+						LinkData& newLink = _links.emplace_back(LinkData(startPin, endPin));
 
-						outputPin->OnConnect(inputPin);
+						newLink.startPin->OnConnect(newLink.endPin);
 					}
 				}
 			}

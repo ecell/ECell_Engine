@@ -189,6 +189,15 @@ namespace ECellEngine::Editor::Widget::MNBV
 		}
 
 		/*!
+		@brief Insures that the data pointers that may be alive between nodes of
+				this context are reassigned to stay valid.
+		@details Typically, when the size of the nodes lists are changed, the pointers
+				 of nodes that are receiving data from other nodes will be invalidated.
+				 This method is then called whenever a node is added.
+		*/
+		void ConserveLinkDataIntegrity();
+
+		/*!
 		@brief The logic to draw the elements (nodes, pins, links) stored in
 				this context.
 		*/
