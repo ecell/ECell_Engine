@@ -25,7 +25,7 @@ add_library(ECellEngine SHARED
     "src/IO/ModuleImporterManager.cpp"
     "src/IO/SBMLModuleImporter.cpp"
     "src/IO/SbmlParser.cpp"
-    "src/IO/SbmlWriter.cpp"
+    #"src/IO/SbmlWriter.cpp"
     
     "src/Maths/Function.cpp"
     "src/Maths/MathUtility.cpp"
