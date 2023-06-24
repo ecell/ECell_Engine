@@ -1,6 +1,6 @@
-#include "Solver/ODESolver.hpp"
+#include "Solver/ODE/GeneralizedExplicitRK.hpp"
 
-void ECellEngine::Solvers::ODESolver::BuildEquationRHS(Operation& _outRHS, std::vector<ECellEngine::Maths::Operation>& _fluxes)
+void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::BuildEquationRHS(Operation& _outRHS, std::vector<ECellEngine::Maths::Operation>& _fluxes)
 {
 	//If only one in-flux, then there is no need to sum
 	if (_fluxes.size() == 1)
@@ -29,7 +29,7 @@ void ECellEngine::Solvers::ODESolver::BuildEquationRHS(Operation& _outRHS, std::
 	}
 }
 
-void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module* _module)
+void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEngine::Data::Module* _module)
 {
 	BiochemicalSolver::Initialize(_module);
 
@@ -92,36 +92,29 @@ void ECellEngine::Solvers::ODESolver::Initialize(const ECellEngine::Data::Module
 			}
 
 			rhs.LinkLocalOperands();
-		
+
 			system.emplace_back(Maths::Equation(species.get(), rhs));
 			ECellEngine::Logging::Logger::GetSingleton().LogDebug(rhs.ToString());
 		}
 	}
-
-	delete[] k1;
-	delete[] k2;
-	delete[] k3;
-	delete[] k4;
 	delete[] yn;
 	delete[] yn_ext;
 
 	systemSize = system.size();
-	k1 = new float[systemSize];
-	k2 = new float[systemSize];
-	k3 = new float[systemSize];
-	k4 = new float[systemSize];
 	yn = new float[systemSize];
+
+	coeffs.SetToClassicRK4(systemSize);
 
 	externalEquations = &dataState.GetEquations();
 	yn_ext = new float[externalEquations->size()];
 }
 
-void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _timer)
+void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Update(const ECellEngine::Core::Timer& _timer)
 {
 	//implementation of the Runge-Kutta 4th order method
-    //https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
+	//https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
 
-	while (solveCurrentTime + solveDeltaTime < _timer.elapsedTime)
+	while (stepper.NextLEQ(_timer.elapsedTime))
 	{
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
@@ -129,7 +122,8 @@ void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _ti
 			yn[i] = system[i].Get();
 
 			//k1 = f(y_n)
-			k1[i] = system[i].GetOperation().Get();
+			coeffs.ks[i*systemSize] = system[i].GetOperation().Get();
+			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("k1[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize]));
 		}
 
 		//Storing the value of the external equations at the beginning of the step
@@ -140,49 +134,23 @@ void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _ti
 			j++;
 		}
 
-		for (unsigned short i = 0; i < systemSize; ++i)
+		for (unsigned short s = 2; s < coeffs.stages+1; ++s)
 		{
-			//k2 = f(y_n + 0.5 * dt * k1)
-			system[i].GetOperand()->Set(yn[i] + halfSolveDeltaTime * k1[i]);
-		}
-		//updating the external equations with the intermediate value
-		for (auto [equationName, equation] : dataState.GetEquations())
-		{
-			equation->Compute();
-		}
-		for (unsigned short i = 0; i < systemSize; ++i)
-		{
-			k2[i] = system[i].GetOperation().Get();
-		}
-
-		for (unsigned short i = 0; i < systemSize; ++i)
-		{
-			//k3 = f(y_n + 0.5 * dt * k2)
-			system[i].GetOperand()->Set(yn[i] + halfSolveDeltaTime * k2[i]);
-		}
-		//updating the external equations with the intermediate value
-		for (auto [equationName, equation] : dataState.GetEquations())
-		{
-			equation->Compute();
-		}
-		for (unsigned short i = 0; i < systemSize; ++i)
-		{
-			k3[i] = system[i].GetOperation().Get();
-		}
-
-		for (unsigned short i = 0; i < systemSize; ++i)
-		{
-			//k4 = f(y_n + dt * k3)
-			system[i].GetOperand()->Set(yn[i] + solveDeltaTime * k3[i]);
-		}
-		//updating the external equations with the intermediate value
-		for (auto [equationName, equation] : dataState.GetEquations())
-		{
-			equation->Compute();
-		}
-		for (unsigned short i = 0; i < systemSize; ++i)
-		{
-			k4[i] = system[i].GetOperation().Get();
+			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("---- s= " + std::to_string(s) + "; ");
+			for (unsigned short i = 0; i < systemSize; ++i)
+			{
+				system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForStage(i * systemSize, s));
+			}
+			//updating the external equations with the intermediate value
+			for (auto [equationName, equation] : dataState.GetEquations())
+			{
+				equation->Compute();
+			}
+			for (unsigned short i = 0; i < systemSize; ++i)
+			{
+				coeffs.ks[i * systemSize + s-1] = system[i].GetOperation().Get();
+				//ECellEngine::Logging::Logger::GetSingleton().LogDebug("k" + std::to_string(s) + "[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize + s - 1]));
+			}
 		}
 
 		//reset of the external equations values to their previous values at t=tn
@@ -195,8 +163,10 @@ void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _ti
 		}
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
-			//y_n+1 = y_n + dt / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
-			system[i].GetOperand()->Set(yn[i] + oneSixthSolveDeltaTime * (k1[i] + 2*k2[i] + 2*k3[i] + k4[i]));
+			//TODO: To update to be able to change between different coefficients scheme (classic RK4, Morson 4th order, ...)
+			//Mainly, the classic RK4 doesn't have step size control so there is no reason to compute the sum of the ks for bs2
+			//y_n+1 = y_n + h * (b1 * k1 + b2 * k2 + ... + bs * ks)
+			system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForSolution(i * systemSize, coeffs.bs));
 		}
 
 		//Finally, we update the external equations with the new value of the system at t=tn+1
@@ -206,28 +176,28 @@ void ECellEngine::Solvers::ODESolver::Update(const ECellEngine::Core::Timer& _ti
 			equation->Compute();
 		}
 
-		solveCurrentTime += solveDeltaTime;
+		//TODO: To replace with the Next method of the stepper
+		stepper.t += stepper.h;
 
 
 		//Value Debugging
-		/*std::string log = "t= " + std::to_string(solveCurrentTime) + "; ";
+		/*ECellEngine::Logging::Logger::GetSingleton().LogDebug("------ t= " + std::to_string(stepper.t) + "; ");
+		std::string log;
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
-			log += + "; " + system[i].GetOperand()->name + "=" + std::to_string(system[i].Get());
+			log = "System; " + system[i].GetOperand()->name;
+			log += "=" + std::to_string(system[i].Get());
+			for (unsigned short j = 0; j < coeffs.stages; ++j)
+			{
+				log += "; k" + std::to_string(j + 1) + "=" + std::to_string(coeffs.ks[i * systemSize + j]);
+			}
+			ECellEngine::Logging::Logger::GetSingleton().LogDebug(log);
 		}
 		for (auto [equationName, equation] : dataState.GetEquations())
 		{
-			log += +"; " + equationName + "=" + std::to_string(equation->Get());
+			ECellEngine::Logging::Logger::GetSingleton().LogDebug("Extern;" + equationName + "=" + std::to_string(equation->Get()));
 		}
 
-		ECellEngine::Logging::Logger::GetSingleton().LogDebug(
-			"t= " + std::to_string(solveCurrentTime) + "; " +
-			"yn+1=" + std::to_string(system[0].Get()) + "; " +
-			"k1=" + std::to_string(k1[0]) + "; " +
-			"k2=" + std::to_string(k2[0]) + "; " +
-			"k3=" + std::to_string(k3[0]) + "; " +
-			"k4=" + std::to_string(k4[0]));
-
-		ECellEngine::Logging::Logger::GetSingleton().LogDebug(log);*/
+		ECellEngine::Logging::Logger::GetSingleton().LogDebug("------");*/
 	}
 }

@@ -79,7 +79,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			{
 				ax::NodeEditor::Resume();
 				//TODO: Use a command to add a solver
-				solverNodes.emplace_back(Utility::MNBV::SolverNodeData(_simulation->AddSolver("ODESolver"), ImGui::GetIO().MousePos));
+				solverNodes.emplace_back(Utility::MNBV::SolverNodeData(_simulation->AddSolver("GeneralizedExplicitRK"), ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
 				ConserveLinkDataIntegrity();
 			}

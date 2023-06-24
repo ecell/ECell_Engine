@@ -38,7 +38,9 @@ add_library(ECellEngine SHARED
     "src/Solver/BiochemicalSolver.cpp"
     "src/Solver/GillespieNRMRSolver.cpp"
     #"src/Solver/Gillespie_NRM_R.cpp"
-    "src/Solver/ODESolver.cpp"
+    "src/Solver/ODE/ExplicitRKCoefficients.cpp"
+    "src/Solver/ODE/GeneralizedExplicitRK.cpp"
+    "src/Solver/ODE/Stepper.cpp"
 )
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)
