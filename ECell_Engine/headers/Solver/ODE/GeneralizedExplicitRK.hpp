@@ -46,6 +46,12 @@ namespace ECellEngine::Solvers::ODE
 		Stepper stepper;
 
 		/*!
+		@brief Indicates whether the solver is set with a method enabling error
+				control.
+		*/
+		bool errorControl = false;
+
+		/*!
 		@brief The coefficients of the generalized explicit Runge-Kutta method.
 		*/
 		ExplicitRKCoefficients coeffs;
@@ -55,6 +61,20 @@ namespace ECellEngine::Solvers::ODE
 				differential equations stored in ::system.
 		*/
 		float* yn = nullptr;
+
+		/*!
+		@brief A buffer for the first estimation of the next values of the
+				variables modified by the differential equations stored in
+				::system.
+		*/
+		float* ynp1 = nullptr;
+
+		/*!
+		@brief A buffer for the second estimation of the next values of the
+				variables modified by the differential equations stored in
+				::system.
+		*/
+		float* ynp12 = nullptr;
 
 		/*!
 		@brief A buffer to the current values of the variables modified by the
@@ -70,6 +90,18 @@ namespace ECellEngine::Solvers::ODE
 		*/
 		void BuildEquationRHS(Operation& _outRHS, std::vector<Maths::Operation>& _flux);
 
+		/*!
+		@brief Integrates the system of differential equations for methods without
+				error control.
+		*/
+		void UpdateClassic(const ECellEngine::Core::Timer& _timer);
+
+		/*!
+		@brief Integrates the system of differential equations for methods with
+				error control.
+		*/
+		void UpdateWithErrorControl(const ECellEngine::Core::Timer& _timer);
+
 	public:
 		
 		GeneralizedExplicitRK(ECellEngine::Data::DataState& _dataState, const std::string& _name) :
@@ -81,8 +113,24 @@ namespace ECellEngine::Solvers::ODE
 		~GeneralizedExplicitRK()
 		{
 			delete[] yn;
+			delete[] ynp1;
+			delete[] ynp12;
 			delete[] yn_ext;
 		}
+
+		/*!
+		@brief Sets this solver to use the classic Runge-Kutta method.
+		@details Fixed step size, no error control.
+		@see ECellEngine::Solvers::ODE::Stepper::SetToClassicRK4()
+		*/
+		void SetToClassicRK4() noexcept;
+
+		/*!
+		@brief Sets this solver to use the Merson method.
+		@details Controlled step size, error control.
+		@see ECellEngine::Solvers::ODE::Stepper::SetToMerson4()
+		*/
+		void SetToMerson4() noexcept;
 
 		virtual void Initialize(const ECellEngine::Data::Module* _module) override;
 

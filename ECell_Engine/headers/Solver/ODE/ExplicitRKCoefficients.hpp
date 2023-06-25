@@ -13,6 +13,12 @@ namespace ECellEngine::Solvers::ODE
 		unsigned short order = 0;
 
 		/*!
+		@brief The order of the less precise estimation.
+		@details This is used for error estimation.
+		*/
+		unsigned short estimationsMinOrder = 0;
+
+		/*!
 		@brief The number of stages of the method to reach the order.
 		*/
 		unsigned short stages = 0;
