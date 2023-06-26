@@ -51,12 +51,12 @@ namespace ECellEngine::Solvers::ODE
 		/*!
 		@brief The absolute tolerance used to compute the error.
 		*/
-		float absoluteTolerance = 0.0001f;
+		float absoluteTolerance = 0.000001f;
 
 		/*!
 		@brief The relative tolerance used to compute the error.
 		*/
-		float relativeTolerance = 0.0001f;
+		float relativeTolerance = 0.000001f;
 
 		/*!
 		@brief Computes the error of the steps that produced the estimations
@@ -97,7 +97,7 @@ namespace ECellEngine::Solvers::ODE
 		*/
 		inline bool NextGEQ(float _t) const noexcept
 		{
-			return t-h_next >= _t;
+			return t+h_next >= _t;
 		}
 	};
 }

@@ -126,6 +126,13 @@ namespace ECellEngine::Solvers::ODE
 		void SetToClassicRK4() noexcept;
 
 		/*!
+		@brief Sets this solver to use the Dormand-Prince method.
+		@details Controlled step size, error control.
+		@see ECellEngine::Solvers::ODE::Stepper::SetToDormandPrince54()
+		*/
+		void SetToDormandPrince5() noexcept;
+
+		/*!
 		@brief Sets this solver to use the Merson method.
 		@details Controlled step size, error control.
 		@see ECellEngine::Solvers::ODE::Stepper::SetToMerson4()

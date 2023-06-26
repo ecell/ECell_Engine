@@ -42,6 +42,25 @@ void ECellEngine::Solvers::ODE::ExplicitRKCoefficients::SetToClassicRK4(const un
 	cs = new float[4] { 0.f, 0.5f, 0.5f, 1.0f };
 }
 
+void ECellEngine::Solvers::ODE::ExplicitRKCoefficients::SetToDormandPrince54(const unsigned short _systemSize) noexcept
+{
+	Delete();
+	order = 5;
+	estimationsMinOrder = 4;
+	stages = 7;
+	ks = new float[_systemSize * 4];
+	as = new float[21] {
+		0.2f,
+		3.f / 40.f, 9.f / 40.f,
+		44.f / 45.f, -56.f / 15.f, 32.f/9.f,
+		19372.f / 6561.f, -25360.f / 2187.f, 64448.f / 6561.f, -212.f / 729.f,
+		9017.f / 3168.f, -355.f / 33.f, 46732.f / 5247.f, 49.f / 176.f, -5103.f / 18656.f,
+		35.f / 384.f, 0.f, 500.f / 1113.f, 125.f / 192.f, -2187.f / 6784.f, 11.f / 84.f};
+	bs = new float[7] { 35.f / 384.f, 0.f, 500.f / 1113.f, 125.f / 192.f, -2187.f / 6784.f, 11.f / 84.f, 0.f };
+	bs2 = new float[7] { 5179.f / 57600.f, 0.f, 7571.f / 16695.f, 393.f / 640.f, -92097.f / 339200.f, 187.f / 2100.f, 1.f/40.f };
+	cs = new float[7] { 0.2f, 0.3f, 0.8f, 8.f/9.f, 1.f, 1.f };
+}
+
 void ECellEngine::Solvers::ODE::ExplicitRKCoefficients::SetToMerson4(const unsigned short _systemSize) noexcept
 {
 	Delete();

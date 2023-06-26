@@ -106,7 +106,8 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 	externalEquations = &dataState.GetEquations();
 
 	//SetToClassicRK4();
-	SetToMerson4();
+	SetToDormandPrince5();
+	//SetToMerson4();
 }
 
 void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::SetToClassicRK4() noexcept
@@ -124,6 +125,29 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::SetToClassicRK4() noexcep
 	yn_ext = new float[externalEquations->size()];
 
 	coeffs.SetToClassicRK4(systemSize);
+}
+
+void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::SetToDormandPrince5() noexcept
+{
+	errorControl = true;
+
+	delete[] yn;
+	delete[] ynp1;
+	delete[] ynp12;
+	delete[] yn_ext;
+
+	yn = new float[systemSize];
+	ynp1 = new float[systemSize];
+	//next we initialize the value of ynp1 to the current value of y
+	//this is only for the initial condiions of the systems of ODEs
+	for (unsigned short i = 0; i < systemSize; ++i)
+	{
+		ynp1[i] = system[i].Get();
+	}
+	ynp12 = new float[systemSize];
+	yn_ext = new float[externalEquations->size()];
+
+	coeffs.SetToDormandPrince54(systemSize);
 }
 
 void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::SetToMerson4() noexcept

@@ -105,6 +105,11 @@ namespace ECellEngine::Solvers::ODE
 		void SetToClassicRK4(const unsigned short _systemSize) noexcept;
 
 		/*!
+		@brief Sets the coefficients to the Dormand-Prince 5(4) method (DOPRI54).
+		*/
+		void SetToDormandPrince54(const unsigned short _systemSize) noexcept;
+
+		/*!
 		@brief Sets the coefficients to the Merson4 method.
 		@details This is a 4th order method with 5 stages. It supports
 				 error estimation and dense output by direct Hermite
