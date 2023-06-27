@@ -17,9 +17,9 @@ std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::stri
 		return solvers.emplace_back(std::make_shared<GillespieNRMRSolver>(dataState, _solverClassName));
 	}
 
-	if (_solverClassName == "ODESolver")
+	if (_solverClassName == "GeneralizedExplicitRK")
 	{
-		return solvers.emplace_back(std::make_shared<ODESolver>(dataState, _solverClassName));
+		return solvers.emplace_back(std::make_shared<ODE::GeneralizedExplicitRK>(dataState, _solverClassName));
 	}
 }
 
