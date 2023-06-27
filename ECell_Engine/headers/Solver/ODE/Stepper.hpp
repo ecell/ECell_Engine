@@ -59,6 +59,25 @@ namespace ECellEngine::Solvers::ODE
 		float relativeTolerance = 0.000001f;
 
 		/*!
+		@brief Computes the dense output increment.
+		@details It is computed as: sum_{s=0}^{stage-1} sum_{j=0}^{order-1} b_{s,j} * theta^(j+1) * k_{eqIdx+s}.
+				 The stage-1 and order-1 are used because the arrays are 0-based.
+				 You must add this value to the values at the beginning of the step
+				 (y0) to get the interpolation at @p _theta.
+		@param _bsp The b_{s,j} coefficients of the polynom in _theta.
+		@param _theta The value at which to compute the interpolation. It must be
+					  between 0 and 1.
+		@param _ks The integration coefficients of the Runge-Kutta method.
+		@param _eqIdx The index of the equation for which to compute the dense
+					  output increment. It is used to access the correct values in
+					  @p _ks.
+		@param _order The order of the polynom in _theta.
+		@param _stage The number of stages of the underlying Runge-Kutta method
+					  employed to solve the ODE.
+		*/
+		float ComputeDenseOutputIncrement(const float _bsp[], const float _theta, const float _ks[], const unsigned _eqIdx, const unsigned short _order, const unsigned short _stage);
+
+		/*!
 		@brief Computes the error of the steps that produced the estimations
 				stored in @p _yEst1 and @p _yEst2 from @p _y0.
 		@param _y0 The values at the beginning of the step.

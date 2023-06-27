@@ -13,6 +13,11 @@ namespace ECellEngine::Solvers::ODE
 		unsigned short order = 0;
 
 		/*!
+		@brief The order of the polynom used for dense output.
+		*/
+		unsigned short denseOutputOrder = 0;
+
+		/*!
 		@brief The order of the less precise estimation.
 		@details This is used for error estimation.
 		*/
@@ -56,6 +61,13 @@ namespace ECellEngine::Solvers::ODE
 		float* bs2 = nullptr;
 
 		/*!
+		@brief The coefficients of the polynomial b_{j}(theta) for the dense output.
+		@details It is of size stages * polynomial order. The definition of
+		 this array mimmics a matrix of @a stages rows and @a polynomial order columns.
+		*/
+		float* bsp = nullptr;
+
+		/*!
 		@brief The coefficients c_{i} for all stages.
 		@remarks Added for exhaustivness, but currently not used. Might be removed.
 		*/
@@ -69,6 +81,7 @@ namespace ECellEngine::Solvers::ODE
 			delete[] as;
 			delete[] bs;
 			delete[] bs2;
+			delete[] bsp;
 			delete[] cs;
 		}
 
@@ -81,7 +94,7 @@ namespace ECellEngine::Solvers::ODE
 				k.
 		@param _stage The stage of the coefficient k we are computing.
 		*/
-		float ComputekSumForStage(unsigned short _eqIdx, unsigned short _stage) noexcept;
+		float ComputekSumForStage(const unsigned short _eqIdx, const unsigned short _stage) noexcept;
 
 		/*!
 		@brief Computes the sum of the bs_{i}*k_{i} coefficients for i in [1, s].
@@ -91,7 +104,7 @@ namespace ECellEngine::Solvers::ODE
 				k.
 		@param bs The array of bs_{i} coefficients. Either ::bs or ::bs2.
 		*/
-		float ComputekSumForSolution(unsigned short _eqIdx, float bs[]) noexcept;
+		float ComputekSumForSolution(const unsigned short _eqIdx, const float bs[]) noexcept;
 
 		/*!
 		@brief Handles the clean up of the various arrays.
