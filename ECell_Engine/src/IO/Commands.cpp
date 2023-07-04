@@ -259,8 +259,25 @@ bool ECellEngine::IO::StepSimulationBackwardCommand::execute(const std::vector<s
 
 bool ECellEngine::IO::StepSimulationForwardCommand::execute(const std::vector<std::string>& _args)
 {
+	if (receiver.CountSimulations() == 0)
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogError("PlaySimulationCommand Failed: There is no simulation currently managed.");
+		return false;
+	}
+
+	if (std::stoi(_args[1]) >= receiver.CountSimulations())
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogError("PlaySimulationCommand Failed: Tried to play a simulation that does not exist.");
+		return false;
+	}
+
+	else //std::stoi(_args[1]) < receiver.CountSimulation()
+	{
+		receiver.GetSimulation(std::stoi(_args[1]))->Update(std::stof(_args[2]));
+		return true;
+	}
+
 	return false;
-	receiver.GetSimulation(std::stoi(_args[1]))->Update(std::stof(_args[2]));
 }
 
 bool ECellEngine::IO::StopSimulationCommand::execute(const std::vector<std::string>& _args)

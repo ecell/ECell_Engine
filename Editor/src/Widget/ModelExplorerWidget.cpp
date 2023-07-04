@@ -54,11 +54,6 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::Draw()
         DrawImportAssetPopup();
     }
 
-    if ((utilityState >> 1) & 1)
-    {
-        DrawAddSolverPopup();
-    }
-
     if ((utilityState >> 2) & 1)
     {
         DrawPreferencesPopup();
@@ -72,41 +67,6 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::Draw()
     }
 
     ImGui::End();
-}
-
-void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawAddSolverPopup()
-{
-    if (ImGui::Begin("Add Solver", NULL, popupWindowFlags))
-    {
-        if (ImGui::BeginMenu("Biochemical"))
-        {
-            if (ImGui::MenuItem("Gillespie Next Reaction Method"))
-            {
-                addSolverCommandArray[2] = "GillespieNRMRSolver";
-                if (editor.engine.GetCommandsManager()->interpretCommand(addSolverCommandArray))
-                {
-                    ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetSolvers().back().get()->SetName("Gillespie Next Reaction Method");
-                }
-
-                SwitchState(1); //Marks the Add Solver popup as closed
-            }
-
-            if (ImGui::MenuItem("Ordinary Differential Equations (TODO)"))
-            {
-                ECellEngine::Logging::Logger::GetSingleton().LogWarning("ODE Solver is not yet available");
-                SwitchState(1); //Marks the Add Solver popup as closed
-            }
-
-            ImGui::EndMenu();// Biochemical
-        }
-
-        if (ImGui::Button("Close"))
-        {
-            SwitchState(1); //Marks the Add Solver popup as closed
-        }
-
-        ImGui::End();// AddSolver
-    }
 }
 
 void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawImportAssetPopup()
@@ -150,14 +110,6 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawMenuBar()
                 ImGui::SetNextWindowPos(ImGui::GetIO().MousePos, ImGuiCond_Always);
                 ImGui::SetNextWindowSize(ImVec2(400, 120), ImGuiCond_Always);
                 DrawImportAssetPopup();//to draw immediately during this frame
-            }
-
-            if (ImGui::MenuItem("Asset Solver"))
-            {
-                SwitchState(1); //Marks the Add Asset popup as opened
-                ImGui::SetNextWindowPos(ImGui::GetIO().MousePos, ImGuiCond_Always);
-                ImGui::SetNextWindowSize(ImVec2(150, 90), ImGuiCond_Always);
-                DrawAddSolverPopup();//to draw immediately during this frame
             }
 
             ImGui::EndMenu();

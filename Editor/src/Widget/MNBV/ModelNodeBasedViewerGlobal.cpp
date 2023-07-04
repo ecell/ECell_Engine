@@ -7,11 +7,6 @@ void ECellEngine::Editor::Widget::MNBV::AddAssetNode(ECellEngine::Data::Module* 
     s_mnbvCtxt->assetNodes.push_back(Utility::MNBV::AssetNodeData(_module));
 }
 
-void ECellEngine::Editor::Widget::MNBV::AddSolverNode(ECellEngine::Solvers::Solver* _solver)
-{
-    s_mnbvCtxt->solverNodes.push_back(Utility::MNBV::SolverNodeData(_solver));
-}
-
 void ECellEngine::Editor::Widget::MNBV::CurrentMNBVContextDraw(ECellEngine::Core::Simulation* _simulation)
 {
     s_mnbvCtxt->Draw(_simulation);

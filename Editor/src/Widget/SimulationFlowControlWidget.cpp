@@ -27,21 +27,6 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationCon
             isPlaying = true;
         }
     }
-    //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1));
-    //ImGui::InputFloat("Step time", &stepTime, 0.001f, 0.0f, "%e");
-    //ImGui::PopStyleColor(1);
-    ////ImGui::SameLine();
-    //if (ImGui::Button("Step Backward"))
-    //{
-    //    stepBackwardCommandArray[1] = std::to_string(stepTime);
-    //    engineCmdsManager->interpretCommand(stepBackwardCommandArray);
-    //}
-    //ImGui::SameLine();
-    //if (ImGui::Button("Step Forward"))
-    //{
-    //    stepForwardCommandArray[1] = std::to_string(stepTime);
-    //    engineCmdsManager->interpretCommand(stepForwardCommandArray);
-    //}
 
     if (isPlaying)
     {
@@ -81,6 +66,25 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationCon
                 isPlaying = false;
                 simuStateColor = ImVec4(0.191f, 0.845f, 0.249f, 1.000f);
             }
+        }
+    }
+    else
+    {
+        ImGui::SameLine();
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1));
+        ImGui::InputFloat("Step time", &stepTime, 0.001f, 0.0f, "%e");
+        ImGui::PopStyleColor(1);
+        //ImGui::SameLine();
+        /*if (ImGui::Button("Step Backward"))
+        {
+            stepBackwardCommandArray[1] = std::to_string(stepTime);
+            engineCmdsManager->interpretCommand(stepBackwardCommandArray);
+        }*/
+        ImGui::SameLine();
+        if (ImGui::Button("Step Forward"))
+        {
+            stepForwardCommandArray[2] = std::to_string(stepTime);
+            editor.engine.GetCommandsManager()->interpretCommand(stepForwardCommandArray);
         }
     }
 

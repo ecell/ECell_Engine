@@ -9,7 +9,28 @@ namespace ECellEngine::Maths
 {
 	struct Function
 	{
+        /*!
+        @brief Computes the value of the function.
+        @param _operands The operands of the function. At most constains 2
+                elements for the left and right hand side of a binary function.
+        */
 		virtual float operator()(const std::vector<Operand*>& _operands) const noexcept = 0;
+
+        /*!
+        @brief Writes the string representation of the function.
+        @param _operands The operands of the function. At most constains 2
+                elements for the left and right hand side of a binary function.
+        @returns The string representation of the function.
+        */
+        virtual const std::string ToString(const std::vector<Operand*>& _operands) const noexcept = 0;
+        
+        /*!
+        @brief Writes the string representation of the values of function's operands and result.
+        @param _operands The operands of the function. At most constains 2
+                elements for the left and right hand side of a binary function.
+		@returns The string representation of the values of function's operands and result.
+        */
+        virtual const std::string ToStringValue(const std::vector<Operand*>& _operands) const noexcept = 0;
     };
 
     struct Add : public Function
@@ -17,6 +38,16 @@ namespace ECellEngine::Maths
         inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
             return _operands[0]->Get() + _operands[1]->Get();
+        }
+
+        inline virtual const std::string ToString(const std::vector<Operand*>& _operands) const noexcept override
+        {
+            return '(' + _operands[0]->ToString() + '+' + _operands[1]->ToString() + ')';
+        }
+        
+        inline virtual const std::string ToStringValue(const std::vector<Operand*>& _operands) const noexcept override
+        {
+            return '(' + _operands[0]->ToStringValue() + '+' + _operands[1]->ToStringValue() + ')';
         }
     };
 
@@ -26,6 +57,16 @@ namespace ECellEngine::Maths
         {
             return _operands[0]->Get() - _operands[1]->Get();
         }
+
+        inline virtual const std::string ToString(const std::vector<Operand*>& _operands) const noexcept override
+        {
+			return '(' + _operands[0]->ToString() + '-' + _operands[1]->ToString() + ')';
+		}
+        
+        inline virtual const std::string ToStringValue(const std::vector<Operand*>& _operands) const noexcept override
+        {
+			return '(' + _operands[0]->ToStringValue() + '-' + _operands[1]->ToStringValue() + ')';
+		}
     };
 
     struct Times : public Function
@@ -33,6 +74,16 @@ namespace ECellEngine::Maths
         inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
             return _operands[0]->Get() * _operands[1]->Get();
+        }
+
+        inline virtual const std::string ToString(const std::vector<Operand*>& _operands) const noexcept override
+        {
+            return _operands[0]->ToString() + '*' + _operands[1]->ToString();
+        }
+        
+        inline virtual const std::string ToStringValue(const std::vector<Operand*>& _operands) const noexcept override
+        {
+            return _operands[0]->ToStringValue() + '*' + _operands[1]->ToStringValue();
         }
     };
 
@@ -42,6 +93,16 @@ namespace ECellEngine::Maths
         {
             return _operands[0]->Get() / _operands[1]->Get();
         }
+
+        inline virtual const std::string ToString(const std::vector<Operand*>& _operands) const noexcept override
+        {
+			return _operands[0]->ToString() + '/' + _operands[1]->ToString();
+		}
+        
+        inline virtual const std::string ToStringValue(const std::vector<Operand*>& _operands) const noexcept override
+        {
+			return _operands[0]->ToStringValue() + '/' + _operands[1]->ToStringValue();
+		}
     };
 
     struct Power : public Function
@@ -49,6 +110,16 @@ namespace ECellEngine::Maths
         inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
             return std::pow(_operands[0]->Get(), _operands[1]->Get());
+        }
+
+        inline virtual const std::string ToString(const std::vector<Operand*>& _operands) const noexcept override
+        {
+            return _operands[0]->ToString() + '^' + _operands[1]->ToString();
+        }
+        
+        inline virtual const std::string ToStringValue(const std::vector<Operand*>& _operands) const noexcept override
+        {
+            return _operands[0]->ToStringValue() + '^' + _operands[1]->ToStringValue();
         }
     };
 
@@ -58,6 +129,16 @@ namespace ECellEngine::Maths
         {
             return _operands[0]->Get();
         }
+
+        inline virtual const std::string ToString(const std::vector<Operand*>& _operands) const noexcept override
+        {
+			return _operands[0]->ToString();
+		}
+        
+        inline virtual const std::string ToStringValue(const std::vector<Operand*>& _operands) const noexcept override
+        {
+			return _operands[0]->ToStringValue();
+		}
     };
 
     struct Root : public Function
@@ -71,6 +152,16 @@ namespace ECellEngine::Maths
         {
             return std::pow(_operands[1]->Get(), 1.0f / _operands[0]->Get());
         }
+
+        inline virtual const std::string ToString(const std::vector<Operand*>& _operands) const noexcept override
+        {
+			return "rt(" + _operands[0]->ToString() + _operands[1]->ToString() + ")";
+		}
+        
+        inline virtual const std::string ToStringValue(const std::vector<Operand*>& _operands) const noexcept override
+        {
+			return "rt(" + _operands[0]->ToStringValue() + _operands[1]->ToStringValue() + ")";
+		}
     };
 
     struct Functions

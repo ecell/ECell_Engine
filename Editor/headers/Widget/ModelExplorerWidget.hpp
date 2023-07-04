@@ -38,12 +38,14 @@ namespace ECellEngine::Editor::Widget
 		@brief A char array to hold the path to an asset to import. 
 		*/
 		char assetPathBuffer[256] = "C:/Users/eliot/Documents/Source/External/Papers/Hat-et-al_p53_BNG/S2_Code_BioNetGen/export/p53_L3V2_mod2.xml";
+		//char assetPathBuffer[256] = "C:/Users/eliot/Documents/Source/External/Papers/Novak-et-al_FissionYeast_CellCycle/BIOMD0000000111_L3V2.xml";
 		
 		/*!
 		@brief A char array to hold the name of the asset node to be drawn in the
 				editor and that matches the imported asset.
 		*/
 		char assetNameBuffer[64] = "p53_L3V2_mod2.xml";
+		//char assetNameBuffer[64] = "FissionYeast_CellCycle_L3V2.xml";
 
 		/*!
 		  @brief Flags for the model explorer window.
@@ -93,12 +95,6 @@ namespace ECellEngine::Editor::Widget
 				in the current simulation.
 		*/
 		std::vector<MNBV::ModelNodeBasedViewerWidget> mnbViewers;
-
-		/*!
-		@brief Draws the popup window used to select which solver to add in the
-				current simulation space.
-		*/
-		void DrawAddSolverPopup();
 
 		/*!
 		@brief Draws the popup window used to inform the path of the asset to

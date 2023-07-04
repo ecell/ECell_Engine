@@ -1,20 +1,25 @@
 #include "Core/Simulation.hpp"
 
-void ECellEngine::Core::Simulation::AddModule(const std::string& _filePath)
+std::shared_ptr<ECellEngine::Data::Module> ECellEngine::Core::Simulation::AddModule(const std::string& _filePath)
 {
 	std::shared_ptr<ECellEngine::Data::Module> module = moduleImporterManager.TryImportModule(std::filesystem::path(_filePath), dataState);
 	if (module != nullptr)
 	{
 		modules.push_back(module);
 	}
+	return module;
 }
 
-void ECellEngine::Core::Simulation::AddSolver(const std::string& _solverClassName)
+std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::string& _solverClassName)
 {
 	if (_solverClassName == "GillespieNRMRSolver")
 	{
-		std::shared_ptr<Solver> solver = std::make_shared<GillespieNRMRSolver>(dataState);
-		solvers.push_back(solver);
+		return solvers.emplace_back(std::make_shared<GillespieNRMRSolver>(dataState, _solverClassName));
+	}
+
+	if (_solverClassName == "GeneralizedExplicitRK")
+	{
+		return solvers.emplace_back(std::make_shared<ODE::GeneralizedExplicitRK>(dataState, _solverClassName));
 	}
 }
 
@@ -46,7 +51,7 @@ ECellEngine::Solvers::Solver* ECellEngine::Core::Simulation::FindSolver(const ch
 {
 	for (std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator it = solvers.begin(); it != solvers.end(); ++it)
 	{
-		if (std::strcmp(it->get()->GetName(), _solverName) == 0)
+		if (it->get()->GetName() == _solverName)
 		{
 			return it->get();
 		}
@@ -58,7 +63,7 @@ const std::size_t ECellEngine::Core::Simulation::FindSolverIdx(const char* _solv
 {
 	for (std::size_t i = 0; i < solvers.size(); ++i)
 	{
-		if (std::strcmp(solvers[i].get()->GetName(), _solverName) == 0)
+		if (solvers[i].get()->GetName() == _solverName)
 		{
 			return i;
 		}
