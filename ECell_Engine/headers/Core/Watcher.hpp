@@ -185,7 +185,7 @@ namespace ECellEngine::Core
 		*/
 		void AddEvent(std::shared_ptr<Events::Event> _event) noexcept
 		{
-			triggeredEvents.push_back(event);
+			triggeredEvents.push_back(_event);
 		}
 
 		/*!
@@ -195,7 +195,7 @@ namespace ECellEngine::Core
 		*/
 		bool RemoveEvent(std::shared_ptr<Events::Event> _event) noexcept
 		{
-			auto it = std::find_if(triggeredEvents.begin(), triggeredEvents.end(), [event](std::shared_ptr<Events::Event> const& e) { return event == e; });
+			auto it = std::find_if(triggeredEvents.begin(), triggeredEvents.end(), [_event](std::shared_ptr<Events::Event> const& e) { return _event == e; });
 
 			if (it != triggeredEvents.end())
 			{
