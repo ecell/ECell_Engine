@@ -2172,8 +2172,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum InputPin
 		{
-			InputPin_LHS,
-			InputPin_RHS,
+			InputPin_Target,
+			InputPin_Threshold,
 
 			InputPin_Count
 		};
@@ -2192,12 +2192,19 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Pointer to the watcher represented by this node.
 		*/
-		std::shared_ptr<ECellEngine::Core::Watcher> data;
+		std::shared_ptr<ECellEngine::Core::Watcher<Operand*, Operand*>> data;
 
 		/*!
-		@brief The value of the left hand side of the watcher.
+		@brief The default operand to hold a value in this watcher when nothing
+				is connected in the input pin of the target.
+		@details We use the class of a parameter as the default operand because
+				 it is the less intrusive type of operand which value can be
+				 changed at runtime.
+		@remarks From an editor point of view, this default value should never
+			be used because it is not going to be updated if nothing is plugged
+			in the matching input pin. So, it is mainly here as a placeholder.
 		*/
-		float lhs = 0.f;
+		Data::Parameter target;
 
 		/*!
 		@brief The display list of the comparators.
@@ -2205,9 +2212,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 		const char* comparators[6] = { ">", ">=", "==", "!=", "<", "<=" };
 
 		/*!
-		@brief The value of the right hand side of the watcher.
+		@brief The default operand to hold a value in this watcher when nothing
+				is connected in the input pin of the threshold.
+		@details We use the class of a parameter as the default operand because
+				 it is the less intrusive type of operand which value can be
+				 changed at runtime.
 		*/
-		float rhs = 0.f;
+		Data::Parameter threshold;
 
 		/*!
 		@brief All the input pins.
@@ -2224,10 +2235,27 @@ namespace ECellEngine::Editor::Utility::MNBV
 		WatcherNodeData(const WatcherNodeData& _wtnd) :
 			NodeData(_wtnd), data{ _wtnd.data },
 			inputPins{ _wtnd.inputPins[0], _wtnd.inputPins[1] },
-			outputPins{ _wtnd.outputPins[0] }
+			outputPins{ _wtnd.outputPins[0] },
+			target{ _wtnd.target },
+			threshold{ _wtnd.threshold }
 		{
-			data->SetLHS(&lhs);
-			data->SetRHS(&rhs);
+			if (*_wtnd.data->GetTarget() == _wtnd.target)
+			{
+				data->SetTarget(&target);
+			}
+			else
+			{
+				data->SetTarget(_wtnd.data->GetTarget());
+			}
+
+			if (*_wtnd.data->GetThreshold() == _wtnd.threshold)
+			{
+				data->SetThreshold(&threshold);
+			}
+			else
+			{
+				data->SetThreshold(_wtnd.data->GetThreshold());
+			}
 
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -2240,16 +2268,18 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		WatcherNodeData(std::shared_ptr<ECellEngine::Core::Watcher> _data, ImVec2& _position) :
-			NodeData(), data{ _data }
+		WatcherNodeData(std::shared_ptr<ECellEngine::Core::Watcher<Operand*, Operand*>> _data, ImVec2& _position) :
+			NodeData(), data{ _data },
+			target{"Watcher["+std::to_string((std::size_t)id) + "]::Target", 0},
+			threshold{"Watcher[" + std::to_string((std::size_t)id) + "]::Threshold", 0}
 		{
-			data->SetLHS(&lhs);
-			data->SetRHS(&rhs);
+			data->SetTarget(&target);
+			data->SetThreshold(&threshold);
 
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the Left Hand Side of the comparison
-			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the Right Hand Side of the comparison
+			inputPins[InputPin_Target] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the Left Hand Side of the comparison
+			inputPins[InputPin_Threshold] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the Right Hand Side of the comparison
 			outputPins[OutputPin_Trigger] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Watcher, this);//To all the event to trigger
 		}
 
