@@ -26,7 +26,7 @@ namespace ECellEngine::Data
 		std::unordered_multimap<std::string, std::string> operandsToOperations;
 
 		std::vector<std::shared_ptr<Core::Events::ModifyDataStateValueEvent>> modifyDataStateValueEvents;
-		std::vector<std::shared_ptr<Core::Watcher>> watchers;
+		std::vector<std::shared_ptr<Core::Watcher<Operand*, Operand*>>> watchers;
 
 	public:
 		DataState()
@@ -115,9 +115,9 @@ namespace ECellEngine::Data
 			return species.emplace(_speciesName, std::make_shared<Species>(_speciesName, _quantity)).second;
 		}
 
-		inline std::shared_ptr<Core::Watcher> AddWatcher() noexcept
+		inline std::shared_ptr<Core::Watcher<Operand*, Operand*>> AddWatcher() noexcept
 		{
-			return watchers.emplace_back(std::make_shared<ECellEngine::Core::Watcher>());
+			return watchers.emplace_back(std::make_shared<ECellEngine::Core::Watcher<Operand*, Operand*>>());
 		}
 
 		inline void SetElapsedTime(const float _elapsedTime)

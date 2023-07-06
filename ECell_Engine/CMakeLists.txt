@@ -8,7 +8,7 @@ add_library(ECellEngine SHARED
     "src/Core/Simulation.cpp"
     "src/Core/SimulationsManager.cpp"
     "src/Core/Timer.cpp"
-    "src/Core/Watcher.cpp"
+    #"src/Core/Watcher.cpp"
     "src/Core/Track.cpp"
 
     "src/Core/Events/ModifyDataStateValueEvent.cpp"
