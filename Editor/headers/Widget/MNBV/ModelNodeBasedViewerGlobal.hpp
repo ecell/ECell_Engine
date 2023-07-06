@@ -295,6 +295,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 			return "PinType_FreeValueFloat";
 		case Utility::MNBV::PinType_ModifyDataStateEvent:
 			return "PinType_ModifyDataStateEvent";
+		case Utility::MNBV::PinType_Operand:
+			return "PinType_Operand";
 		case Utility::MNBV::PinType_Parameter:
 			return "PinType_Parameter";
 		case Utility::MNBV::PinType_Reaction:
