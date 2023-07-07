@@ -538,6 +538,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 	const float headerWidth = NodeHeader("Parameter:", _name, Widget::MNBV::GetNodeColors(NodeType_Parameter));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
+	const float thisWidth = ImGui::CalcTextSize("this").x;
 
 	if (NodeCollapsingHeader_InOut("Model Links", _parameterNodeInfo.collapsingHeadersIds[ParameterNodeData::CollapsingHeader_ModelLinks],
 		_parameterNodeInfo.utilityState, ParameterNodeData::State_CollHdrModelLinks,
@@ -546,7 +547,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 		ImVec2(itemsWidth, 0.f)))
 	{
 
-		NodeText_In("Asset", startX, _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
+		NodeText_In("Origin", startX, _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
+
+		ImGui::SameLine();
+
+		NodeText_Out("this", thisWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+			_parameterNodeInfo.outputPins[SpeciesNodeData::OutputPin_ThisData], Widget::MNBV::GetPinColors(PinType_Parameter));
 
 		if (_parameterNodeInfo.equationDep.size())
 		{

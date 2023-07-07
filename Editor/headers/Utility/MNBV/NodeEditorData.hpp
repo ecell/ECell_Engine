@@ -1497,6 +1497,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum OutputPin
 		{
+			OutputPin_ThisData,
 			OutputPin_CollHdrModelLinks,
 			OutputPin_CollHdrEquations,
 			OutputPin_CollHdrKineticLaws,
@@ -1585,17 +1586,17 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::vector<std::weak_ptr<ECellEngine::Maths::Equation>> equationDep;
 		std::vector<std::weak_ptr<ECellEngine::Data::Reaction>> reactionKLDep;
 
-		ParameterNodeData(const ParameterNodeData& _sprnd) :
-			NodeData(_sprnd), data{ _sprnd.data }, depDB{ _sprnd.depDB },
-			inputPins{ _sprnd.inputPins[0], _sprnd.inputPins[1] , _sprnd.inputPins[2] ,
-					  _sprnd.inputPins[3] , _sprnd.inputPins[4] , _sprnd.inputPins[5] },
-			outputPins{ _sprnd.outputPins[0], _sprnd.outputPins[1] , _sprnd.outputPins[2] ,
-					  _sprnd.outputPins[3] , _sprnd.outputPins[4] },
-			utilityState{ _sprnd.utilityState },
-			collapsingHeadersIds{ _sprnd.collapsingHeadersIds[0], _sprnd.collapsingHeadersIds[1] , _sprnd.collapsingHeadersIds[2] ,
-					  _sprnd.collapsingHeadersIds[3] },
-			nlbsDataEqDep{ _sprnd.nlbsDataEqDep }, nlbsDataRKLDep{ _sprnd.nlbsDataRKLDep },
-			equationDep{ _sprnd.equationDep }, reactionKLDep{ _sprnd.reactionKLDep }
+		ParameterNodeData(const ParameterNodeData& _pnd) :
+			NodeData(_pnd), data{ _pnd.data }, depDB{ _pnd.depDB },
+			inputPins{ _pnd.inputPins[0], _pnd.inputPins[1] , _pnd.inputPins[2] ,
+					  _pnd.inputPins[3] , _pnd.inputPins[4] , _pnd.inputPins[5] },
+			outputPins{ _pnd.outputPins[0], _pnd.outputPins[1] , _pnd.outputPins[2] ,
+					  _pnd.outputPins[3] , _pnd.outputPins[4], _pnd.outputPins[5]},
+			utilityState{ _pnd.utilityState },
+			collapsingHeadersIds{ _pnd.collapsingHeadersIds[0], _pnd.collapsingHeadersIds[1] , _pnd.collapsingHeadersIds[2] ,
+					  _pnd.collapsingHeadersIds[3] },
+			nlbsDataEqDep{ _pnd.nlbsDataEqDep }, nlbsDataRKLDep{ _pnd.nlbsDataRKLDep },
+			equationDep{ _pnd.equationDep }, reactionKLDep{ _pnd.reactionKLDep }
 		{
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -1618,15 +1619,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 
 			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
-			inputPins[InputPin_Asset] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Asset
-			inputPins[InputPin_CollHdrEquations] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
-			inputPins[InputPin_CollHdrKineticLaws] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
+			inputPins[InputPin_Asset] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//Asset
+			inputPins[InputPin_CollHdrEquations] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Computed Parameters section
+			inputPins[InputPin_CollHdrKineticLaws] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Kinetic Laws section
 			inputPins[InputPin_CollHdrDataFields] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
 			inputPins[InputPin_ParameterValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Value Float field
 
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
-			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
-			outputPins[OutputPin_CollHdrKineticLaws] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
+			outputPins[OutputPin_ThisData] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//This Data
+			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Computed Parameters section
+			outputPins[OutputPin_CollHdrKineticLaws] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Kinetic Laws section
 			outputPins[OutputPin_CollHdrDataFields] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
 			outputPins[OutputPin_ParameterValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Value Float field
 

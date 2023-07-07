@@ -308,6 +308,14 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::ResetNLBSDUtilitySta
 
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
+	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ThisData].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPin, data.get());
+		
+		//we set the output pin of the model links collapsing header as the fall back
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[ParameterNodeData::OutputPin_CollHdrModelLinks].id, 1);
+	}
+
 	//Parameter value
 	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ParameterValue].id)
 	{
@@ -320,6 +328,11 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeIn
 
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
+	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ThisData].id)
+	{
+		_nodeInputPinData->OnRefresh(_nodeOutputPin, data.get());
+	}
+
 	//Parameter value
 	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ParameterValue].id)
 	{
@@ -373,6 +386,9 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInpu
 	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_ThisData].id)
 	{
 		_nodeInputPinData->OnConnect(_nodeOutputPin, data.get());
+
+		//we set the output pin of the model links collapsing header as the fall back
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[ParameterNodeData::OutputPin_CollHdrModelLinks].id, 1);
 	}
 
 	//Quantity value
