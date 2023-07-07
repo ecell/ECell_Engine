@@ -14,6 +14,18 @@ namespace ECellEngine::Solvers::ODE
 	{
 	private:
 		/*!
+		@brief External equations (not ODE) that are true at all time and must
+				be accounted for when integrating the system of differential
+				equations.
+		*/
+		std::vector<Maths::Equation*> externalEquations;
+
+		/*!
+		@brief The number of external equations.
+		*/
+		unsigned short extEqSize = 0;
+
+		/*!
 		@brief The system of differential equations.
 		@details Be wary that, the left hand side are the variables
 				to be solved by the differential equation (right hand side) and NOT
@@ -27,13 +39,6 @@ namespace ECellEngine::Solvers::ODE
 				updated when solving the differential equation.
 		*/
 		std::vector<Maths::Equation> system;
-
-		/*!
-		@brief External equations (not ODE) that are true at all time and must
-				be accounted for when integrating the system of differential
-				equations.
-		*/
-		const std::unordered_map<std::string, std::shared_ptr<Maths::Equation>>* externalEquations = nullptr;
 		
 		/*!
 		@brief The size of the system of differential equations.

@@ -103,7 +103,16 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 	delete[] yn_ext;
 
 	systemSize = system.size();
-	externalEquations = &dataState.GetEquations();
+
+	extEqSize = dataState.GetEquations().size();
+	externalEquations.reserve(extEqSize);
+	for (auto [equationName, equation] : dataState.GetEquations())
+	{
+		externalEquations.push_back(equation.get());
+	}
+
+	ScanForWatchersOnODE();
+	ScanForWatchersOnExtEq();
 
 	//SetToClassicRK4();
 	SetToDormandPrince5();
@@ -122,7 +131,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::SetToClassicRK4() noexcep
 	yn = new float[systemSize];
 	//ynp1 is not needeed in Classic because there is no error control nor interpolation
 	//ynp12 is not needeed in Classic because there is no error control
-	yn_ext = new float[externalEquations->size()];
+	yn_ext = new float[extEqSize];
 
 	coeffs.SetToClassicRK4(systemSize);
 }
@@ -145,7 +154,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::SetToDormandPrince5() noe
 		ynp1[i] = system[i].Get();
 	}
 	ynp12 = new float[systemSize];
-	yn_ext = new float[externalEquations->size()];
+	yn_ext = new float[extEqSize];
 
 	coeffs.SetToDormandPrince54(systemSize);
 }
@@ -168,7 +177,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::SetToMerson4() noexcept
 		ynp1[i] = system[i].Get();
 	}
 	ynp12 = new float[systemSize];
-	yn_ext = new float[externalEquations->size()];
+	yn_ext = new float[extEqSize];
 
 	coeffs.SetToMerson4(systemSize);
 }
@@ -203,11 +212,9 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 		}
 
 		//Storing the value of the external equations at the beginning of the step
-		unsigned short j = 0;
-		for (auto [equationName, equation] : *externalEquations)
+		for (unsigned short i = 0; i < extEqSize; ++i)
 		{
-			yn_ext[j] = equation->Get();
-			j++;
+			yn_ext[i] = externalEquations[i]->Get();
 		}
 
 		for (unsigned short s = 2; s < coeffs.stages+1; ++s)
@@ -218,9 +225,9 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 				system[i].GetOperand()->Set(yn[i] + stepper.h_next * coeffs.ComputekSumForStage(i * systemSize, s));
 			}
 			//updating the external equations with the intermediate value
-			for (auto [equationName, equation] : dataState.GetEquations())
+			for (unsigned short i = 0; i < extEqSize; ++i)
 			{
-				equation->Compute();
+				externalEquations[i]->Compute();
 			}
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
@@ -231,11 +238,9 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 
 		//reset of the external equations values to their previous values at t=tn
 		//before calculating y_n+1
-		j = 0;
-		for (auto [equationName, equation] : dataState.GetEquations())
+		for (unsigned short i = 0; i < extEqSize; ++i)
 		{
-			equation->GetOperand()->Set(yn_ext[j]);
-			j++;
+			externalEquations[i]->GetOperand()->Set(yn_ext[i]);
 		}
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
@@ -245,9 +250,9 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 
 		//Finally, we update the external equations with the new value of the system at t=tn+1
 		//when every y_n+1 have been calculated.
-		for (auto [equationName, equation] : dataState.GetEquations())
+		for (unsigned short i = 0; i < extEqSize; ++i)
 		{
-			equation->Compute();
+			externalEquations[i]->Compute();
 		}
 
 		stepper.Next();
@@ -293,11 +298,9 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 		}
 
 		//Storing the value of the external equations at the beginning of the step
-		unsigned short j = 0;
-		for (auto [equationName, equation] : *externalEquations)
+		for (unsigned short i = 0; i < extEqSize; ++i)
 		{
-			yn_ext[j] = equation->Get();
-			j++;
+			yn_ext[i] = externalEquations[i]->Get();
 		}
 
 		for (unsigned short s = 2; s < coeffs.stages+1; ++s)
@@ -308,9 +311,9 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 				system[i].GetOperand()->Set(yn[i] + stepper.h_next * coeffs.ComputekSumForStage(i * systemSize, s));
 			}
 			//updating the external equations with the intermediate value
-			for (auto [equationName, equation] : dataState.GetEquations())
+			for (unsigned short i = 0; i < extEqSize; ++i)
 			{
-				equation->Compute();
+				externalEquations[i]->Compute();
 			}
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
@@ -321,15 +324,12 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 
 		//reset of the external equations values to their previous values at t=tn
 		//before calculating y_n+1
-		j = 0;
-		for (auto [equationName, equation] : dataState.GetEquations())
+		for (unsigned short i = 0; i < extEqSize; i++)
 		{
-			equation->GetOperand()->Set(yn_ext[j]);
-			j++;
+			externalEquations[i]->GetOperand()->Set(yn_ext[i]);
 		}
 		
 		//We update the system's buffer with the two solutions for value of y_n+1
-		//We reset the values in the dataState to their previous values at t=tn
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
 			//y_n+1 = y_n + h * (b1 * k1 + b2 * k2 + ... + bs * ks)
@@ -346,10 +346,10 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			}
 			//Finally, we update the external equations with the new value of the system at t=tn+1
 			//when every y_n+1 have been calculated.
-			for (auto [equationName, equation] : dataState.GetEquations())
-			{
-				equation->Compute();
-			}
+				for (unsigned short i = 0; i < extEqSize; i++)
+				{
+					externalEquations[i]->Compute();
+				}
 
 			//we advance time by the current step
 			stepper.Next();
@@ -368,10 +368,12 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 				system[i].GetOperand()->Set(yn[i]);
 			}
 
-			stepper.ComputeNext(coeffs.estimationsMinOrder);
+			for (unsigned short i = 0; i < extEqSize; i++)
+			{
+				externalEquations[i]->GetOperand()->Set(yn_ext[i]);
+			}
 
-			//Value Debugging
-			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("--- REJECTED ---");
+			stepper.ComputeNext(coeffs.estimationsMinOrder);
 		}
 
 		/*ECellEngine::Logging::Logger::GetSingleton().LogDebug(
