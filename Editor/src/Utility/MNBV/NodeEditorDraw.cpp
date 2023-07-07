@@ -40,7 +40,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _
 	if (NodeCollapsingHeader_Out("Species", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_Species],
 		_assetNodeInfo.utilityState, AssetNodeData::State_CollHdrSpecies,
 		startX, headerWidth,
-		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrSpecies], Widget::MNBV::GetPinColors(PinType_Species),
+		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrSpecies], Widget::MNBV::GetPinColors(PinType_Asset),
 		ImVec2(itemsWidth, 0), false))
 	{
 		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Species], startX, headerWidth, itemsWidth);
@@ -50,7 +50,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _
 	if (NodeCollapsingHeader_Out("Parameters", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_Parameters],
 		_assetNodeInfo.utilityState, AssetNodeData::State_CollHdrParameters,
 		startX, headerWidth,
-		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrParameters], Widget::MNBV::GetPinColors(PinType_Parameter),
+		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrParameters], Widget::MNBV::GetPinColors(PinType_Asset),
 		ImVec2(itemsWidth, 0), false))
 	{
 		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Parameters], startX, headerWidth, itemsWidth);
@@ -60,7 +60,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _
 	if (NodeCollapsingHeader_Out("Equations", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_Equations],
 		_assetNodeInfo.utilityState, AssetNodeData::State_CollHdrEquations,
 		startX, headerWidth,
-		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrEquations], Widget::MNBV::GetPinColors(PinType_Parameter),
+		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrEquations], Widget::MNBV::GetPinColors(PinType_Asset),
 		ImVec2(itemsWidth, 0), false))
 	{
 		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Equations], startX, headerWidth, itemsWidth);
@@ -70,7 +70,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _
 	if (NodeCollapsingHeader_Out("Reactions", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_Reactions],
 		_assetNodeInfo.utilityState, AssetNodeData::State_CollHdrReactions,
 		startX, headerWidth,
-		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrReactions], Widget::MNBV::GetPinColors(PinType_Reaction),
+		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrReactions], Widget::MNBV::GetPinColors(PinType_Asset),
 		ImVec2(itemsWidth, 0), false))
 	{
 		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Reactions], startX, headerWidth, itemsWidth);
@@ -538,6 +538,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 	const float headerWidth = NodeHeader("Parameter:", _name, Widget::MNBV::GetNodeColors(NodeType_Parameter));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
+	const float thisWidth = ImGui::CalcTextSize("this").x;
 
 	if (NodeCollapsingHeader_InOut("Model Links", _parameterNodeInfo.collapsingHeadersIds[ParameterNodeData::CollapsingHeader_ModelLinks],
 		_parameterNodeInfo.utilityState, ParameterNodeData::State_CollHdrModelLinks,
@@ -546,7 +547,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 		ImVec2(itemsWidth, 0.f)))
 	{
 
-		NodeText_In("Asset", startX, _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
+		NodeText_In("Origin", startX, _parameterNodeInfo.inputPins[ParameterNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
+
+		ImGui::SameLine();
+
+		NodeText_Out("this", thisWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+			_parameterNodeInfo.outputPins[SpeciesNodeData::OutputPin_ThisData], Widget::MNBV::GetPinColors(PinType_Parameter));
 
 		if (_parameterNodeInfo.equationDep.size())
 		{
@@ -638,6 +644,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 	const float headerWidth = NodeHeader("Species:", _name, Widget::MNBV::GetNodeColors(NodeType_Species));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
+	const float thisWidth = ImGui::CalcTextSize("this").x;
 
 	if (NodeCollapsingHeader_InOut("Model Links", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_ModelLinks],
 		_speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrModelLinks,
@@ -645,7 +652,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 		_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrModelLinks], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrModelLinks], Widget::MNBV::GetPinColors(PinType_Default),
 		ImVec2(itemsWidth, 0)))
 	{
-		NodeText_In("Asset", startX, _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
+		NodeText_In("Origin", startX, _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
+
+		ImGui::SameLine();
+
+		NodeText_Out("this", thisWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+			_speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_ThisData], Widget::MNBV::GetPinColors(PinType_Species));
 
 		if (_speciesNodeInfo.equationDep.size())
 		{
@@ -743,23 +755,28 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::WatcherNode(WatcherNode
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Event));
 	ax::NodeEditor::BeginNode(_watcherNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Watcher", "", Widget::MNBV::GetNodeColors(NodeType_Event));
+	const float headerWidth = NodeHeader("Watcher", "", Widget::MNBV::GetNodeColors(NodeType_Event), 300.f);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 	const float triggerWidth = ImGui::CalcTextSize("Trigger").x;
 
-	ImGuiSliderFlags dragFlags = ImGuiSliderFlags_None;
-	if (_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_LHS].isUsed)
-	{
-		dragFlags |= ImGuiSliderFlags_ReadOnly;
-	}
 	NodeComboBox("Comparator", _watcherNodeInfo.comparators, 6, (int&)_watcherNodeInfo.data->GetComparator(),
 		itemsWidth, startX, headerWidth);
 
-	NodeDragFloat_In("LHS", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_LHS], &_watcherNodeInfo.lhs,
-				0.5f*itemsWidth, startX,
-				_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_LHS], Widget::MNBV::GetPinColors(PinType_FreeValueFloat),
-				dragFlags);
+	ImGuiSliderFlags dragFlags = ImGuiSliderFlags_None;
+	if (_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Target].isUsed)
+	{
+		dragFlags |= ImGuiSliderFlags_ReadOnly;
+		_watcherNodeInfo.target.Set(_watcherNodeInfo.data->GetTarget()->Get());
+	}
+	float bufferTarget = _watcherNodeInfo.target.Get();
+	if (NodeDragFloat_In("Target", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Target], &bufferTarget,
+		0.5f * itemsWidth, startX,
+		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Target], Widget::MNBV::GetPinColors(PinType_Operand),
+		dragFlags))
+	{
+		_watcherNodeInfo.target.Set(bufferTarget);
+	}
 
 	ImGui::SameLine();
 
@@ -767,14 +784,19 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::WatcherNode(WatcherNode
 		_watcherNodeInfo.outputPins[WatcherNodeData::OutputPin_Trigger], Widget::MNBV::GetPinColors(PinType_Watcher));
 
 	dragFlags = ImGuiSliderFlags_None;
-	if (_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_RHS].isUsed)
+	if (_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Threshold].isUsed)
 	{
 		dragFlags |= ImGuiSliderFlags_ReadOnly;
+		_watcherNodeInfo.threshold.Set(_watcherNodeInfo.data->GetThreshold()->Get());
 	}
-	NodeDragFloat_In("RHS", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_RHS], &_watcherNodeInfo.rhs,
-		0.5f*itemsWidth, startX,
-		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_RHS], Widget::MNBV::GetPinColors(PinType_FreeValueFloat),
-		dragFlags);
+	float bufferThreshold = _watcherNodeInfo.threshold.Get();
+	if (NodeDragFloat_In("Threshold", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Threshold], &bufferThreshold,
+		0.5f * itemsWidth, startX,
+		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Threshold], Widget::MNBV::GetPinColors(PinType_Operand),
+		dragFlags))
+	{
+		_watcherNodeInfo.threshold.Set(bufferThreshold);
+	}
 
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
@@ -1322,7 +1344,7 @@ bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeInputFloat_InOut(co
 
 	ImGui::Text(_label); ImGui::SameLine();
 	ImGui::SetNextItemWidth(_inputFieldWidth - ImGui::CalcTextSize(_label).x - ImGui::GetStyle().ItemSpacing.x);
-	bool edited = ImGui::InputFloat("##quantity", valueBuffer, 0.f, 0.f, "%.3f", _flags);
+	bool edited = ImGui::InputFloat("##quantity", valueBuffer, 0.f, 0.f, "%.6f", _flags);
 	if (ImGui::IsItemActive() && (_flags & ImGuiInputTextFlags_EnterReturnsTrue))
 	{
 		ax::NodeEditor::Suspend();

@@ -634,10 +634,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 			inputPins[InputPin_Solver] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Solver, this);//Solver
 
-			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Species Collapsing header
-			outputPins[OutputPin_CollHdrReactions] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Simple Parameters Collapsing header
-			outputPins[OutputPin_CollHdrParameters] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters Collapsing header
-			outputPins[OutputPin_CollHdrSpecies] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Reaction, this);//Reactions Collapsing header
+			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//Species Collapsing header
+			outputPins[OutputPin_CollHdrReactions] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//Simple Parameters Collapsing header
+			outputPins[OutputPin_CollHdrParameters] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//Computed Parameters Collapsing header
+			outputPins[OutputPin_CollHdrSpecies] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//Reactions Collapsing header
 
 			collapsingHeadersIds[CollapsingHeader_Equations] = Widget::MNBV::GetMNBVCtxtNextId();//Species Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Reactions] = Widget::MNBV::GetMNBVCtxtNextId();//Simple Parameters Collapsing header
@@ -1497,6 +1497,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum OutputPin
 		{
+			OutputPin_ThisData,
 			OutputPin_CollHdrModelLinks,
 			OutputPin_CollHdrEquations,
 			OutputPin_CollHdrKineticLaws,
@@ -1585,17 +1586,17 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::vector<std::weak_ptr<ECellEngine::Maths::Equation>> equationDep;
 		std::vector<std::weak_ptr<ECellEngine::Data::Reaction>> reactionKLDep;
 
-		ParameterNodeData(const ParameterNodeData& _sprnd) :
-			NodeData(_sprnd), data{ _sprnd.data }, depDB{ _sprnd.depDB },
-			inputPins{ _sprnd.inputPins[0], _sprnd.inputPins[1] , _sprnd.inputPins[2] ,
-					  _sprnd.inputPins[3] , _sprnd.inputPins[4] , _sprnd.inputPins[5] },
-			outputPins{ _sprnd.outputPins[0], _sprnd.outputPins[1] , _sprnd.outputPins[2] ,
-					  _sprnd.outputPins[3] , _sprnd.outputPins[4] },
-			utilityState{ _sprnd.utilityState },
-			collapsingHeadersIds{ _sprnd.collapsingHeadersIds[0], _sprnd.collapsingHeadersIds[1] , _sprnd.collapsingHeadersIds[2] ,
-					  _sprnd.collapsingHeadersIds[3] },
-			nlbsDataEqDep{ _sprnd.nlbsDataEqDep }, nlbsDataRKLDep{ _sprnd.nlbsDataRKLDep },
-			equationDep{ _sprnd.equationDep }, reactionKLDep{ _sprnd.reactionKLDep }
+		ParameterNodeData(const ParameterNodeData& _pnd) :
+			NodeData(_pnd), data{ _pnd.data }, depDB{ _pnd.depDB },
+			inputPins{ _pnd.inputPins[0], _pnd.inputPins[1] , _pnd.inputPins[2] ,
+					  _pnd.inputPins[3] , _pnd.inputPins[4] , _pnd.inputPins[5] },
+			outputPins{ _pnd.outputPins[0], _pnd.outputPins[1] , _pnd.outputPins[2] ,
+					  _pnd.outputPins[3] , _pnd.outputPins[4], _pnd.outputPins[5]},
+			utilityState{ _pnd.utilityState },
+			collapsingHeadersIds{ _pnd.collapsingHeadersIds[0], _pnd.collapsingHeadersIds[1] , _pnd.collapsingHeadersIds[2] ,
+					  _pnd.collapsingHeadersIds[3] },
+			nlbsDataEqDep{ _pnd.nlbsDataEqDep }, nlbsDataRKLDep{ _pnd.nlbsDataRKLDep },
+			equationDep{ _pnd.equationDep }, reactionKLDep{ _pnd.reactionKLDep }
 		{
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -1618,15 +1619,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 
 			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
-			inputPins[InputPin_Asset] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Asset
-			inputPins[InputPin_CollHdrEquations] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
-			inputPins[InputPin_CollHdrKineticLaws] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
+			inputPins[InputPin_Asset] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//Asset
+			inputPins[InputPin_CollHdrEquations] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Computed Parameters section
+			inputPins[InputPin_CollHdrKineticLaws] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Kinetic Laws section
 			inputPins[InputPin_CollHdrDataFields] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
 			inputPins[InputPin_ParameterValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Value Float field
 
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
-			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Computed Parameters section
-			outputPins[OutputPin_CollHdrKineticLaws] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//Kinetic Laws section
+			outputPins[OutputPin_ThisData] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Parameter, this);//This Data
+			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Computed Parameters section
+			outputPins[OutputPin_CollHdrKineticLaws] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Kinetic Laws section
 			outputPins[OutputPin_CollHdrDataFields] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Data Fields collapsing header
 			outputPins[OutputPin_ParameterValue] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Value Float field
 
@@ -1872,6 +1874,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum OutputPin
 		{
+			OutputPin_ThisData,
 			OutputPin_CollHdrModelLinks,
 			OutputPin_CollHdrDataFields,
 			OutputPin_CollHdrAsReactant,
@@ -1978,7 +1981,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 					  _snd.inputPins[6] , _snd.inputPins[7] },
 			outputPins{ _snd.outputPins[0], _snd.outputPins[1] , _snd.outputPins[2] ,
 					  _snd.outputPins[3] , _snd.outputPins[4] , _snd.outputPins[5],
-					  _snd.outputPins[6] },
+					  _snd.outputPins[6], _snd.outputPins[7]},
 			utilityState{ _snd.utilityState },
 			collapsingHeadersIds{ _snd.collapsingHeadersIds[0], _snd.collapsingHeadersIds[1],
 			_snd.collapsingHeadersIds[2], _snd.collapsingHeadersIds[3], _snd.collapsingHeadersIds[4],
@@ -2018,6 +2021,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins[InputPin_CollHdrDataFields] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Data Fields
 			inputPins[InputPin_Quantity] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Quantity
 
+			outputPins[OutputPin_ThisData] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//The Species data in this node
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Model Links
 			outputPins[OutputPin_CollHdrInEquation] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Computed parameters equation
 			outputPins[OutputPin_CollHdrAsReactant] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reactions's Reactants
@@ -2172,8 +2176,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum InputPin
 		{
-			InputPin_LHS,
-			InputPin_RHS,
+			InputPin_Target,
+			InputPin_Threshold,
 
 			InputPin_Count
 		};
@@ -2192,12 +2196,19 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Pointer to the watcher represented by this node.
 		*/
-		std::shared_ptr<ECellEngine::Core::Watcher> data;
+		std::shared_ptr<ECellEngine::Core::Watcher<Operand*, Operand*>> data;
 
 		/*!
-		@brief The value of the left hand side of the watcher.
+		@brief The default operand to hold a value in this watcher when nothing
+				is connected in the input pin of the target.
+		@details We use the class of a parameter as the default operand because
+				 it is the less intrusive type of operand which value can be
+				 changed at runtime.
+		@remarks From an editor point of view, this default value should never
+			be used because it is not going to be updated if nothing is plugged
+			in the matching input pin. So, it is mainly here as a placeholder.
 		*/
-		float lhs = 0.f;
+		Data::Parameter target;
 
 		/*!
 		@brief The display list of the comparators.
@@ -2205,9 +2216,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 		const char* comparators[6] = { ">", ">=", "==", "!=", "<", "<=" };
 
 		/*!
-		@brief The value of the right hand side of the watcher.
+		@brief The default operand to hold a value in this watcher when nothing
+				is connected in the input pin of the threshold.
+		@details We use the class of a parameter as the default operand because
+				 it is the less intrusive type of operand which value can be
+				 changed at runtime.
 		*/
-		float rhs = 0.f;
+		Data::Parameter threshold;
 
 		/*!
 		@brief All the input pins.
@@ -2224,10 +2239,27 @@ namespace ECellEngine::Editor::Utility::MNBV
 		WatcherNodeData(const WatcherNodeData& _wtnd) :
 			NodeData(_wtnd), data{ _wtnd.data },
 			inputPins{ _wtnd.inputPins[0], _wtnd.inputPins[1] },
-			outputPins{ _wtnd.outputPins[0] }
+			outputPins{ _wtnd.outputPins[0] },
+			target{ _wtnd.target },
+			threshold{ _wtnd.threshold }
 		{
-			data->SetLHS(&lhs);
-			data->SetRHS(&rhs);
+			if (*_wtnd.data->GetTarget() == _wtnd.target)
+			{
+				data->SetTarget(&target);
+			}
+			else
+			{
+				data->SetTarget(_wtnd.data->GetTarget());
+			}
+
+			if (*_wtnd.data->GetThreshold() == _wtnd.threshold)
+			{
+				data->SetThreshold(&threshold);
+			}
+			else
+			{
+				data->SetThreshold(_wtnd.data->GetThreshold());
+			}
 
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -2240,16 +2272,18 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		WatcherNodeData(std::shared_ptr<ECellEngine::Core::Watcher> _data, ImVec2& _position) :
-			NodeData(), data{ _data }
+		WatcherNodeData(std::shared_ptr<ECellEngine::Core::Watcher<Operand*, Operand*>> _data, ImVec2& _position) :
+			NodeData(), data{ _data },
+			target{"Watcher["+std::to_string((std::size_t)id) + "]::Target", 0},
+			threshold{"Watcher[" + std::to_string((std::size_t)id) + "]::Threshold", 0}
 		{
-			data->SetLHS(&lhs);
-			data->SetRHS(&rhs);
+			data->SetTarget(&target);
+			data->SetThreshold(&threshold);
 
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the Left Hand Side of the comparison
-			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the Right Hand Side of the comparison
+			inputPins[InputPin_Target] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Operand, this);//the Left Hand Side of the comparison
+			inputPins[InputPin_Threshold] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Operand, this);//the Right Hand Side of the comparison
 			outputPins[OutputPin_Trigger] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Watcher, this);//To all the event to trigger
 		}
 

@@ -308,6 +308,14 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::ResetNLBSDUtilitySta
 
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
+	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ThisData].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPin, data.get());
+		
+		//we set the output pin of the model links collapsing header as the fall back
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[ParameterNodeData::OutputPin_CollHdrModelLinks].id, 1);
+	}
+
 	//Parameter value
 	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ParameterValue].id)
 	{
@@ -320,6 +328,11 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeIn
 
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
+	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ThisData].id)
+	{
+		_nodeInputPinData->OnRefresh(_nodeOutputPin, data.get());
+	}
+
 	//Parameter value
 	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ParameterValue].id)
 	{
@@ -369,6 +382,15 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputRefresh(NodeInput
 
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
+	//This data (the pointer to the species)
+	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_ThisData].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPin, data.get());
+
+		//we set the output pin of the model links collapsing header as the fall back
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[ParameterNodeData::OutputPin_CollHdrModelLinks].id, 1);
+	}
+
 	//Quantity value
 	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_Quantity].id)
 	{
@@ -381,6 +403,12 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInpu
 
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
+	//This data (the pointer to the species)
+	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_ThisData].id)
+	{
+		_nodeInputPinData->OnRefresh(_nodeOutputPin, data.get());
+	}
+
 	//Quantity value
 	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_Quantity].id)
 	{
@@ -418,53 +446,53 @@ void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputRefresh(NodeI
 void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	//The LHS input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_LHS].id)
+	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Target].id)
 	{
-		data->SetLHS((float*)_data);
+		data->SetTarget((Operand*)_data);
 	}
 	
 	//The RHS input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_RHS].id)
+	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Threshold].id)
 	{
-		data->SetRHS((float*)_data);
+		data->SetThreshold((Operand*)_data);
 	}
 }
 
 void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
 	//The LHS input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_LHS].id)
+	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Target].id)
 	{
-		//We start by setting the local lhs value to the previous value of the lhs in the watcher.
-		lhs = *data->GetLHS();
+		//We start by setting the local target value to the previous value of the target in the watcher.
+		target.Set(data->GetTarget()->Get());
 
-		//We then set the lhs of the watcher to the local lhs value.
-		data->SetLHS(&lhs);
+		//We then set the target of the watcher to the local target value.
+		data->SetTarget(&target);
 	}
 
 	//The RHS input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_RHS].id)
+	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Threshold].id)
 	{
-		//We start by setting the local rhs value to the previous value of the rhs in the watcher.
-		rhs = *data->GetRHS();
+		//We start by setting the local threshold value to the previous value of the rhs in the watcher.
+		threshold.Set(data->GetThreshold()->Get());
 
-		//We then set the rhs of the watcher to the local rhs value.
-		data->SetRHS(&rhs);
+		//We then set the threshold of the watcher to the local threshold value.
+		data->SetThreshold(&threshold);
 	}
 }
 
 void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
-	//The LHS input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_LHS].id)
+	//The Target input pin
+	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Target].id)
 	{
-		data->SetLHS((float*)_data);
+		data->SetTarget((Operand*)_data);
 	}
 
-	//The RHS input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_RHS].id)
+	//The Threshold input pin
+	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Threshold].id)
 	{
-		data->SetRHS((float*)_data);
+		data->SetThreshold((Operand*)_data);
 	}
 }
 

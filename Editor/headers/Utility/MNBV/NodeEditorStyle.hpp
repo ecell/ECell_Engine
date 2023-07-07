@@ -41,6 +41,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		PinType_EquationValueFloat,//"Equation" for a value that is the result of the computation of an equation.
 		PinType_FreeValueFloat,//"Free" means that the value does not have specific contraints.
 		PinType_ModifyDataStateEvent,
+		PinType_Operand,
 		PinType_Parameter,
 		PinType_Reaction,
 		PinType_Solver,
@@ -213,6 +214,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 			pinColors[PinType_ModifyDataStateEvent][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
 			pinColors[PinType_ModifyDataStateEvent][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
 			pinColors[PinType_ModifyDataStateEvent][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
+
+			pinColors[PinType_Operand][PinColorType_BgActivated] = nodeColors[NodeType_Asset][NodeColorType_Border];
+			pinColors[PinType_Operand][PinColorType_BgInactivated] = nodeColors[NodeType_Asset][NodeColorType_Bg];
+			pinColors[PinType_Operand][PinColorType_Border] = nodeColors[NodeType_Asset][NodeColorType_Border];
 
 			pinColors[PinType_Parameter][PinColorType_BgActivated] = nodeColors[NodeType_Parameter][NodeColorType_Border];
 			pinColors[PinType_Parameter][PinColorType_BgInactivated] = nodeColors[NodeType_Parameter][NodeColorType_Bg];

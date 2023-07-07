@@ -186,6 +186,9 @@ namespace ECellEngine::Editor::Widget::MNBV
 			authorizedDynamicLinks[Utility::MNBV::PinType_ModifyDataStateEvent][Utility::MNBV::PinType_DataStateValueFloat] = true;
 			
 			authorizedDynamicLinks[Utility::MNBV::PinType_Watcher][Utility::MNBV::PinType_ModifyDataStateEvent] = true;
+
+			authorizedDynamicLinks[Utility::MNBV::PinType_Parameter][Utility::MNBV::PinType_Operand] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_Species][Utility::MNBV::PinType_Operand] = true;
 		}
 
 		/*!
