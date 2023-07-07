@@ -369,6 +369,12 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputRefresh(NodeInput
 
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
+	//This data (the pointer to the species)
+	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_ThisData].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPin, data.get());
+	}
+
 	//Quantity value
 	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_Quantity].id)
 	{
@@ -381,6 +387,12 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInpu
 
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
+	//This data (the pointer to the species)
+	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_ThisData].id)
+	{
+		_nodeInputPinData->OnRefresh(_nodeOutputPin, data.get());
+	}
+
 	//Quantity value
 	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_Quantity].id)
 	{

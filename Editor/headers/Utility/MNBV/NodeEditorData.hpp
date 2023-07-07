@@ -1872,6 +1872,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum OutputPin
 		{
+			OutputPin_ThisData,
 			OutputPin_CollHdrModelLinks,
 			OutputPin_CollHdrDataFields,
 			OutputPin_CollHdrAsReactant,
@@ -1978,7 +1979,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 					  _snd.inputPins[6] , _snd.inputPins[7] },
 			outputPins{ _snd.outputPins[0], _snd.outputPins[1] , _snd.outputPins[2] ,
 					  _snd.outputPins[3] , _snd.outputPins[4] , _snd.outputPins[5],
-					  _snd.outputPins[6] },
+					  _snd.outputPins[6], _snd.outputPins[7]},
 			utilityState{ _snd.utilityState },
 			collapsingHeadersIds{ _snd.collapsingHeadersIds[0], _snd.collapsingHeadersIds[1],
 			_snd.collapsingHeadersIds[2], _snd.collapsingHeadersIds[3], _snd.collapsingHeadersIds[4],
@@ -2018,6 +2019,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins[InputPin_CollHdrDataFields] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Data Fields
 			inputPins[InputPin_Quantity] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_DataStateValueFloat, this);//Quantity
 
+			outputPins[OutputPin_ThisData] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//The Species data in this node
 			outputPins[OutputPin_CollHdrModelLinks] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Model Links
 			outputPins[OutputPin_CollHdrInEquation] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Computed parameters equation
 			outputPins[OutputPin_CollHdrAsReactant] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Species, this);//Reactions's Reactants

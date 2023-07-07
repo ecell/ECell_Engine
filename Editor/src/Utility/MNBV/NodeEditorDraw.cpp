@@ -638,6 +638,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 	const float headerWidth = NodeHeader("Species:", _name, Widget::MNBV::GetNodeColors(NodeType_Species));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
+	const float thisWidth = ImGui::CalcTextSize("this").x;
 
 	if (NodeCollapsingHeader_InOut("Model Links", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_ModelLinks],
 		_speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrModelLinks,
@@ -645,7 +646,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 		_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrModelLinks], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrModelLinks], Widget::MNBV::GetPinColors(PinType_Default),
 		ImVec2(itemsWidth, 0)))
 	{
-		NodeText_In("Asset", startX, _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
+		NodeText_In("Origin", startX, _speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Asset], Widget::MNBV::GetPinColors(PinType_Asset));
+
+		ImGui::SameLine();
+
+		NodeText_Out("this", thisWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+			_speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_ThisData], Widget::MNBV::GetPinColors(PinType_Species));
 
 		if (_speciesNodeInfo.equationDep.size())
 		{
