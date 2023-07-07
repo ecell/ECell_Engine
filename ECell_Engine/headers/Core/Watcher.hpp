@@ -45,6 +45,8 @@ namespace ECellEngine::Core
 		*/
 		std::vector<std::shared_ptr<Events::Event>> triggeredEvents;
 
+		bool triggered = false;
+
 		/*!
 		@brief Pointer to the value being watched. Always on the left hand side
 				in the comparison.
@@ -154,6 +156,26 @@ namespace ECellEngine::Core
 		}
 
 		/*!
+		@brief Checks whether the condition held by this watcher transitioned
+				from false to true.
+		*/
+		bool IsConditionNewlyVerified() noexcept
+		{
+			if (!triggered)
+			{
+				return triggered = IsConditionVerified();
+			}
+			else
+			{
+				if(!IsConditionVerified())
+				{
+					triggered = false;
+				}
+				return false;
+			}
+		}
+
+		/*!
 		@brief Call the internal events for this watcher.
 		*/
 		void CallEvents() noexcept
@@ -168,17 +190,17 @@ namespace ECellEngine::Core
 		/*!
 		@brief Call the internal events if the target comparator threshold condition is true.
 		*/
-		void CallEventsIfConditionVerified() noexcept
-		{
-			if (IsConditionVerified())
-			{
-				//Call events
-				for (std::shared_ptr<Events::Event>& event : triggeredEvents)
-				{
-					event->Execute(0);//TODO: Change this to use the index of the simulation where that event is coming from
-				}
-			}
-		}
+		//void CallEventsIfConditionVerified() noexcept
+		//{
+		//	if (IsConditionVerified())
+		//	{
+		//		//Call events
+		//		for (std::shared_ptr<Events::Event>& event : triggeredEvents)
+		//		{
+		//			event->Execute(0);//TODO: Change this to use the index of the simulation where that event is coming from
+		//		}
+		//	}
+		//}
 
 		/*!
 		@brief Add an event to the list of internal events for this watcher.
