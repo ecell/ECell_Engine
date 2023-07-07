@@ -18,6 +18,11 @@ float ECellEngine::Solvers::ODE::Stepper::ComputeDenseOutputIncrement(const floa
 	return res;
 }
 
+float ECellEngine::Solvers::ODE::Stepper::ComputeDenseOutputTime(const float _t, const float _t0, const float _t1) const noexcept
+{
+	return (_t - _t0) / (_t1 - _t0);
+}
+
 bool ECellEngine::Solvers::ODE::Stepper::ComputeError(float _y0[], float _yEst1[], float _yEst2[], unsigned short _count) noexcept
 {
 	error = 0;
@@ -38,6 +43,40 @@ float ECellEngine::Solvers::ODE::Stepper::ComputeNext(unsigned short _q) noexcep
 
 	return h_next;
 }
+
+float ECellEngine::Solvers::ODE::Stepper::ComputeTimeForValue(const float _targetValue, const float _y0,
+	const float _y1, const float _bsp[], const float _ks[], const unsigned _eqIdx, const unsigned short _order,
+	const unsigned short _stage)
+{
+	float deltaTarget = fabsf(_targetValue - _y0);
+	float deltaStep = fabsf(_y1 - _y0);
+	float a = 0; 
+	float b = 1;
+	float theta = 0.5f;
+	float deltaTheta = h_next * ComputeDenseOutputIncrement(_bsp, theta, _ks, _eqIdx, _order, _stage);
+
+	while (fabsf(deltaTarget - deltaTheta)/deltaStep > computeTimeThetaTolerance)
+	{
+		if (deltaTarget < deltaTheta)
+		{
+			b = theta;
+		}
+		else
+		{
+			a = theta;
+		}
+		theta = (a + b) * 0.5f;
+		deltaTheta = h_next * ComputeDenseOutputIncrement(_bsp, theta, _ks, _eqIdx, _order, _stage);
+	}
+
+	return t + theta * h_next;
+}
+
+void ECellEngine::Solvers::ODE::Stepper::ForceNext(float _h) noexcept
+{
+	h_prev = _h;
+	t += _h;
+};
 
 float ECellEngine::Solvers::ODE::Stepper::Next() noexcept
 {

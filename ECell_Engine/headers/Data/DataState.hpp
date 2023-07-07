@@ -87,6 +87,11 @@ namespace ECellEngine::Data
 			return species;
 		}
 
+		inline const std::vector<std::shared_ptr<Core::Watcher<Operand*, Operand*>>>& GetWatchers() const
+		{
+			return watchers;
+		}
+
 		inline bool AddReaction(const std::string& _reactionName,
 			const std::vector<std::string> _products,
 			const std::vector<std::string> _reactants,
