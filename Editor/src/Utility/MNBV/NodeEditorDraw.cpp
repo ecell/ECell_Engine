@@ -749,7 +749,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::WatcherNode(WatcherNode
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Event));
 	ax::NodeEditor::BeginNode(_watcherNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Watcher", "", Widget::MNBV::GetNodeColors(NodeType_Event));
+	const float headerWidth = NodeHeader("Watcher", "", Widget::MNBV::GetNodeColors(NodeType_Event), 300.f);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 	const float triggerWidth = ImGui::CalcTextSize("Trigger").x;
@@ -783,7 +783,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::WatcherNode(WatcherNode
 		dragFlags |= ImGuiSliderFlags_ReadOnly;
 		_watcherNodeInfo.threshold.Set(_watcherNodeInfo.data->GetThreshold()->Get());
 	}
-	float bufferThreshold = _watcherNodeInfo.target.Get();
+	float bufferThreshold = _watcherNodeInfo.threshold.Get();
 	if (NodeDragFloat_In("Threshold", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Threshold], &bufferThreshold,
 		0.5f * itemsWidth, startX,
 		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Threshold], Widget::MNBV::GetPinColors(PinType_Operand),
