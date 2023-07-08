@@ -407,7 +407,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 				system[it->second].GetOperand()->Set(ynp1[it->second]);
 
 				//We check if the trigger is verified with the new value
-				if (it->first->IsConditionNewlyVerified())
+				if (it->first->HasTransitioned())
 				{
 					triggerCandidateTime = stepper.ComputeTimeForValue(
 						it->first->GetThreshold()->Get(), yn[it->second], ynp1[it->second],
@@ -455,7 +455,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 				// handle this dependencies. A good way to start could be to compile the 
 				// dependencies of variables. But there is the issue of maintaining the dependencies
 				// when the user adds/removes equations in the future at runtime.
-				if (it->first->IsConditionNewlyVerified())
+				if (it->first->HasTransitioned())
 				{
 					float deltaTarget = fabsf(it->first->GetThreshold()->Get() - yn_ext[it->second]);
 					float deltaStep = fabsf(externalEquations[it->second]->Get() - yn_ext[it->second]);
@@ -547,8 +547,9 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 					externalEquations[i]->Compute();
 				}
 
-				//We call all events associated to the trigger
-				trigger->CallEvents();
+				//Trigger the callbacks. Since the trigger was selected with HasTransitioned()
+				//before, it can only be onTriggerEnter or onTriggerExit.
+				trigger->Call();
 
 				//We update the stepper to the time at which the trigger was triggered
 				stepper.ForceNext(triggerTriggerTime - stepper.t);

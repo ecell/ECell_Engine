@@ -12,7 +12,8 @@
 // TODO: Find a way to remove this circular dependency
 //#include "Core/SimulationsManager.hpp"
 
-#include "Core/Events/Event.hpp"
+//#include "Core/Events/Event.hpp"
+#include "Core/Callback.hpp"
 
 namespace ECellEngine::Core
 {
@@ -40,12 +41,35 @@ namespace ECellEngine::Core
 
 	private:
 		/*!
-		@brief Collection of events that should be triggered when the condition
+		@brief Collection of events that should be trigger when the condition
 				held by this watcher is fulfilled.
 		*/
-		std::vector<std::shared_ptr<Events::Event>> triggeredEvents;
+		//std::vector<std::shared_ptr<Events::Event>> triggerEvents;
 
-		bool triggered = false;
+		/*!
+		@brief The previous value of the comparison between target and threshold.
+		*/
+		bool previousComparisonValue = false;
+
+		/*!
+		@brief The new value of the comparison between target and threshold.
+		*/
+		bool newComparisonValue = false;
+
+		/*!
+		@brief Whether the condition has transitioned from false to true.
+		*/
+		bool triggerEnter = false;
+
+		/*!
+		@brief Whether the condition has remained true.
+		*/
+		bool triggerStay = false;
+
+		/*!
+		@brief Whether the condition has transitioned from true to false.
+		*/
+		bool triggerExit = false;
 
 		/*!
 		@brief Pointer to the value being watched. Always on the left hand side
@@ -65,6 +89,24 @@ namespace ECellEngine::Core
 		ThresholdType threshold;
 
 	public:
+
+		/*!
+		@brief The callback to execute when the condition has transitioned from
+				false to true.
+		*/
+		Callback<bool, bool> onTriggerEnter;
+
+		/*!
+		@brief The callback to execute when the condition has remained true.
+		*/
+		Callback<bool, bool> onTriggerStay;
+
+		/*!
+		@brief The callback to execute when the condition has transitioned from
+				true to false.
+		*/
+		Callback<bool, bool> onTriggerExit;
+
 		Trigger() :
 			target(nullptr), comparator(Comparator::Greater), threshold(nullptr)
 		{
@@ -124,67 +166,114 @@ namespace ECellEngine::Core
 		}
 
 		/*!
-		@brief Checks whether or not the target comparator threshold condition is true or not.
+		@brief Checks whether the comparison between ::target and ::threshold is true.
 		*/
 		bool IsConditionVerified() noexcept
 		{
+			previousComparisonValue = newComparisonValue;
 			switch (comparator)
 			{
 			case Comparator::Greater:
-				return *target > *threshold;
+				newComparisonValue = *target > *threshold;
 
 			case Comparator::GreaterOrEqual:
-				return *target >= *threshold;
+				newComparisonValue = *target >= *threshold;
 
 			case Comparator::Equal:
-				return *target == *threshold;
+				newComparisonValue = *target == *threshold;
 
 			case Comparator::NotEqual:
-				return *target != *threshold;
+				newComparisonValue = *target != *threshold;
 
 			case Comparator::Less:
-				return *target < *threshold;
+				newComparisonValue = *target < *threshold;
 
 			case Comparator::LessOrEqual:
-				return *target <= *threshold;
+				newComparisonValue = *target <= *threshold;
 
 			default:
 				//Should never reach this point
 				assert(false);
-				return false;
+				newComparisonValue = false;
 			}
+			return newComparisonValue;
 		}
 
 		/*!
-		@brief Checks whether the condition held by this watcher transitioned
-				from false to true.
+		@brief Updates the values of ::triggerEnter, ::triggerStay and ::triggerExit.
+		@details It should be called before ::Call.
 		*/
-		bool IsConditionNewlyVerified() noexcept
+		void Update() noexcept
 		{
-			if (!triggered)
+			if (!triggerStay)
 			{
-				return triggered = IsConditionVerified();
+				triggerEnter = IsConditionVerified();
+				triggerStay = triggerEnter;
 			}
 			else
 			{
 				if(!IsConditionVerified())
 				{
-					triggered = false;
+					triggerStay = false;
+					triggerExit = true;
 				}
-				return false;
 			}
 		}
 
 		/*!
-		@brief Call the internal events for this watcher.
+		@brief Updates the values of ::triggerEnter, ::triggerStay and ::triggerExit
+				and calls ::Call.
 		*/
-		void CallEvents() noexcept
+		inline void UpdateAndCall() noexcept
 		{
-			//Call events
-			for (std::shared_ptr<Events::Event>& event : triggeredEvents)
+			Update();
+			Call();
+		}
+
+		/*!
+		@brief Checks whether the condition has transitioned from false to true or
+				from true to false.
+		@details Updates the values of ::triggerEnter, ::triggerStay and ::triggerExit
+				 before returning.
+		*/
+		inline bool HasTransitioned() noexcept
+		{
+			Update();
+			return triggerEnter || triggerExit;
+		}
+
+		/*!
+		@brief Trigger the callbacks ::onTriggerEnter, ::onTriggerStay or
+				::onTriggerExit (only one) depending on the values of 
+				::triggerEnter, ::triggerStay and ::triggerExit.
+		@details ::onTriggerStay is NOT called when ::triggerEnter or ::triggerExit
+					are true.
+		*/
+		void Call() noexcept
+		{
+			if (triggerStay)
 			{
-				event->Execute(0);//TODO: Change this to use the index of the simulation where that event is coming from
+				//call OnTriggerStay
+				onTriggerStay(previousComparisonValue, newComparisonValue);
 			}
+
+			else if (triggerEnter)
+			{
+				//call OnTriggerEnter
+				onTriggerEnter(previousComparisonValue, newComparisonValue);
+
+				triggerEnter = false;
+				triggerStay = true;
+			}
+
+			else if (triggerExit)
+			{
+				//call OnTriggerExit
+				onTriggerExit(previousComparisonValue, newComparisonValue);
+
+				triggerExit = false;
+			}
+			
 		}
 
 		/*!
@@ -195,7 +284,7 @@ namespace ECellEngine::Core
 		//	if (IsConditionVerified())
 		//	{
 		//		//Call events
-		//		for (std::shared_ptr<Events::Event>& event : triggeredEvents)
+		//		for (std::shared_ptr<Events::Event>& event : triggerEvents)
 		//		{
 		//			event->Execute(0);//TODO: Change this to use the index of the simulation where that event is coming from
 		//		}
@@ -205,39 +294,39 @@ namespace ECellEngine::Core
 		/*!
 		@brief Add an event to the list of internal events for this watcher.
 		*/
-		void AddEvent(std::shared_ptr<Events::Event> _event) noexcept
+		/*void AddEvent(std::shared_ptr<Events::Event> _event) noexcept
 		{
-			triggeredEvents.push_back(_event);
-		}
+			triggerEvents.push_back(_event);
+		}*/
 
 		/*!
 		@brief Remove an event from the list of internal events for this watcher.
 
 		@return true if an event was removed, else false.
 		*/
-		bool RemoveEvent(std::shared_ptr<Events::Event> _event) noexcept
+		/*bool RemoveEvent(std::shared_ptr<Events::Event> _event) noexcept
 		{
-			auto it = std::find_if(triggeredEvents.begin(), triggeredEvents.end(), [_event](std::shared_ptr<Events::Event> const& e) { return _event == e; });
+			auto it = std::find_if(triggerEvents.begin(), triggerEvents.end(), [_event](std::shared_ptr<Events::Event> const& e) { return _event == e; });
 
-			if (it != triggeredEvents.end())
+			if (it != triggerEvents.end())
 			{
-				triggeredEvents.erase(it);
+				triggerEvents.erase(it);
 				return true;
 			}
 			else
 			{
 				return false;
 			}
-		}
+		}*/
 
 		/*!
 		@brief Get the list of all events contained in this watcher.
 
 		@return The list of all events contained in this watcher.
 		*/
-		std::vector<std::shared_ptr<Events::Event>> const& GetEvents() const noexcept
+		/*std::vector<std::shared_ptr<Events::Event>> const& GetEvents() const noexcept
 		{
-			return triggeredEvents;
-		}
+			return triggerEvents;
+		}*/
 	};
 }
