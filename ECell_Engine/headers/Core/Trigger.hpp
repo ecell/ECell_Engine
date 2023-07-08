@@ -25,7 +25,7 @@ namespace ECellEngine::Core
 	@tparam ThresholdType Type of the object to which the target is being compared.
 	*/
 	template <typename TargetType, typename ThresholdType>
-	class Watcher
+	class Trigger
 	{
 	public:
 		enum class Comparator
@@ -65,7 +65,7 @@ namespace ECellEngine::Core
 		ThresholdType threshold;
 
 	public:
-		Watcher() :
+		Trigger() :
 			target(nullptr), comparator(Comparator::Greater), threshold(nullptr)
 		{
 			

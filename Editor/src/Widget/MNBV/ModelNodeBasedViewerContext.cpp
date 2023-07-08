@@ -41,11 +41,11 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 				ConserveLinkDataIntegrity();
 			}
 			
-			if (ImGui::MenuItem("Watcher Node"))
+			if (ImGui::MenuItem("Trigger Node"))
 			{
 				ax::NodeEditor::Resume();
-				//TODO: Use a command to add a watcher
-				watcherNodes.emplace_back(Utility::MNBV::WatcherNodeData(_simulation->GetDataState()->AddWatcher(), ImGui::GetIO().MousePos));
+				//TODO: Use a command to add a trigger
+				triggerNodes.emplace_back(Utility::MNBV::TriggerNodeData(_simulation->GetDataState()->AddTrigger(), ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
 				ConserveLinkDataIntegrity();
 			}
@@ -410,9 +410,9 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		Utility::MNBV::NodeEditorDraw::ValueFloatNode("Float", *it);
 	}
 
-	for (std::vector< Utility::MNBV::WatcherNodeData>::iterator it = watcherNodes.begin(); it != watcherNodes.end(); it++)
+	for (std::vector< Utility::MNBV::TriggerNodeData>::iterator it = triggerNodes.begin(); it != triggerNodes.end(); it++)
 	{
-		Utility::MNBV::NodeEditorDraw::WatcherNode(*it);
+		Utility::MNBV::NodeEditorDraw::TriggerNode(*it);
 	}
 
 	for (std::vector< Utility::MNBV::LinkData>::iterator it = staticLinks.begin(); it != staticLinks.end(); it++)

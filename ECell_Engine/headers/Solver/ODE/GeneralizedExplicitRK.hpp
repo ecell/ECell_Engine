@@ -51,31 +51,31 @@ namespace ECellEngine::Solvers::ODE
 		Stepper stepper;
 
 		/*!
-		@brief The subset of watchers from the datastate that might be triggered
+		@brief The subset of triggers from the datastate that might be triggered
 				during the solver step update.
-		@details The first element of the pair is the watcher, the second element
+		@details The first element of the pair is the trigger, the second element
 				is the index of the equation modifying the target or the threshold
-				value of the watcher.
+				value of the trigger.
 		*/
-		std::vector<std::pair<Core::Watcher<Operand*, Operand*>*, unsigned short>> watchersOnODE;
+		std::vector<std::pair<Core::Trigger<Operand*, Operand*>*, unsigned short>> triggersOnODE;
 
 		/*!
-		@brief The subset of watchers from the datastate that might be triggered
+		@brief The subset of triggers from the datastate that might be triggered
 				during the update of the external equations.
 		*/
-		std::vector<std::pair<Core::Watcher<Operand*, Operand*>*, unsigned short>> watchersOnExtEq;
+		std::vector<std::pair<Core::Trigger<Operand*, Operand*>*, unsigned short>> triggersOnExtEq;
 
 		/*!
-		@brief A buffer value to store the time of the earliest watcher that 
+		@brief A buffer value to store the time of the earliest trigger that 
 				must be triggered within a the solver step update.
 		*/
-		float watcherTriggerTime = 0.0f;
+		float triggerTriggerTime = 0.0f;
 
 		/*!
-		@brief A pointer to the earliest watcher that must be triggered within
+		@brief A pointer to the earliest trigger that must be triggered within
 				the solver step update.
 		*/
-		Core::Watcher<Operand*, Operand*>* watcher = nullptr;
+		Core::Trigger<Operand*, Operand*>* trigger = nullptr;
 
 		/*!
 		@brief Indicates whether the solver is set with a method enabling error
@@ -123,18 +123,18 @@ namespace ECellEngine::Solvers::ODE
 		void BuildEquationRHS(Operation& _outRHS, std::vector<Maths::Operation>& _flux);
 
 		/*!
-		@bief loops through all watchers stored in the datastate and adds them
-			to the ::watchers vector if their targets or threshold value are
+		@bief loops through all triggers stored in the datastate and adds them
+			to the ::triggers vector if their targets or threshold value are
 			updated by the external equations.
 		*/
-		void ScanForWatchersOnExtEq() noexcept;
+		void ScanForTriggersOnExtEq() noexcept;
 
 		/*!
-		@brief loops through all watchers stored in the datastate and adds them
-			to the ::watchers vector if their targets or threshold value are
+		@brief loops through all triggers stored in the datastate and adds them
+			to the ::triggers vector if their targets or threshold value are
 			updated by the system of differential equations.
 		*/
-		void ScanForWatchersOnODE() noexcept;
+		void ScanForTriggersOnODE() noexcept;
 
 		/*!
 		@brief Integrates the system of differential equations for methods without

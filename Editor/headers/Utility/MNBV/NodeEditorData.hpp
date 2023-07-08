@@ -1104,7 +1104,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		enum InputPin
 		{
 			InputPin_NewFloatValue,
-			InputPin_Watchers,
+			InputPin_Triggers,
 			InputPin_CollHdrExecution,
 
 			InputPin_Count
@@ -1213,7 +1213,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_NewFloatValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the new value we will use to modify the data state
-			inputPins[InputPin_Watchers] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//the watchers that will trigger this event
+			inputPins[InputPin_Triggers] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//the watchers that will trigger this event
 			inputPins[InputPin_CollHdrExecution] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
 			outputPins[OutputPin_Modify] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//Connection to the value to modify
 			outputPins[OutputPin_CollHdrExecution] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
@@ -2166,9 +2166,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 	/*!
 	@brief The logic to encode the data needed to draw the node representing
-			ECellEngine::Core::Watcher.
+			ECellEngine::Core::Trigger.
 	*/
-	struct WatcherNodeData final : public NodeData
+	struct TriggerNodeData final : public NodeData
 	{
 		/*!
 		@brief The local enum to manage access to the input pins.
@@ -2196,7 +2196,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Pointer to the watcher represented by this node.
 		*/
-		std::shared_ptr<ECellEngine::Core::Watcher<Operand*, Operand*>> data;
+		std::shared_ptr<ECellEngine::Core::Trigger<Operand*, Operand*>> data;
 
 		/*!
 		@brief The default operand to hold a value in this watcher when nothing
@@ -2236,7 +2236,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		NodeOutputPinData outputPins[OutputPin_Count];
 
-		WatcherNodeData(const WatcherNodeData& _wtnd) :
+		TriggerNodeData(const TriggerNodeData& _wtnd) :
 			NodeData(_wtnd), data{ _wtnd.data },
 			inputPins{ _wtnd.inputPins[0], _wtnd.inputPins[1] },
 			outputPins{ _wtnd.outputPins[0] },
@@ -2272,10 +2272,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		WatcherNodeData(std::shared_ptr<ECellEngine::Core::Watcher<Operand*, Operand*>> _data, ImVec2& _position) :
+		TriggerNodeData(std::shared_ptr<ECellEngine::Core::Trigger<Operand*, Operand*>> _data, ImVec2& _position) :
 			NodeData(), data{ _data },
-			target{"Watcher["+std::to_string((std::size_t)id) + "]::Target", 0},
-			threshold{"Watcher[" + std::to_string((std::size_t)id) + "]::Threshold", 0}
+			target{"Trigger["+std::to_string((std::size_t)id) + "]::Target", 0},
+			threshold{"Trigger[" + std::to_string((std::size_t)id) + "]::Threshold", 0}
 		{
 			data->SetTarget(&target);
 			data->SetThreshold(&threshold);
@@ -2284,7 +2284,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 			inputPins[InputPin_Target] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Operand, this);//the Left Hand Side of the comparison
 			inputPins[InputPin_Threshold] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Operand, this);//the Right Hand Side of the comparison
-			outputPins[OutputPin_Trigger] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Watcher, this);//To all the event to trigger
+			outputPins[OutputPin_Trigger] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Trigger, this);//To all the event to trigger
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
@@ -2297,7 +2297,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Watcher Node Data
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Trigger Node Data
 	};
 #pragma endregion
 }

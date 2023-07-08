@@ -46,7 +46,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		PinType_Reaction,
 		PinType_Solver,
 		PinType_Species,
-		PinType_Watcher,
+		PinType_Trigger,
 
 		PinType_Count
 	};
@@ -235,9 +235,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 			pinColors[PinType_Species][PinColorType_BgInactivated] = nodeColors[NodeType_Species][NodeColorType_Bg];
 			pinColors[PinType_Species][PinColorType_Border] = nodeColors[NodeType_Species][NodeColorType_Border];
 			
-			pinColors[PinType_Watcher][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
-			pinColors[PinType_Watcher][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
-			pinColors[PinType_Watcher][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_Trigger][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_Trigger][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
+			pinColors[PinType_Trigger][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
 		}
 	};
 }

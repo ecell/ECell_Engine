@@ -423,8 +423,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 			ImGui::EndDisabled();
 		}
 
-		NodeText_In("Watchers", startX,
-			_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Watchers],
+		NodeText_In("Triggers", startX,
+			_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Triggers],
 			Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
 
 		ImGui::SameLine();
@@ -750,52 +750,52 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ValueFloatNode(const ch
 	PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::WatcherNode(WatcherNodeData& _watcherNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNodeData& _triggerNodeInfo)
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Event));
-	ax::NodeEditor::BeginNode(_watcherNodeInfo.id);
+	ax::NodeEditor::BeginNode(_triggerNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Watcher", "", Widget::MNBV::GetNodeColors(NodeType_Event), 300.f);
+	const float headerWidth = NodeHeader("Trigger", "", Widget::MNBV::GetNodeColors(NodeType_Event), 300.f);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 	const float triggerWidth = ImGui::CalcTextSize("Trigger").x;
 
-	NodeComboBox("Comparator", _watcherNodeInfo.comparators, 6, (int&)_watcherNodeInfo.data->GetComparator(),
+	NodeComboBox("Comparator", _triggerNodeInfo.comparators, 6, (int&)_triggerNodeInfo.data->GetComparator(),
 		itemsWidth, startX, headerWidth);
 
 	ImGuiSliderFlags dragFlags = ImGuiSliderFlags_None;
-	if (_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Target].isUsed)
+	if (_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Target].isUsed)
 	{
 		dragFlags |= ImGuiSliderFlags_ReadOnly;
-		_watcherNodeInfo.target.Set(_watcherNodeInfo.data->GetTarget()->Get());
+		_triggerNodeInfo.target.Set(_triggerNodeInfo.data->GetTarget()->Get());
 	}
-	float bufferTarget = _watcherNodeInfo.target.Get();
-	if (NodeDragFloat_In("Target", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Target], &bufferTarget,
+	float bufferTarget = _triggerNodeInfo.target.Get();
+	if (NodeDragFloat_In("Target", _triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Target], &bufferTarget,
 		0.5f * itemsWidth, startX,
-		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Target], Widget::MNBV::GetPinColors(PinType_Operand),
+		_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Target], Widget::MNBV::GetPinColors(PinType_Operand),
 		dragFlags))
 	{
-		_watcherNodeInfo.target.Set(bufferTarget);
+		_triggerNodeInfo.target.Set(bufferTarget);
 	}
 
 	ImGui::SameLine();
 
 	NodeText_Out("Trigger", triggerWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
-		_watcherNodeInfo.outputPins[WatcherNodeData::OutputPin_Trigger], Widget::MNBV::GetPinColors(PinType_Watcher));
+		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_Trigger], Widget::MNBV::GetPinColors(PinType_Trigger));
 
 	dragFlags = ImGuiSliderFlags_None;
-	if (_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Threshold].isUsed)
+	if (_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Threshold].isUsed)
 	{
 		dragFlags |= ImGuiSliderFlags_ReadOnly;
-		_watcherNodeInfo.threshold.Set(_watcherNodeInfo.data->GetThreshold()->Get());
+		_triggerNodeInfo.threshold.Set(_triggerNodeInfo.data->GetThreshold()->Get());
 	}
-	float bufferThreshold = _watcherNodeInfo.threshold.Get();
-	if (NodeDragFloat_In("Threshold", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Threshold], &bufferThreshold,
+	float bufferThreshold = _triggerNodeInfo.threshold.Get();
+	if (NodeDragFloat_In("Threshold", _triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Threshold], &bufferThreshold,
 		0.5f * itemsWidth, startX,
-		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Threshold], Widget::MNBV::GetPinColors(PinType_Operand),
+		_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Threshold], Widget::MNBV::GetPinColors(PinType_Operand),
 		dragFlags))
 	{
-		_watcherNodeInfo.threshold.Set(bufferThreshold);
+		_triggerNodeInfo.threshold.Set(bufferThreshold);
 	}
 
 	ax::NodeEditor::EndNode();

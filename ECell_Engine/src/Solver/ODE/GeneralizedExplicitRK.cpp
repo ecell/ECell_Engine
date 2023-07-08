@@ -1,5 +1,5 @@
 #include "Solver/ODE/GeneralizedExplicitRK.hpp"
-#include "Core/Watcher.hpp"
+#include "Core/Trigger.hpp"
 
 void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::BuildEquationRHS(Operation& _outRHS, std::vector<ECellEngine::Maths::Operation>& _fluxes)
 {
@@ -112,63 +112,63 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 		externalEquations.push_back(equation.get());
 	}
 
-	ScanForWatchersOnODE();
-	ScanForWatchersOnExtEq();
+	ScanForTriggersOnODE();
+	ScanForTriggersOnExtEq();
 
 	//SetToClassicRK4();
 	SetToDormandPrince5();
 	//SetToMerson4();
 }
 
-void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::ScanForWatchersOnExtEq() noexcept
+void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::ScanForTriggersOnExtEq() noexcept
 {
-	//Compare watchers and equations to see if there is any
-	//watcher to account for when solving the system
+	//Compare triggers and equations to see if there is any
+	//trigger to account for when solving the system
 	std::string equationName;
-	std::string watcherTargetName;
-	std::string watcherThresholdName;
-	for (std::vector<std::shared_ptr<Core::Watcher<Operand*, Operand*>>>::const_iterator it = dataState.GetWatchers().begin();
-		it != dataState.GetWatchers().end(); ++it)
+	std::string triggerTargetName;
+	std::string triggerThresholdName;
+	for (std::vector<std::shared_ptr<Core::Trigger<Operand*, Operand*>>>::const_iterator it = dataState.GetTriggers().begin();
+		it != dataState.GetTriggers().end(); ++it)
 	{
-		watcherTargetName = it->get()->GetTarget()->name;
-		watcherThresholdName = it->get()->GetThreshold()->name;
+		triggerTargetName = it->get()->GetTarget()->name;
+		triggerThresholdName = it->get()->GetThreshold()->name;
 		for (unsigned short i = 0; i < extEqSize; i++)
 		{
 			equationName = externalEquations[i]->GetName();
-			if (watcherTargetName == equationName || watcherThresholdName == equationName)
+			if (triggerTargetName == equationName || triggerThresholdName == equationName)
 			{
-				ECellEngine::Logging::Logger::GetSingleton().LogDebug("Watcher involving target " +
-					watcherTargetName + " and " + watcherThresholdName + " was found to match variable " +
+				ECellEngine::Logging::Logger::GetSingleton().LogDebug("Trigger involving target " +
+					triggerTargetName + " and " + triggerThresholdName + " was found to match variable " +
 					equationName + " in the External equations.");
 
-				watchersOnExtEq.push_back(std::pair(it->get(), i));
+				triggersOnExtEq.push_back(std::pair(it->get(), i));
 			}
 		}
 	}
 }
 
-void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::ScanForWatchersOnODE() noexcept
+void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::ScanForTriggersOnODE() noexcept
 {
-	//Compare watchers and equations to see if there is any
-	//watcher to account for when solving the system
+	//Compare triggers and equations to see if there is any
+	//trigger to account for when solving the system
 	std::string systemVariableName;
-	std::string watcherTargetName;
-	std::string watcherThresholdName;
-	for (std::vector<std::shared_ptr<Core::Watcher<Operand*, Operand*>>>::const_iterator it = dataState.GetWatchers().begin();
-		it != dataState.GetWatchers().end(); ++it)
+	std::string triggerTargetName;
+	std::string triggerThresholdName;
+	for (std::vector<std::shared_ptr<Core::Trigger<Operand*, Operand*>>>::const_iterator it = dataState.GetTriggers().begin();
+		it != dataState.GetTriggers().end(); ++it)
 	{
-		watcherTargetName = it->get()->GetTarget()->name;
-		watcherThresholdName = it->get()->GetThreshold()->name;
+		triggerTargetName = it->get()->GetTarget()->name;
+		triggerThresholdName = it->get()->GetThreshold()->name;
 		for (unsigned short i = 0; i < systemSize; i++)
 		{
 			systemVariableName = system[i].GetOperand()->name;
-			if (watcherTargetName == systemVariableName || watcherThresholdName == systemVariableName)
+			if (triggerTargetName == systemVariableName || triggerThresholdName == systemVariableName)
 			{
-				ECellEngine::Logging::Logger::GetSingleton().LogDebug("Watcher involving target " + 
-					watcherTargetName + " and " + watcherThresholdName + " was found to match variable " +
+				ECellEngine::Logging::Logger::GetSingleton().LogDebug("Trigger involving target " + 
+					triggerTargetName + " and " + triggerThresholdName + " was found to match variable " +
 					systemVariableName + " in the ODEs");
 
-				watchersOnODE.push_back(std::pair(it->get(), i));
+				triggersOnODE.push_back(std::pair(it->get(), i));
 			}
 		}
 	}
@@ -395,44 +395,44 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 		//If the error is acceptable
 		if (stepper.ComputeError(yn, ynp1, ynp12, systemSize))
 		{
-			watcherTriggerTime = stepper.t + 2*stepper.h_next;//just make sure watcherTimeTrigger > stepper.t + stepper.h_next
-			float watcherCandidateTime;
+			triggerTriggerTime = stepper.t + 2*stepper.h_next;//just make sure triggerTimeTrigger > stepper.t + stepper.h_next
+			float triggerCandidateTime;
 
-			//We start checking if any watcher using values modified in the ODE system
+			//We start checking if any trigger using values modified in the ODE system
 			//must be triggered
-			for (std::vector<std::pair<Core::Watcher<Operand*, Operand*>*, unsigned short>>::const_iterator it = watchersOnODE.begin();
-				it != watchersOnODE.end(); ++it)
+			for (std::vector<std::pair<Core::Trigger<Operand*, Operand*>*, unsigned short>>::const_iterator it = triggersOnODE.begin();
+				it != triggersOnODE.end(); ++it)
 			{
 				//We update the variables
 				system[it->second].GetOperand()->Set(ynp1[it->second]);
 
-				//We check if the watcher is verified with the new value
+				//We check if the trigger is verified with the new value
 				if (it->first->IsConditionNewlyVerified())
 				{
-					watcherCandidateTime = stepper.ComputeTimeForValue(
+					triggerCandidateTime = stepper.ComputeTimeForValue(
 						it->first->GetThreshold()->Get(), yn[it->second], ynp1[it->second],
 						coeffs.bsp, coeffs.ks, it->second * systemSize, coeffs.order, coeffs.stages);
 
-					/*ECellEngine::Logging::Logger::GetSingleton().LogDebug("The watcher comparing " +
+					/*ECellEngine::Logging::Logger::GetSingleton().LogDebug("The trigger comparing " +
 						it->first->GetTarget()->name + " and " + it->first->GetThreshold()->name +
-						" should be triggered at time: " + std::to_string(watcherCandidateTime));*/
+						" should be triggered at time: " + std::to_string(triggerCandidateTime));*/
 
-					//update the value of watcherTriggerTime & watcher
-					//if the watcher trigger time is before the current
-					//watcher trigger time. Goal is to find the earliest
-					//watcher to trigger
-					if (watcherCandidateTime < watcherTriggerTime)
+					//update the value of triggerTriggerTime & trigger
+					//if the trigger trigger time is before the current
+					//trigger trigger time. Goal is to find the earliest
+					//trigger to trigger
+					if (triggerCandidateTime < triggerTriggerTime)
 					{
-						watcherTriggerTime = watcherCandidateTime;
-						watcher = it->first;
+						triggerTriggerTime = triggerCandidateTime;
+						trigger = it->first;
 					}
 				}
 			}
 
-			//Then we check if any watcher using values modified in the external equations
+			//Then we check if any trigger using values modified in the external equations
 			//must be triggered
-			for (std::vector<std::pair<Core::Watcher<Operand*, Operand*>*, unsigned short>>::const_iterator it = watchersOnExtEq.begin();
-				it != watchersOnExtEq.end(); ++it)
+			for (std::vector<std::pair<Core::Trigger<Operand*, Operand*>*, unsigned short>>::const_iterator it = triggersOnExtEq.begin();
+				it != triggersOnExtEq.end(); ++it)
 			{
 				//we set the system to the values at the end of the step
 				for (unsigned short i = 0; i < systemSize; ++i)
@@ -446,7 +446,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 					externalEquations[i]->Compute();
 				}
 
-				//We check if the watcher is verified with the new value
+				//We check if the trigger is verified with the new value
 				//We do the dichitomy here and not in the stepper because we need the value of the
 				//external equations for this. It's really not the best place to do it but it's
 				//the easiest way for now.
@@ -504,35 +504,35 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 						deltaTheta = fabsf(externalEquations[it->second]->Get() - yn_ext[it->second]);
 					}
 
-					watcherCandidateTime = stepper.t + theta * stepper.h_next;
+					triggerCandidateTime = stepper.t + theta * stepper.h_next;
 
-					/*ECellEngine::Logging::Logger::GetSingleton().LogDebug("The watcher comparing " +
+					/*ECellEngine::Logging::Logger::GetSingleton().LogDebug("The trigger comparing " +
 						(*it)->GetTarget()->name + " and " + (*it)->GetThreshold()->name +
-						" should be triggered at time: " + std::to_string(watcherCandidateTime));*/
+						" should be triggered at time: " + std::to_string(triggerCandidateTime));*/
 
-					//update the value of watcherTriggerTime & watcher
-					//if the watcher trigger time is before the current
-					//watcher trigger time. Goal is to find the earliest
-					//watcher to trigger
-					if (watcherCandidateTime < watcherTriggerTime)
+					//update the value of triggerTriggerTime & trigger
+					//if the trigger trigger time is before the current
+					//trigger trigger time. Goal is to find the earliest
+					//trigger to trigger
+					if (triggerCandidateTime < triggerTriggerTime)
 					{
-						watcherTriggerTime = watcherCandidateTime;
-						watcher = it->first;
+						triggerTriggerTime = triggerCandidateTime;
+						trigger = it->first;
 					}
 				}
 			}
 
-			//if the watcher trigger time is after the current time,
-			//it means that we found a watcher that must be triggered
-			if (stepper.NextGE(watcherTriggerTime))
+			//if the trigger trigger time is after the current time,
+			//it means that we found a trigger that must be triggered
+			if (stepper.NextGE(triggerTriggerTime))
 			{
 				/*ECellEngine::Logging::Logger::GetSingleton().LogDebug("--- TRIGGERING WATCHER ---");
-				ECellEngine::Logging::Logger::GetSingleton().LogDebug(" Processing watcher of target: " +
-					watcher->GetTarget()->name + " at time: " + std::to_string(watcherTriggerTime));*/
+				ECellEngine::Logging::Logger::GetSingleton().LogDebug(" Processing trigger of target: " +
+					trigger->GetTarget()->name + " at time: " + std::to_string(triggerTriggerTime));*/
 
 				//Then, we need to update the system to the time at which
-				//the watcher must be triggered (by interpolation)
-				float theta = stepper.ComputeDenseOutputTime(watcherTriggerTime, stepper.t, stepper.t + stepper.h_next);
+				//the trigger must be triggered (by interpolation)
+				float theta = stepper.ComputeDenseOutputTime(triggerTriggerTime, stepper.t, stepper.t + stepper.h_next);
 				for (unsigned short i = 0; i < systemSize; ++i)
 				{
 					ynp1[i] = yn[i] + stepper.h_next * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks,
@@ -547,14 +547,14 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 					externalEquations[i]->Compute();
 				}
 
-				//We call all events associated to the watcher
-				watcher->CallEvents();
+				//We call all events associated to the trigger
+				trigger->CallEvents();
 
-				//We update the stepper to the time at which the watcher was triggered
-				stepper.ForceNext(watcherTriggerTime - stepper.t);
+				//We update the stepper to the time at which the trigger was triggered
+				stepper.ForceNext(triggerTriggerTime - stepper.t);
 			}
 
-			//if no watcher to trigger was found, then we continue the integration
+			//if no trigger to trigger was found, then we continue the integration
 			else
 			{
 				//Value Debugging

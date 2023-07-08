@@ -114,12 +114,12 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
         return;
     }
     
-    //Search in the list of Watcher Nodes
-    std::vector<Utility::MNBV::WatcherNodeData>::iterator itWND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end(), _nodeId);
-    if (itWND != s_mnbvCtxt->watcherNodes.end() && (std::size_t)itWND->id == _nodeId)
+    //Search in the list of Trigger Nodes
+    std::vector<Utility::MNBV::TriggerNodeData>::iterator itWND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->triggerNodes.begin(), s_mnbvCtxt->triggerNodes.end(), _nodeId);
+    if (itWND != s_mnbvCtxt->triggerNodes.end() && (std::size_t)itWND->id == _nodeId)
     {
-        s_mnbvCtxt->watcherNodes.erase(itWND);
-        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: WatcherNodeData " + std::to_string(_nodeId));
+        s_mnbvCtxt->triggerNodes.erase(itWND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: TriggerNodeData " + std::to_string(_nodeId));
         return;
     }
 }
@@ -204,8 +204,8 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
         return itND;
     }
 
-    //Search in the list of Watcher Nodes
-    itND = FindNodeIn(_id, s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end());
+    //Search in the list of Trigger Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->triggerNodes.begin(), s_mnbvCtxt->triggerNodes.end());
     if (itND != nullptr)
     {
         return itND;
@@ -298,8 +298,8 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
         return itNPD;
     }
 
-    //Search in the list of Watcher Nodes
-    itNPD = FindNodePinIn(_id, s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end());
+    //Search in the list of Trigger Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->triggerNodes.begin(), s_mnbvCtxt->triggerNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;

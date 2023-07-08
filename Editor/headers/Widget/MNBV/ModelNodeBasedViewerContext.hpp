@@ -112,11 +112,11 @@ namespace ECellEngine::Editor::Widget::MNBV
 		std::vector<Utility::MNBV::ValueFloatNodeData> valueFloatNodes;
 
 		/*!
-		@brief The list of watchers in this context.
+		@brief The list of triggers in this context.
 		@details It contains the information used to draw the nodes to display
-				 the watchers of this simulation space.
+				 the triggers of this simulation space.
 		*/
-		std::vector<Utility::MNBV::WatcherNodeData> watcherNodes;
+		std::vector<Utility::MNBV::TriggerNodeData> triggerNodes;
 #pragma endregion
 
 		/*!
@@ -185,7 +185,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 			
 			authorizedDynamicLinks[Utility::MNBV::PinType_ModifyDataStateEvent][Utility::MNBV::PinType_DataStateValueFloat] = true;
 			
-			authorizedDynamicLinks[Utility::MNBV::PinType_Watcher][Utility::MNBV::PinType_ModifyDataStateEvent] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_Trigger][Utility::MNBV::PinType_ModifyDataStateEvent] = true;
 
 			authorizedDynamicLinks[Utility::MNBV::PinType_Parameter][Utility::MNBV::PinType_Operand] = true;
 			authorizedDynamicLinks[Utility::MNBV::PinType_Species][Utility::MNBV::PinType_Operand] = true;

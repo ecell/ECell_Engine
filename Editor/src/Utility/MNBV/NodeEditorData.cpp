@@ -205,9 +205,9 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Inpu
 		data->newValue = (float*)_data;
 	}
 
-	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Watchers].id)
+	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Triggers].id)
 	{
-		WatcherNodeData* watcherNodeData = dynamic_cast<WatcherNodeData*>(_nodeOutputPinData->node);
+		TriggerNodeData* watcherNodeData = dynamic_cast<TriggerNodeData*>(_nodeOutputPinData->node);
 		watcherNodeData->data->AddEvent(data);
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[ModifyDataStateValueEventNodeData::InputPin_CollHdrExecution].id, 1);
 	}
@@ -221,9 +221,9 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Inpu
 		data->newValue = &newValue;
 	}
 
-	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Watchers].id)
+	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Triggers].id)
 	{
-		WatcherNodeData* watcherNodeData = dynamic_cast<WatcherNodeData*>(_nodeOutputPinData->node);
+		TriggerNodeData* watcherNodeData = dynamic_cast<TriggerNodeData*>(_nodeOutputPinData->node);
 		watcherNodeData->data->RemoveEvent(data);
 	}
 }
@@ -443,25 +443,25 @@ void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputRefresh(NodeI
 	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &value);
 }
 
-void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
+void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	//The LHS input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Target].id)
+	if (_nodeInputPinData->id == inputPins[TriggerNodeData::InputPin_Target].id)
 	{
 		data->SetTarget((Operand*)_data);
 	}
 	
 	//The RHS input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Threshold].id)
+	if (_nodeInputPinData->id == inputPins[TriggerNodeData::InputPin_Threshold].id)
 	{
 		data->SetThreshold((Operand*)_data);
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
 	//The LHS input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Target].id)
+	if (_nodeInputPinData->id == inputPins[TriggerNodeData::InputPin_Target].id)
 	{
 		//We start by setting the local target value to the previous value of the target in the watcher.
 		target.Set(data->GetTarget()->Get());
@@ -471,7 +471,7 @@ void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputDisconnect(NodeIn
 	}
 
 	//The RHS input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Threshold].id)
+	if (_nodeInputPinData->id == inputPins[TriggerNodeData::InputPin_Threshold].id)
 	{
 		//We start by setting the local threshold value to the previous value of the rhs in the watcher.
 		threshold.Set(data->GetThreshold()->Get());
@@ -481,32 +481,32 @@ void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputDisconnect(NodeIn
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::InputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
+void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	//The Target input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Target].id)
+	if (_nodeInputPinData->id == inputPins[TriggerNodeData::InputPin_Target].id)
 	{
 		data->SetTarget((Operand*)_data);
 	}
 
 	//The Threshold input pin
-	if (_nodeInputPinData->id == inputPins[WatcherNodeData::InputPin_Threshold].id)
+	if (_nodeInputPinData->id == inputPins[TriggerNodeData::InputPin_Threshold].id)
 	{
 		data->SetThreshold((Operand*)_data);
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	//There is only one output pin in the WatcherNodeData and it is the output pin of the events to trigger.
+	//There is only one output pin in the TriggerNodeData and it is the output pin of the events to trigger.
 
 	//We defer the subscription of the event to the watcher, to the event node.
 	_nodeInputPinData->OnConnect(_nodeOutputPinData, nullptr);
 }
 
-void ECellEngine::Editor::Utility::MNBV::WatcherNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	//There is only one output pin in the WatcherNodeData and it is the output pin of the events to trigger.
+	//There is only one output pin in the TriggerNodeData and it is the output pin of the events to trigger.
 
 	//We defer the unsubscription of the event to the watcher, to the event node.
 	_nodeInputPinData->OnDisconnect(_nodeOutputPinData);

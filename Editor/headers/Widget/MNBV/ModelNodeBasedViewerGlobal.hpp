@@ -305,8 +305,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 			return "PinType_Solver";
 		case Utility::MNBV::PinType_Species:
 			return "PinType_Species";
-		case Utility::MNBV::PinType_Watcher:
-			return "PinType_Watcher";
+		case Utility::MNBV::PinType_Trigger:
+			return "PinType_Trigger";
 		default:
 			return "Unknown PinType";
 		}
