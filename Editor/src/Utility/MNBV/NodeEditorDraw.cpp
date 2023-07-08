@@ -372,6 +372,63 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 	PopNodeStyle();
 }
 
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(LogicOperationNodeData& _logicOperationNodeInfo)
+{
+	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_LogicOperation));
+	ax::NodeEditor::BeginNode(_logicOperationNodeInfo.id);
+
+	const float headerWidth = NodeHeader("Logic Operation", "", Widget::MNBV::GetNodeColors(NodeType_Data), 250.f);
+	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+	const float startX = ImGui::GetCursorPosX();
+	const float onOperandChangeWidth = ImGui::CalcTextSize("onOperandChange").x;
+	const float onResultChangeWidth = ImGui::CalcTextSize("onResultChange").x;
+
+	if (NodeComboBox("Logical operator", _logicOperationNodeInfo.operatorTypes, 3, (int&)_logicOperationNodeInfo.data->GetLogicalOperator(),
+		itemsWidth, startX, headerWidth))
+	{
+		_logicOperationNodeInfo.data->SetLogic();
+	}
+
+	NodeText_In("LHS", startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS],
+		Widget::MNBV::GetPinColors(PinType_ValueBool));
+
+	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS].isUsed)
+	{
+		ImGui::SameLine();
+		bool previousLHS = _logicOperationNodeInfo.lhs;
+		if (ImGui::Checkbox("##LHS", &_logicOperationNodeInfo.lhs))
+		{
+			_logicOperationNodeInfo.data->UpdateLHS(previousLHS, _logicOperationNodeInfo.lhs);
+		}
+	}
+	
+	ImGui::SameLine();
+
+	NodeText_Out("onOperandChange", onOperandChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange], Widget::MNBV::GetPinColors(PinType_ValueBool));
+
+	NodeText_In("RHS", startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS],
+		Widget::MNBV::GetPinColors(PinType_ValueBool));
+
+	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS].isUsed)
+	{
+		ImGui::SameLine();
+		bool previousRHS = _logicOperationNodeInfo.rhs;
+		if (ImGui::Checkbox("##RHS", &_logicOperationNodeInfo.rhs))
+		{
+			_logicOperationNodeInfo.data->UpdateRHS(previousRHS, _logicOperationNodeInfo.rhs);
+		}
+	}
+
+	ImGui::SameLine();
+
+	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange], Widget::MNBV::GetPinColors(PinType_ValueBool));
+
+	ax::NodeEditor::EndNode();
+	PopNodeStyle();
+}
+
 void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEventNode(ModifyDataStateValueEventNodeData& _modifyDSValueEventNodeInfo)
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Event));

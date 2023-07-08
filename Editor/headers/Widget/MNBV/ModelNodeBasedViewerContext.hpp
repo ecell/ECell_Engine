@@ -58,6 +58,13 @@ namespace ECellEngine::Editor::Widget::MNBV
 		std::vector<Utility::MNBV::LinePlotNodeData> linePlotNodes;
 
 		/*!
+		@brief The list of logic operation nodes in this context.
+		@details It contains the information used to draw the nodes to perform
+				 logical operation (AND, OR, NOT) based on couples of booleans.
+		*/
+		std::vector<Utility::MNBV::LogicOperationNodeData> logicOperationNodes;
+
+		/*!
 		@brief The list of event nodes that can modify data state values in this
 				context.
 		@details It contains the information used to draw the nodes to display
@@ -184,8 +191,12 @@ namespace ECellEngine::Editor::Widget::MNBV
 			authorizedDynamicLinks[Utility::MNBV::PinType_FreeValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
 			
 			authorizedDynamicLinks[Utility::MNBV::PinType_ModifyDataStateEvent][Utility::MNBV::PinType_DataStateValueFloat] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_ValueBool][Utility::MNBV::PinType_ValueBool] = true;
 			
+			//Probably PinType_Trigger will need to be further specified to differentiate between
+			//the (float, float) and (bool, bool) cases (at least those).
 			authorizedDynamicLinks[Utility::MNBV::PinType_Trigger][Utility::MNBV::PinType_ModifyDataStateEvent] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_Trigger][Utility::MNBV::PinType_ValueBool] = true;
 
 			authorizedDynamicLinks[Utility::MNBV::PinType_Parameter][Utility::MNBV::PinType_Operand] = true;
 			authorizedDynamicLinks[Utility::MNBV::PinType_Species][Utility::MNBV::PinType_Operand] = true;

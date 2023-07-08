@@ -1095,6 +1095,109 @@ namespace ECellEngine::Editor::Utility::MNBV
 	};
 
 	/*!
+	@brief The logic to encode the data needed to draw the node to define and
+			use a logic operation float.
+	*/
+	struct LogicOperationNodeData final : public NodeData
+	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
+		enum InputPin
+		{
+			InputPin_LHS,
+			InputPin_RHS,
+
+			InputPin_Count
+		};
+
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
+		enum OutputPin
+		{
+			OutputPin_OnOperandChange,
+			OutputPin_OnResultChange,
+
+			OutputPin_Count
+		};
+
+		/*!
+		@brief The display list of the logical operators.
+		*/
+		const char* operatorTypes[3] = { "AND", "OR", "NOT"};
+
+		/*!
+		@brief The buffer value of the left hand side of the logical operation.
+		*/
+		bool lhs = false;
+
+		/*!
+		@brief The buffer value of the right hand side of the logical operation.
+		*/
+		bool rhs = false;
+
+		/*!
+		@brief Pointer to the logical operation represented by this node.
+		*/
+		std::shared_ptr<Maths::LogicOperation> data;
+
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
+		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
+		NodeOutputPinData outputPins[OutputPin_Count];
+
+		LogicOperationNodeData(std::shared_ptr<Maths::LogicOperation> _data, ImVec2& _position) :
+			NodeData(), data{ _data }
+		{
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //not used
+			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //not used
+			outputPins[OutputPin_OnOperandChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Value
+			outputPins[OutputPin_OnResultChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Value
+		}
+
+		LogicOperationNodeData(const LogicOperationNodeData& _lond) :
+			NodeData(_lond),
+			lhs{ _lond.lhs }, rhs{ _lond.rhs }, data{ _lond.data },
+			inputPins{ _lond.inputPins[0], _lond.inputPins[1] },
+			outputPins{ _lond.outputPins[0] }
+		{
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
+
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
+		}
+
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Logic Operation Node Data
+
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Logic Operation Node Data
+	};
+
+	/*!
 	@brief The logic to encode the data needed to draw the node representing
 			ECellEngine::Core::Events::ModifyDataStateValueEvent.
 	*/

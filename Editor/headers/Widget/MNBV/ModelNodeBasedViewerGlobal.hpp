@@ -228,6 +228,12 @@ namespace ECellEngine::Editor::Widget::MNBV
 			return "NodeType_Equation";
 		case Utility::MNBV::NodeType_Event:
 			return "NodeType_Event";
+		case Utility::MNBV::NodeType_Maths:
+			return "NodeType_Maths";
+		case Utility::MNBV::NodeType_ArithmeticOperation:
+			return "NodeType_ArithmeticOperation";
+		case Utility::MNBV::NodeType_LogicOperation:
+			return "NodeType_LogicOperation";
 		case Utility::MNBV::NodeType_Parameter:
 			return "NodeType_Parameter";
 		case Utility::MNBV::NodeType_Reaction:
@@ -293,6 +299,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 			return "PinType_EquationValueFloat";
 		case Utility::MNBV::PinType_FreeValueFloat:
 			return "PinType_FreeValueFloat";
+		case Utility::MNBV::PinType_ValueBool:
+			return "PinType_ValueBool";
 		case Utility::MNBV::PinType_ModifyDataStateEvent:
 			return "PinType_ModifyDataStateEvent";
 		case Utility::MNBV::PinType_Operand:

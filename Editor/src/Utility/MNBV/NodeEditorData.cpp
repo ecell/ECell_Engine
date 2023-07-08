@@ -209,13 +209,77 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputRefresh(NodeInpu
 	}
 }
 
+void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::InputConnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
+{
+	//LHS input pin of the logic comparison
+	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_LHS].id)
+	{
+		data->updateLHSSubToken = std::move(*((Core::Callback<bool, bool>*)_data) += std::bind(&Maths::LogicOperation::UpdateLHS, data, std::placeholders::_1, std::placeholders::_2));
+	}
+
+	//RHS input pin of the logic comparison
+	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_RHS].id)
+	{
+		data->updateRHSSubToken = std::move(*((Core::Callback<bool, bool>*)_data) += std::bind(&Maths::LogicOperation::UpdateRHS, data, std::placeholders::_1, std::placeholders::_2));
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::InputDisconnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
+{
+	//LHS input pin of the logic comparison
+	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_LHS].id)
+	{
+		*((Core::Callback<bool, bool>*)_data) -= data->updateLHSSubToken;
+		data->updateLHSSubToken = nullptr;
+	}
+
+	//RHS input pin of the logic comparison
+	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_RHS].id)
+	{
+		*((Core::Callback<bool, bool>*)_data) -= data->updateRHSSubToken;
+		data->updateLHSSubToken = nullptr;
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::OutputConnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData)
+{
+	//The output pin with the result of the comparison when LHS or RHS changes
+	if (_nodeOutputPinData->id == outputPins[LogicOperationNodeData::OutputPin_OnOperandChange].id)
+	{
+		_nodeInputPin->OnConnect(_nodeOutputPinData, &data->onOperandChange);
+	}
+
+	//The output pin with the result of the comparison when the result changes
+	if (_nodeOutputPinData->id == outputPins[LogicOperationNodeData::OutputPin_OnResultChange].id)
+	{
+		_nodeInputPin->OnConnect(_nodeOutputPinData, &data->onResultChange);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData)
+{
+	//The output pin with the result of the comparison when LHS or RHS changes
+	if (_nodeOutputPinData->id == outputPins[LogicOperationNodeData::OutputPin_OnOperandChange].id)
+	{
+		_nodeInputPin->OnDisconnect(_nodeOutputPinData, nullptr);
+	}
+
+	//The output pin with the result of the comparison when the result changes
+	if (_nodeOutputPinData->id == outputPins[LogicOperationNodeData::OutputPin_OnResultChange].id)
+	{
+		_nodeInputPin->OnDisconnect(_nodeOutputPinData, nullptr);
+	}
+}
+
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
+	//Input pin of the value to use to modify the data state
 	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue].id)
 	{
 		data->valueCallbackToken = std::move(*((Core::Callback<float, float>*)_data) += std::bind(&Core::Events::ModifyDataStateValueEvent::UpdateValue, data, std::placeholders::_1, std::placeholders::_2));
 	}
 
+	//Input pin of the condition to use to validate modification of the data state
 	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition].id)
 	{
 		data->conditionCallbackToken = std::move(*((Core::Callback<bool, bool>*)_data) += std::bind(&Core::Events::ModifyDataStateValueEvent::UpdateCondition, data, std::placeholders::_1, std::placeholders::_2));
@@ -230,12 +294,14 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Inpu
 		value = data->GetValue();
 		//remove callback
 		*((Core::Callback<float, float>*)_data) -= data->valueCallbackToken;
+		data->valueCallbackToken = nullptr;
 	}
 
 	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition].id)
 	{
 		//remove callback
 		*((Core::Callback<bool, bool>*)_data) -= data->conditionCallbackToken;
+		data->conditionCallbackToken = nullptr;
 	}
 }
 

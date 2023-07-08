@@ -53,6 +53,15 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
         return;
     }
 
+    //Search in the list of Line Plot Nodes
+    std::vector<Utility::MNBV::LogicOperationNodeData>::iterator itLOND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->logicOperationNodes.begin(), s_mnbvCtxt->logicOperationNodes.end(), _nodeId);
+    if (itLOND != s_mnbvCtxt->logicOperationNodes.end() && (std::size_t)itLOND->id == _nodeId)
+    {
+        s_mnbvCtxt->logicOperationNodes.erase(itLOND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: LogicOperationNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
     //Search in the list of Modify Value In DataState Event Nodes
     std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData>::iterator itMDSTVEND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->modifyDataStateValueEventNodes.begin(), s_mnbvCtxt->modifyDataStateValueEventNodes.end(), _nodeId);
     if (itMDSTVEND != s_mnbvCtxt->modifyDataStateValueEventNodes.end() && (std::size_t)itMDSTVEND->id == _nodeId)
@@ -156,6 +165,13 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
     {
         return itND;
     }
+    
+    //Search in the list of Logic Operation Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->logicOperationNodes.begin(), s_mnbvCtxt->logicOperationNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
 
     //Search in the list of Modify DataState Value Event Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->modifyDataStateValueEventNodes.begin(), s_mnbvCtxt->modifyDataStateValueEventNodes.end());
@@ -246,6 +262,13 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
 
     //Search in the list of Line Plot Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->linePlotNodes.begin(), s_mnbvCtxt->linePlotNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
+    //Search in the list of Logic Operation Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->logicOperationNodes.begin(), s_mnbvCtxt->logicOperationNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;

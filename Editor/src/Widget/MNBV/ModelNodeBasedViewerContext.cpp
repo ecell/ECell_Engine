@@ -52,6 +52,19 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 			ImGui::EndMenu();
 		}
 		
+		if (ImGui::BeginMenu("Maths"))
+		{
+			if (ImGui::MenuItem("Logic Operation"))
+			{
+				ax::NodeEditor::Resume();
+				//TODO: Use a command to add a LogicOperation
+				logicOperationNodes.emplace_back(Utility::MNBV::LogicOperationNodeData(_simulation->GetDataState()->AddLogicOperation(), ImGui::GetIO().MousePos));
+				ax::NodeEditor::Suspend();
+				ConserveLinkDataIntegrity();
+			}
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("Plots"))
 		{
 			if (ImGui::MenuItem("Line Plot Node"))
@@ -242,6 +255,11 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 	for (std::vector<Utility::MNBV::LinePlotNodeData>::iterator it = linePlotNodes.begin(); it != linePlotNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::LinePlotNode(*it);
+	}
+
+	for (std::vector<Utility::MNBV::LogicOperationNodeData>::iterator it = logicOperationNodes.begin(); it != logicOperationNodes.end(); it++)
+	{
+		Utility::MNBV::NodeEditorDraw::LogicOperationNode(*it);
 	}
 
 	for (std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData>::iterator it = modifyDataStateValueEventNodes.begin(); it != modifyDataStateValueEventNodes.end(); it++)
