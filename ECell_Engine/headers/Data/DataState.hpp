@@ -11,6 +11,7 @@
 #include "Data/Parameter.hpp"
 #include "Data/Species.hpp"
 #include "Maths/Equation.hpp"
+#include "Maths/LogicOperation.hpp"
 
 namespace ECellEngine::Data
 {
@@ -25,6 +26,7 @@ namespace ECellEngine::Data
 
 		std::unordered_multimap<std::string, std::string> operandsToOperations;
 
+		std::vector<std::shared_ptr<Maths::LogicOperation>> logicOperations;
 		std::vector<std::shared_ptr<Core::Events::ModifyDataStateValueEvent>> modifyDataStateValueEvents;
 		std::vector<std::shared_ptr<Core::Trigger<Operand*, Operand*>>> triggers;
 
@@ -87,6 +89,11 @@ namespace ECellEngine::Data
 			return species;
 		}
 
+		inline const std::vector<std::shared_ptr<Maths::LogicOperation>>& GetLogicOperations() const
+		{
+			return logicOperations;
+		}
+
 		inline const std::vector<std::shared_ptr<Core::Trigger<Operand*, Operand*>>>& GetTriggers() const
 		{
 			return triggers;
@@ -118,6 +125,11 @@ namespace ECellEngine::Data
 		inline bool AddSpecies(const std::string& _speciesName, const float _quantity)
 		{
 			return species.emplace(_speciesName, std::make_shared<Species>(_speciesName, _quantity)).second;
+		}
+
+		inline std::shared_ptr<Maths::LogicOperation> AddLogicOperation()
+		{
+			return logicOperations.emplace_back(std::make_shared<Maths::LogicOperation>());
 		}
 
 		inline std::shared_ptr<Core::Trigger<Operand*, Operand*>> AddTrigger() noexcept

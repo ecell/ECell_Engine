@@ -27,6 +27,8 @@ add_library(ECellEngine SHARED
     #"src/IO/SbmlWriter.cpp"
     
     "src/Maths/Function.cpp"
+    "src/Maths/Logic.cpp"
+    "src/Maths/LogicOperation.cpp"
     "src/Maths/MathUtility.cpp"
     "src/Maths/Operand.cpp"
     "src/Maths/Operation.cpp"
@@ -40,7 +42,7 @@ add_library(ECellEngine SHARED
     "src/Solver/ODE/ExplicitRKCoefficients.cpp"
     "src/Solver/ODE/GeneralizedExplicitRK.cpp"
     "src/Solver/ODE/Stepper.cpp"
-)
+ )
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)
 

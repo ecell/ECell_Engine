@@ -33,7 +33,7 @@ namespace ECellEngine::Maths
         virtual const std::string ToStringValue(const std::vector<Operand*>& _operands) const noexcept = 0;
     };
 
-    struct Add : public Function
+    struct Add final : public Function
     {
         inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
@@ -51,7 +51,7 @@ namespace ECellEngine::Maths
         }
     };
 
-    struct Minus : public Function
+    struct Minus final : public Function
     {
         inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
@@ -69,7 +69,7 @@ namespace ECellEngine::Maths
 		}
     };
 
-    struct Times : public Function
+    struct Times final : public Function
     {
         inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
@@ -87,7 +87,7 @@ namespace ECellEngine::Maths
         }
     };
 
-    struct Divide : public Function
+    struct Divide final : public Function
     {
         inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
@@ -105,7 +105,7 @@ namespace ECellEngine::Maths
 		}
     };
 
-    struct Power : public Function
+    struct Power final : public Function
     {
         inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
@@ -123,7 +123,7 @@ namespace ECellEngine::Maths
         }
     };
 
-    struct Identity : public Function
+    struct Identity final : public Function
     {
         inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
@@ -141,7 +141,7 @@ namespace ECellEngine::Maths
 		}
     };
 
-    struct Root : public Function
+    struct Root final : public Function
     {
         /*!
         @brief Computes the root of a number.
