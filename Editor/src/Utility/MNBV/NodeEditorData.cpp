@@ -44,7 +44,7 @@ void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputConnect(NodeInputPi
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin, void* _data)
 {
 	//TODO: remove the link between the solver and the asset data in the simulation
 	//		by calling the appropriate command in the engine (also TODO)
@@ -153,7 +153,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData)
+void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	//X axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
@@ -213,7 +213,7 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Inpu
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue].id)
 	{
@@ -457,7 +457,7 @@ void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputConnect(NodeInput
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	//The LHS input pin
 	if (_nodeInputPinData->id == inputPins[TriggerNodeData::InputPin_Target].id)
