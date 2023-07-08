@@ -382,9 +382,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 	const float startX = ImGui::GetCursorPosX();
 
 	//TODO: Disable if something is pinned in
-	NodeDragFloat_In("New Value", _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue],
-		&_modifyDSValueEventNodeInfo.newValue,
-		itemsWidth, startX, _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue],
+	NodeDragFloat_In("New Value", _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue],
+		&_modifyDSValueEventNodeInfo.value,
+		itemsWidth, startX, _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue],
 		Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
 
 	NodeHorizontalSeparator(headerWidth);
@@ -423,8 +423,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 			ImGui::EndDisabled();
 		}
 
-		NodeText_In("Triggers", startX,
-			_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Triggers],
+		NodeText_In("Condition", startX,
+			_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition],
 			Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
 
 		ImGui::SameLine();

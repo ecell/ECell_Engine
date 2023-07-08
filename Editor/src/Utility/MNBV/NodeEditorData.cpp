@@ -1,4 +1,5 @@
 #include "Utility/MNBV/NodeEditorData.hpp"
+#include "Core/Events/ModifyDataStateValueEvent.hpp"
 
 #pragma region NodeListBoxStringData<DataType>
 
@@ -200,41 +201,39 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputRefresh(NodeInpu
 
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
-	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue].id)
+	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue].id)
 	{
-		data->newValue = (float*)_data;
+		*((Core::Callback<float, float>*)_data) += std::bind(&Core::Events::ModifyDataStateValueEvent::UpdateValue, data, std::placeholders::_1, std::placeholders::_2);
 	}
 
-	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Triggers].id)
+	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition].id)
 	{
-		TriggerNodeData* watcherNodeData = dynamic_cast<TriggerNodeData*>(_nodeOutputPinData->node);
-		watcherNodeData->data->AddEvent(data);
+		*((Core::Callback<bool, bool>*)_data) += std::bind(&Core::Events::ModifyDataStateValueEvent::UpdateCondition, data, std::placeholders::_1, std::placeholders::_2);
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[ModifyDataStateValueEventNodeData::InputPin_CollHdrExecution].id, 1);
 	}
 }
 
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue].id)
+	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue].id)
 	{
-		newValue = *data->newValue;
-		data->newValue = &newValue;
+		value = data->GetValue();
+		//remove callback
 	}
 
-	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Triggers].id)
+	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition].id)
 	{
-		TriggerNodeData* watcherNodeData = dynamic_cast<TriggerNodeData*>(_nodeOutputPinData->node);
-		watcherNodeData->data->RemoveEvent(data);
+		//remove callback
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
-{
-	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue].id)
-	{
-		data->newValue = (float*)_data;
-	}
-}
+//void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
+//{
+//	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue].id)
+//	{
+//		data->newValue = (float*)_data;
+//	}
+//}
 
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {

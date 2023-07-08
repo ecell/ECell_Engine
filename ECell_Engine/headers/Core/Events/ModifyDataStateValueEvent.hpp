@@ -17,6 +17,21 @@ namespace ECellEngine::Core::Events
 			Species,
 			Parameter
 		};
+		
+		/*!
+		@brief Name of the value this event will modify (species or parameter).
+		*/
+		std::string dataStateValueId;
+
+		/*!
+		@brief The condition controlling the execution of this event.
+		*/
+		bool condition = false;
+
+		/*!
+		@brief Value to assign to the data state.
+		*/
+		float value = 0.f;
 
 	public:
 		/*!
@@ -24,22 +39,29 @@ namespace ECellEngine::Core::Events
 		*/
 		DataStateValueType valueType;
 
-		/*!
-		@brief Name of the value this event will modify (species or parameter).
-		*/
-		std::string dataStateValueId;
-
-		/*!
-		@brief Value to attribute.
-		*/
-		float* newValue;
 
 		ModifyDataStateValueEvent() :
-			Event(), valueType(DataStateValueType::Species), dataStateValueId(""), newValue(nullptr)
+			Event(), valueType(DataStateValueType::Species), dataStateValueId("")
 		{
 
 		}
 
+		inline bool GetCondition() const noexcept
+		{
+			return condition;
+		}
+
+		inline float GetValue() const noexcept
+		{
+			return value;
+		}
+
 		virtual void Execute(std::size_t targetSimulationIndex) noexcept override;
+
+		void UpdateCondition(const bool _previousValue, const bool _newValue) noexcept;
+
+		void UpdateDataStateValueId(const std::string& _previousValue, const std::string& _newValue) noexcept;
+
+		void UpdateValue(const float _previousValue, const float _newValue) noexcept;
 	};
 }

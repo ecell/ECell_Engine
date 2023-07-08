@@ -8,6 +8,7 @@
 #include "implot.h"
 #include "imgui_node_editor.h"
 
+#include "Core/Callback.hpp"
 #include "Data/BinaryOperatedVector.hpp"
 #include "Core/Timer.hpp"
 #include "Utility/Plot/LinePlot.hpp"
@@ -1103,8 +1104,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum InputPin
 		{
-			InputPin_NewFloatValue,
-			InputPin_Triggers,
+			InputPin_FloatValue,
+			InputPin_Condition,
 			InputPin_CollHdrExecution,
 
 			InputPin_Count
@@ -1160,7 +1161,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The value to use when the  event is executed if no link is
 				connected to the input pin.
 		*/
-		float newValue = 0.0f;
+		float value = 0.0f;
 
 		/*!
 		@brief All the input pins.
@@ -1192,8 +1193,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins{ _mdstvend.outputPins[0], _mdstvend.outputPins[1] },
 			collapsingHeadersIds{ _mdstvend.collapsingHeadersIds[0] }
 		{
-			data.get()->newValue = &newValue;
-
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
@@ -1208,12 +1207,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		ModifyDataStateValueEventNodeData(std::shared_ptr<ECellEngine::Core::Events::ModifyDataStateValueEvent> _data, ImVec2& _position) :
 			NodeData(), data{ _data }
 		{
-			data.get()->newValue = &newValue;
-
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			inputPins[InputPin_NewFloatValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the new value we will use to modify the data state
-			inputPins[InputPin_Triggers] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//the watchers that will trigger this event
+			inputPins[InputPin_FloatValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the new value we will use to modify the data state
+			inputPins[InputPin_Condition] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//the watchers that will trigger this event
 			inputPins[InputPin_CollHdrExecution] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
 			outputPins[OutputPin_Modify] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//Connection to the value to modify
 			outputPins[OutputPin_CollHdrExecution] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
@@ -1225,7 +1222,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Modify DataState Value Event Node Data
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
