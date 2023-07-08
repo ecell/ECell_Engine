@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Data/Constant.hpp" //#include "Operand.hpp"
+#include "Data/BitwiseOperationsUtility.hpp"
 #include "Maths/Function.hpp"
 
 namespace ECellEngine::Maths
@@ -15,6 +16,22 @@ namespace ECellEngine::Maths
 	*/
 	struct Operation : public Operand
 	{
+	public :
+
+		/*!
+		@brief The enum helper to build the ::structure of an operation.
+		*/
+		enum OperationStructure
+		{
+			OperationStructure_Empty = 0,
+			OperationStructure_FirstOperandIsLocal = 1 << 0,
+			OperationStructure_SecondOperandIsLocal = 1 << 1,
+			OperationStructure_FirstLocalOperandIsOperation = 1 << 2, //it is a Constant if not an Operation
+			OperationStructure_FirstLocalOperandIsRHS = 1 << 3, //it is LHS if not RHS
+			OperationStructure_SecondLocalOperandIsOperation = 1 << 4, //it is a Constant if not an Operation; it is necessarily RHS since it's the second one
+			OperationStructure_IsCompiled = 1 << 5, //infomation flag to know whether ::PushOperands() has been called on this Operation
+		};
+
 	private:
 
 		/*!
@@ -50,7 +67,7 @@ namespace ECellEngine::Maths
 
 		/*!
 		@brief Updates the pointers in ::operands if needed (i.e. if something
-				came from ::constants or ::operations.
+				came from ::constants or ::operations).
 		@details It is similar to ::PushOperands but relies on the fact that 
 				::operands is already of size 2 to avoid inserts and push_back
 				functions. It directly updates using the [] operator at index
@@ -81,7 +98,7 @@ namespace ECellEngine::Maths
 				 two (Bit 0 = 1 & Bit 1 = 1) local operands are used.
 
 				 Bit 2 indicates whether the 1st local operand is a Constant
-				 (Bit 2 = 0) or another operation (Bit 2 = 0).
+				 (Bit 2 = 0) or another operation (Bit 2 = 1).
 
 				 Bit 3 indicates whether the 1st local operand is the left operand
 				 (Bit 3 = 0) or the right operand (Bit 3 = 1). This bit is important
@@ -101,6 +118,8 @@ namespace ECellEngine::Maths
 			 of how this byte is written.
 		@see The source code of ::PushOperands for a demonstration of how this byte
 			 is read.
+		see ::OperationStructure to see the enum and flags helpers used to encode
+			 and decode this byte.
 		*/
 		unsigned char structure = 0;
 
@@ -147,7 +166,7 @@ namespace ECellEngine::Maths
 			Operand{ _op.name }, structure{ _op.structure }, function{ _op.function },
 			constants{_op.constants}, operations{_op.operations}, operands{_op.operands}
 		{
-			if ((structure >> 5) & 1)
+			if (Data::Util::IsFlagSet(structure, OperationStructure_IsCompiled))
 			{
 				UpdateOperands();
 			}
