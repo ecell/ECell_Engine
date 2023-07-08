@@ -2187,7 +2187,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum OutputPin
 		{
-			OutputPin_Trigger,
+			OutputPin_OnTriggerEnter,
+			OutputPin_OnTriggerStay,
+			OutputPin_OnTriggerExit,
 
 			OutputPin_Count
 		};
@@ -2238,7 +2240,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		TriggerNodeData(const TriggerNodeData& _wtnd) :
 			NodeData(_wtnd), data{ _wtnd.data },
 			inputPins{ _wtnd.inputPins[0], _wtnd.inputPins[1] },
-			outputPins{ _wtnd.outputPins[0] },
+			outputPins{ _wtnd.outputPins[0], _wtnd.outputPins[1], _wtnd.outputPins[2] },
 			target{ _wtnd.target },
 			threshold{ _wtnd.threshold }
 		{
@@ -2283,7 +2285,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 			inputPins[InputPin_Target] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Operand, this);//the Left Hand Side of the comparison
 			inputPins[InputPin_Threshold] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Operand, this);//the Right Hand Side of the comparison
-			outputPins[OutputPin_Trigger] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Trigger, this);//To all the event to trigger
+			outputPins[OutputPin_OnTriggerEnter] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Trigger, this);//To all the event to trigger
+			outputPins[OutputPin_OnTriggerStay] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Trigger, this);//To all the event to trigger
+			outputPins[OutputPin_OnTriggerExit] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Trigger, this);//To all the event to trigger
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;

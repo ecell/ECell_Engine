@@ -758,7 +758,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 	const float headerWidth = NodeHeader("Trigger", "", Widget::MNBV::GetNodeColors(NodeType_Event), 300.f);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
-	const float triggerWidth = ImGui::CalcTextSize("Trigger").x;
+	const float onTriggerEnterWidth = ImGui::CalcTextSize("onTriggerEnter").x;
+	const float onTriggerStayWidth = ImGui::CalcTextSize("onTriggerStay").x;
+	const float onTriggerExitWidth = ImGui::CalcTextSize("onTriggerExit").x;
 
 	NodeComboBox("Comparator", _triggerNodeInfo.comparators, 6, (int&)_triggerNodeInfo.data->GetComparator(),
 		itemsWidth, startX, headerWidth);
@@ -779,9 +781,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 	}
 
 	ImGui::SameLine();
-
-	NodeText_Out("Trigger", triggerWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
-		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_Trigger], Widget::MNBV::GetPinColors(PinType_Trigger));
+	
+	NodeText_Out("onTriggerEnter", onTriggerEnterWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerEnter], Widget::MNBV::GetPinColors(PinType_Trigger));
 
 	dragFlags = ImGuiSliderFlags_None;
 	if (_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Threshold].isUsed)
@@ -797,6 +799,14 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 	{
 		_triggerNodeInfo.threshold.Set(bufferThreshold);
 	}
+
+	ImGui::SameLine();
+
+	NodeText_Out("onTriggerStay", onTriggerStayWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerStay], Widget::MNBV::GetPinColors(PinType_Trigger));
+	
+	NodeText_Out("onTriggerExit", onTriggerExitWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerExit], Widget::MNBV::GetPinColors(PinType_Trigger));
 
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();

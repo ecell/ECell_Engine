@@ -563,18 +563,43 @@ void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputRefresh(NodeInput
 
 void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	//There is only one output pin in the TriggerNodeData and it is the output pin of the events to trigger.
-
 	//We defer the subscription of the event to the watcher, to the event node.
-	_nodeInputPinData->OnConnect(_nodeOutputPinData, nullptr);
+
+	if (_nodeOutputPinData->id == outputPins[TriggerNodeData::OutputPin_OnTriggerEnter].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->onTriggerEnter);
+	}
+
+	if (_nodeOutputPinData->id == outputPins[TriggerNodeData::OutputPin_OnTriggerStay].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->onTriggerStay);
+	}
+
+	if (_nodeOutputPinData->id == outputPins[TriggerNodeData::OutputPin_OnTriggerExit].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->onTriggerExit);
+	}
+	
 }
 
 void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	//There is only one output pin in the TriggerNodeData and it is the output pin of the events to trigger.
-
 	//We defer the unsubscription of the event to the watcher, to the event node.
-	_nodeInputPinData->OnDisconnect(_nodeOutputPinData);
+
+	if (_nodeOutputPinData->id == outputPins[TriggerNodeData::OutputPin_OnTriggerEnter].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &data->onTriggerEnter);
+	}
+
+	if (_nodeOutputPinData->id == outputPins[TriggerNodeData::OutputPin_OnTriggerStay].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &data->onTriggerStay);
+	}
+
+	if (_nodeOutputPinData->id == outputPins[TriggerNodeData::OutputPin_OnTriggerExit].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &data->onTriggerExit);
+	}
 }
 
 #pragma endregion
