@@ -15,8 +15,10 @@ void ECellEngine::Editor::Widget::MNBV::CurrentMNBVContextDraw(ECellEngine::Core
 void ECellEngine::Editor::Widget::MNBV::EraseDynamicLink(std::vector<Utility::MNBV::LinkData>::iterator& _dynamicLink)
 {
     //Call the methods that will clear the data links via the pins.
+    //We delegate to the start pin (output side) the task of caling the
+    //OnDisconnect method of the end pin (input side).
     _dynamicLink->startPin->OnDisconnect(_dynamicLink->endPin);
-    _dynamicLink->endPin->OnDisconnect(_dynamicLink->startPin);
+    //_dynamicLink->endPin->OnDisconnect(_dynamicLink->startPin);
 
     //Erase the link data.
     s_mnbvCtxt->dynamicLinks.erase(_dynamicLink);

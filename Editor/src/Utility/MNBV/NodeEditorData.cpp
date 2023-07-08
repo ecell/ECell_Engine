@@ -28,7 +28,7 @@ void ECellEngine::Editor::Utility::MNBV::LinkData::Refresh()
 
 	startPin->OnRefresh(endPin);
 }
-#pragma enregion
+#pragma endregion
 
 #pragma region NodeData
 void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputConnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
@@ -68,6 +68,16 @@ void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputConnect(NodeInp
 
 		//we set the input pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[EquationNodeData::CollapsingHeader_EquationOperands].id, 1);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
+{
+	//Equation operation value
+	if (_nodeOutputPin->id == outputPins[EquationNodeData::OutputPin_EquationValue].id)
+	{
+		//TODO: change to callback unregistration
+		_nodeInputPinData->OnDisconnect(_nodeOutputPin, nullptr);
 	}
 }
 
@@ -264,6 +274,8 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 
 	//Reset the data state value id
 	data->dataStateValueId = "";
+
+	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
 }
 
 void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
@@ -275,6 +287,15 @@ void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(NodeInp
 
 		//we set the input pin of the kinetic law collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[OutputPin_CollHdrKineticLaw].id, 1);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
+{
+	//Reaction kinetic law value
+	if (_nodeOutputPin->id == outputPins[ReactionNodeData::OutputPin_KineticLawValue].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPin, nullptr);
 	}
 }
 
@@ -327,6 +348,20 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeIn
 	}
 }
 
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
+{
+	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ThisData].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPin, nullptr);
+	}
+
+	//Parameter value
+	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ParameterValue].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPin, nullptr);
+	}
+}
+
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
 	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ThisData].id)
@@ -351,6 +386,13 @@ void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputConnect(N
 	//There is only one output pin in the SimulationTimeNodeData
 
 	_nodeInputPinData->OnConnect(_nodeOutputPinData, &(simulationTimer->elapsedTime));
+}
+
+void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+{
+	//There is only one output pin in the SimulationTimeNodeData
+
+	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
 }
 
 void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
@@ -402,6 +444,21 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInpu
 	}
 }
 
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
+{
+	//This data (the pointer to the species)
+	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_ThisData].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPin, nullptr);
+	}
+
+	//Quantity value
+	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_Quantity].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPin, nullptr);
+	}
+}
+
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
 	//This data (the pointer to the species)
@@ -435,6 +492,13 @@ void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputConnect(NodeI
 	//There is only one output pin in the ValueFloatNodeData
 
 	_nodeInputPinData->OnConnect(_nodeOutputPinData, &value);
+}
+
+void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+{
+	//There is only one output pin in the ValueFloatNodeData
+
+	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
 }
 
 void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
