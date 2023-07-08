@@ -203,12 +203,12 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Inpu
 {
 	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue].id)
 	{
-		*((Core::Callback<float, float>*)_data) += std::bind(&Core::Events::ModifyDataStateValueEvent::UpdateValue, data, std::placeholders::_1, std::placeholders::_2);
+		data->valueCallbackToken = std::move(*((Core::Callback<float, float>*)_data) += std::bind(&Core::Events::ModifyDataStateValueEvent::UpdateValue, data, std::placeholders::_1, std::placeholders::_2));
 	}
 
 	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition].id)
 	{
-		*((Core::Callback<bool, bool>*)_data) += std::bind(&Core::Events::ModifyDataStateValueEvent::UpdateCondition, data, std::placeholders::_1, std::placeholders::_2);
+		data->conditionCallbackToken = std::move(*((Core::Callback<bool, bool>*)_data) += std::bind(&Core::Events::ModifyDataStateValueEvent::UpdateCondition, data, std::placeholders::_1, std::placeholders::_2));
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[ModifyDataStateValueEventNodeData::InputPin_CollHdrExecution].id, 1);
 	}
 }
@@ -219,11 +219,13 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Inpu
 	{
 		value = data->GetValue();
 		//remove callback
+		*((Core::Callback<float, float>*)_data) -= data->valueCallbackToken;
 	}
 
 	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition].id)
 	{
 		//remove callback
+		*((Core::Callback<bool, bool>*)_data) -= data->conditionCallbackToken;
 	}
 }
 

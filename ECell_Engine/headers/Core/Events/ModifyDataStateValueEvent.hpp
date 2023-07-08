@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+#include <memory>
 #include <string>
 
 #include "Core/Events/Event.hpp"
@@ -39,6 +41,8 @@ namespace ECellEngine::Core::Events
 		*/
 		DataStateValueType valueType;
 
+		std::shared_ptr<std::function<void(bool, bool)>> conditionCallbackToken = nullptr;
+		std::shared_ptr<std::function<void(float, float)>> valueCallbackToken = nullptr;
 
 		ModifyDataStateValueEvent() :
 			Event(), valueType(DataStateValueType::Species), dataStateValueId("")
