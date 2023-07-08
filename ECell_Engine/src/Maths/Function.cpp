@@ -1,6 +1,6 @@
 #include "Maths/Function.hpp"
 
-ECellEngine::Maths::Add ECellEngine::Maths::Functions::add;
+ECellEngine::Maths::Plus ECellEngine::Maths::Functions::plus;
 ECellEngine::Maths::Minus ECellEngine::Maths::Functions::minus;
 ECellEngine::Maths::Times ECellEngine::Maths::Functions::times;
 ECellEngine::Maths::Divide ECellEngine::Maths::Functions::divide;

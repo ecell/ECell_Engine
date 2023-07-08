@@ -217,7 +217,7 @@ void ECellEngine::IO::SBMLModuleImporter::AssignOperationFunction(Operation& _op
     switch (_node->getType())
     {
     case ASTNodeType_t::AST_PLUS:
-        _op.Set(&functions.add);
+        _op.Set(&functions.plus);
         break;
 
     case ASTNodeType_t::AST_MINUS:

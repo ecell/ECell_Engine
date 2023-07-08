@@ -33,7 +33,7 @@ namespace ECellEngine::Maths
         virtual const std::string ToStringValue(const std::vector<Operand*>& _operands) const noexcept = 0;
     };
 
-    struct Add final : public Function
+    struct Plus final : public Function
     {
         inline virtual float operator()(const std::vector<Operand*>& _operands) const noexcept override
         {
@@ -166,7 +166,7 @@ namespace ECellEngine::Maths
 
     struct Functions
     {
-        static Add add;
+        static Plus plus;
         static Minus minus;
         static Times times;
         static Divide divide;

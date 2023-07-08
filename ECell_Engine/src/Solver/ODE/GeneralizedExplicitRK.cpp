@@ -16,7 +16,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::BuildEquationRHS(Operatio
 		for (unsigned short step = 1; step <= halfSize; step *= 2)
 		{
 			Operation couple;
-			couple.Set(&ECellEngine::Maths::functions.add);
+			couple.Set(&ECellEngine::Maths::functions.plus);
 			for (unsigned short i = 0; i < _fluxes.size(); i += step * 2)
 			{
 				couple.AddOperation(_fluxes[i]);
