@@ -10,6 +10,20 @@ namespace ECellEngine::Maths
 	*/
 	class LogicOperation
 	{
+	public:
+		enum LogicalOperator
+		{
+			LogicalOperator_AND,
+			LogicalOperator_OR,
+			LogicalOperator_NOT
+		};
+
+	private:
+		/*!
+		@brief The logic operator used to compute the result.
+		*/
+		LogicalOperator operatorType = LogicalOperator_AND;
+
 		/*!
 		@brief The logic operator used to compute the result.
 		*/
@@ -39,6 +53,18 @@ namespace ECellEngine::Maths
 
 	public:
 		/*!
+		@brief The placeholder for the subscription of ::UpdateLHS to a matching
+				callback.
+		*/
+		std::shared_ptr<std::function<void(const bool, const bool)>> updateLHSSubToken = nullptr;
+
+		/*!
+		@brief The placeholder for the subscription of ::UpdateRHS to a matching
+				callback.
+		*/
+		std::shared_ptr<std::function<void(const bool, const bool)>> updateRHSSubToken = nullptr;
+
+		/*!
 		@brief The callback whenever the value of ::lhs or ::rhs changes.
 		*/
 		ECellEngine::Core::Callback<bool, bool> onOperandChange;
@@ -59,12 +85,19 @@ namespace ECellEngine::Maths
 		}
 
 		/*!
-		@brief Sets the logical operator used to compute the result.
+		@brief Returns the enum representation of the logical operator
+				used in this operation.
 		*/
-		inline void SetLogic(const Logic* _logic) noexcept
+		inline LogicalOperator& GetLogicalOperator() noexcept
 		{
-			logic = _logic;
+			return operatorType;
 		}
+
+		/*!
+		@brief Sets the logical operator used to compute the result based on
+				the value of ::operatorType.
+		*/
+		void SetLogic() noexcept;
 
 		/*!
 		@brief Updates the left hand side and triggers the callbacks

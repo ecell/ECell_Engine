@@ -110,5 +110,5 @@ namespace ECellEngine::Maths
 		static Not not;
 	};
 
-	static Logics functions;
+	static Logics logics;
 }

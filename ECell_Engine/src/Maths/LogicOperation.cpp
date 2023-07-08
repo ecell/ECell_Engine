@@ -1,5 +1,23 @@
 #include "Maths/LogicOperation.hpp"
 
+void ECellEngine::Maths::LogicOperation::SetLogic() noexcept
+{
+	switch (operatorType)
+	{
+	case(LogicalOperator_AND):
+		logic = &logics.and;
+		break;
+	case(LogicalOperator_OR):
+		logic = &logics.or;
+		break;
+	case(LogicalOperator_NOT):
+		logic = &logics.not;
+		break;
+	default:
+		break;
+	}
+}
+
 void ECellEngine::Maths::LogicOperation::UpdateLHS(const bool _previousValue, const bool _newValue) noexcept
 {	
 	bool newRes = (*logic)(_newValue, rhs);
