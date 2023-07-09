@@ -28,7 +28,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_LogicOperation));
 	ax::NodeEditor::BeginNode(_arithmeticOperationNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Logic Operation", "", Widget::MNBV::GetNodeColors(NodeType_Data), 250.f);
+	const float headerWidth = NodeHeader("Logic Operation", "", Widget::MNBV::GetNodeColors(NodeType_Data), 300.f);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 	const float onOperandChangeWidth = ImGui::CalcTextSize("onOperandChange").x;
@@ -57,7 +57,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 	ImGui::SameLine();
 
 	NodeText_Out("onOperandChange", onOperandChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
-		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange], Widget::MNBV::GetPinColors(PinType_ValueBool));
+		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
 	dragFlags = ImGuiSliderFlags_None;
 	if (_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS].isUsed)
@@ -76,7 +76,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 	ImGui::SameLine();
 
 	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
-		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange], Widget::MNBV::GetPinColors(PinType_ValueBool));
+		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
@@ -441,6 +441,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 	const float startX = ImGui::GetCursorPosX();
 	const float onOperandChangeWidth = ImGui::CalcTextSize("onOperandChange").x;
 	const float onResultChangeWidth = ImGui::CalcTextSize("onResultChange").x;
+	std::string textValue = "";
 
 	if (NodeComboBox("Logical operator", _logicOperationNodeInfo.operatorTypes, 3, (int&)_logicOperationNodeInfo.data->GetLogicalOperator(),
 		itemsWidth, startX, headerWidth))
@@ -448,11 +449,11 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 		_logicOperationNodeInfo.data->SetLogic();
 	}
 
-	NodeText_In("LHS", startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS],
-		Widget::MNBV::GetPinColors(PinType_ValueBool));
 
 	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS].isUsed)
 	{
+		NodeText_In("LHS", startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS],
+			Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
 		ImGui::SameLine();
 		bool previousLHS = _logicOperationNodeInfo.lhs;
 		if (ImGui::Checkbox("##LHS", &_logicOperationNodeInfo.lhs))
@@ -460,17 +461,23 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 			_logicOperationNodeInfo.data->UpdateLHS(previousLHS, _logicOperationNodeInfo.lhs);
 		}
 	}
-	
+	else
+	{
+		textValue = "LHS (";
+		textValue += _logicOperationNodeInfo.lhs ? "true)" : "false)";
+		NodeText_In(textValue.c_str(), startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS],
+			Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
+	}
+
 	ImGui::SameLine();
 
 	NodeText_Out("onOperandChange", onOperandChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
-		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange], Widget::MNBV::GetPinColors(PinType_ValueBool));
-
-	NodeText_In("RHS", startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS],
-		Widget::MNBV::GetPinColors(PinType_ValueBool));
+		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
 	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS].isUsed)
 	{
+		NodeText_In("RHS", startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS],
+			Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
 		ImGui::SameLine();
 		bool previousRHS = _logicOperationNodeInfo.rhs;
 		if (ImGui::Checkbox("##RHS", &_logicOperationNodeInfo.rhs))
@@ -478,11 +485,18 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 			_logicOperationNodeInfo.data->UpdateRHS(previousRHS, _logicOperationNodeInfo.rhs);
 		}
 	}
+	else
+	{
+		textValue = "RHS (";
+		textValue += _logicOperationNodeInfo.lhs ? "true)" : "false)";
+		NodeText_In(textValue.c_str(), startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS],
+			Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
+	}
 
 	ImGui::SameLine();
 
 	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
-		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange], Widget::MNBV::GetPinColors(PinType_ValueBool));
+		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
@@ -548,7 +562,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 		{
 			NodeText_In("Condition", startX,
 				_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition],
-				Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
+				Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
 
 			ImGui::SameLine();
 			bool buffer2 = _modifyDSValueEventNodeInfo.data->GetCondition();
@@ -563,14 +577,14 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 			condition += _modifyDSValueEventNodeInfo.data->GetCondition() ? "true)" : "false)";
 			NodeText_In(condition.c_str(), startX,
 						_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition],
-						Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
+						Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
 		}
 
 		ImGui::SameLine();
 
 		NodeText_Out("Modify", ImGui::CalcTextSize("Modify").x, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
 			_modifyDSValueEventNodeInfo.outputPins[ModifyDataStateValueEventNodeData::OutputPin_Modify],
-			Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
+			Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 	}
 
 	ax::NodeEditor::EndNode();
@@ -926,7 +940,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 	ImGui::SameLine();
 	
 	NodeText_Out("onTriggerEnter", onTriggerEnterWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
-		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerEnter], Widget::MNBV::GetPinColors(PinType_Trigger));
+		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerEnter], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
 	dragFlags = ImGuiSliderFlags_None;
 	if (_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Threshold].isUsed)
@@ -947,10 +961,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 	ImGui::SameLine();
 
 	NodeText_Out("onTriggerStay", onTriggerStayWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
-		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerStay], Widget::MNBV::GetPinColors(PinType_Trigger));
-	
+		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerStay], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
+
 	NodeText_Out("onTriggerExit", onTriggerExitWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
-		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerExit], Widget::MNBV::GetPinColors(PinType_Trigger));
+		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerExit], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();

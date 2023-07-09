@@ -299,10 +299,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 			return "PinType_EquationValueFloat";
 		case Utility::MNBV::PinType_FreeValueFloat:
 			return "PinType_FreeValueFloat";
-		case Utility::MNBV::PinType_ValueBool:
-			return "PinType_ValueBool";
-		case Utility::MNBV::PinType_ModifyDataStateEvent:
-			return "PinType_ModifyDataStateEvent";
+		case Utility::MNBV::PinType_BooleanCallBackPublisher:
+			return "PinType_BooleanCallBackPublisher";
+		case Utility::MNBV::PinType_BooleanCallBackSubscriber:
+			return "PinType_BooleanCallBackSubscriber";
+		case Utility::MNBV::PinType_FloatCallBackPublisher:
+			return "PinType_FloatCallBackPublisher";
+		case Utility::MNBV::PinType_FloatCallBackSubscriber:
+			return "PinType_FloatCallBackSubscriber";
 		case Utility::MNBV::PinType_Operand:
 			return "PinType_Operand";
 		case Utility::MNBV::PinType_Parameter:
@@ -313,8 +317,6 @@ namespace ECellEngine::Editor::Widget::MNBV
 			return "PinType_Solver";
 		case Utility::MNBV::PinType_Species:
 			return "PinType_Species";
-		case Utility::MNBV::PinType_Trigger:
-			return "PinType_Trigger";
 		default:
 			return "Unknown PinType";
 		}

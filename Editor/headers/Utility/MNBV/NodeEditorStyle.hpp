@@ -58,11 +58,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		PinType_DataStateValueFloat,//"DataState" for a value stored in a data within the DataState (-->there are constraints on how to access/change it).
 		PinType_EquationValueFloat,//"Equation" for a value that is the result of the computation of an equation.
 		PinType_FreeValueFloat,//"Free" means that the value does not have specific contraints.
-		PinType_ValueBool,
 
 		//Event-Related
-		PinType_ModifyDataStateEvent,
-		PinType_Trigger,
+		PinType_BooleanCallBackPublisher,
+		PinType_BooleanCallBackSubscriber,
+		PinType_FloatCallBackPublisher,
+		PinType_FloatCallBackSubscriber,
 
 		PinType_Count
 	};
@@ -225,13 +226,21 @@ namespace ECellEngine::Editor::Utility::MNBV
 			pinColors[PinType_FreeValueFloat][PinColorType_BgInactivated] = nodeColors[NodeType_Data][NodeColorType_Bg];
 			pinColors[PinType_FreeValueFloat][PinColorType_Border] = nodeColors[NodeType_Data][NodeColorType_Border];
 			
-			pinColors[PinType_ValueBool][PinColorType_BgActivated] = nodeColors[NodeType_Data][NodeColorType_Border];
-			pinColors[PinType_ValueBool][PinColorType_BgInactivated] = nodeColors[NodeType_Data][NodeColorType_Bg];
-			pinColors[PinType_ValueBool][PinColorType_Border] = nodeColors[NodeType_Data][NodeColorType_Border];
+			pinColors[PinType_BooleanCallBackPublisher][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_BooleanCallBackPublisher][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
+			pinColors[PinType_BooleanCallBackPublisher][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
+
+			pinColors[PinType_BooleanCallBackSubscriber][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_BooleanCallBackSubscriber][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
+			pinColors[PinType_BooleanCallBackSubscriber][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
 			
-			pinColors[PinType_ModifyDataStateEvent][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
-			pinColors[PinType_ModifyDataStateEvent][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
-			pinColors[PinType_ModifyDataStateEvent][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_FloatCallBackPublisher][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_FloatCallBackPublisher][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
+			pinColors[PinType_FloatCallBackPublisher][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
+
+			pinColors[PinType_FloatCallBackSubscriber][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_FloatCallBackSubscriber][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
+			pinColors[PinType_FloatCallBackSubscriber][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
 
 			pinColors[PinType_Operand][PinColorType_BgActivated] = nodeColors[NodeType_Asset][NodeColorType_Border];
 			pinColors[PinType_Operand][PinColorType_BgInactivated] = nodeColors[NodeType_Asset][NodeColorType_Bg];
@@ -253,9 +262,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			pinColors[PinType_Species][PinColorType_BgInactivated] = nodeColors[NodeType_Species][NodeColorType_Bg];
 			pinColors[PinType_Species][PinColorType_Border] = nodeColors[NodeType_Species][NodeColorType_Border];
 			
-			pinColors[PinType_Trigger][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
-			pinColors[PinType_Trigger][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
-			pinColors[PinType_Trigger][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
 		}
 	};
 }

@@ -199,13 +199,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 			authorizedDynamicLinks[Utility::MNBV::PinType_EquationValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
 			authorizedDynamicLinks[Utility::MNBV::PinType_FreeValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
 			
-			authorizedDynamicLinks[Utility::MNBV::PinType_ModifyDataStateEvent][Utility::MNBV::PinType_DataStateValueFloat] = true;
-			authorizedDynamicLinks[Utility::MNBV::PinType_ValueBool][Utility::MNBV::PinType_ValueBool] = true;
-			
-			//Probably PinType_Trigger will need to be further specified to differentiate between
-			//the (float, float) and (bool, bool) cases (at least those).
-			authorizedDynamicLinks[Utility::MNBV::PinType_Trigger][Utility::MNBV::PinType_ModifyDataStateEvent] = true;
-			authorizedDynamicLinks[Utility::MNBV::PinType_Trigger][Utility::MNBV::PinType_ValueBool] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_BooleanCallBackPublisher][Utility::MNBV::PinType_BooleanCallBackSubscriber] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_FloatCallBackPublisher][Utility::MNBV::PinType_FloatCallBackSubscriber] = true;
 
 			authorizedDynamicLinks[Utility::MNBV::PinType_Parameter][Utility::MNBV::PinType_Operand] = true;
 			authorizedDynamicLinks[Utility::MNBV::PinType_Species][Utility::MNBV::PinType_Operand] = true;

@@ -1288,10 +1288,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Left hand side
-			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Right hand side
-			outputPins[OutputPin_OnOperandChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Callback output pin when an input value (operand) changes
-			outputPins[OutputPin_OnResultChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Callback output pin when the result changes
+			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackSubscriber, this); //Left hand side
+			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackSubscriber, this); //Right hand side
+			outputPins[OutputPin_OnOperandChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackPublisher, this); //Callback output pin when an input value (operand) changes
+			outputPins[OutputPin_OnResultChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackPublisher, this); //Callback output pin when the result changes
 		}
 
 		LogicOperationNodeData(const LogicOperationNodeData& _lond) :
@@ -1442,9 +1442,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_FloatValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this);//the new value we will use to modify the data state
-			inputPins[InputPin_Condition] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//the watchers that will trigger this event
+			inputPins[InputPin_Condition] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackSubscriber, this);//the watchers that will trigger this event
 			inputPins[InputPin_CollHdrExecution] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
-			outputPins[OutputPin_Modify] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ModifyDataStateEvent, this);//Connection to the value to modify
+			outputPins[OutputPin_Modify] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this);//Connection to the value to modify
 			outputPins[OutputPin_CollHdrExecution] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
 
 			collapsingHeadersIds[CollapsingHeader_Execution] = Widget::MNBV::GetMNBVCtxtNextId();
@@ -2515,9 +2515,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 			inputPins[InputPin_Target] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Operand, this);//the Left Hand Side of the comparison
 			inputPins[InputPin_Threshold] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Operand, this);//the Right Hand Side of the comparison
-			outputPins[OutputPin_OnTriggerEnter] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Trigger, this);//To all the event to trigger
-			outputPins[OutputPin_OnTriggerStay] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Trigger, this);//To all the event to trigger
-			outputPins[OutputPin_OnTriggerExit] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Trigger, this);//To all the event to trigger
+			outputPins[OutputPin_OnTriggerEnter] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackPublisher, this);//To all the event to trigger
+			outputPins[OutputPin_OnTriggerStay] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackPublisher, this);//To all the event to trigger
+			outputPins[OutputPin_OnTriggerExit] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackPublisher, this);//To all the event to trigger
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
