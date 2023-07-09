@@ -70,12 +70,16 @@ void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::OutputConn
 	if (_nodeOutputPinData->id == outputPins[ArithmeticOperationNodeData::OutputPin_OnOperandChange].id)
 	{
 		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->onOperandChange);
+		float res = data->Get();
+		data->onOperandChange(res, res, data->onOperandChange.Size() - 1);//Callback to the last subscriber
 	}
 
 	//The output pin with the result of the comparison when the result changes
 	if (_nodeOutputPinData->id == outputPins[ArithmeticOperationNodeData::OutputPin_OnResultChange].id)
 	{
 		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->onResultChange);
+		float res = data->Get();
+		data->onOperandChange(res, res, data->onOperandChange.Size() - 1);//Callback to the last subscriber
 	}
 }
 
@@ -306,16 +310,20 @@ void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::InputDisconnect
 
 void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::OutputConnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData)
 {
-	//The output pin with the result of the comparison when LHS or RHS changes
+	//The output pin when LHS or RHS changes
 	if (_nodeOutputPinData->id == outputPins[LogicOperationNodeData::OutputPin_OnOperandChange].id)
 	{
 		_nodeInputPin->OnConnect(_nodeOutputPinData, &data->onOperandChange);
+		bool res = (*data.get())();
+		data->onOperandChange(!res, res, data->onOperandChange.Size()-1);//Callback to the last subscriber
 	}
 
 	//The output pin with the result of the comparison when the result changes
 	if (_nodeOutputPinData->id == outputPins[LogicOperationNodeData::OutputPin_OnResultChange].id)
 	{
 		_nodeInputPin->OnConnect(_nodeOutputPinData, &data->onResultChange);
+		bool res = (*data.get())();
+		data->onOperandChange(!res, res, data->onOperandChange.Size() - 1);//Callback to the last subscriber
 	}
 }
 
