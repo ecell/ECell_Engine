@@ -31,6 +31,69 @@ void ECellEngine::Editor::Utility::MNBV::LinkData::Refresh()
 #pragma endregion
 
 #pragma region NodeData
+
+void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
+{
+	//Left hand side value
+	if (_nodeInputPinData->id == inputPins[ArithmeticOperationNodeData::InputPin_LHS].id)
+	{
+		data->updateLHSSubToken = std::move(*((Core::Callback<const float, const float>*)_data) += std::bind(&Operation::UpdateLHS, data, std::placeholders::_1, std::placeholders::_2));
+	}
+
+	//Right hand side value
+	if (_nodeInputPinData->id == inputPins[ArithmeticOperationNodeData::InputPin_RHS].id)
+	{
+		data->updateRHSSubToken = std::move(*((Core::Callback<const float, const float>*)_data) += std::bind(&Operation::UpdateRHS, data, std::placeholders::_1, std::placeholders::_2));
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::InputDisconnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
+{
+	//LHS input pin of the logic comparison
+	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_LHS].id)
+	{
+		*((Core::Callback<float, float>*)_data) -= data->updateLHSSubToken;
+		data->updateLHSSubToken = nullptr;
+	}
+
+	//RHS input pin of the logic comparison
+	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_RHS].id)
+	{
+		*((Core::Callback<float, float>*)_data) -= data->updateRHSSubToken;
+		data->updateLHSSubToken = nullptr;
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+{
+	//The output pin with the result of the comparison when LHS or RHS changes
+	if (_nodeOutputPinData->id == outputPins[ArithmeticOperationNodeData::OutputPin_OnOperandChange].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->onOperandChange);
+	}
+
+	//The output pin with the result of the comparison when the result changes
+	if (_nodeOutputPinData->id == outputPins[ArithmeticOperationNodeData::OutputPin_OnResultChange].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->onResultChange);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+{
+	//The output pin with the result of the comparison when LHS or RHS changes
+	if (_nodeOutputPinData->id == outputPins[ArithmeticOperationNodeData::OutputPin_OnOperandChange].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
+	}
+
+	//The output pin with the result of the comparison when the result changes
+	if (_nodeOutputPinData->id == outputPins[ArithmeticOperationNodeData::OutputPin_OnResultChange].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
+	}
+}
+
 void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputConnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	//The node input pin representing the solver attached to this asset.

@@ -26,6 +26,7 @@ namespace ECellEngine::Data
 
 		std::unordered_multimap<std::string, std::string> operandsToOperations;
 
+		std::vector<std::shared_ptr<Maths::Operation>> operations;
 		std::vector<std::shared_ptr<Maths::LogicOperation>> logicOperations;
 		std::vector<std::shared_ptr<Core::Events::ModifyDataStateValueEvent>> modifyDataStateValueEvents;
 		std::vector<std::shared_ptr<Core::Trigger<Operand*, Operand*>>> triggers;
@@ -89,6 +90,11 @@ namespace ECellEngine::Data
 			return species;
 		}
 
+		inline const std::vector<std::shared_ptr<Maths::Operation>>& GetOperations() const
+		{
+			return operations;
+		}
+
 		inline const std::vector<std::shared_ptr<Maths::LogicOperation>>& GetLogicOperations() const
 		{
 			return logicOperations;
@@ -125,6 +131,11 @@ namespace ECellEngine::Data
 		inline bool AddSpecies(const std::string& _speciesName, const float _quantity)
 		{
 			return species.emplace(_speciesName, std::make_shared<Species>(_speciesName, _quantity)).second;
+		}
+
+		inline std::shared_ptr<Maths::Operation> AddOperation()
+		{
+			return operations.emplace_back(std::make_shared<Maths::Operation>());
 		}
 
 		inline std::shared_ptr<Maths::LogicOperation> AddLogicOperation()

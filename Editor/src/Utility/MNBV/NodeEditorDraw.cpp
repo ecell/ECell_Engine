@@ -23,6 +23,65 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeDestruction()
 	ax::NodeEditor::EndDelete(); // Wrap up deletion action
 }
 
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode(ArithmeticOperationNodeData& _arithmeticOperationNodeInfo)
+{
+	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_LogicOperation));
+	ax::NodeEditor::BeginNode(_arithmeticOperationNodeInfo.id);
+
+	const float headerWidth = NodeHeader("Logic Operation", "", Widget::MNBV::GetNodeColors(NodeType_Data), 250.f);
+	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+	const float startX = ImGui::GetCursorPosX();
+	const float onOperandChangeWidth = ImGui::CalcTextSize("onOperandChange").x;
+	const float onResultChangeWidth = ImGui::CalcTextSize("onResultChange").x;
+
+	if (NodeComboBox("Function", _arithmeticOperationNodeInfo.operatorTypes, 3, (int&)_arithmeticOperationNodeInfo.data->GetFunctionType(),
+		itemsWidth, startX, headerWidth))
+	{
+		_arithmeticOperationNodeInfo.data->UpdateFunction();
+	}
+
+	ImGuiSliderFlags dragFlags = ImGuiSliderFlags_None;
+	if (_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_LHS].isUsed)
+	{
+		dragFlags |= ImGuiSliderFlags_ReadOnly;
+	}
+	float bufferTarget = _arithmeticOperationNodeInfo.lhs.Get();
+	if (NodeDragFloat_In("LHS", _arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_LHS], &bufferTarget,
+		0.5f * itemsWidth, startX,
+		_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_LHS], Widget::MNBV::GetPinColors(PinType_Operand),
+		dragFlags))
+	{
+		_arithmeticOperationNodeInfo.data->UpdateLHS(_arithmeticOperationNodeInfo.lhs.Get(), bufferTarget);
+	}
+
+	ImGui::SameLine();
+
+	NodeText_Out("onOperandChange", onOperandChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange], Widget::MNBV::GetPinColors(PinType_ValueBool));
+
+	dragFlags = ImGuiSliderFlags_None;
+	if (_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS].isUsed)
+	{
+		dragFlags |= ImGuiSliderFlags_ReadOnly;
+	}
+	bufferTarget = _arithmeticOperationNodeInfo.rhs.Get();
+	if (NodeDragFloat_In("RHS", _arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS], &bufferTarget,
+		0.5f * itemsWidth, startX,
+		_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS], Widget::MNBV::GetPinColors(PinType_Operand),
+		dragFlags))
+	{
+		_arithmeticOperationNodeInfo.data->UpdateRHS(_arithmeticOperationNodeInfo.rhs.Get(), bufferTarget);
+	}
+
+	ImGui::SameLine();
+
+	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange], Widget::MNBV::GetPinColors(PinType_ValueBool));
+
+	ax::NodeEditor::EndNode();
+	PopNodeStyle();
+}
+
 void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _name, AssetNodeData& _assetNodeInfo)
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Asset));

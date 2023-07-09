@@ -1,3 +1,4 @@
+#include <cassert>
 #include "Maths/Operation.hpp"
 
 void ECellEngine::Maths::Operation::GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector) const noexcept
@@ -78,6 +79,19 @@ void ECellEngine::Maths::Operation::InformStructureOfAddOperation() noexcept
 	}
 }
 
+void ECellEngine::Maths::Operation::OverrideOperand(Operand* _operand, const unsigned char _idx) noexcept
+{
+	if (_idx < 2)
+	{
+		operands[_idx] = _operand;
+	}
+	else
+	{
+		ECellEngine::Logging::Logger::GetSingleton().LogError(
+			"ECellEngine::Maths::Operation::OverrideOperand(Operand*, const unsigned char): _idx must be 0 or 1. _idx = " + std::to_string(_idx) + ". Continuing without overriding.");
+	}
+}
+
 void ECellEngine::Maths::Operation::PushOperands()
 {
 	// PushOperands is called for the 1st time here, and 
@@ -121,6 +135,40 @@ void ECellEngine::Maths::Operation::PushOperands()
 	Data::Util::SetFlag(structure, OperationStructure_IsCompiled);// 000 1 XX XX --> The Operation has been compiled: PushOperands has been called
 }
 
+void ECellEngine::Maths::Operation::UpdateFunction() noexcept
+{
+	switch (functionType)
+	{
+		case FunctionType_Identity:
+			function = &functions.identity;
+			break;
+		case FunctionType_Plus:
+			function = &functions.plus;
+			break;
+		case FunctionType_Minus:
+			function = &functions.minus;
+			break;
+		case FunctionType_Times:
+			function = &functions.times;
+			break;
+		case FunctionType_Divide:
+			function = &functions.divide;
+			break;
+		case FunctionType_Power:
+			function = &functions.power;
+			break;
+		case FunctionType_Root:
+			function = &functions.root;
+			break;
+		default:
+			//This should never happen
+			//Are you sure you have the correct value for _functionType?
+			//You didn't cast a random int to FunctionType, did you?
+			assert(false);
+			break;
+	}
+}
+
 void ECellEngine::Maths::Operation::UpdateOperands()
 {
 	if (Data::Util::IsFlagSet(structure, OperationStructure_FirstOperandIsLocal)) //if there is at least 1 operand placement to decode
@@ -158,7 +206,7 @@ void ECellEngine::Maths::Operation::UpdateOperands()
 	}
 }
 
-void ECellEngine::Maths::Operation::UpdateLHS(const float _previousValue, const float _newValue)
+void ECellEngine::Maths::Operation::UpdateLHS(const float _previousValue, const float _newValue) noexcept
 {
 	operands[0]->Set(_newValue);
 	float newRes = (*function)(operands);
@@ -177,7 +225,7 @@ void ECellEngine::Maths::Operation::UpdateLHS(const float _previousValue, const 
 	newResult = newRes;
 }
 
-void ECellEngine::Maths::Operation::UpdateRHS(const float _previousValue, const float _newValue)
+void ECellEngine::Maths::Operation::UpdateRHS(const float _previousValue, const float _newValue) noexcept
 {
 	operands[1]->Set(_newValue);
 	float newRes = (*function)(operands);

@@ -501,6 +501,127 @@ namespace ECellEngine::Editor::Utility::MNBV
 #pragma region Derived Nodes Data
 
 	/*!
+	@brief The logic to encode the data needed to draw the node to define and
+			use a logic operation.
+	*/
+	struct ArithmeticOperationNodeData final : public NodeData
+	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
+		enum InputPin
+		{
+			InputPin_LHS,
+			InputPin_RHS,
+
+			InputPin_Count
+		};
+
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
+		enum OutputPin
+		{
+			OutputPin_OnOperandChange,
+			OutputPin_OnResultChange,
+
+			OutputPin_Count
+		};
+
+		/*!
+		@brief The display list of the available arithmetic operators.
+		*/
+		const char* operatorTypes[6] = { "PLUS", "MINUS", "TIMES", "DIVIDE",
+										 "POWER", "ROOT"};
+
+		/*!
+		@brief The default operand to hold a value in this watcher when nothing
+				is connected in the input pin of the LHS.
+		@details We use the class of a parameter as the default operand because
+				 it is the less intrusive type of operand which value can be
+				 changed at runtime.
+		*/
+		Data::Parameter lhs;
+
+		/*!
+		@brief The default operand to hold a value in this watcher when nothing
+				is connected in the input pin of the RHS.
+		@details We use the class of a parameter as the default operand because
+				 it is the less intrusive type of operand which value can be
+				 changed at runtime.
+		*/
+		Data::Parameter rhs;
+
+		/*!
+		@brief Pointer to the arithemtic operation represented by this node.
+		*/
+		std::shared_ptr<Maths::Operation> data;
+
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
+		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
+		NodeOutputPinData outputPins[OutputPin_Count];
+
+		ArithmeticOperationNodeData(std::shared_ptr<Maths::Operation> _data, ImVec2& _position) :
+			NodeData(), data{ _data },
+			lhs{ "Operation[" + std::to_string((std::size_t)id) + "]::LHS", 0 },
+			rhs{ "Operation[" + std::to_string((std::size_t)id) + "]::RHS", 0 }
+		{
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			data->name = "Operation[" + std::to_string((std::size_t)id) + "]";
+			data->AddOperand(&lhs);
+			data->AddOperand(&rhs);
+
+			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //not used
+			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //not used
+			outputPins[OutputPin_OnOperandChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //Value
+			outputPins[OutputPin_OnResultChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //Value
+		}
+
+		ArithmeticOperationNodeData(const ArithmeticOperationNodeData& _aond) :
+			NodeData(_aond),
+			lhs{ _aond.lhs }, rhs{ _aond.rhs }, data{ _aond.data },
+			inputPins{ _aond.inputPins[0], _aond.inputPins[1] },
+			outputPins{ _aond.outputPins[0] }
+		{
+			data->OverrideOperand(&lhs, 0);
+			data->OverrideOperand(&rhs, 1);
+
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
+
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
+		}
+
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Logic Operation Node Data
+
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Logic Operation Node Data
+	};
+
+	/*!
 	@brief The logic to encode the data needed to draw the node representing
 			ECellEngine::Data::SBMLModule.
 	*/
@@ -1096,7 +1217,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 	/*!
 	@brief The logic to encode the data needed to draw the node to define and
-			use a logic operation float.
+			use a logic operation.
 	*/
 	struct LogicOperationNodeData final : public NodeData
 	{
@@ -1130,12 +1251,18 @@ namespace ECellEngine::Editor::Utility::MNBV
 		const char* operatorTypes[3] = { "AND", "OR", "NOT"};
 
 		/*!
-		@brief The buffer value of the left hand side of the logical operation.
+		@brief The placeholder value of the left hand side of the logical operation.
+		@details It is used both as a buffer to display the value in the node and the
+				 placeholder value when nothing is connected to the corresponding
+				 input pin.
 		*/
 		bool lhs = false;
 
 		/*!
-		@brief The buffer value of the right hand side of the logical operation.
+		@brief The placeholder value of the right hand side of the logical operation.
+		@details It is used both as a buffer to display the value in the node and the
+				 placeholder value when nothing is connected to the corresponding
+				 input pin.
 		*/
 		bool rhs = false;
 

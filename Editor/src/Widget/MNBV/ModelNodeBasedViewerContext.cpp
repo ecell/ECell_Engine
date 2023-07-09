@@ -54,6 +54,15 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		
 		if (ImGui::BeginMenu("Maths"))
 		{
+			if (ImGui::MenuItem("Arithmetic Operation"))
+			{
+				ax::NodeEditor::Resume();
+				//TODO: Use a command to add an Operation
+				arithmeticOperationNodes.emplace_back(Utility::MNBV::ArithmeticOperationNodeData(_simulation->GetDataState()->AddOperation(), ImGui::GetIO().MousePos));
+				ax::NodeEditor::Suspend();
+				ConserveLinkDataIntegrity();
+			}
+
 			if (ImGui::MenuItem("Logic Operation"))
 			{
 				ax::NodeEditor::Resume();
@@ -114,6 +123,11 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		ImGui::EndPopup();
 	}
 	ax::NodeEditor::Resume();
+
+	for (std::vector<Utility::MNBV::ArithmeticOperationNodeData>::iterator it = arithmeticOperationNodes.begin(); it != arithmeticOperationNodes.end(); it++)
+	{
+		Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode(*it);
+	}
 
 	for (std::vector<Utility::MNBV::AssetNodeData>::iterator it = assetNodes.begin(); it != assetNodes.end(); it++)
 	{

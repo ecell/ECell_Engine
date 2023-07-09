@@ -26,6 +26,15 @@ void ECellEngine::Editor::Widget::MNBV::EraseDynamicLink(std::vector<Utility::MN
 
 void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
 {
+    //Search in the list of Arithmetic Operation Nodes
+    std::vector<Utility::MNBV::ArithmeticOperationNodeData>::iterator itAOND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->arithmeticOperationNodes.begin(), s_mnbvCtxt->arithmeticOperationNodes.end(), _nodeId);
+    if (itAOND != s_mnbvCtxt->arithmeticOperationNodes.end() && (std::size_t)itAOND->id == _nodeId)
+    {
+        s_mnbvCtxt->arithmeticOperationNodes.erase(itAOND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: ArithmeticOperationNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
     //Search in the list of Asset Nodes
     std::vector<Utility::MNBV::AssetNodeData>::iterator itAND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end(), _nodeId);
     if (itAND != s_mnbvCtxt->assetNodes.end() && (std::size_t)itAND->id == _nodeId)
@@ -145,6 +154,13 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
 {
     Utility::MNBV::NodeData* itND = nullptr;
 
+    //Search in the list of Arithmetic Operation Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->arithmeticOperationNodes.begin(), s_mnbvCtxt->arithmeticOperationNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+
     //Search in the list of Asset Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end());
     if (itND != nullptr)
@@ -245,6 +261,13 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
 ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MNBV::FindNodePinInAll(const std::size_t _id)
 {
     Utility::MNBV::NodePinData* itNPD = nullptr;
+
+    //Search in the list of Arithemtic Operation Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->arithmeticOperationNodes.begin(), s_mnbvCtxt->arithmeticOperationNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
 
     //Search in the list of Asset Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end());

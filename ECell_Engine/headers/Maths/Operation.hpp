@@ -78,6 +78,12 @@ namespace ECellEngine::Maths
 		void UpdateOperands();
 
 	protected:
+
+		/*!
+		@brief The type of the function to perform corresponding to the Operation.
+		*/
+		FunctionType functionType = FunctionType_Plus;
+
 		/*!
 		@brief The function to perform corresponding to the Operation.
 		*/
@@ -178,7 +184,10 @@ namespace ECellEngine::Maths
 		*/
 		ECellEngine::Core::Callback<float, float> onResultChange;
 
-		Operation() : Operand() {}
+		Operation() : Operand()
+		{
+			UpdateFunction();//initialize the function pointer to the start value of ::functionType
+		}
 
 		Operation(const std::string _name) : 
 			Operand (_name)
@@ -186,6 +195,8 @@ namespace ECellEngine::Maths
 			constants.reserve(2);
 			operations.reserve(2);
 			operands.reserve(2);
+
+			UpdateFunction();//initialize the function pointer to the start value of ::functionType
 		}
 
 		/*!
@@ -240,6 +251,15 @@ namespace ECellEngine::Maths
 			return (*function)(operands);
 		}
 
+		/*!
+		@brief Returns the reference to the enum representation of the function
+				type corresponding to this operation.
+		*/
+		inline FunctionType& GetFunctionType() noexcept
+		{
+			return functionType;
+		}
+
 		void GetInvolvedEquations(std::vector<std::string>& out_involvedEquations, bool clearOutVector = true) const noexcept override;
 		
 		void GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
@@ -260,12 +280,23 @@ namespace ECellEngine::Maths
 				operation.
 		@param _function The pointer to the relevant mathematical function
 				to link this operation.
+		@param _type The enum representation of the function type corresponding
+				to this operation.
 		@see ECellEngine::Maths::Function.
 		*/
-		inline void Set(const Function* _function) noexcept
+		inline void Set(const Function* _function, FunctionType _type) noexcept
 		{
+			functionType = _type;
 			function = _function;
 		}
+
+		/*!
+		@brief Updates the pointer in ::function based on ::functionType.
+		@details There is a possibility to change ::functionType through
+				 the reference returned by ::GetFunctionType. So, we give
+				 the possibility to update the function accordingly.
+		*/
+		void UpdateFunction() noexcept;
 
 		/*!
 		@brief Adds a constant in ::constants from its @p _value
@@ -311,6 +342,14 @@ namespace ECellEngine::Maths
 			operations.push_back(_operation);
 			InformStructureOfAddOperation();
 		}
+
+		/*!
+		@brief Replaces the pointer to the operand at index @p _idx in
+			   ::operands by the pointer @p _operand.
+		@param _operand The pointer to the new operand to store.
+		@param _idx The index of the operand to replace. MUST be 0 or 1.
+		*/
+		void OverrideOperand(Operand* _operand, const unsigned char _idx) noexcept;
 
 		/*!
 		@brief Checks if there is at least two operands stored in this operation.

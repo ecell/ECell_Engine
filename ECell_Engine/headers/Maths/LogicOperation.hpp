@@ -10,14 +10,6 @@ namespace ECellEngine::Maths
 	*/
 	class LogicOperation
 	{
-	public:
-		enum LogicalOperator
-		{
-			LogicalOperator_AND,
-			LogicalOperator_OR,
-			LogicalOperator_NOT
-		};
-
 	private:
 		/*!
 		@brief The logic operator used to compute the result.
@@ -85,8 +77,8 @@ namespace ECellEngine::Maths
 		}
 
 		/*!
-		@brief Returns the enum representation of the logical operator
-				used in this operation.
+		@brief Returns the reference to the enum representation of the logical
+				operator used in this operation.
 		*/
 		inline LogicalOperator& GetLogicalOperator() noexcept
 		{
@@ -96,6 +88,8 @@ namespace ECellEngine::Maths
 		/*!
 		@brief Sets the logical operator used to compute the result based on
 				the value of ::operatorType.
+		@remark There is no setter for ::operatorType but it can be changed
+				through the reference returned by ::GetLogicalOperator.
 		*/
 		void SetLogic() noexcept;
 

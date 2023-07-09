@@ -30,27 +30,27 @@ namespace ECellEngine::Data::Util
 #pragma endregion
 
 #pragma region SetFlag
-	static inline const bool SetFlag(unsigned char& _flags, const unsigned char _flagToSet) noexcept
+	static inline void SetFlag(unsigned char& _flags, const unsigned char _flagToSet) noexcept
 	{
 		_flags |= _flagToSet;
 	}
 
-	static inline const bool SetFlag(unsigned short& _flags, const unsigned short _flagToSet) noexcept
+	static inline void SetFlag(unsigned short& _flags, const unsigned short _flagToSet) noexcept
 	{
 		_flags |= _flagToSet;
 	}
 
-	static inline const bool SetFlag(unsigned int& _flags, const unsigned int _flagToSet) noexcept
+	static inline void SetFlag(unsigned int& _flags, const unsigned int _flagToSet) noexcept
 	{
 		_flags |= _flagToSet;
 	}
 
-	static inline const bool SetFlag(unsigned long& _flags, const unsigned long _flagToSet) noexcept
+	static inline void SetFlag(unsigned long& _flags, const unsigned long _flagToSet) noexcept
 	{
 		_flags |= _flagToSet;
 	}
 
-	static inline const bool SetFlag(unsigned long long& _flags, const unsigned long long _flagToSet) noexcept
+	static inline void SetFlag(unsigned long long& _flags, const unsigned long long _flagToSet) noexcept
 	{
 		_flags |= _flagToSet;
 	}

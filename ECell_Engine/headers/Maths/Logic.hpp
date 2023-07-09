@@ -4,6 +4,16 @@
 namespace ECellEngine::Maths
 {
 	/*!
+	@brief The enum listing the possible types of logical operators.
+	*/
+	enum LogicalOperator
+	{
+		LogicalOperator_AND,
+		LogicalOperator_OR,
+		LogicalOperator_NOT
+	};
+
+	/*!
 	@brief Class used to compare two booleans.
 	*/
 	struct Logic

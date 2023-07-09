@@ -24,7 +24,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeEquations(ECellEngine::Data:
         if (astNode->getType() == ASTNodeType_t::AST_NAME)
         {
             root = Operation(variableId);
-            root.Set(&functions.identity);
+            root.Set(&functions.identity, FunctionType_Identity);
             root.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(astNode->getName())->second));
         }
         else
@@ -110,7 +110,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
         if (astNode->getType() == ASTNodeType_t::AST_NAME)
         {
             Operation root = Operation(reaction->getId());
-            root.Set(&functions.identity);
+            root.Set(&functions.identity, FunctionType_Identity);
             root.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(astNode->getName())->second));
             _sbmlModule.AddReaction(reaction->getId(), products, reactants, root);
         }
@@ -217,27 +217,27 @@ void ECellEngine::IO::SBMLModuleImporter::AssignOperationFunction(Operation& _op
     switch (_node->getType())
     {
     case ASTNodeType_t::AST_PLUS:
-        _op.Set(&functions.plus);
+        _op.Set(&functions.plus, FunctionType_Plus);
         break;
 
     case ASTNodeType_t::AST_MINUS:
-        _op.Set(&functions.minus);
+        _op.Set(&functions.minus, FunctionType_Minus);
         break;
 
     case ASTNodeType_t::AST_TIMES:
-        _op.Set(&functions.times);
+        _op.Set(&functions.times, FunctionType_Times);
         break;
 
     case ASTNodeType_t::AST_DIVIDE:
-        _op.Set(&functions.divide);
+        _op.Set(&functions.divide, FunctionType_Divide);
         break;
 
     case ASTNodeType_t::AST_FUNCTION_POWER:
-        _op.Set(&functions.power);
+        _op.Set(&functions.power, FunctionType_Power);
         break;
 
     case ASTNodeType_t::AST_FUNCTION_ROOT:
-        _op.Set(&functions.root);
+        _op.Set(&functions.root, FunctionType_Root);
 		break;
     }
 }

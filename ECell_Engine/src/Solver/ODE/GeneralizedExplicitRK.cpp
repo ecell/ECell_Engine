@@ -16,7 +16,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::BuildEquationRHS(Operatio
 		for (unsigned short step = 1; step <= halfSize; step *= 2)
 		{
 			Operation couple;
-			couple.Set(&ECellEngine::Maths::functions.plus);
+			couple.Set(&ECellEngine::Maths::functions.plus, FunctionType_Plus);
 			for (unsigned short i = 0; i < _fluxes.size(); i += step * 2)
 			{
 				couple.AddOperation(_fluxes[i]);
@@ -76,18 +76,18 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 			Operation rhs;
 			if (hasIF && !hasOF)
 			{
-				rhs.Set(&ECellEngine::Maths::functions.identity);
+				rhs.Set(&ECellEngine::Maths::functions.identity, FunctionType_Identity);
 				BuildEquationRHS(rhs, IFSearch->second);
 			}
 			else if (!hasIF && hasOF)
 			{
-				rhs.Set(&ECellEngine::Maths::functions.times);
+				rhs.Set(&ECellEngine::Maths::functions.times, FunctionType_Times);
 				rhs.AddNewConstant(-1);
 				BuildEquationRHS(rhs, OFSearch->second);
 			}
 			else
 			{
-				rhs.Set(&ECellEngine::Maths::functions.minus);
+				rhs.Set(&ECellEngine::Maths::functions.minus, FunctionType_Minus);
 				BuildEquationRHS(rhs, IFSearch->second);
 				BuildEquationRHS(rhs, OFSearch->second);
 			}

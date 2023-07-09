@@ -34,6 +34,15 @@ namespace ECellEngine::Editor::Widget::MNBV
 		Utility::MNBV::NodeEditorStyle style;
 
 #pragma region Nodes Lists
+
+		/*!
+		@brief The list of arithmetic operation nodes in this context.
+		@details It contains the information used to draw the nodes to perform
+				 arithmetic operation (addition, subtraction, multiplication,
+				 division) based on couples of numbers.
+		*/
+		std::vector<Utility::MNBV::ArithmeticOperationNodeData> arithmeticOperationNodes;
+
 		/*!
 		@brief The list of asset nodes in this context.
 		@details It contains the information used to draw the nodes corresponding

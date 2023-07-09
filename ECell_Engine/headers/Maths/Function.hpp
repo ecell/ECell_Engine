@@ -7,6 +7,20 @@
 
 namespace ECellEngine::Maths
 {
+    /*!
+    @biref The enum listing the different available functions.
+    */
+    enum FunctionType
+    {
+        FunctionType_Identity,
+        FunctionType_Plus,
+        FunctionType_Minus,
+        FunctionType_Times,
+        FunctionType_Divide,
+        FunctionType_Power,
+        FunctionType_Root
+    };
+
 	struct Function
 	{
         /*!
