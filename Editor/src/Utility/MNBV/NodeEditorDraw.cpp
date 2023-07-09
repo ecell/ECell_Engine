@@ -435,7 +435,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_LogicOperation));
 	ax::NodeEditor::BeginNode(_logicOperationNodeInfo.id);
-
+	ImGui::PushID((std::size_t)_logicOperationNodeInfo.id);
 	const float headerWidth = NodeHeader("Logic Operation", "", Widget::MNBV::GetNodeColors(NodeType_Data), 250.f);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
@@ -447,8 +447,11 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 		itemsWidth, startX, headerWidth))
 	{
 		_logicOperationNodeInfo.data->SetLogic();
+		//We use UpdateLHS to trigger the update of the result.
+		//We chose parameter values that will not change the value of LHS but will surely trigger
+		//the onOperandChange callback as well as onResultChange callback.
+		_logicOperationNodeInfo.data->UpdateLHS(!_logicOperationNodeInfo.lhs, _logicOperationNodeInfo.lhs);
 	}
-
 
 	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS].isUsed)
 	{
@@ -463,6 +466,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 	}
 	else
 	{
+		_logicOperationNodeInfo.lhs = _logicOperationNodeInfo.data->GetLHS();
 		textValue = "LHS (";
 		textValue += _logicOperationNodeInfo.lhs ? "true)" : "false)";
 		NodeText_In(textValue.c_str(), startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS],
@@ -487,8 +491,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 	}
 	else
 	{
+		_logicOperationNodeInfo.rhs = _logicOperationNodeInfo.data->GetRHS();
 		textValue = "RHS (";
-		textValue += _logicOperationNodeInfo.lhs ? "true)" : "false)";
+		textValue += _logicOperationNodeInfo.rhs ? "true)" : "false)";
 		NodeText_In(textValue.c_str(), startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS],
 			Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
 	}
@@ -498,6 +503,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
 		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
+	ImGui::PopID();
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
 }

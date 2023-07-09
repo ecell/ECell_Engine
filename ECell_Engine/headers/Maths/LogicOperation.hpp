@@ -66,7 +66,10 @@ namespace ECellEngine::Maths
 		*/
 		ECellEngine::Core::Callback<bool, bool> onResultChange;
 
-		LogicOperation() = default;
+		LogicOperation()
+		{
+			SetLogic();//update the logic operator based on the value of ::operatorType
+		}
 
 		/*!
 		@brief Evaluates the logic comparison and returns the result.
@@ -83,6 +86,22 @@ namespace ECellEngine::Maths
 		inline LogicalOperator& GetLogicalOperator() noexcept
 		{
 			return operatorType;
+		}
+
+		/*!
+		@brief The value of the left hand side operand.
+		*/
+		inline bool GetLHS() const noexcept
+		{
+			return lhs;
+		}
+
+		/*!
+		@brief The value of the right hand side operand.
+		*/
+		inline bool GetRHS() const noexcept
+		{
+			return rhs;
 		}
 
 		/*!

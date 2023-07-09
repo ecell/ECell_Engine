@@ -20,38 +20,34 @@ void ECellEngine::Maths::LogicOperation::SetLogic() noexcept
 
 void ECellEngine::Maths::LogicOperation::UpdateLHS(const bool _previousValue, const bool _newValue) noexcept
 {	
-	bool newRes = (*logic)(_newValue, rhs);
+	previousResult = newResult;
+	newResult = (*logic)(_newValue, rhs);
 
-	if (newResult != newRes)
+	if (previousResult != newResult)
 	{
-		onResultChange(newResult, newRes);
+		onResultChange(previousResult, newResult);
 	}
 
 	if (_previousValue != _newValue)
 	{
 		lhs = _newValue;
-		onOperandChange(newResult, newRes);
+		onOperandChange(previousResult, newResult);
 	}
-
-	previousResult = newResult;
-	newResult = newRes;
 }
 
 void ECellEngine::Maths::LogicOperation::UpdateRHS(const bool _previousValue, const bool _newValue) noexcept
 {
-	bool newRes = (*logic)(lhs, _newValue);
+	previousResult = newResult;
+	newResult = (*logic)(lhs, _newValue);
 
-	if (newResult != newRes)
+	if (previousResult != newResult)
 	{
-		onResultChange(newResult, newRes);
+		onResultChange(previousResult, newResult);
 	}
 
 	if (_previousValue != _newValue)
 	{
 		rhs = _newValue;
-		onOperandChange(newResult, newRes);
+		onOperandChange(previousResult, newResult);
 	}
-
-	previousResult = newResult;
-	newResult = newRes;
 }
