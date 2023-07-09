@@ -7,6 +7,31 @@ void ECellEngine::Data::Species::GetInvolvedSpecies(std::vector<std::string>& ou
 	out_involvedSpecies.emplace_back(name);
 }
 
+void ECellEngine::Data::Species::Set(const float _val) noexcept
+{
+	previousQuantity = quantity;
+	quantity = _val;
+
+	if (previousQuantity != quantity)
+	{
+		onValueChange(previousQuantity, quantity);
+	}
+}
+
+void ECellEngine::Data::Species::Increment(const float _inc)
+{
+	previousQuantity = quantity;
+	quantity += _inc;
+	onValueChange(previousQuantity, quantity);
+}
+
+void ECellEngine::Data::Species::Decrement(const float _dec)
+{
+	previousQuantity = quantity;
+	quantity -= _dec;
+	onValueChange(previousQuantity, quantity);
+}
+
 void ECellEngine::Data::Species::UpdateQuantity(const float _previousValue, const float _newValue) noexcept
 {
 	previousQuantity = quantity;

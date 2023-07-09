@@ -24,10 +24,7 @@ namespace ECellEngine::Data
 			return value;
 		}
 
-		inline void Set(const float _value) noexcept override
-		{
-			value = _value;
-		}
+		virtual void Set(const float _value) noexcept override;
 
 		void GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
 

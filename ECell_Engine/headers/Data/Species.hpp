@@ -28,20 +28,11 @@ namespace ECellEngine::Data
 
 		void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
 		
-		inline virtual void Set(const float _val) noexcept override
-		{
-			quantity = _val;
-		}
+		virtual void Set(const float _val) noexcept override;
 
-		inline void Increment(const float _inc)
-		{
-			quantity += _inc;
-		}
+		void Increment(const float _inc);
 
-		inline void Decrement(const float _dec)
-		{
-			quantity -= _dec;
-		}
+		void Decrement(const float _dec);
 
 		void UpdateQuantity(const float _previousValue, const float _newValue) noexcept;
 
