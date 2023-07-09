@@ -901,8 +901,11 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 	const float onTriggerStayWidth = ImGui::CalcTextSize("onTriggerStay").x;
 	const float onTriggerExitWidth = ImGui::CalcTextSize("onTriggerExit").x;
 
-	NodeComboBox("Comparator", _triggerNodeInfo.comparators, 6, (int&)_triggerNodeInfo.data->GetComparator(),
-		itemsWidth, startX, headerWidth);
+	if (NodeComboBox("Comparator", _triggerNodeInfo.comparators, 6, (int&)_triggerNodeInfo.data->GetComparator(),
+		itemsWidth, startX, headerWidth))
+	{
+		_triggerNodeInfo.data->UpdateAndCall();
+	}
 
 	ImGuiSliderFlags dragFlags = ImGuiSliderFlags_None;
 	if (_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Target].isUsed)
