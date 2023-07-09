@@ -582,17 +582,17 @@ namespace ECellEngine::Editor::Utility::MNBV
 			data->AddOperand(&lhs);
 			data->AddOperand(&rhs);
 
-			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //not used
-			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //not used
-			outputPins[OutputPin_OnOperandChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //Value
-			outputPins[OutputPin_OnResultChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //Value
+			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //Left Hand Side
+			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //Right Hand Side
+			outputPins[OutputPin_OnOperandChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //The callback when an operand (input) changes
+			outputPins[OutputPin_OnResultChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //The callback when the result changes
 		}
 
 		ArithmeticOperationNodeData(const ArithmeticOperationNodeData& _aond) :
 			NodeData(_aond),
 			lhs{ _aond.lhs }, rhs{ _aond.rhs }, data{ _aond.data },
 			inputPins{ _aond.inputPins[0], _aond.inputPins[1] },
-			outputPins{ _aond.outputPins[0] }
+			outputPins{ _aond.outputPins[0], _aond.outputPins[1] }
 		{
 			data->OverrideOperand(&lhs, 0);
 			data->OverrideOperand(&rhs, 1);
@@ -1288,17 +1288,17 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //not used
-			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //not used
-			outputPins[OutputPin_OnOperandChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Value
-			outputPins[OutputPin_OnResultChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Value
+			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Left hand side
+			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Right hand side
+			outputPins[OutputPin_OnOperandChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Callback output pin when an input value (operand) changes
+			outputPins[OutputPin_OnResultChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_ValueBool, this); //Callback output pin when the result changes
 		}
 
 		LogicOperationNodeData(const LogicOperationNodeData& _lond) :
 			NodeData(_lond),
 			lhs{ _lond.lhs }, rhs{ _lond.rhs }, data{ _lond.data },
 			inputPins{ _lond.inputPins[0], _lond.inputPins[1] },
-			outputPins{ _lond.outputPins[0] }
+			outputPins{ _lond.outputPins[0], _lond.outputPins[1]}
 		{
 			for (int i = 0; i < InputPin_Count; i++)
 			{
