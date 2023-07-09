@@ -177,12 +177,12 @@ namespace ECellEngine::Maths
 		/*!
 		@brief The callback whenever the value of ::lhs or ::rhs changes.
 		*/
-		ECellEngine::Core::Callback<float, float> onOperandChange;
+		ECellEngine::Core::Callback<const float, const float> onOperandChange;
 
 		/*!
 		@brief The callback whenever the value of ::newResult changes.
 		*/
-		ECellEngine::Core::Callback<float, float> onResultChange;
+		ECellEngine::Core::Callback<const float, const float> onResultChange;
 
 		Operation() : Operand()
 		{

@@ -52,15 +52,15 @@ void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::InputDisco
 	//LHS input pin of the logic comparison
 	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_LHS].id)
 	{
-		*((Core::Callback<float, float>*)_data) -= data->updateLHSSubToken;
+		*((Core::Callback<const float, const float>*)_data) -= data->updateLHSSubToken;
 		data->updateLHSSubToken = nullptr;
 	}
 
 	//RHS input pin of the logic comparison
 	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_RHS].id)
 	{
-		*((Core::Callback<float, float>*)_data) -= data->updateRHSSubToken;
-		data->updateLHSSubToken = nullptr;
+		*((Core::Callback<const float, const float>*)_data) -= data->updateRHSSubToken;
+		data->updateRHSSubToken = nullptr;
 	}
 }
 
@@ -88,13 +88,13 @@ void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::OutputDisc
 	//The output pin with the result of the comparison when LHS or RHS changes
 	if (_nodeOutputPinData->id == outputPins[ArithmeticOperationNodeData::OutputPin_OnOperandChange].id)
 	{
-		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &data->onOperandChange);
 	}
 
 	//The output pin with the result of the comparison when the result changes
 	if (_nodeOutputPinData->id == outputPins[ArithmeticOperationNodeData::OutputPin_OnResultChange].id)
 	{
-		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &data->onResultChange);
 	}
 }
 
@@ -281,13 +281,13 @@ void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::InputConnect(No
 	//LHS input pin of the logic comparison
 	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_LHS].id)
 	{
-		data->updateLHSSubToken = std::move(*((Core::Callback<bool, bool>*)_data) += std::bind(&Maths::LogicOperation::UpdateLHS, data, std::placeholders::_1, std::placeholders::_2));
+		data->updateLHSSubToken = std::move(*((Core::Callback<const bool, const bool>*)_data) += std::bind(&Maths::LogicOperation::UpdateLHS, data, std::placeholders::_1, std::placeholders::_2));
 	}
 
 	//RHS input pin of the logic comparison
 	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_RHS].id)
 	{
-		data->updateRHSSubToken = std::move(*((Core::Callback<bool, bool>*)_data) += std::bind(&Maths::LogicOperation::UpdateRHS, data, std::placeholders::_1, std::placeholders::_2));
+		data->updateRHSSubToken = std::move(*((Core::Callback<const bool, const bool>*)_data) += std::bind(&Maths::LogicOperation::UpdateRHS, data, std::placeholders::_1, std::placeholders::_2));
 	}
 }
 
@@ -296,15 +296,15 @@ void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::InputDisconnect
 	//LHS input pin of the logic comparison
 	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_LHS].id)
 	{
-		*((Core::Callback<bool, bool>*)_data) -= data->updateLHSSubToken;
+		*((Core::Callback<const bool, const bool>*)_data) -= data->updateLHSSubToken;
 		data->updateLHSSubToken = nullptr;
 	}
 
 	//RHS input pin of the logic comparison
 	if (_nodeInputPin->id == inputPins[LogicOperationNodeData::InputPin_RHS].id)
 	{
-		*((Core::Callback<bool, bool>*)_data) -= data->updateRHSSubToken;
-		data->updateLHSSubToken = nullptr;
+		*((Core::Callback<const bool, const bool>*)_data) -= data->updateRHSSubToken;
+		data->updateRHSSubToken = nullptr;
 	}
 }
 
@@ -332,13 +332,13 @@ void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::OutputDisconnec
 	//The output pin with the result of the comparison when LHS or RHS changes
 	if (_nodeOutputPinData->id == outputPins[LogicOperationNodeData::OutputPin_OnOperandChange].id)
 	{
-		_nodeInputPin->OnDisconnect(_nodeOutputPinData, nullptr);
+		_nodeInputPin->OnDisconnect(_nodeOutputPinData, &data->onOperandChange);
 	}
 
 	//The output pin with the result of the comparison when the result changes
 	if (_nodeOutputPinData->id == outputPins[LogicOperationNodeData::OutputPin_OnResultChange].id)
 	{
-		_nodeInputPin->OnDisconnect(_nodeOutputPinData, nullptr);
+		_nodeInputPin->OnDisconnect(_nodeOutputPinData, &data->onResultChange);
 	}
 }
 

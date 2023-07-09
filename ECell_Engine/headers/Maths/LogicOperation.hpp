@@ -59,12 +59,12 @@ namespace ECellEngine::Maths
 		/*!
 		@brief The callback whenever the value of ::lhs or ::rhs changes.
 		*/
-		ECellEngine::Core::Callback<bool, bool> onOperandChange;
+		ECellEngine::Core::Callback<const bool, const bool> onOperandChange;
 
 		/*!
 		@brief The callback whenever the value of ::newResult changes.
 		*/
-		ECellEngine::Core::Callback<bool, bool> onResultChange;
+		ECellEngine::Core::Callback<const bool, const bool> onResultChange;
 
 		LogicOperation()
 		{
