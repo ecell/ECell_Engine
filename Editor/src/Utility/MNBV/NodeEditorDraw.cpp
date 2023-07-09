@@ -748,12 +748,18 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 		_parameterNodeInfo.inputPins[ParameterNodeData::InputPin_CollHdrDataFields], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_CollHdrDataFields], Widget::MNBV::GetPinColors(PinType_Default),
 		ImVec2(itemsWidth, 0)))
 	{
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+		if (_parameterNodeInfo.inputPins[ParameterNodeData::InputPin_ParameterValue].isUsed)
+		{
+			flags |= ImGuiInputTextFlags_ReadOnly;
+		}
+		_parameterNodeInfo.parameterValueBuffer = _parameterNodeInfo.data->Get();
 		if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &_parameterNodeInfo.parameterValueBuffer,
 			itemsWidth, startX, headerWidth,
 			_parameterNodeInfo.inputPins[ParameterNodeData::InputPin_ParameterValue], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_ParameterValue], Widget::MNBV::GetPinColors(PinType_DataStateValueFloat),
-			ImGuiInputTextFlags_EnterReturnsTrue))
+			flags))
 		{
-			_parameterNodeInfo.data->Set(_parameterNodeInfo.parameterValueBuffer);
+			_parameterNodeInfo.data->UpdateValue(_parameterNodeInfo.data->Get(), _parameterNodeInfo.parameterValueBuffer);
 		}
 	}
 
@@ -882,12 +888,18 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 		_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrDataFields], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields], Widget::MNBV::GetPinColors(PinType_Default),
 		ImVec2(itemsWidth, 0)))
 	{
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+		if (_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Quantity].isUsed)
+		{
+			flags |= ImGuiInputTextFlags_ReadOnly;
+		}
+		_speciesNodeInfo.speciesQuantityBuffer = _speciesNodeInfo.data->Get();
 		if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &_speciesNodeInfo.speciesQuantityBuffer,
 			itemsWidth, startX, headerWidth,
 			_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Quantity], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_Quantity], Widget::MNBV::GetPinColors(PinType_DataStateValueFloat),
 			ImGuiInputTextFlags_EnterReturnsTrue))
 		{
-			_speciesNodeInfo.data->Set(_speciesNodeInfo.speciesQuantityBuffer);
+			_speciesNodeInfo.data->UpdateQuantity(_speciesNodeInfo.data->Get(), _speciesNodeInfo.speciesQuantityBuffer);
 		}
 	}
 

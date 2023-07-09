@@ -79,7 +79,7 @@ void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::OutputConn
 	{
 		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->onResultChange);
 		float res = data->Get();
-		data->onOperandChange(res, res, data->onOperandChange.Size() - 1);//Callback to the last subscriber
+		data->onResultChange(res, res, data->onResultChange.Size() - 1);//Callback to the last subscriber
 	}
 }
 
@@ -323,7 +323,7 @@ void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::OutputConnect(N
 	{
 		_nodeInputPin->OnConnect(_nodeOutputPinData, &data->onResultChange);
 		bool res = (*data.get())();
-		data->onOperandChange(!res, res, data->onOperandChange.Size() - 1);//Callback to the last subscriber
+		data->onResultChange(!res, res, data->onResultChange.Size() - 1);//Callback to the last subscriber
 	}
 }
 
@@ -465,6 +465,26 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::ResetNLBSDUtilitySta
 	nlbsDataRKLDep.ResetUtilityState();
 }
 
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin, void* _data)
+{
+	//Quantity value
+	if (_nodeInputPinData->id == inputPins[SpeciesNodeData::InputPin_Quantity].id)
+	{
+		data->updateValueSubToken = std::move(*((Core::Callback<const float, const float>*)_data) += std::bind(&Data::Parameter::UpdateValue, data, std::placeholders::_1, std::placeholders::_2));
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(inputPins[ParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin, void* _data)
+{
+	//Quantity value
+	if (_nodeInputPinData->id == inputPins[SpeciesNodeData::InputPin_Quantity].id)
+	{
+		*((Core::Callback<const float, const float>*)_data) -= data->updateValueSubToken;
+		data->updateValueSubToken = nullptr;
+	}
+}
+
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
 	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ThisData].id)
@@ -478,7 +498,9 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeIn
 	//Parameter value
 	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ParameterValue].id)
 	{
-		_nodeInputPinData->OnConnect(_nodeOutputPin, &parameterValueBuffer);
+		_nodeInputPinData->OnConnect(_nodeOutputPin, &data->onValueChange);
+		float res = data->Get();
+		data->onValueChange(res, res, data->onValueChange.Size() - 1);//Callback to the last subscriber
 
 		//we set the output pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[ParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
@@ -495,7 +517,7 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputDisconnect(Nod
 	//Parameter value
 	if (_nodeOutputPin->id == outputPins[ParameterNodeData::OutputPin_ParameterValue].id)
 	{
-		_nodeInputPinData->OnDisconnect(_nodeOutputPin, nullptr);
+		_nodeInputPinData->OnDisconnect(_nodeOutputPin, &data->onValueChange);
 	}
 }
 
@@ -560,6 +582,26 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputRefresh(NodeInput
 	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &data->GetName());
 }
 
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin, void* _data)
+{
+	//Quantity value
+	if (_nodeInputPinData->id == inputPins[SpeciesNodeData::InputPin_Quantity].id)
+	{
+		data->updateQuantitySubToken = std::move(*((Core::Callback<const float, const float>*)_data) += std::bind(&Data::Species::UpdateQuantity, data, std::placeholders::_1, std::placeholders::_2));
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(inputPins[SpeciesNodeData::OutputPin_CollHdrDataFields].id, 1);
+	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin, void* _data)
+{
+	//Quantity value
+	if (_nodeInputPinData->id == inputPins[SpeciesNodeData::InputPin_Quantity].id)
+	{
+		*((Core::Callback<const float, const float>*)_data) -= data->updateQuantitySubToken;
+		data->updateQuantitySubToken = nullptr;
+	}
+}
+
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
 	//This data (the pointer to the species)
@@ -574,7 +616,9 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInpu
 	//Quantity value
 	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_Quantity].id)
 	{
-		_nodeInputPinData->OnConnect(_nodeOutputPin, &speciesQuantityBuffer);
+		_nodeInputPinData->OnConnect(_nodeOutputPin, &data->onValueChange);
+		float res = data->Get();
+		data->onValueChange(res, res, data->onValueChange.Size() - 1);//Callback to the last subscriber
 
 		//we set the output pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields].id, 1);
@@ -592,7 +636,7 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputDisconnect(NodeI
 	//Quantity value
 	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_Quantity].id)
 	{
-		_nodeInputPinData->OnDisconnect(_nodeOutputPin, nullptr);
+		_nodeInputPinData->OnDisconnect(_nodeOutputPin, &data->onValueChange);
 	}
 }
 
@@ -605,10 +649,10 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputRefresh(NodeInpu
 	}
 
 	//Quantity value
-	if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_Quantity].id)
+	/*if (_nodeOutputPin->id == outputPins[SpeciesNodeData::OutputPin_Quantity].id)
 	{
 		_nodeInputPinData->OnRefresh(_nodeOutputPin, &speciesQuantityBuffer);
-	}
+	}*/
 }
 
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::Update() noexcept
