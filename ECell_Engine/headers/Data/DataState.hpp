@@ -100,6 +100,11 @@ namespace ECellEngine::Data
 			return logicOperations;
 		}
 
+		inline const std::vector<std::shared_ptr<Core::Events::ModifyDataStateValueEvent>>& GetModifyDataStateValueEvents() const
+		{
+			return modifyDataStateValueEvents;
+		}
+
 		inline const std::vector<std::shared_ptr<Core::Trigger<Operand*, Operand*>>>& GetTriggers() const
 		{
 			return triggers;

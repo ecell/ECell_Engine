@@ -72,12 +72,6 @@ namespace ECellEngine::Solvers::ODE
 		float triggerTriggerTime = 0.0f;
 
 		/*!
-		@brief A pointer to the earliest trigger that must be triggered within
-				the solver step update.
-		*/
-		Core::Trigger<Operand*, Operand*>* trigger = nullptr;
-
-		/*!
 		@brief Indicates whether the solver is set with a method enabling error
 				control.
 		*/

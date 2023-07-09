@@ -31,5 +31,6 @@ void ECellEngine::Core::Events::ModifyDataStateValueEvent::Execute(std::size_t _
 				SimulationsManager::GetSingleton().GetSimulation(_targetSimulationIndex)->GetDataState()->GetParameter(dataStateValueId)->Set(value);
 				break;
 		}
+		condition = false;
 	}
 }

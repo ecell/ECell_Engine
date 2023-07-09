@@ -346,7 +346,10 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
 			//y_n
-			yn[i] = ynp1[i];
+			//It cannot simply be a swap between yn and yn+1 because the yn+1
+			//might not be valid anymore if triggers lead to events execution
+			//that change the value of the system.
+			yn[i] = system[i].GetOperand()->Get();
 			//k1 = f(y_n)
 			coeffs.ks[i*systemSize] = system[i].GetOperation().Get();
 			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("k1[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize]));
@@ -424,7 +427,6 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 					if (triggerCandidateTime < triggerTriggerTime)
 					{
 						triggerTriggerTime = triggerCandidateTime;
-						trigger = it->first;
 					}
 				}
 			}
@@ -517,7 +519,6 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 					if (triggerCandidateTime < triggerTriggerTime)
 					{
 						triggerTriggerTime = triggerCandidateTime;
-						trigger = it->first;
 					}
 				}
 			}
@@ -547,10 +548,6 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 					externalEquations[i]->Compute();
 				}
 
-				//Trigger the callbacks. Since the trigger was selected with HasTransitioned()
-				//before, it can only be onTriggerEnter or onTriggerExit.
-				trigger->Call();
-
 				//We update the stepper to the time at which the trigger was triggered
 				stepper.ForceNext(triggerTriggerTime - stepper.t);
 			}
@@ -578,6 +575,21 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 
 				//we compute the next step size
 				stepper.ComputeNext(coeffs.estimationsMinOrder);
+			}
+
+			//Whether we found a new activated trigger this step, we must call
+			// all triggers because some might have subcribers to onTriggerStay
+			for (auto triggerODE: triggersOnODE)
+			{
+				triggerODE.first->Call();
+			}
+			for (auto triggerExtEq : triggersOnExtEq)
+			{
+				triggerExtEq.first->Call();
+			}
+			for (auto _event : dataState.GetModifyDataStateValueEvents())
+			{
+				_event->Execute(0);
 			}
 		}
 		else
