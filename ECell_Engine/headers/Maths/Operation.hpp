@@ -1,8 +1,10 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <vector>
 
+#include "Core/Callback.hpp"
 #include "Data/Constant.hpp" //#include "Operand.hpp"
 #include "Data/BitwiseOperationsUtility.hpp"
 #include "Maths/Function.hpp"
@@ -142,7 +144,39 @@ namespace ECellEngine::Maths
 		*/
 		std::vector<Operand*> operands;
 
+		/*
+		@brief The previous value of the result of the computation of the operation.
+		*/
+		float previousResult = 0.0f;
+
+		/*!
+		@brief The new value of the result of the computation of the operation.
+		*/
+		float newResult = 0.0f;
+
 	public:
+
+		/*!
+		@brief The placeholder for the subscription of ::UpdateLHS to a matching
+				callback.
+		*/
+		std::shared_ptr<std::function<void(const float, const float)>> updateLHSSubToken = nullptr;
+
+		/*!
+		@brief The placeholder for the subscription of ::UpdateRHS to a matching
+				callback.
+		*/
+		std::shared_ptr<std::function<void(const float, const float)>> updateRHSSubToken = nullptr;
+
+		/*!
+		@brief The callback whenever the value of ::lhs or ::rhs changes.
+		*/
+		ECellEngine::Core::Callback<float, float> onOperandChange;
+
+		/*!
+		@brief The callback whenever the value of ::newResult changes.
+		*/
+		ECellEngine::Core::Callback<float, float> onResultChange;
 
 		Operation() : Operand() {}
 
@@ -304,5 +338,21 @@ namespace ECellEngine::Maths
 		{
 			return '\n' + name + ":" + function->ToStringValue(operands) + "=" + std::to_string((*function)(operands));
 		}
+
+		/*!
+		@brief Updates the left hand side and triggers the callbacks
+				::onOperandChange and ::onResultChange if the corresponding
+				conditions are met.
+		@details The left hand side is the first operand of this operation.
+		*/
+		void UpdateLHS(const float _previousValue, const float _newValue) noexcept;
+
+		/*!
+		@brief Updates the right hand side and triggers the callbacks
+				::onOperandChange and ::onResultChange if the corresponding
+				conditions are met.
+		@brief The right hand side is the second operand of this operation.
+		*/
+		void UpdateRHS(const float _previousValue, const float _newValue) noexcept;
 	};
 }

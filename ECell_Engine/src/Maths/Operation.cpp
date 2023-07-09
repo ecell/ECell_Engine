@@ -157,3 +157,41 @@ void ECellEngine::Maths::Operation::UpdateOperands()
 		}
 	}
 }
+
+void ECellEngine::Maths::Operation::UpdateLHS(const float _previousValue, const float _newValue)
+{
+	operands[0]->Set(_newValue);
+	float newRes = (*function)(operands);
+
+	if (_previousValue != newRes)
+	{
+		onOperandChange(previousResult, newRes);
+	}
+
+	if (newRes != newResult)
+	{
+		onResultChange(newResult, newRes);
+	}
+
+	previousResult = newResult;
+	newResult = newRes;
+}
+
+void ECellEngine::Maths::Operation::UpdateRHS(const float _previousValue, const float _newValue)
+{
+	operands[1]->Set(_newValue);
+	float newRes = (*function)(operands);
+
+	if (_previousValue != newRes)
+	{
+		onOperandChange(previousResult, newRes);
+	}
+
+	if (newRes != newResult)
+	{
+		onResultChange(newResult, newRes);
+	}
+
+	previousResult = newResult;
+	newResult = newRes;
+}
