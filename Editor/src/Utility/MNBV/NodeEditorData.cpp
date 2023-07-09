@@ -393,6 +393,7 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 	{
 		data->dataStateValueId = speciesNodeData->data.get()->name;
 		data->valueType = ECellEngine::Core::Events::ModifyDataStateValueEvent::DataStateValueType::Species;
+		_nodeInputPinData->isUsed = true;
 	}
 
 	ParameterNodeData* parameterNodeData = dynamic_cast<ParameterNodeData*>(_nodeInputPinData->node);
@@ -400,6 +401,7 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 	{
 		data->dataStateValueId = parameterNodeData->data.get()->name;
 		data->valueType = ECellEngine::Core::Events::ModifyDataStateValueEvent::DataStateValueType::Parameter;
+		_nodeInputPinData->isUsed = true;
 	}
 
 	Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[ModifyDataStateValueEventNodeData::OutputPin_CollHdrExecution].id, 1);
@@ -411,8 +413,8 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 
 	//Reset the data state value id
 	data->dataStateValueId = "";
-
-	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
+	_nodeInputPinData->isUsed = false;
+	//_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
 }
 
 void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
@@ -468,7 +470,7 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::ResetNLBSDUtilitySta
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin, void* _data)
 {
 	//Quantity value
-	if (_nodeInputPinData->id == inputPins[SpeciesNodeData::InputPin_Quantity].id)
+	if (_nodeInputPinData->id == inputPins[ParameterNodeData::InputPin_ParameterValue].id)
 	{
 		data->updateValueSubToken = std::move(*((Core::Callback<const float, const float>*)_data) += std::bind(&Data::Parameter::UpdateValue, data, std::placeholders::_1, std::placeholders::_2));
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(inputPins[ParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
@@ -478,7 +480,7 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputConnect(NodeInp
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin, void* _data)
 {
 	//Quantity value
-	if (_nodeInputPinData->id == inputPins[SpeciesNodeData::InputPin_Quantity].id)
+	if (_nodeInputPinData->id == inputPins[ParameterNodeData::InputPin_ParameterValue].id)
 	{
 		*((Core::Callback<const float, const float>*)_data) -= data->updateValueSubToken;
 		data->updateValueSubToken = nullptr;

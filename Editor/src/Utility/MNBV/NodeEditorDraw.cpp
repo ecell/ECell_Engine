@@ -897,7 +897,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 		if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &_speciesNodeInfo.speciesQuantityBuffer,
 			itemsWidth, startX, headerWidth,
 			_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Quantity], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_Quantity], Widget::MNBV::GetPinColors(PinType_DataStateValueFloat),
-			ImGuiInputTextFlags_EnterReturnsTrue))
+			flags))
 		{
 			_speciesNodeInfo.data->UpdateQuantity(_speciesNodeInfo.data->Get(), _speciesNodeInfo.speciesQuantityBuffer);
 		}
