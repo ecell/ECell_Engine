@@ -496,12 +496,16 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 	const float headerWidth = NodeHeader("Modify DataState Value Event", "", Widget::MNBV::GetNodeColors(NodeType_Event));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
+	ImGuiSliderFlags dragFlags = _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue].isUsed ? ImGuiSliderFlags_ReadOnly : ImGuiSliderFlags_None;
 
-	//TODO: Disable if something is pinned in
-	NodeDragFloat_In("New Value", _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue],
-		&_modifyDSValueEventNodeInfo.value,
-		itemsWidth, startX, _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue],
-		Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
+	_modifyDSValueEventNodeInfo.value = _modifyDSValueEventNodeInfo.data->GetValue();
+	float buffer = _modifyDSValueEventNodeInfo.value;
+	if (NodeDragFloat_In("New Value", _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue],
+		&buffer, itemsWidth, startX, _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue],
+		Widget::MNBV::GetPinColors(PinType_FreeValueFloat), dragFlags))
+	{
+		_modifyDSValueEventNodeInfo.data->UpdateValue(_modifyDSValueEventNodeInfo.value, buffer);
+	}
 
 	NodeHorizontalSeparator(headerWidth);
 
@@ -513,6 +517,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 		Widget::MNBV::GetPinColors(PinType_Default), ImVec2(itemsWidth, 0.f)))
 	{
 		ImGui::SetCursorPosX(startX + GetPinDrawOffset());
+
 		ImGui::Checkbox("##ManualExecution", &_modifyDSValueEventNodeInfo.activateManualExecution);
 		if (ImGui::IsItemHovered())
 		{
@@ -539,9 +544,27 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 			ImGui::EndDisabled();
 		}
 
-		NodeText_In("Condition", startX,
-			_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition],
-			Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
+		if (!_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition].isUsed)
+		{
+			NodeText_In("Condition", startX,
+				_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition],
+				Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
+
+			ImGui::SameLine();
+			bool buffer2 = _modifyDSValueEventNodeInfo.data->GetCondition();
+			if (ImGui::Checkbox("##ConditionInput", &buffer2))
+			{
+				_modifyDSValueEventNodeInfo.data->UpdateCondition(_modifyDSValueEventNodeInfo.data->GetCondition(), buffer2);
+			}
+		}
+		else
+		{
+			std::string condition = "Condition (";
+			condition += _modifyDSValueEventNodeInfo.data->GetCondition() ? "true)" : "false)";
+			NodeText_In(condition.c_str(), startX,
+						_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition],
+						Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
+		}
 
 		ImGui::SameLine();
 
