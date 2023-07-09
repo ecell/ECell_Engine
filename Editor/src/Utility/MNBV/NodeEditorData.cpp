@@ -71,7 +71,8 @@ void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::OutputConn
 	{
 		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->onOperandChange);
 		float res = data->Get();
-		data->onOperandChange(res, res, data->onOperandChange.Size() - 1);//Callback to the last subscriber
+		// The -1 is just to ensure that every subsequent callbacks are indeed called.
+		data->onOperandChange(res-1, res, data->onOperandChange.Size() - 1);//Callback to the last subscriber
 	}
 
 	//The output pin with the result of the comparison when the result changes
@@ -79,7 +80,8 @@ void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::OutputConn
 	{
 		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->onResultChange);
 		float res = data->Get();
-		data->onResultChange(res, res, data->onResultChange.Size() - 1);//Callback to the last subscriber
+		// The -1 is just to ensure that every subsequent callbacks are indeed called.
+		data->onResultChange(res-1, res, data->onResultChange.Size() - 1);//Callback to the last subscriber
 	}
 }
 
@@ -502,7 +504,8 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeIn
 	{
 		_nodeInputPinData->OnConnect(_nodeOutputPin, &data->onValueChange);
 		float res = data->Get();
-		data->onValueChange(res, res, data->onValueChange.Size() - 1);//Callback to the last subscriber
+		// The -1 is just to ensure that every subsequent callbacks are indeed called.
+		data->onValueChange(res-1, res, data->onValueChange.Size() - 1);//Callback to the last subscriber
 
 		//we set the output pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[ParameterNodeData::OutputPin_CollHdrDataFields].id, 1);
@@ -620,7 +623,8 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInpu
 	{
 		_nodeInputPinData->OnConnect(_nodeOutputPin, &data->onValueChange);
 		float res = data->Get();
-		data->onValueChange(res, res, data->onValueChange.Size() - 1);//Callback to the last subscriber
+		// The -1 is just to ensure that every subsequent callbacks are indeed called.
+		data->onValueChange(res-1, res, data->onValueChange.Size() - 1);//Callback to the last subscriber
 
 		//we set the output pin of the data field collapsing header as the fall back
 		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields].id, 1);
