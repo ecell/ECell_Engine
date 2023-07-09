@@ -4,11 +4,15 @@
 #include <vector>
 #include <string>
 
+#include "Core/Callback.hpp"
+
 namespace ECellEngine::Maths
 {
     struct Operand
     {
         std::string name;
+
+        Core::Callback<const float, const float> onValueChange;
 
         Operand() = default;
 

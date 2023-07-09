@@ -9,11 +9,14 @@ namespace ECellEngine::Data
 	struct Species : public ECellEngine::Maths::Operand
 	{
 	private:
+		float previousQuantity;
 		float quantity;
 
 	public:
+		std::shared_ptr<std::function<void(const float, const float)>> updateQuantitySubToken = nullptr;
+
 		Species(const std::string _name, const float _quantity) :
-			ECellEngine::Maths::Operand{ _name }, quantity{_quantity}
+			ECellEngine::Maths::Operand{ _name }, quantity{_quantity}, previousQuantity{_quantity}
 		{
 
 		}
@@ -39,6 +42,8 @@ namespace ECellEngine::Data
 		{
 			quantity -= _dec;
 		}
+
+		void UpdateQuantity(const float _previousValue, const float _newValue) noexcept;
 
 		inline const std::string ToString() const noexcept override
 		{
