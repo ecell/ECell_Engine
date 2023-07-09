@@ -25,6 +25,9 @@ namespace ECellEngine::Core
 		Callback() = default;
 		~Callback() = default;
 
+		/*!
+		@brief Adds a subscriber to the callback.
+		*/
 		std::shared_ptr<std::function<void(Args ...)>> operator+=(std::function<void(Args ...)> _subscriber)
 		{
 			//The deleter in the shared_ptr will be called when the weak_ptr is destroyed.
@@ -35,6 +38,12 @@ namespace ECellEngine::Core
 			return t;
 		}
 
+		/*!
+		@brief Removes a subscriber from the callback.
+		@details It is an "indirect" removal. The weak_ptr will be destroyed at the next
+				 cleanup.
+		@see ::Cleanup()
+		*/
 		void operator-=(std::shared_ptr<std::function<void(Args ...)>> _subscriber)
 		{
 			//this does not destroy the weak_ptr.
@@ -43,6 +52,9 @@ namespace ECellEngine::Core
 			_subscriber.reset();
 		}
 
+		/*!
+		@brief Calls all the subscribers.
+		*/
 		void operator()(Args ... args)
 		{
 			auto subscribers_copy = subscribers;//prevent concurrent modification
@@ -54,7 +66,33 @@ namespace ECellEngine::Core
 				}
 			}
 		}
+		
+		/*!
+		@brief Calls the subscriber at the given index.
+		@details If the index is out of range, nothing happens.
+		*/
+		void operator()(Args ... args, std::size_t _idx)
+		{
+			if (_idx < subscribers.size())
+			{
+				if (auto sp_subscriber = subscribers[_idx].lock())
+				{
+					(*sp_subscriber)(args ...);
+				}
+			}
+		}
 
+		/*!
+		@brief Returns the number of subscribers.
+		*/
+		std::size_t Size() const
+		{
+			return subscribers.size();
+		}
+
+		/*!
+		@brief Removes all the expired weak_ptr from the list of subscribers.
+		*/
 		void Cleanup()
 		{
 			for (auto& it = subscribers.begin(); it != subscribers.end();)
