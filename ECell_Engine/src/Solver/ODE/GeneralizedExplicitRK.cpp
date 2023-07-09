@@ -459,8 +459,9 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 				// when the user adds/removes equations in the future at runtime.
 				if (it->first->HasTransitioned())
 				{
-					float deltaTarget = fabsf(it->first->GetThreshold()->Get() - yn_ext[it->second]);
 					float deltaStep = fabsf(externalEquations[it->second]->Get() - yn_ext[it->second]);
+					//we increase by 1 unit of precision to make sure we go just a bit passed the trigger.
+					float deltaTarget = fabsf(it->first->GetThreshold()->Get() - yn_ext[it->second]) + stepper.computeTimeThetaTolerance * deltaStep;
 					float a = 0;
 					float b = 1;
 
@@ -556,7 +557,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			else
 			{
 				//Value Debugging
-				ECellEngine::Logging::Logger::GetSingleton().LogDebug("--- ACCEPTED ---");
+				//ECellEngine::Logging::Logger::GetSingleton().LogDebug("--- ACCEPTED ---");
 
 				//We update the system with the new value of y_n+1
 				for (unsigned short i = 0; i < systemSize; ++i)
@@ -595,7 +596,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 		else
 		{
 			//Value Debugging
-			ECellEngine::Logging::Logger::GetSingleton().LogDebug("--- REJECTED ---");
+			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("--- REJECTED ---");
 
 			//We reset the system to the values at the beginning of the step
 			for (unsigned short i = 0; i < systemSize; ++i)
