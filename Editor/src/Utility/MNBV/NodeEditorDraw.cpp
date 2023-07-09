@@ -27,17 +27,21 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_LogicOperation));
 	ax::NodeEditor::BeginNode(_arithmeticOperationNodeInfo.id);
+	
+	ImGui::PushID((std::size_t)_arithmeticOperationNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Logic Operation", "", Widget::MNBV::GetNodeColors(NodeType_Data), 300.f);
+	const float headerWidth = NodeHeader("Arithmetic Operation", "", Widget::MNBV::GetNodeColors(NodeType_Data), 300.f);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 	const float onOperandChangeWidth = ImGui::CalcTextSize("onOperandChange").x;
 	const float onResultChangeWidth = ImGui::CalcTextSize("onResultChange").x;
 
-	if (NodeComboBox("Function", _arithmeticOperationNodeInfo.operatorTypes, 3, (int&)_arithmeticOperationNodeInfo.data->GetFunctionType(),
+	if (NodeComboBox("Function", _arithmeticOperationNodeInfo.operatorTypes, 6, (int&)_arithmeticOperationNodeInfo.data->GetFunctionType(),
 		itemsWidth, startX, headerWidth))
 	{
 		_arithmeticOperationNodeInfo.data->UpdateFunction();
+		//not bullet proof but should do the trick
+		_arithmeticOperationNodeInfo.data->UpdateLHS(_arithmeticOperationNodeInfo.lhs.Get() + 1.f, _arithmeticOperationNodeInfo.lhs.Get());
 	}
 
 	ImGuiSliderFlags dragFlags = ImGuiSliderFlags_None;
@@ -47,9 +51,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 	}
 	float bufferTarget = _arithmeticOperationNodeInfo.lhs.Get();
 	if (NodeDragFloat_In("LHS", _arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_LHS], &bufferTarget,
-		0.5f * itemsWidth, startX,
-		_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_LHS], Widget::MNBV::GetPinColors(PinType_Operand),
-		dragFlags))
+		0.5f * itemsWidth, startX,_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_LHS],
+		Widget::MNBV::GetPinColors(PinType_Operand), dragFlags))
 	{
 		_arithmeticOperationNodeInfo.data->UpdateLHS(_arithmeticOperationNodeInfo.lhs.Get(), bufferTarget);
 	}
@@ -66,9 +69,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 	}
 	bufferTarget = _arithmeticOperationNodeInfo.rhs.Get();
 	if (NodeDragFloat_In("RHS", _arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS], &bufferTarget,
-		0.5f * itemsWidth, startX,
-		_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS], Widget::MNBV::GetPinColors(PinType_Operand),
-		dragFlags))
+		0.5f * itemsWidth, startX, _arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS],
+		Widget::MNBV::GetPinColors(PinType_Operand), dragFlags))
 	{
 		_arithmeticOperationNodeInfo.data->UpdateRHS(_arithmeticOperationNodeInfo.rhs.Get(), bufferTarget);
 	}
@@ -78,6 +80,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
 		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
+	ImGui::PopID();
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
 }

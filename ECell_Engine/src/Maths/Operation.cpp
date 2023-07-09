@@ -209,37 +209,33 @@ void ECellEngine::Maths::Operation::UpdateOperands()
 void ECellEngine::Maths::Operation::UpdateLHS(const float _previousValue, const float _newValue) noexcept
 {
 	operands[0]->Set(_newValue);
-	float newRes = (*function)(operands);
-
-	if (_previousValue != newRes)
-	{
-		onOperandChange(previousResult, newRes);
-	}
-
-	if (newRes != newResult)
-	{
-		onResultChange(newResult, newRes);
-	}
-
 	previousResult = newResult;
-	newResult = newRes;
+	newResult = (*function)(operands);
+
+	if (_previousValue != _newValue)
+	{
+		onOperandChange(previousResult, newResult);
+	}
+
+	if (previousResult != newResult)
+	{
+		onResultChange(previousResult, newResult);
+	}
 }
 
 void ECellEngine::Maths::Operation::UpdateRHS(const float _previousValue, const float _newValue) noexcept
 {
 	operands[1]->Set(_newValue);
-	float newRes = (*function)(operands);
-
-	if (_previousValue != newRes)
-	{
-		onOperandChange(previousResult, newRes);
-	}
-
-	if (newRes != newResult)
-	{
-		onResultChange(newResult, newRes);
-	}
-
 	previousResult = newResult;
-	newResult = newRes;
+	newResult = (*function)(operands);
+
+	if (_previousValue != _newValue)
+	{
+		onOperandChange(previousResult, newResult);
+	}
+
+	if (previousResult != newResult)
+	{
+		onResultChange(previousResult, newResult);
+	}
 }

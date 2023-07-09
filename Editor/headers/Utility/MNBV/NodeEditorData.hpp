@@ -533,8 +533,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief The display list of the available arithmetic operators.
 		*/
-		const char* operatorTypes[6] = { "PLUS", "MINUS", "TIMES", "DIVIDE",
-										 "POWER", "ROOT"};
+		const char* operatorTypes[Maths::FunctionType_Count] = { 
+			"IDENTITY", "PLUS", "MINUS", "TIMES", "DIVIDE",
+			"POWER",	"ROOT"};
 
 		/*!
 		@brief The default operand to hold a value in this watcher when nothing

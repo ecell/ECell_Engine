@@ -18,7 +18,9 @@ namespace ECellEngine::Maths
         FunctionType_Times,
         FunctionType_Divide,
         FunctionType_Power,
-        FunctionType_Root
+        FunctionType_Root,
+
+        FunctionType_Count
     };
 
 	struct Function
