@@ -175,26 +175,33 @@ namespace ECellEngine::Core
 			{
 			case Comparator::Greater:
 				newComparisonValue = *target > *threshold;
+				break;
 
 			case Comparator::GreaterOrEqual:
 				newComparisonValue = *target >= *threshold;
+				break;
 
 			case Comparator::Equal:
 				newComparisonValue = *target == *threshold;
+				break;
 
 			case Comparator::NotEqual:
 				newComparisonValue = *target != *threshold;
+				break;
 
 			case Comparator::Less:
 				newComparisonValue = *target < *threshold;
+				break;
 
 			case Comparator::LessOrEqual:
 				newComparisonValue = *target <= *threshold;
+				break;
 
 			default:
 				//Should never reach this point
 				assert(false);
 				newComparisonValue = false;
+				break;
 			}
 			return newComparisonValue;
 		}
@@ -208,7 +215,6 @@ namespace ECellEngine::Core
 			if (!triggerStay)
 			{
 				triggerEnter = IsConditionVerified();
-				triggerStay = triggerEnter;
 			}
 			else
 			{

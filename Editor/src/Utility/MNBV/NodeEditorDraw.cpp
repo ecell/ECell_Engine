@@ -917,6 +917,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 		dragFlags))
 	{
 		_triggerNodeInfo.target.Set(bufferTarget);
+		_triggerNodeInfo.data->UpdateAndCall();
 	}
 
 	ImGui::SameLine();
@@ -937,6 +938,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 		dragFlags))
 	{
 		_triggerNodeInfo.threshold.Set(bufferThreshold);
+		_triggerNodeInfo.data->UpdateAndCall();
 	}
 
 	ImGui::SameLine();
