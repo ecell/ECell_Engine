@@ -540,6 +540,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 					ynp1[i] = yn[i] + stepper.h_next * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks,
 						i * systemSize, coeffs.denseOutputOrder, coeffs.stages);
 					system[i].GetOperand()->Set(ynp1[i]);
+					system[i].GetOperand()->onValueChange(yn[i], ynp1[i]);
 				}
 
 				//we compute the external equations with the value of
@@ -547,6 +548,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 				for (unsigned short i = 0; i < extEqSize; ++i)
 				{
 					externalEquations[i]->Compute();
+					externalEquations[i]->GetOperand()->onValueChange(yn_ext[i], externalEquations[i]->Get());
 				}
 
 				//We update the stepper to the time at which the trigger was triggered
@@ -563,12 +565,14 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 				for (unsigned short i = 0; i < systemSize; ++i)
 				{
 					system[i].GetOperand()->Set(ynp1[i]);
+					system[i].GetOperand()->onValueChange(yn[i], ynp1[i]);
 				}
 				//Finally, we update the external equations with the new value of the system at t=tn+1
 				//when every y_n+1 have been calculated.
 				for (unsigned short i = 0; i < extEqSize; i++)
 				{
 					externalEquations[i]->Compute();
+					externalEquations[i]->GetOperand()->onValueChange(yn_ext[i], externalEquations[i]->Get());
 				}
 
 				//we advance time by the current step

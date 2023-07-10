@@ -11,11 +11,6 @@ void ECellEngine::Data::Species::Set(const float _val) noexcept
 {
 	previousQuantity = quantity;
 	quantity = _val;
-
-	if (previousQuantity != quantity)
-	{
-		onValueChange(previousQuantity, quantity);
-	}
 }
 
 void ECellEngine::Data::Species::Increment(const float _inc)
