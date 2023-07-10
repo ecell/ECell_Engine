@@ -244,6 +244,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Default));
 	ax::NodeEditor::BeginNode(_linePlotNodeData.id);
+	ImGui::PushID((std::size_t)_linePlotNodeData.id);
 
 	const float headerWidth = NodeHeader("Line Plot", "", Widget::MNBV::GetNodeColors(NodeType_Reaction), 300.f, 1, 1);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth, 1);
@@ -427,6 +428,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 		ax::NodeEditor::Resume();
 	}
 
+	ImGui::PopID();
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
 }
