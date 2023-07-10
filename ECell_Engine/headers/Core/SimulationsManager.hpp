@@ -97,6 +97,6 @@ namespace ECellEngine::Core
 				in ::playingSimulations.
 		@param _deltaTime The duration to simulate.
 		*/
-		void UpdatePlayingSimulations(const float& _deltaTime) noexcept;
+		void UpdatePlayingSimulations(const float _deltaTime) noexcept;
 	};
 }
