@@ -540,22 +540,22 @@ void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputConnect(N
 {
 	//There is only one output pin in the SimulationTimeNodeData
 
-	_nodeInputPinData->OnConnect(_nodeOutputPinData, &(simulationTimer->elapsedTime));
+	_nodeInputPinData->OnConnect(_nodeOutputPinData, &simulationTimer->onTimeUpdate);
 }
 
 void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
 	//There is only one output pin in the SimulationTimeNodeData
 
-	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
+	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &simulationTimer->onTimeUpdate);
 }
 
-void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
-{
-	//There is only one output pin in the SimulationTimeNodeData
-
-	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &(simulationTimer->elapsedTime));
-}
+//void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+//{
+//	//There is only one output pin in the SimulationTimeNodeData
+//
+//	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &(simulationTimer->elapsedTime));
+//}
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
