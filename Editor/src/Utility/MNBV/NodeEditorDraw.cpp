@@ -392,20 +392,21 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 
 		if (_linePlotNodeData.IsPlotOpen())
 		{
-			if (ImGui::Button("Show", ImVec2(0.5f * (headerWidth - style.ItemSpacing.x), 0.f)))
+			if (ImGui::Button("Show##", ImVec2(0.5f * (headerWidth - style.ItemSpacing.x), 0.f)))
 			{
-				ImGui::BringWindowToDisplayFront(ImGui::FindWindowByName("Line Plot##lineplot"));
+				std::string windowName = "Line Plot##lineplot" + std::to_string((std::size_t)_linePlotNodeData.id);
+				ImGui::BringWindowToDisplayFront(ImGui::FindWindowByName(windowName.c_str()));
 				ImGui::SetNextWindowPos(ax::NodeEditor::CanvasToScreen(ImGui::GetCursorPos()));
 			}
 			ImGui::SameLine();
-			if (ImGui::Button("Close", ImVec2(0.5f * (headerWidth - style.ItemSpacing.x), 0.f)))
+			if (ImGui::Button("Close##", ImVec2(0.5f * (headerWidth - style.ItemSpacing.x), 0.f)))
 			{
 				_linePlotNodeData.SwitchState(LinePlotNodeData::State_PlotIsOpen);
 			}
 		}
 		else
 		{
-			if (ImGui::Button("Open", ImVec2(headerWidth, 0.f)))
+			if (ImGui::Button("Open##", ImVec2(headerWidth, 0.f)))
 			{
 				_linePlotNodeData.SwitchState(LinePlotNodeData::State_PlotIsOpen);
 				ImGui::SetNextWindowPos(ax::NodeEditor::CanvasToScreen(ImGui::GetCursorPos()));
@@ -420,7 +421,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 		ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.linePlot.plotSize[0] + 2 * windowPadding.x,
 			_linePlotNodeData.linePlot.plotSize[1] + 2 * windowPadding.y));
 		ax::NodeEditor::Suspend();
-		if (ImGui::Begin("Line Plot##lineplot", NULL, _linePlotNodeData.linePlot.plotWindowFlags))
+		std::string windowName = "Line Plot##lineplot"+std::to_string((std::size_t)_linePlotNodeData.id);
+		if (ImGui::Begin(windowName.c_str(), NULL, _linePlotNodeData.linePlot.plotWindowFlags))
 		{
 			_linePlotNodeData.linePlot.Draw();
 		}
