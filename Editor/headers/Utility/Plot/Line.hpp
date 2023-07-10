@@ -62,6 +62,15 @@ namespace ECellEngine::Editor::Utility::Plot
 		std::size_t id;
 
 		/*!
+		@brief The pointer to the callback that will trigger the update of this
+				line.
+		@details It is necessary to keep it because Lines are stored in a vector
+				 and the pointer to ::UpdateLine will be invalidated within the
+				 callback if this Line is copied/moved because of vector reallocation.
+		*/
+		std::shared_ptr<Core::Callback<const float, const float>*> updateLineCallback = nullptr;
+
+		/*!
 		@brief The placeholder for the subscription of ::UpdateLine to a matching
 				callback.
 		*/
@@ -112,10 +121,90 @@ namespace ECellEngine::Editor::Utility::Plot
 			dataPoints.AddPoint(0.f, 0.f);
 		}
 
+		/*!
+		@brief Custom copy constructor.
+		@details It is used to copy the callback and the subscription token.
+		*/
 		Line(const Line& _other) :
-			id(_other.id), dataPoints(_other.dataPoints), ptrX(_other.ptrX)
+			id(_other.id), dataPoints(_other.dataPoints),
+			ptrX(_other.ptrX), Y(_other.Y), color(_other.color)
 		{
+			if (_other.updateLineSubToken != nullptr)
+			{
+				**(_other.updateLineCallback.get()) -= _other.updateLineSubToken;
+				updateLineCallback = _other.updateLineCallback;
+				updateLineSubToken = std::move( **(updateLineCallback.get()) += std::bind(&Line::UpdateLine, this, std::placeholders::_1, std::placeholders::_2) );
+			}
+			SwitchUpdateController(_other.updateController->scheme);
 			std::memcpy(lineLegend, _other.lineLegend, 64);
+		}
+
+		/*!
+		@brief Custom move constructor.
+		@details It is used to move the callback and the subscription token.
+		*/
+		Line(const Line&& _other) noexcept :
+			id(_other.id), dataPoints(_other.dataPoints),
+			ptrX(_other.ptrX), Y(_other.Y), color(_other.color)
+		{
+			if (_other.updateLineSubToken != nullptr)
+			{
+				**(_other.updateLineCallback.get()) -= _other.updateLineSubToken;
+				updateLineCallback = _other.updateLineCallback;
+				updateLineSubToken = std::move(**(updateLineCallback.get()) += std::bind(&Line::UpdateLine, this, std::placeholders::_1, std::placeholders::_2));
+			}
+			SwitchUpdateController(_other.updateController->scheme);
+			std::memcpy(lineLegend, _other.lineLegend, 64);
+		}
+
+		/*!
+		@brief Custom copy assignment operator.
+		@details It is used to copy the callback and the subscription token.
+		*/
+		Line& operator=(Line& _other)
+		{
+			if (*this == _other)
+				return *this;
+
+			id = _other.id;
+			dataPoints = _other.dataPoints;
+			ptrX = _other.ptrX;
+			Y = _other.Y;
+			color = _other.color;
+			if (_other.updateLineSubToken != nullptr)
+			{
+				**(_other.updateLineCallback.get()) -= _other.updateLineSubToken;
+				updateLineCallback = _other.updateLineCallback;
+				updateLineSubToken = std::move(**(updateLineCallback.get()) += std::bind(&Line::UpdateLine, this, std::placeholders::_1, std::placeholders::_2));
+			}
+			SwitchUpdateController(_other.updateController->scheme);
+			std::memcpy(lineLegend, _other.lineLegend, 64);
+			return *this;
+		}
+
+		/*!
+		@brief Custom move assignment operator.
+		@details It is used to move the callback and the subscription token.
+		*/
+		Line& operator=(Line&& _other) noexcept
+		{
+			if(*this == _other)
+				return *this;
+
+			id = _other.id;
+			dataPoints = _other.dataPoints;
+			ptrX = _other.ptrX;
+			Y = _other.Y;
+			color = _other.color;
+			if (_other.updateLineSubToken != nullptr)
+			{
+				**(_other.updateLineCallback.get()) -= _other.updateLineSubToken;
+				updateLineCallback = _other.updateLineCallback;
+				updateLineSubToken = std::move(**(updateLineCallback.get()) += std::bind(&Line::UpdateLine, this, std::placeholders::_1, std::placeholders::_2));
+			}
+			SwitchUpdateController(_other.updateController->scheme);
+			std::memcpy(lineLegend, _other.lineLegend, 64);
+			return *this;
 		}
 
 		/*!

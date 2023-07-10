@@ -189,6 +189,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	{
 		Plot::Line& line = linePlot.AddLine((std::size_t)_nodeOutputPinData->node->id);
 
+		line.updateLineCallback = std::make_shared<Core::Callback<const float, const float>*>((Core::Callback<const float, const float>*)_data);
 		line.updateLineSubToken = std::move(*(Core::Callback<const float, const float>*)_data += std::bind(&Plot::Line::UpdateLine, &line, std::placeholders::_1, std::placeholders::_2));
 
 		//Some nodes are representing data that have names.
@@ -243,7 +244,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 		if (it->id == (std::size_t)_nodeOutputPinData->node->id)
 		{
 			//Unsub
-			*(Core::Callback<const float, const float>*)_data -= it->updateLineSubToken;
+			**it->updateLineCallback -= it->updateLineSubToken;
 			linePlot.lines.erase(it);
 		}
 	}
