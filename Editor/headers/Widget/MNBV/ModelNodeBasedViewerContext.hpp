@@ -34,6 +34,15 @@ namespace ECellEngine::Editor::Widget::MNBV
 		Utility::MNBV::NodeEditorStyle style;
 
 #pragma region Nodes Lists
+
+		/*!
+		@brief The list of arithmetic operation nodes in this context.
+		@details It contains the information used to draw the nodes to perform
+				 arithmetic operation (addition, subtraction, multiplication,
+				 division) based on couples of numbers.
+		*/
+		std::vector<Utility::MNBV::ArithmeticOperationNodeData> arithmeticOperationNodes;
+
 		/*!
 		@brief The list of asset nodes in this context.
 		@details It contains the information used to draw the nodes corresponding
@@ -56,6 +65,13 @@ namespace ECellEngine::Editor::Widget::MNBV
 				 space.
 		*/
 		std::vector<Utility::MNBV::LinePlotNodeData> linePlotNodes;
+
+		/*!
+		@brief The list of logic operation nodes in this context.
+		@details It contains the information used to draw the nodes to perform
+				 logical operation (AND, OR, NOT) based on couples of booleans.
+		*/
+		std::vector<Utility::MNBV::LogicOperationNodeData> logicOperationNodes;
 
 		/*!
 		@brief The list of event nodes that can modify data state values in this
@@ -112,11 +128,11 @@ namespace ECellEngine::Editor::Widget::MNBV
 		std::vector<Utility::MNBV::ValueFloatNodeData> valueFloatNodes;
 
 		/*!
-		@brief The list of watchers in this context.
+		@brief The list of triggers in this context.
 		@details It contains the information used to draw the nodes to display
-				 the watchers of this simulation space.
+				 the triggers of this simulation space.
 		*/
-		std::vector<Utility::MNBV::WatcherNodeData> watcherNodes;
+		std::vector<Utility::MNBV::TriggerNodeData> triggerNodes;
 #pragma endregion
 
 		/*!
@@ -179,13 +195,18 @@ namespace ECellEngine::Editor::Widget::MNBV
 		{
 			authorizedDynamicLinks[Utility::MNBV::PinType_Solver][Utility::MNBV::PinType_Solver] = true;
 			
+			//The interest of PinType_DataStateValueFloat might disappear in the future.
 			authorizedDynamicLinks[Utility::MNBV::PinType_DataStateValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
 			authorizedDynamicLinks[Utility::MNBV::PinType_EquationValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
 			authorizedDynamicLinks[Utility::MNBV::PinType_FreeValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
+
+			authorizedDynamicLinks[Utility::MNBV::PinType_FreeValueFloat][Utility::MNBV::PinType_FloatCallBackSubscriber] = true;
 			
-			authorizedDynamicLinks[Utility::MNBV::PinType_ModifyDataStateEvent][Utility::MNBV::PinType_DataStateValueFloat] = true;
-			
-			authorizedDynamicLinks[Utility::MNBV::PinType_Watcher][Utility::MNBV::PinType_ModifyDataStateEvent] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_BooleanCallBackPublisher][Utility::MNBV::PinType_BooleanCallBackSubscriber] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_FloatCallBackPublisher][Utility::MNBV::PinType_FloatCallBackSubscriber] = true;
+
+			authorizedDynamicLinks[Utility::MNBV::PinType_Parameter][Utility::MNBV::PinType_Operand] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_Species][Utility::MNBV::PinType_Operand] = true;
 		}
 
 		/*!

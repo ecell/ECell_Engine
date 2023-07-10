@@ -14,6 +14,18 @@ namespace ECellEngine::Solvers::ODE
 	{
 	private:
 		/*!
+		@brief External equations (not ODE) that are true at all time and must
+				be accounted for when integrating the system of differential
+				equations.
+		*/
+		std::vector<Maths::Equation*> externalEquations;
+
+		/*!
+		@brief The number of external equations.
+		*/
+		unsigned short extEqSize = 0;
+
+		/*!
 		@brief The system of differential equations.
 		@details Be wary that, the left hand side are the variables
 				to be solved by the differential equation (right hand side) and NOT
@@ -27,13 +39,6 @@ namespace ECellEngine::Solvers::ODE
 				updated when solving the differential equation.
 		*/
 		std::vector<Maths::Equation> system;
-
-		/*!
-		@brief External equations (not ODE) that are true at all time and must
-				be accounted for when integrating the system of differential
-				equations.
-		*/
-		const std::unordered_map<std::string, std::shared_ptr<Maths::Equation>>* externalEquations = nullptr;
 		
 		/*!
 		@brief The size of the system of differential equations.
@@ -44,6 +49,27 @@ namespace ECellEngine::Solvers::ODE
 		@brief The stepper to control the step size.
 		*/
 		Stepper stepper;
+
+		/*!
+		@brief The subset of triggers from the datastate that might be triggered
+				during the solver step update.
+		@details The first element of the pair is the trigger, the second element
+				is the index of the equation modifying the target or the threshold
+				value of the trigger.
+		*/
+		std::vector<std::pair<Core::Trigger<Operand*, Operand*>*, unsigned short>> triggersOnODE;
+
+		/*!
+		@brief The subset of triggers from the datastate that might be triggered
+				during the update of the external equations.
+		*/
+		std::vector<std::pair<Core::Trigger<Operand*, Operand*>*, unsigned short>> triggersOnExtEq;
+
+		/*!
+		@brief A buffer value to store the time of the earliest trigger that 
+				must be triggered within a the solver step update.
+		*/
+		float triggerTriggerTime = 0.0f;
 
 		/*!
 		@brief Indicates whether the solver is set with a method enabling error
@@ -89,6 +115,20 @@ namespace ECellEngine::Solvers::ODE
 				with a system of differential equations for a biochemical system.
 		*/
 		void BuildEquationRHS(Operation& _outRHS, std::vector<Maths::Operation>& _flux);
+
+		/*!
+		@bief loops through all triggers stored in the datastate and adds them
+			to the ::triggers vector if their targets or threshold value are
+			updated by the external equations.
+		*/
+		void ScanForTriggersOnExtEq() noexcept;
+
+		/*!
+		@brief loops through all triggers stored in the datastate and adds them
+			to the ::triggers vector if their targets or threshold value are
+			updated by the system of differential equations.
+		*/
+		void ScanForTriggersOnODE() noexcept;
 
 		/*!
 		@brief Integrates the system of differential equations for methods without

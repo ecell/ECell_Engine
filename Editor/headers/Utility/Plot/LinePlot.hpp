@@ -4,6 +4,7 @@
 
 #include "implot.h"
 
+#include "Core/Callback.hpp"
 #include "Utility/Plot/Line.hpp"
 
 namespace ECellEngine::Editor::Utility::Plot
@@ -41,10 +42,12 @@ namespace ECellEngine::Editor::Utility::Plot
 		float plotSize[2] = { ImPlot::GetStyle().PlotDefaultSize.x, ImPlot::GetStyle().PlotDefaultSize.y };
 
 		/*!
-		@brief The pointer to the data to use for the X coordinate of each new
+		@brief The buffer to the data to use for the X coordinate of each new
 				point of all lines in this plot.
 		*/
-		float* ptrX = nullptr;
+		float X = 0.f;
+
+		std::shared_ptr<std::function<void(const float, const float)>> updateXSubToken = nullptr;
 
 		/*!
 		@brief The maximum number of data points to store for each line.
@@ -91,7 +94,7 @@ namespace ECellEngine::Editor::Utility::Plot
 		LinePlot() = default;
 
 		LinePlot(const LinePlot& _lp) :
-			ptrX{ _lp.ptrX }, lines{ _lp.lines },
+			X{ _lp.X }, lines{ _lp.lines },
 			plotSize{ _lp.plotSize[0], _lp.plotSize[1] },
 			plotFlags{ _lp.plotFlags },
 			xAxisScale{ _lp.xAxisScale }, yAxisScale{ _lp.yAxisScale },
@@ -113,10 +116,8 @@ namespace ECellEngine::Editor::Utility::Plot
 		void Draw() noexcept;
 
 		/*!
-		@brief Adds points to each line if ::xPtr is not null and depending on the
-				update scheme of each line.
-		@see Line::Update()
+		@brief Updates the X coordinate of this plot.
 		*/
-		void Update() noexcept;
+		void UpdateX(const float _previousValue, const float _newValue);
 	};
 }

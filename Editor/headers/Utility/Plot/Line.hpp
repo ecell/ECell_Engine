@@ -2,6 +2,7 @@
 
 #include <cstring>
 
+#include "Core/Callback.hpp"
 #include "Utility/Plot/UpdateController.hpp"
 #include "Utility/Plot/ScrollingBuffer.hpp"
 
@@ -60,11 +61,26 @@ namespace ECellEngine::Editor::Utility::Plot
 		*/
 		std::size_t id;
 
+		/*!
+		@brief The pointer to the callback that will trigger the update of this
+				line.
+		@details It is necessary to keep it because Lines are stored in a vector
+				 and the pointer to ::UpdateLine will be invalidated within the
+				 callback if this Line is copied/moved because of vector reallocation.
+		*/
+		std::shared_ptr<Core::Callback<const float, const float>*> updateLineCallback = nullptr;
+
+		/*!
+		@brief The placeholder for the subscription of ::UpdateLine to a matching
+				callback.
+		*/
+		std::shared_ptr<std::function<void(const float, const float)>> updateLineSubToken = nullptr;
+
 		/*
 		@brief Pointer to the update controller to be used to control adding points
 				to this line.	
 		*/
-		UpdateController* updateController = &updateControllerNever;
+		UpdateController* updateController = &updateControllerAlways;
 		
 		/*!
 		@brief An array of strings to display in the combo box to select the update
@@ -78,10 +94,15 @@ namespace ECellEngine::Editor::Utility::Plot
 		ScrollingBuffer dataPoints;
 
 		/*!
-		@brief The pointer to the data to use for the Y coordinate of each new
+		@brief The pointer to the data to use for the X coordinate of each new
 				point of this line.
 		*/
-		float* ptrY = nullptr;
+		float* ptrX = nullptr;
+
+		/*!
+		@brief The buffer to the Y coordinate of each new point of this line.
+		*/
+		float Y = 0.f;
 
 		/*!
 		@brief The color of the line.
@@ -93,17 +114,97 @@ namespace ECellEngine::Editor::Utility::Plot
 		*/
 		char lineLegend[64] = "f(x)";
 
-		Line(std::size_t _matchingDataId, unsigned short _maxNbDataPoints) :
-			id{ _matchingDataId }
+		Line(std::size_t _matchingDataId, unsigned short _maxNbDataPoints, float* _ptrX) :
+			id{ _matchingDataId }, ptrX{ _ptrX }
 		{
 			dataPoints.Data.reserve(_maxNbDataPoints);
 			dataPoints.AddPoint(0.f, 0.f);
 		}
 
+		/*!
+		@brief Custom copy constructor.
+		@details It is used to copy the callback and the subscription token.
+		*/
 		Line(const Line& _other) :
-			id(_other.id), dataPoints(_other.dataPoints), ptrY(_other.ptrY)
+			id(_other.id), dataPoints(_other.dataPoints),
+			ptrX(_other.ptrX), Y(_other.Y), color(_other.color)
 		{
+			if (_other.updateLineSubToken != nullptr)
+			{
+				**(_other.updateLineCallback.get()) -= _other.updateLineSubToken;
+				updateLineCallback = _other.updateLineCallback;
+				updateLineSubToken = std::move( **(updateLineCallback.get()) += std::bind(&Line::UpdateLine, this, std::placeholders::_1, std::placeholders::_2) );
+			}
+			SwitchUpdateController(_other.updateController->scheme);
 			std::memcpy(lineLegend, _other.lineLegend, 64);
+		}
+
+		/*!
+		@brief Custom move constructor.
+		@details It is used to move the callback and the subscription token.
+		*/
+		Line(const Line&& _other) noexcept :
+			id(_other.id), dataPoints(_other.dataPoints),
+			ptrX(_other.ptrX), Y(_other.Y), color(_other.color)
+		{
+			if (_other.updateLineSubToken != nullptr)
+			{
+				**(_other.updateLineCallback.get()) -= _other.updateLineSubToken;
+				updateLineCallback = _other.updateLineCallback;
+				updateLineSubToken = std::move(**(updateLineCallback.get()) += std::bind(&Line::UpdateLine, this, std::placeholders::_1, std::placeholders::_2));
+			}
+			SwitchUpdateController(_other.updateController->scheme);
+			std::memcpy(lineLegend, _other.lineLegend, 64);
+		}
+
+		/*!
+		@brief Custom copy assignment operator.
+		@details It is used to copy the callback and the subscription token.
+		*/
+		Line& operator=(Line& _other)
+		{
+			if (*this == _other)
+				return *this;
+
+			id = _other.id;
+			dataPoints = _other.dataPoints;
+			ptrX = _other.ptrX;
+			Y = _other.Y;
+			color = _other.color;
+			if (_other.updateLineSubToken != nullptr)
+			{
+				**(_other.updateLineCallback.get()) -= _other.updateLineSubToken;
+				updateLineCallback = _other.updateLineCallback;
+				updateLineSubToken = std::move(**(updateLineCallback.get()) += std::bind(&Line::UpdateLine, this, std::placeholders::_1, std::placeholders::_2));
+			}
+			SwitchUpdateController(_other.updateController->scheme);
+			std::memcpy(lineLegend, _other.lineLegend, 64);
+			return *this;
+		}
+
+		/*!
+		@brief Custom move assignment operator.
+		@details It is used to move the callback and the subscription token.
+		*/
+		Line& operator=(Line&& _other) noexcept
+		{
+			if(*this == _other)
+				return *this;
+
+			id = _other.id;
+			dataPoints = _other.dataPoints;
+			ptrX = _other.ptrX;
+			Y = _other.Y;
+			color = _other.color;
+			if (_other.updateLineSubToken != nullptr)
+			{
+				**(_other.updateLineCallback.get()) -= _other.updateLineSubToken;
+				updateLineCallback = _other.updateLineCallback;
+				updateLineSubToken = std::move(**(updateLineCallback.get()) += std::bind(&Line::UpdateLine, this, std::placeholders::_1, std::placeholders::_2));
+			}
+			SwitchUpdateController(_other.updateController->scheme);
+			std::memcpy(lineLegend, _other.lineLegend, 64);
+			return *this;
 		}
 
 		/*!
@@ -160,7 +261,7 @@ namespace ECellEngine::Editor::Utility::Plot
 		@biref Decides to add a new point to ::dataPoints or not based on
 			   the ::updateController.
 		*/
-		void Update(float _x) noexcept;
+		void UpdateLine(const float _previousValue, const float _newValue) noexcept;
 
 	};
 }

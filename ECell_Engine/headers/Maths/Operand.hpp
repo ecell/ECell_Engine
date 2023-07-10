@@ -4,11 +4,15 @@
 #include <vector>
 #include <string>
 
+#include "Core/Callback.hpp"
+
 namespace ECellEngine::Maths
 {
     struct Operand
     {
         std::string name;
+
+        Core::Callback<const float, const float> onValueChange;
 
         Operand() = default;
 
@@ -19,6 +23,14 @@ namespace ECellEngine::Maths
         }
 
         virtual ~Operand() noexcept = default;
+
+        inline bool operator==(const Operand& _other) { return Get() == _other.Get(); }
+        inline bool operator!=(const Operand& _other) { return !(Get() == _other.Get()); }
+
+        inline bool operator< (const Operand& _other) { return Get() < _other.Get(); }
+        inline bool operator> (const Operand& _other) { return _other.Get() < Get(); }
+        inline bool operator<=(const Operand& _other) { return !(Get() > _other.Get()); }
+        inline bool operator>=(const Operand& _other) { return !(Get() < _other.Get()); }
 
         virtual float Get() const noexcept = 0;
 
