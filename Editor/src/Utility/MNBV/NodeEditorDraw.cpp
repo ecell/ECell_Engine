@@ -913,9 +913,13 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ValueFloatNode(const ch
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
-	NodeDragFloat_Out("Value", _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], &_valueFloatNodeInfo.value,
+	float buffer = _valueFloatNodeInfo.value.Get();
+	if (NodeDragFloat_Out("Value", _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], &buffer,
 		itemsWidth, startX, headerWidth,
-		_valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
+		_valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], Widget::MNBV::GetPinColors(PinType_FreeValueFloat)))
+	{
+		_valueFloatNodeInfo.value.UpdateValue(_valueFloatNodeInfo.value.Get(), buffer);
+	}
 
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();

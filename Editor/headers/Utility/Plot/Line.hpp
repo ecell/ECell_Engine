@@ -71,7 +71,7 @@ namespace ECellEngine::Editor::Utility::Plot
 		@brief Pointer to the update controller to be used to control adding points
 				to this line.	
 		*/
-		UpdateController* updateController = &updateControllerOnChange;
+		UpdateController* updateController = &updateControllerAlways;
 		
 		/*!
 		@brief An array of strings to display in the combo box to select the update

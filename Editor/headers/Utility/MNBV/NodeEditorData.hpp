@@ -2341,9 +2341,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		};
 
 		/*!
-		@brief The value to make accessible through this node.
+		@brief Stores the float value.
+		@details We chose to store the value in a parameter to access
+				 callback compliant datastructure and because it is the
+				 less invasive way to currently to that.
 		*/
-		float value = 0.f;
+		Data::Parameter value;
 
 		/*!
 		@brief All the input pins.
@@ -2358,12 +2361,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 		NodeOutputPinData outputPins[OutputPin_Count];
 
 		ValueFloatNodeData(float _value, ImVec2& _position) :
-			NodeData(), value{ _value }
+			NodeData(),
+			value{ "ValueFloatNode[" + std::to_string((std::size_t)id) + "]::Value", _value }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
+			value.name = "ValueFloatNode[" + std::to_string((std::size_t)id) + "]::Value";
+
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
-			outputPins[OutputPin_Value] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FreeValueFloat, this); //Value
+			outputPins[OutputPin_Value] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //Value
 		}
 
 		ValueFloatNodeData(const ValueFloatNodeData& _vfnd) :
@@ -2392,7 +2398,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 	
-		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Value Float Node Data
 	};
 
 	/*!
@@ -2510,7 +2516,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 			target{"Trigger["+std::to_string((std::size_t)id) + "]::Target", 0},
 			threshold{"Trigger[" + std::to_string((std::size_t)id) + "]::Threshold", 0}
 		{
+			target.name = "Trigger[" + std::to_string((std::size_t)id) + "]::Target";
 			data->SetTarget(&target);
+
+			threshold.name = "Trigger[" + std::to_string((std::size_t)id) + "]::Threshold";
 			data->SetThreshold(&threshold);
 
 			ax::NodeEditor::SetNodePosition(id, _position);

@@ -669,22 +669,22 @@ void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputConnect(NodeI
 {
 	//There is only one output pin in the ValueFloatNodeData
 
-	_nodeInputPinData->OnConnect(_nodeOutputPinData, &value);
+	_nodeInputPinData->OnConnect(_nodeOutputPinData, &value.onValueChange);
 }
 
 void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
 	//There is only one output pin in the ValueFloatNodeData
 
-	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
+	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &value.onValueChange);
 }
 
-void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
-{
-	//There is only one output pin in the ValueFloatNodeData
-
-	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &value);
-}
+//void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+//{
+//	//There is only one output pin in the ValueFloatNodeData
+//
+//	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &value);
+//}
 
 void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
