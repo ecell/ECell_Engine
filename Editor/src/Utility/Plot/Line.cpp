@@ -28,7 +28,7 @@ void ECellEngine::Editor::Utility::Plot::Line::SwitchUpdateController(unsigned s
 		break;
 	case(UpdateScheme_OnChange):
 		updateController = &updateControllerOnChange;
-		updateController->Set(ptrY);
+		updateController->Set(&Y);
 		break;
 	case(UpdateScheme_EveryNthFrame):
 		updateController = &updateControllerEveryNthFrame;
@@ -42,14 +42,12 @@ void ECellEngine::Editor::Utility::Plot::Line::SwitchUpdateController(unsigned s
 	}
 }
 
-void ECellEngine::Editor::Utility::Plot::Line::Update(float _x) noexcept
+void ECellEngine::Editor::Utility::Plot::Line::UpdateLine(const float _previousValue, const float _newValue) noexcept
 {
-	if (ptrY)
+	Y = _newValue;
+	if (updateController->TestUpdate())
 	{
-		if (updateController->TestUpdate())
-		{
-			dataPoints.AddPoint(_x, *ptrY);
-			updateController->Reset();
-		}
+		dataPoints.AddPoint(*ptrX, _newValue);
+		updateController->Reset();
 	}
 }

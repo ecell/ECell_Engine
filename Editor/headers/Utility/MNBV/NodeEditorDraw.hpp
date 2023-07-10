@@ -81,6 +81,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void NodeDestruction();
 
 		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ArithmeticNodeData.
+		@param _arithmeticNodeInfo The struct with information about what to draw.
+		*/
+		static void ArithmeticOperationNode(ArithmeticOperationNodeData& _arithmeticOperationNodeInfo);
+
+		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::AssetNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
@@ -101,6 +107,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _linePlotNodeInfo The struct with information about what to draw.
 		*/
 		static void LinePlotNode(LinePlotNodeData& _linePlotNodeInfo);
+
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData.
+		@param _logicOperationNodeInfo The struct with information about what to draw.
+		*/
+		static void LogicOperationNode(LogicOperationNodeData& _logicOperationNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData.
@@ -158,10 +170,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo);
 
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::WatcherNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::TriggerNodeData.
 		@param _watcherNodeInfo The struct with information about what to draw.
 		*/
-		static void WatcherNode(WatcherNodeData& _watcherNodeInfo);
+		static void TriggerNode(TriggerNodeData& _watcherNodeInfo);
 
 #pragma endregion
 

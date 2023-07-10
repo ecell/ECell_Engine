@@ -4,7 +4,7 @@
 ECellEngine::Editor::Utility::Plot::Line& ECellEngine::Editor::Utility::Plot::LinePlot::AddLine(std::size_t _matchedDataID) noexcept
 {
 	std::vector<Line>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(lines.begin(), lines.end(), _matchedDataID);
-	it = lines.insert(it, Plot::Line(_matchedDataID, linesMaxNbDataPoints));
+	it = lines.insert(it, Plot::Line(_matchedDataID, linesMaxNbDataPoints, &X));
 
 	return *it;
 }
@@ -25,13 +25,10 @@ void ECellEngine::Editor::Utility::Plot::LinePlot::Draw() noexcept
 	}
 }
 
-void ECellEngine::Editor::Utility::Plot::LinePlot::Update() noexcept
+void ECellEngine::Editor::Utility::Plot::LinePlot::UpdateX(const float _previousValue, const float _newValue)
 {
-	if (ptrX)
+	if (_previousValue != _newValue)
 	{
-		for (std::vector<Line>::iterator it = lines.begin(); it != lines.end(); it++)
-		{
-			it->Update(*ptrX);
-		}
+		X = _newValue;
 	}
 }

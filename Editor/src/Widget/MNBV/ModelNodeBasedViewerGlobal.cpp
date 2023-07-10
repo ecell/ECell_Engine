@@ -15,8 +15,10 @@ void ECellEngine::Editor::Widget::MNBV::CurrentMNBVContextDraw(ECellEngine::Core
 void ECellEngine::Editor::Widget::MNBV::EraseDynamicLink(std::vector<Utility::MNBV::LinkData>::iterator& _dynamicLink)
 {
     //Call the methods that will clear the data links via the pins.
+    //We delegate to the start pin (output side) the task of caling the
+    //OnDisconnect method of the end pin (input side).
     _dynamicLink->startPin->OnDisconnect(_dynamicLink->endPin);
-    _dynamicLink->endPin->OnDisconnect(_dynamicLink->startPin);
+    //_dynamicLink->endPin->OnDisconnect(_dynamicLink->startPin);
 
     //Erase the link data.
     s_mnbvCtxt->dynamicLinks.erase(_dynamicLink);
@@ -24,6 +26,15 @@ void ECellEngine::Editor::Widget::MNBV::EraseDynamicLink(std::vector<Utility::MN
 
 void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
 {
+    //Search in the list of Arithmetic Operation Nodes
+    std::vector<Utility::MNBV::ArithmeticOperationNodeData>::iterator itAOND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->arithmeticOperationNodes.begin(), s_mnbvCtxt->arithmeticOperationNodes.end(), _nodeId);
+    if (itAOND != s_mnbvCtxt->arithmeticOperationNodes.end() && (std::size_t)itAOND->id == _nodeId)
+    {
+        s_mnbvCtxt->arithmeticOperationNodes.erase(itAOND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: ArithmeticOperationNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
     //Search in the list of Asset Nodes
     std::vector<Utility::MNBV::AssetNodeData>::iterator itAND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end(), _nodeId);
     if (itAND != s_mnbvCtxt->assetNodes.end() && (std::size_t)itAND->id == _nodeId)
@@ -48,6 +59,15 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     {
         s_mnbvCtxt->linePlotNodes.erase(itLPND);
         //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: LinePlotNodeData " + std::to_string(_nodeId));
+        return;
+    }
+
+    //Search in the list of Line Plot Nodes
+    std::vector<Utility::MNBV::LogicOperationNodeData>::iterator itLOND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->logicOperationNodes.begin(), s_mnbvCtxt->logicOperationNodes.end(), _nodeId);
+    if (itLOND != s_mnbvCtxt->logicOperationNodes.end() && (std::size_t)itLOND->id == _nodeId)
+    {
+        s_mnbvCtxt->logicOperationNodes.erase(itLOND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: LogicOperationNodeData " + std::to_string(_nodeId));
         return;
     }
 
@@ -114,12 +134,12 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
         return;
     }
     
-    //Search in the list of Watcher Nodes
-    std::vector<Utility::MNBV::WatcherNodeData>::iterator itWND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end(), _nodeId);
-    if (itWND != s_mnbvCtxt->watcherNodes.end() && (std::size_t)itWND->id == _nodeId)
+    //Search in the list of Trigger Nodes
+    std::vector<Utility::MNBV::TriggerNodeData>::iterator itWND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->triggerNodes.begin(), s_mnbvCtxt->triggerNodes.end(), _nodeId);
+    if (itWND != s_mnbvCtxt->triggerNodes.end() && (std::size_t)itWND->id == _nodeId)
     {
-        s_mnbvCtxt->watcherNodes.erase(itWND);
-        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: WatcherNodeData " + std::to_string(_nodeId));
+        s_mnbvCtxt->triggerNodes.erase(itWND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: TriggerNodeData " + std::to_string(_nodeId));
         return;
     }
 }
@@ -133,6 +153,13 @@ void ECellEngine::Editor::Widget::MNBV::EraseStaticLink(std::vector<Utility::MNB
 ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV::FindNodeInAll(const std::size_t _id)
 {
     Utility::MNBV::NodeData* itND = nullptr;
+
+    //Search in the list of Arithmetic Operation Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->arithmeticOperationNodes.begin(), s_mnbvCtxt->arithmeticOperationNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
 
     //Search in the list of Asset Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end());
@@ -150,6 +177,13 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
 
     //Search in the list of Line Plot Nodes
     itND = FindNodeIn(_id, s_mnbvCtxt->linePlotNodes.begin(), s_mnbvCtxt->linePlotNodes.end());
+    if (itND != nullptr)
+    {
+        return itND;
+    }
+    
+    //Search in the list of Logic Operation Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->logicOperationNodes.begin(), s_mnbvCtxt->logicOperationNodes.end());
     if (itND != nullptr)
     {
         return itND;
@@ -204,8 +238,8 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
         return itND;
     }
 
-    //Search in the list of Watcher Nodes
-    itND = FindNodeIn(_id, s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end());
+    //Search in the list of Trigger Nodes
+    itND = FindNodeIn(_id, s_mnbvCtxt->triggerNodes.begin(), s_mnbvCtxt->triggerNodes.end());
     if (itND != nullptr)
     {
         return itND;
@@ -228,6 +262,13 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
 {
     Utility::MNBV::NodePinData* itNPD = nullptr;
 
+    //Search in the list of Arithemtic Operation Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->arithmeticOperationNodes.begin(), s_mnbvCtxt->arithmeticOperationNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
     //Search in the list of Asset Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end());
     if (itNPD != nullptr)
@@ -244,6 +285,13 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
 
     //Search in the list of Line Plot Nodes
     itNPD = FindNodePinIn(_id, s_mnbvCtxt->linePlotNodes.begin(), s_mnbvCtxt->linePlotNodes.end());
+    if (itNPD != nullptr)
+    {
+        return itNPD;
+    }
+
+    //Search in the list of Logic Operation Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->logicOperationNodes.begin(), s_mnbvCtxt->logicOperationNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;
@@ -298,8 +346,8 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
         return itNPD;
     }
 
-    //Search in the list of Watcher Nodes
-    itNPD = FindNodePinIn(_id, s_mnbvCtxt->watcherNodes.begin(), s_mnbvCtxt->watcherNodes.end());
+    //Search in the list of Trigger Nodes
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->triggerNodes.begin(), s_mnbvCtxt->triggerNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;

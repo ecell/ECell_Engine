@@ -23,6 +23,68 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeDestruction()
 	ax::NodeEditor::EndDelete(); // Wrap up deletion action
 }
 
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode(ArithmeticOperationNodeData& _arithmeticOperationNodeInfo)
+{
+	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_LogicOperation));
+	ax::NodeEditor::BeginNode(_arithmeticOperationNodeInfo.id);
+	
+	ImGui::PushID((std::size_t)_arithmeticOperationNodeInfo.id);
+
+	const float headerWidth = NodeHeader("Arithmetic Operation", "", Widget::MNBV::GetNodeColors(NodeType_Data), 300.f);
+	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+	const float startX = ImGui::GetCursorPosX();
+	const float onOperandChangeWidth = ImGui::CalcTextSize("onOperandChange").x;
+	const float onResultChangeWidth = ImGui::CalcTextSize("onResultChange").x;
+
+	if (NodeComboBox("Function", _arithmeticOperationNodeInfo.operatorTypes, 6, (int&)_arithmeticOperationNodeInfo.data->GetFunctionType(),
+		itemsWidth, startX, headerWidth))
+	{
+		_arithmeticOperationNodeInfo.data->UpdateFunction();
+		//not bullet proof but should do the trick
+		_arithmeticOperationNodeInfo.data->UpdateLHS(_arithmeticOperationNodeInfo.lhs.Get() + 1.f, _arithmeticOperationNodeInfo.lhs.Get());
+	}
+
+	ImGuiSliderFlags dragFlags = ImGuiSliderFlags_None;
+	if (_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_LHS].isUsed)
+	{
+		dragFlags |= ImGuiSliderFlags_ReadOnly;
+	}
+	float bufferTarget = _arithmeticOperationNodeInfo.lhs.Get();
+	if (NodeDragFloat_In("LHS", _arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_LHS], &bufferTarget,
+		0.5f * itemsWidth, startX,_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_LHS],
+		Widget::MNBV::GetPinColors(PinType_Operand), dragFlags))
+	{
+		_arithmeticOperationNodeInfo.data->UpdateLHS(_arithmeticOperationNodeInfo.lhs.Get(), bufferTarget);
+	}
+
+	ImGui::SameLine();
+
+	NodeText_Out("onOperandChange", onOperandChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
+
+	dragFlags = ImGuiSliderFlags_None;
+	if (_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS].isUsed)
+	{
+		dragFlags |= ImGuiSliderFlags_ReadOnly;
+	}
+	bufferTarget = _arithmeticOperationNodeInfo.rhs.Get();
+	if (NodeDragFloat_In("RHS", _arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS], &bufferTarget,
+		0.5f * itemsWidth, startX, _arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS],
+		Widget::MNBV::GetPinColors(PinType_Operand), dragFlags))
+	{
+		_arithmeticOperationNodeInfo.data->UpdateRHS(_arithmeticOperationNodeInfo.rhs.Get(), bufferTarget);
+	}
+
+	ImGui::SameLine();
+
+	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
+
+	ImGui::PopID();
+	ax::NodeEditor::EndNode();
+	PopNodeStyle();
+}
+
 void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _name, AssetNodeData& _assetNodeInfo)
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Asset));
@@ -182,6 +244,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Default));
 	ax::NodeEditor::BeginNode(_linePlotNodeData.id);
+	ImGui::PushID((std::size_t)_linePlotNodeData.id);
 
 	const float headerWidth = NodeHeader("Line Plot", "", Widget::MNBV::GetNodeColors(NodeType_Reaction), 300.f, 1, 1);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth, 1);
@@ -350,11 +413,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 		}
 	}
 
-
 	if (_linePlotNodeData.IsPlotOpen())
 	{
-		_linePlotNodeData.linePlot.Update();
-
 		ImVec2& windowPadding = ImGui::GetStyle().WindowPadding;
 
 		ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.linePlot.plotSize[0] + 2 * windowPadding.x,
@@ -368,6 +428,84 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 		ax::NodeEditor::Resume();
 	}
 
+	ImGui::PopID();
+	ax::NodeEditor::EndNode();
+	PopNodeStyle();
+}
+
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(LogicOperationNodeData& _logicOperationNodeInfo)
+{
+	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_LogicOperation));
+	ax::NodeEditor::BeginNode(_logicOperationNodeInfo.id);
+	ImGui::PushID((std::size_t)_logicOperationNodeInfo.id);
+	const float headerWidth = NodeHeader("Logic Operation", "", Widget::MNBV::GetNodeColors(NodeType_Data), 250.f);
+	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+	const float startX = ImGui::GetCursorPosX();
+	const float onOperandChangeWidth = ImGui::CalcTextSize("onOperandChange").x;
+	const float onResultChangeWidth = ImGui::CalcTextSize("onResultChange").x;
+	std::string textValue = "";
+
+	if (NodeComboBox("Logical operator", _logicOperationNodeInfo.operatorTypes, 3, (int&)_logicOperationNodeInfo.data->GetLogicalOperator(),
+		itemsWidth, startX, headerWidth))
+	{
+		_logicOperationNodeInfo.data->SetLogic();
+		//We use UpdateLHS to trigger the update of the result.
+		//We chose parameter values that will not change the value of LHS but will surely trigger
+		//the onOperandChange callback as well as onResultChange callback.
+		_logicOperationNodeInfo.data->UpdateLHS(!_logicOperationNodeInfo.lhs, _logicOperationNodeInfo.lhs);
+	}
+
+	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS].isUsed)
+	{
+		NodeText_In("LHS", startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS],
+			Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
+		ImGui::SameLine();
+		bool previousLHS = _logicOperationNodeInfo.lhs;
+		if (ImGui::Checkbox("##LHS", &_logicOperationNodeInfo.lhs))
+		{
+			_logicOperationNodeInfo.data->UpdateLHS(previousLHS, _logicOperationNodeInfo.lhs);
+		}
+	}
+	else
+	{
+		_logicOperationNodeInfo.lhs = _logicOperationNodeInfo.data->GetLHS();
+		textValue = "LHS (";
+		textValue += _logicOperationNodeInfo.lhs ? "true)" : "false)";
+		NodeText_In(textValue.c_str(), startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS],
+			Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
+	}
+
+	ImGui::SameLine();
+
+	NodeText_Out("onOperandChange", onOperandChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
+
+	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS].isUsed)
+	{
+		NodeText_In("RHS", startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS],
+			Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
+		ImGui::SameLine();
+		bool previousRHS = _logicOperationNodeInfo.rhs;
+		if (ImGui::Checkbox("##RHS", &_logicOperationNodeInfo.rhs))
+		{
+			_logicOperationNodeInfo.data->UpdateRHS(previousRHS, _logicOperationNodeInfo.rhs);
+		}
+	}
+	else
+	{
+		_logicOperationNodeInfo.rhs = _logicOperationNodeInfo.data->GetRHS();
+		textValue = "RHS (";
+		textValue += _logicOperationNodeInfo.rhs ? "true)" : "false)";
+		NodeText_In(textValue.c_str(), startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS],
+			Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
+	}
+
+	ImGui::SameLine();
+
+	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
+
+	ImGui::PopID();
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
 }
@@ -380,12 +518,16 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 	const float headerWidth = NodeHeader("Modify DataState Value Event", "", Widget::MNBV::GetNodeColors(NodeType_Event));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
+	ImGuiSliderFlags dragFlags = _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue].isUsed ? ImGuiSliderFlags_ReadOnly : ImGuiSliderFlags_None;
 
-	//TODO: Disable if something is pinned in
-	NodeDragFloat_In("New Value", _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue],
-		&_modifyDSValueEventNodeInfo.newValue,
-		itemsWidth, startX, _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_NewFloatValue],
-		Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
+	_modifyDSValueEventNodeInfo.value = _modifyDSValueEventNodeInfo.data->GetValue();
+	float buffer = _modifyDSValueEventNodeInfo.value;
+	if (NodeDragFloat_In("New Value", _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue],
+		&buffer, itemsWidth, startX, _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue],
+		Widget::MNBV::GetPinColors(PinType_FreeValueFloat), dragFlags))
+	{
+		_modifyDSValueEventNodeInfo.data->UpdateValue(_modifyDSValueEventNodeInfo.value, buffer);
+	}
 
 	NodeHorizontalSeparator(headerWidth);
 
@@ -397,6 +539,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 		Widget::MNBV::GetPinColors(PinType_Default), ImVec2(itemsWidth, 0.f)))
 	{
 		ImGui::SetCursorPosX(startX + GetPinDrawOffset());
+
 		ImGui::Checkbox("##ManualExecution", &_modifyDSValueEventNodeInfo.activateManualExecution);
 		if (ImGui::IsItemHovered())
 		{
@@ -423,15 +566,33 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 			ImGui::EndDisabled();
 		}
 
-		NodeText_In("Watchers", startX,
-			_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Watchers],
-			Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
+		if (!_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition].isUsed)
+		{
+			NodeText_In("Condition", startX,
+				_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition],
+				Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
+
+			ImGui::SameLine();
+			bool buffer2 = _modifyDSValueEventNodeInfo.data->GetCondition();
+			if (ImGui::Checkbox("##ConditionInput", &buffer2))
+			{
+				_modifyDSValueEventNodeInfo.data->UpdateCondition(_modifyDSValueEventNodeInfo.data->GetCondition(), buffer2);
+			}
+		}
+		else
+		{
+			std::string condition = "Condition (";
+			condition += _modifyDSValueEventNodeInfo.data->GetCondition() ? "true)" : "false)";
+			NodeText_In(condition.c_str(), startX,
+						_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition],
+						Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
+		}
 
 		ImGui::SameLine();
 
 		NodeText_Out("Modify", ImGui::CalcTextSize("Modify").x, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
 			_modifyDSValueEventNodeInfo.outputPins[ModifyDataStateValueEventNodeData::OutputPin_Modify],
-			Widget::MNBV::GetPinColors(PinType_ModifyDataStateEvent));
+			Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 	}
 
 	ax::NodeEditor::EndNode();
@@ -586,12 +747,18 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 		_parameterNodeInfo.inputPins[ParameterNodeData::InputPin_CollHdrDataFields], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_CollHdrDataFields], Widget::MNBV::GetPinColors(PinType_Default),
 		ImVec2(itemsWidth, 0)))
 	{
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+		if (_parameterNodeInfo.inputPins[ParameterNodeData::InputPin_ParameterValue].isUsed)
+		{
+			flags |= ImGuiInputTextFlags_ReadOnly;
+		}
+		_parameterNodeInfo.parameterValueBuffer = _parameterNodeInfo.data->Get();
 		if (NodeInputFloat_InOut("Value", _parameterNodeInfo.id.Get(), &_parameterNodeInfo.parameterValueBuffer,
 			itemsWidth, startX, headerWidth,
 			_parameterNodeInfo.inputPins[ParameterNodeData::InputPin_ParameterValue], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_ParameterValue], Widget::MNBV::GetPinColors(PinType_DataStateValueFloat),
-			ImGuiInputTextFlags_EnterReturnsTrue))
+			flags))
 		{
-			_parameterNodeInfo.data->Set(_parameterNodeInfo.parameterValueBuffer);
+			_parameterNodeInfo.data->UpdateValue(_parameterNodeInfo.data->Get(), _parameterNodeInfo.parameterValueBuffer);
 		}
 	}
 
@@ -720,12 +887,18 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 		_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrDataFields], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrDataFields], Widget::MNBV::GetPinColors(PinType_Default),
 		ImVec2(itemsWidth, 0)))
 	{
+		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+		if (_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Quantity].isUsed)
+		{
+			flags |= ImGuiInputTextFlags_ReadOnly;
+		}
+		_speciesNodeInfo.speciesQuantityBuffer = _speciesNodeInfo.data->Get();
 		if (NodeInputFloat_InOut("Quantity", _speciesNodeInfo.id.Get(), &_speciesNodeInfo.speciesQuantityBuffer,
 			itemsWidth, startX, headerWidth,
 			_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Quantity], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_Quantity], Widget::MNBV::GetPinColors(PinType_DataStateValueFloat),
-			ImGuiInputTextFlags_EnterReturnsTrue))
+			flags))
 		{
-			_speciesNodeInfo.data->Set(_speciesNodeInfo.speciesQuantityBuffer);
+			_speciesNodeInfo.data->UpdateQuantity(_speciesNodeInfo.data->Get(), _speciesNodeInfo.speciesQuantityBuffer);
 		}
 	}
 
@@ -742,62 +915,83 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ValueFloatNode(const ch
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
-	NodeDragFloat_Out("Value", _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], &_valueFloatNodeInfo.value,
+	float buffer = _valueFloatNodeInfo.value.Get();
+	if (NodeDragFloat_Out("Value", _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], &buffer,
 		itemsWidth, startX, headerWidth,
-		_valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], Widget::MNBV::GetPinColors(PinType_FreeValueFloat));
+		_valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], Widget::MNBV::GetPinColors(PinType_FreeValueFloat)))
+	{
+		_valueFloatNodeInfo.value.UpdateValue(_valueFloatNodeInfo.value.Get(), buffer);
+	}
 
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::WatcherNode(WatcherNodeData& _watcherNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNodeData& _triggerNodeInfo)
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Event));
-	ax::NodeEditor::BeginNode(_watcherNodeInfo.id);
+	ax::NodeEditor::BeginNode(_triggerNodeInfo.id);
+	ImGui::PushID((std::size_t)_triggerNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Watcher", "", Widget::MNBV::GetNodeColors(NodeType_Event), 300.f);
+	const float headerWidth = NodeHeader("Trigger", "", Widget::MNBV::GetNodeColors(NodeType_Event), 300.f);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
-	const float triggerWidth = ImGui::CalcTextSize("Trigger").x;
+	const float onTriggerEnterWidth = ImGui::CalcTextSize("onTriggerEnter").x;
+	const float onTriggerStayWidth = ImGui::CalcTextSize("onTriggerStay").x;
+	const float onTriggerExitWidth = ImGui::CalcTextSize("onTriggerExit").x;
 
-	NodeComboBox("Comparator", _watcherNodeInfo.comparators, 6, (int&)_watcherNodeInfo.data->GetComparator(),
-		itemsWidth, startX, headerWidth);
+	if (NodeComboBox("Comparator", _triggerNodeInfo.comparators, 6, (int&)_triggerNodeInfo.data->GetComparator(),
+		itemsWidth, startX, headerWidth))
+	{
+		_triggerNodeInfo.data->UpdateAndCall();
+	}
 
 	ImGuiSliderFlags dragFlags = ImGuiSliderFlags_None;
-	if (_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Target].isUsed)
+	if (_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Target].isUsed)
 	{
 		dragFlags |= ImGuiSliderFlags_ReadOnly;
-		_watcherNodeInfo.target.Set(_watcherNodeInfo.data->GetTarget()->Get());
+		_triggerNodeInfo.target.Set(_triggerNodeInfo.data->GetTarget()->Get());
 	}
-	float bufferTarget = _watcherNodeInfo.target.Get();
-	if (NodeDragFloat_In("Target", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Target], &bufferTarget,
+	float bufferTarget = _triggerNodeInfo.target.Get();
+	if (NodeDragFloat_In("Target", _triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Target], &bufferTarget,
 		0.5f * itemsWidth, startX,
-		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Target], Widget::MNBV::GetPinColors(PinType_Operand),
+		_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Target], Widget::MNBV::GetPinColors(PinType_Operand),
 		dragFlags))
 	{
-		_watcherNodeInfo.target.Set(bufferTarget);
+		_triggerNodeInfo.target.Set(bufferTarget);
+		_triggerNodeInfo.data->UpdateAndCall();
+	}
+
+	ImGui::SameLine();
+	
+	NodeText_Out("onTriggerEnter", onTriggerEnterWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerEnter], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
+
+	dragFlags = ImGuiSliderFlags_None;
+	if (_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Threshold].isUsed)
+	{
+		dragFlags |= ImGuiSliderFlags_ReadOnly;
+		_triggerNodeInfo.threshold.Set(_triggerNodeInfo.data->GetThreshold()->Get());
+	}
+	float bufferThreshold = _triggerNodeInfo.threshold.Get();
+	if (NodeDragFloat_In("Threshold", _triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Threshold], &bufferThreshold,
+		0.5f * itemsWidth, startX,
+		_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Threshold], Widget::MNBV::GetPinColors(PinType_Operand),
+		dragFlags))
+	{
+		_triggerNodeInfo.threshold.Set(bufferThreshold);
+		_triggerNodeInfo.data->UpdateAndCall();
 	}
 
 	ImGui::SameLine();
 
-	NodeText_Out("Trigger", triggerWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
-		_watcherNodeInfo.outputPins[WatcherNodeData::OutputPin_Trigger], Widget::MNBV::GetPinColors(PinType_Watcher));
+	NodeText_Out("onTriggerStay", onTriggerStayWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerStay], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
-	dragFlags = ImGuiSliderFlags_None;
-	if (_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Threshold].isUsed)
-	{
-		dragFlags |= ImGuiSliderFlags_ReadOnly;
-		_watcherNodeInfo.threshold.Set(_watcherNodeInfo.data->GetThreshold()->Get());
-	}
-	float bufferThreshold = _watcherNodeInfo.threshold.Get();
-	if (NodeDragFloat_In("Threshold", _watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Threshold], &bufferThreshold,
-		0.5f * itemsWidth, startX,
-		_watcherNodeInfo.inputPins[WatcherNodeData::InputPin_Threshold], Widget::MNBV::GetPinColors(PinType_Operand),
-		dragFlags))
-	{
-		_watcherNodeInfo.threshold.Set(bufferThreshold);
-	}
+	NodeText_Out("onTriggerExit", onTriggerExitWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerExit], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
+	ImGui::PopID();
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
 }

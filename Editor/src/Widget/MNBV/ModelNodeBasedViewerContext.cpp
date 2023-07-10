@@ -41,17 +41,39 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 				ConserveLinkDataIntegrity();
 			}
 			
-			if (ImGui::MenuItem("Watcher Node"))
+			if (ImGui::MenuItem("Trigger Node"))
 			{
 				ax::NodeEditor::Resume();
-				//TODO: Use a command to add a watcher
-				watcherNodes.emplace_back(Utility::MNBV::WatcherNodeData(_simulation->GetDataState()->AddWatcher(), ImGui::GetIO().MousePos));
+				//TODO: Use a command to add a trigger
+				triggerNodes.emplace_back(Utility::MNBV::TriggerNodeData(_simulation->GetDataState()->AddTrigger(), ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
 				ConserveLinkDataIntegrity();
 			}
 			ImGui::EndMenu();
 		}
 		
+		if (ImGui::BeginMenu("Maths"))
+		{
+			if (ImGui::MenuItem("Arithmetic Operation"))
+			{
+				ax::NodeEditor::Resume();
+				//TODO: Use a command to add an Operation
+				arithmeticOperationNodes.emplace_back(Utility::MNBV::ArithmeticOperationNodeData(_simulation->GetDataState()->AddOperation(), ImGui::GetIO().MousePos));
+				ax::NodeEditor::Suspend();
+				ConserveLinkDataIntegrity();
+			}
+
+			if (ImGui::MenuItem("Logic Operation"))
+			{
+				ax::NodeEditor::Resume();
+				//TODO: Use a command to add a LogicOperation
+				logicOperationNodes.emplace_back(Utility::MNBV::LogicOperationNodeData(_simulation->GetDataState()->AddLogicOperation(), ImGui::GetIO().MousePos));
+				ax::NodeEditor::Suspend();
+				ConserveLinkDataIntegrity();
+			}
+			ImGui::EndMenu();
+		}
+
 		if (ImGui::BeginMenu("Plots"))
 		{
 			if (ImGui::MenuItem("Line Plot Node"))
@@ -101,6 +123,11 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		ImGui::EndPopup();
 	}
 	ax::NodeEditor::Resume();
+
+	for (std::vector<Utility::MNBV::ArithmeticOperationNodeData>::iterator it = arithmeticOperationNodes.begin(); it != arithmeticOperationNodes.end(); it++)
+	{
+		Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode(*it);
+	}
 
 	for (std::vector<Utility::MNBV::AssetNodeData>::iterator it = assetNodes.begin(); it != assetNodes.end(); it++)
 	{
@@ -242,6 +269,11 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 	for (std::vector<Utility::MNBV::LinePlotNodeData>::iterator it = linePlotNodes.begin(); it != linePlotNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::LinePlotNode(*it);
+	}
+
+	for (std::vector<Utility::MNBV::LogicOperationNodeData>::iterator it = logicOperationNodes.begin(); it != logicOperationNodes.end(); it++)
+	{
+		Utility::MNBV::NodeEditorDraw::LogicOperationNode(*it);
 	}
 
 	for (std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData>::iterator it = modifyDataStateValueEventNodes.begin(); it != modifyDataStateValueEventNodes.end(); it++)
@@ -410,9 +442,9 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		Utility::MNBV::NodeEditorDraw::ValueFloatNode("Float", *it);
 	}
 
-	for (std::vector< Utility::MNBV::WatcherNodeData>::iterator it = watcherNodes.begin(); it != watcherNodes.end(); it++)
+	for (std::vector< Utility::MNBV::TriggerNodeData>::iterator it = triggerNodes.begin(); it != triggerNodes.end(); it++)
 	{
-		Utility::MNBV::NodeEditorDraw::WatcherNode(*it);
+		Utility::MNBV::NodeEditorDraw::TriggerNode(*it);
 	}
 
 	for (std::vector< Utility::MNBV::LinkData>::iterator it = staticLinks.begin(); it != staticLinks.end(); it++)

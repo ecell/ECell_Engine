@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Timer.hpp"
+
 namespace ECellEngine::Editor::Utility::Plot
 {
 	/*!
@@ -175,9 +177,19 @@ namespace ECellEngine::Editor::Utility::Plot
 	struct UpdateController_EveryXSeconds final : public UpdateController
 	{
 		/*!
+		@brief The timer used to check the time interval.
+		*/
+		Core::Timer timer;
+
+		/*
 		@brief The current time.
 		*/
-		float time = 0.f;
+		float currentTime = 0.f;
+
+		/*!
+		@brief The previous time.
+		*/
+		float previousTime = 0.f;
 
 		/*!
 		@brief The time interval that must be reached before updating.
@@ -187,6 +199,8 @@ namespace ECellEngine::Editor::Utility::Plot
 		UpdateController_EveryXSeconds() noexcept
 		{
 			scheme = UpdateScheme_EveryXSeconds;
+
+			previousTime = timer.ReadHighResTimer();
 		}
 
 		inline void* Get() noexcept override

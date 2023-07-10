@@ -15,14 +15,22 @@ namespace ECellEngine::Editor::Utility::MNBV
 	{
 		NodeType_Default,
 
+		//Asset-Related
 		NodeType_Asset,
-		NodeType_Data,
-		NodeType_Equation,
-		NodeType_Event,
 		NodeType_Parameter,
 		NodeType_Reaction,
 		NodeType_Solver,
 		NodeType_Species,
+
+		//Maths-Related
+		NodeType_Maths,
+		NodeType_ArithmeticOperation,
+		NodeType_LogicOperation,
+		NodeType_Equation,
+		
+		NodeType_Data,
+
+		NodeType_Event,
 
 		NodeType_Count
 	};
@@ -35,18 +43,27 @@ namespace ECellEngine::Editor::Utility::MNBV
 	{
 		PinType_Default,
 
+		//Asset-Related
 		PinType_Asset,
-		PinType_DataStateValueFloat,//"DataState" for a value stored in a data within the DataState (-->there are constraints on how to access/change it).
-		PinType_Equation,
-		PinType_EquationValueFloat,//"Equation" for a value that is the result of the computation of an equation.
-		PinType_FreeValueFloat,//"Free" means that the value does not have specific contraints.
-		PinType_ModifyDataStateEvent,
-		PinType_Operand,
 		PinType_Parameter,
 		PinType_Reaction,
 		PinType_Solver,
 		PinType_Species,
-		PinType_Watcher,
+
+		//Maths-Related
+		PinType_Equation,
+		PinType_Operand,
+
+		//Low level Data-Related
+		PinType_DataStateValueFloat,//"DataState" for a value stored in a data within the DataState (-->there are constraints on how to access/change it).
+		PinType_EquationValueFloat,//"Equation" for a value that is the result of the computation of an equation.
+		PinType_FreeValueFloat,//"Free" means that the value does not have specific contraints.
+
+		//Event-Related
+		PinType_BooleanCallBackPublisher,
+		PinType_BooleanCallBackSubscriber,
+		PinType_FloatCallBackPublisher,
+		PinType_FloatCallBackSubscriber,
 
 		PinType_Count
 	};
@@ -59,8 +76,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 	{
 		NodeColorType_Bg,
 		NodeColorType_Border,
-		//NodeColorType_BorderHovered,
-		//NodeColorType_BorderSelected,
 		NodeColorType_HeaderBg,
 		NodeColorType_HeaderActivated,
 		NodeColorType_HeaderHovered,
@@ -117,75 +132,75 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 			nodeColors[NodeType_Default][NodeColorType_Bg] = ImVec4(0.125f, 0.125f, 0.125f, 0.784f);//ax::NodeEditor::StyleColor_NodeBg;
 			nodeColors[NodeType_Default][NodeColorType_Border] = ImVec4(1.000f, 1.000f, 1.000f, 0.376f);//ax::NodeEditor::StyleColor_NodeBorder;
-			//nodeColors[NodeType_Default][NodeColorType_BorderHovered] = ImVec4(0.196f, 0.690f, 1.000f, 1.000f);//ax::NodeEditor::StyleColor_HovNodeBorder;
-			//nodeColors[NodeType_Default][NodeColorType_BorderSelected] = ImVec4(1.000f, 0.690f, 0.196f, 1.000f);//ax::NodeEditor::StyleColor_SelNodeBorder;
 			nodeColors[NodeType_Default][NodeColorType_HeaderBg] = ImVec4(1.000f, 1.000f, 1.000f, 0.376f);//ax::NodeEditor::StyleColor_NodeBorder;
 			nodeColors[NodeType_Default][NodeColorType_HeaderActivated] = ImVec4(1.000f, 0.690f, 0.196f, 1.000f);//ax::NodeEditor::StyleColor_SelNodeBorder;
 			nodeColors[NodeType_Default][NodeColorType_HeaderHovered] = ImVec4(0.196f, 0.690f, 1.000f, 1.000f);//ax::NodeEditor::StyleColor_HovNodeBorder;
 
 			nodeColors[NodeType_Asset][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Asset][NodeColorType_Border] = ImVec4(0.7f, 0.7f, 0.7f, 1.f);
-			//nodeColors[NodeType_Asset][NodeColorType_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
-			//nodeColors[NodeType_Asset][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
 			nodeColors[NodeType_Asset][NodeColorType_HeaderBg] = ImVec4(0.7f, 0.7f, 0.7f, 0.25f);
 			nodeColors[NodeType_Asset][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Asset][NodeColorType_HeaderHovered] = ImVec4(0.7f, 0.7f, 0.7f, 0.5f);
 
 			nodeColors[NodeType_Data][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Data][NodeColorType_Border] = ImVec4(1.0f, 1.0f, 1.0f, 1.f);
-			//nodeColors[NodeType_Data][NodeColorType_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
-			//nodeColors[NodeType_Data][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
 			nodeColors[NodeType_Data][NodeColorType_HeaderBg] = ImVec4(1.0f, 1.0f, 1.0f, 0.25f);
 			nodeColors[NodeType_Data][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Data][NodeColorType_HeaderHovered] = ImVec4(1.0f, 1.0f, 1.0f, 0.5f);
 
-			nodeColors[NodeType_Equation][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Equation][NodeColorType_Border] = ImVec4(1.0f, 1.0f, 1.0f, 1.f);
-			//nodeColors[NodeType_Equation][NodeColorType_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
-			//nodeColors[NodeType_Equation][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Equation][NodeColorType_HeaderBg] = ImVec4(1.0f, 1.0f, 1.0f, 0.25f);
-			nodeColors[NodeType_Equation][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Equation][NodeColorType_HeaderHovered] = ImVec4(1.0f, 1.0f, 1.0f, 0.5f);
+			nodeColors[NodeType_Maths][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Maths][NodeColorType_Border] = ImVec4(1.0f, 1.0f, 1.0f, 1.f);
+			nodeColors[NodeType_Maths][NodeColorType_HeaderBg] = ImVec4(1.0f, 1.0f, 1.0f, 0.25f);
+			nodeColors[NodeType_Maths][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Maths][NodeColorType_HeaderHovered] = ImVec4(1.0f, 1.0f, 1.0f, 0.5f);
+			
+			nodeColors[NodeType_ArithmeticOperation][NodeColorType_Bg] = nodeColors[NodeType_Maths][NodeColorType_Bg];
+			nodeColors[NodeType_ArithmeticOperation][NodeColorType_Border] = nodeColors[NodeType_Maths][NodeColorType_Border];
+			nodeColors[NodeType_ArithmeticOperation][NodeColorType_HeaderBg] = nodeColors[NodeType_Maths][NodeColorType_HeaderBg];
+			nodeColors[NodeType_ArithmeticOperation][NodeColorType_HeaderActivated] = nodeColors[NodeType_Maths][NodeColorType_HeaderActivated];
+			nodeColors[NodeType_ArithmeticOperation][NodeColorType_HeaderHovered] = nodeColors[NodeType_Maths][NodeColorType_HeaderHovered];
+			
+			nodeColors[NodeType_LogicOperation][NodeColorType_Bg] = nodeColors[NodeType_Maths][NodeColorType_Bg];
+			nodeColors[NodeType_LogicOperation][NodeColorType_Border] = nodeColors[NodeType_Maths][NodeColorType_Border];
+			nodeColors[NodeType_LogicOperation][NodeColorType_HeaderBg] = nodeColors[NodeType_Maths][NodeColorType_HeaderBg];
+			nodeColors[NodeType_LogicOperation][NodeColorType_HeaderActivated] = nodeColors[NodeType_Maths][NodeColorType_HeaderActivated];
+			nodeColors[NodeType_LogicOperation][NodeColorType_HeaderHovered] = nodeColors[NodeType_Maths][NodeColorType_HeaderHovered];
+			
+			nodeColors[NodeType_Equation][NodeColorType_Bg] = nodeColors[NodeType_Maths][NodeColorType_Bg];
+			nodeColors[NodeType_Equation][NodeColorType_Border] = nodeColors[NodeType_Maths][NodeColorType_Border];
+			nodeColors[NodeType_Equation][NodeColorType_HeaderBg] = nodeColors[NodeType_Maths][NodeColorType_HeaderBg];
+			nodeColors[NodeType_Equation][NodeColorType_HeaderActivated] = nodeColors[NodeType_Maths][NodeColorType_HeaderActivated];
+			nodeColors[NodeType_Equation][NodeColorType_HeaderHovered] = nodeColors[NodeType_Maths][NodeColorType_HeaderHovered];
 
 			nodeColors[NodeType_Event][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Event][NodeColorType_Border] = ImVec4(0.591f, 0.257f, 0.9f, 1.f);
-			//nodeColors[NodeType_Event][NodeColorType_BorderHovered] =		ImVec4(0.f, 1.f, 0.f, 1.f);
-			//nodeColors[NodeType_Event][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
 			nodeColors[NodeType_Event][NodeColorType_HeaderBg] = ImVec4(0.591f, 0.257f, 0.9f, 0.25f);
 			nodeColors[NodeType_Event][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
 			nodeColors[NodeType_Event][NodeColorType_HeaderHovered] = ImVec4(0.591f, 0.257f, 0.9f, 0.5f);
 
-			nodeColors[NodeType_Parameter][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Parameter][NodeColorType_Border] = ImVec4(0.05f, 0.463f, 0.297f, 1.f);
-			//nodeColors[NodeType_Parameter][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
-			//nodeColors[NodeType_Parameter][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Parameter][NodeColorType_HeaderBg] = ImVec4(0.05f, 0.463f, 0.297f, 0.25f);;
-			nodeColors[NodeType_Parameter][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);;
-			nodeColors[NodeType_Parameter][NodeColorType_HeaderHovered] = ImVec4(0.05f, 0.463f, 0.297f, 0.5f);;
+			nodeColors[NodeType_Parameter][NodeColorType_Bg] = nodeColors[NodeType_Asset][NodeColorType_Bg];
+			nodeColors[NodeType_Parameter][NodeColorType_Border] = nodeColors[NodeType_Asset][NodeColorType_Border];
+			nodeColors[NodeType_Parameter][NodeColorType_HeaderBg] = nodeColors[NodeType_Asset][NodeColorType_HeaderBg];
+			nodeColors[NodeType_Parameter][NodeColorType_HeaderActivated] = nodeColors[NodeType_Asset][NodeColorType_HeaderActivated];
+			nodeColors[NodeType_Parameter][NodeColorType_HeaderHovered] = nodeColors[NodeType_Asset][NodeColorType_HeaderHovered];
 
-			nodeColors[NodeType_Reaction][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Reaction][NodeColorType_Border] = ImVec4(0.141f, 0.391f, 0.485f, 1.f);
-			//nodeColors[NodeType_Reaction][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
-			//nodeColors[NodeType_Reaction][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Reaction][NodeColorType_HeaderBg] = ImVec4(0.141f, 0.391f, 0.485f, 1.f);
-			nodeColors[NodeType_Reaction][NodeColorType_HeaderActivated] = ImVec4(1.f, 0.f, 0.f, 1.f);
-			nodeColors[NodeType_Reaction][NodeColorType_HeaderHovered] = ImVec4(0.141f, 0.391f, 0.485f, 1.f);
+			nodeColors[NodeType_Reaction][NodeColorType_Bg] = nodeColors[NodeType_Asset][NodeColorType_Bg];
+			nodeColors[NodeType_Reaction][NodeColorType_Border] = nodeColors[NodeType_Asset][NodeColorType_Border];
+			nodeColors[NodeType_Reaction][NodeColorType_HeaderBg] = nodeColors[NodeType_Asset][NodeColorType_HeaderBg];
+			nodeColors[NodeType_Reaction][NodeColorType_HeaderActivated] = nodeColors[NodeType_Asset][NodeColorType_HeaderActivated];
+			nodeColors[NodeType_Reaction][NodeColorType_HeaderHovered] = nodeColors[NodeType_Asset][NodeColorType_HeaderHovered];
 
-			nodeColors[NodeType_Solver][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Solver][NodeColorType_Border] = ImVec4(1.f, 0.365f, 0.f, 1.f);
-			//nodeColors[NodeType_Solver][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);
-			//nodeColors[NodeType_Solver][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Solver][NodeColorType_HeaderBg] = ImVec4(1.f, 0.365f, 0.f, 0.25f);
-			nodeColors[NodeType_Solver][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Solver][NodeColorType_HeaderHovered] = ImVec4(1.f, 0.365f, 0.f, 0.5f);
+			nodeColors[NodeType_Solver][NodeColorType_Bg] = nodeColors[NodeType_Asset][NodeColorType_Bg];
+			nodeColors[NodeType_Solver][NodeColorType_Border] = nodeColors[NodeType_Asset][NodeColorType_Border];
+			nodeColors[NodeType_Solver][NodeColorType_HeaderBg] = nodeColors[NodeType_Asset][NodeColorType_HeaderBg];
+			nodeColors[NodeType_Solver][NodeColorType_HeaderActivated] = nodeColors[NodeType_Asset][NodeColorType_HeaderActivated];
+			nodeColors[NodeType_Solver][NodeColorType_HeaderHovered] = nodeColors[NodeType_Asset][NodeColorType_HeaderHovered];
 
-			nodeColors[NodeType_Species][NodeColorType_Bg] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Species][NodeColorType_Border] = ImVec4(1.f, 0.f, 0.f, 1.f);
-			//nodeColors[NodeType_Species][NodeColorType_BorderHovered] =	ImVec4(0.f, 1.f, 0.f, 1.f);.f);
-			//nodeColors[NodeType_Species][NodeColorType_BorderSelected] =	ImVec4(0.f, 0.f, 1.f, 1.f);
-			nodeColors[NodeType_Species][NodeColorType_HeaderBg] = ImVec4(1.f, 0.f, 0.f, 0.25f);
-			nodeColors[NodeType_Species][NodeColorType_HeaderActivated] = ImVec4(0.f, 0.f, 0.f, 0.5f);
-			nodeColors[NodeType_Species][NodeColorType_HeaderHovered] = ImVec4(1.f, 0.f, 0.f, 0.5f);
+			nodeColors[NodeType_Species][NodeColorType_Bg] = nodeColors[NodeType_Asset][NodeColorType_Bg];
+			nodeColors[NodeType_Species][NodeColorType_Border] = nodeColors[NodeType_Asset][NodeColorType_Border];
+			nodeColors[NodeType_Species][NodeColorType_HeaderBg] = nodeColors[NodeType_Asset][NodeColorType_HeaderBg];
+			nodeColors[NodeType_Species][NodeColorType_HeaderActivated] = nodeColors[NodeType_Asset][NodeColorType_HeaderActivated];
+			nodeColors[NodeType_Species][NodeColorType_HeaderHovered] = nodeColors[NodeType_Asset][NodeColorType_HeaderHovered];
 
 			pinColors[PinType_Default][PinColorType_BgActivated] = nodeColors[NodeType_Default][NodeColorType_Border];
 			pinColors[PinType_Default][PinColorType_BgInactivated] = nodeColors[NodeType_Default][NodeColorType_Bg];
@@ -211,9 +226,21 @@ namespace ECellEngine::Editor::Utility::MNBV
 			pinColors[PinType_FreeValueFloat][PinColorType_BgInactivated] = nodeColors[NodeType_Data][NodeColorType_Bg];
 			pinColors[PinType_FreeValueFloat][PinColorType_Border] = nodeColors[NodeType_Data][NodeColorType_Border];
 			
-			pinColors[PinType_ModifyDataStateEvent][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
-			pinColors[PinType_ModifyDataStateEvent][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
-			pinColors[PinType_ModifyDataStateEvent][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_BooleanCallBackPublisher][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_BooleanCallBackPublisher][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
+			pinColors[PinType_BooleanCallBackPublisher][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
+
+			pinColors[PinType_BooleanCallBackSubscriber][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_BooleanCallBackSubscriber][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
+			pinColors[PinType_BooleanCallBackSubscriber][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
+			
+			pinColors[PinType_FloatCallBackPublisher][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_FloatCallBackPublisher][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
+			pinColors[PinType_FloatCallBackPublisher][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
+
+			pinColors[PinType_FloatCallBackSubscriber][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
+			pinColors[PinType_FloatCallBackSubscriber][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
+			pinColors[PinType_FloatCallBackSubscriber][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
 
 			pinColors[PinType_Operand][PinColorType_BgActivated] = nodeColors[NodeType_Asset][NodeColorType_Border];
 			pinColors[PinType_Operand][PinColorType_BgInactivated] = nodeColors[NodeType_Asset][NodeColorType_Bg];
@@ -235,9 +262,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			pinColors[PinType_Species][PinColorType_BgInactivated] = nodeColors[NodeType_Species][NodeColorType_Bg];
 			pinColors[PinType_Species][PinColorType_Border] = nodeColors[NodeType_Species][NodeColorType_Border];
 			
-			pinColors[PinType_Watcher][PinColorType_BgActivated] = nodeColors[NodeType_Event][NodeColorType_Border];
-			pinColors[PinType_Watcher][PinColorType_BgInactivated] = nodeColors[NodeType_Event][NodeColorType_Bg];
-			pinColors[PinType_Watcher][PinColorType_Border] = nodeColors[NodeType_Event][NodeColorType_Border];
 		}
 	};
 }

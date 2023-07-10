@@ -48,8 +48,8 @@ float ECellEngine::Solvers::ODE::Stepper::ComputeTimeForValue(const float _targe
 	const float _y1, const float _bsp[], const float _ks[], const unsigned _eqIdx, const unsigned short _order,
 	const unsigned short _stage)
 {
-	float deltaTarget = fabsf(_targetValue - _y0);
 	float deltaStep = fabsf(_y1 - _y0);
+	float deltaTarget = fabsf(_targetValue - _y0) + computeTimeThetaTolerance * deltaStep;
 	float a = 0; 
 	float b = 1;
 	float theta = 0.5f;
