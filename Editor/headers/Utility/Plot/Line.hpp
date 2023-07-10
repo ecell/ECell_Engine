@@ -21,7 +21,7 @@ namespace ECellEngine::Editor::Utility::Plot
 	*/
 	struct Line
 	{
-	private:
+	protected:
 		/*!
 		@brief An instance of the update controller for this lines that never
 				accepts new points.
@@ -127,7 +127,12 @@ namespace ECellEngine::Editor::Utility::Plot
 		*/
 		Line(const Line& _other) :
 			id(_other.id), dataPoints(_other.dataPoints),
-			ptrX(_other.ptrX), Y(_other.Y), color(_other.color)
+			ptrX(_other.ptrX), Y(_other.Y), color(_other.color),
+			updateControllerNever(_other.updateControllerNever),
+			updateControllerAlways(_other.updateControllerAlways),
+			updateControllerOnChange(_other.updateControllerOnChange),
+			updateControllerEveryNthFrame(_other.updateControllerEveryNthFrame),
+			updateControllerEveryXSeconds(_other.updateControllerEveryXSeconds)
 		{
 			if (_other.updateLineSubToken != nullptr)
 			{
@@ -145,7 +150,12 @@ namespace ECellEngine::Editor::Utility::Plot
 		*/
 		Line(const Line&& _other) noexcept :
 			id(_other.id), dataPoints(_other.dataPoints),
-			ptrX(_other.ptrX), Y(_other.Y), color(_other.color)
+			ptrX(_other.ptrX), Y(_other.Y), color(_other.color),
+			updateControllerNever(_other.updateControllerNever),
+			updateControllerAlways(_other.updateControllerAlways),
+			updateControllerOnChange(_other.updateControllerOnChange),
+			updateControllerEveryNthFrame(_other.updateControllerEveryNthFrame),
+			updateControllerEveryXSeconds(_other.updateControllerEveryXSeconds)
 		{
 			if (_other.updateLineSubToken != nullptr)
 			{
@@ -171,6 +181,11 @@ namespace ECellEngine::Editor::Utility::Plot
 			ptrX = _other.ptrX;
 			Y = _other.Y;
 			color = _other.color;
+			updateControllerNever = _other.updateControllerNever;
+			updateControllerAlways = _other.updateControllerAlways;
+			updateControllerOnChange = _other.updateControllerOnChange;
+			updateControllerEveryNthFrame = _other.updateControllerEveryNthFrame;
+			updateControllerEveryXSeconds = _other.updateControllerEveryXSeconds;
 			if (_other.updateLineSubToken != nullptr)
 			{
 				**(_other.updateLineCallback.get()) -= _other.updateLineSubToken;
@@ -196,6 +211,11 @@ namespace ECellEngine::Editor::Utility::Plot
 			ptrX = _other.ptrX;
 			Y = _other.Y;
 			color = _other.color;
+			updateControllerNever = _other.updateControllerNever;
+			updateControllerAlways = _other.updateControllerAlways;
+			updateControllerOnChange = _other.updateControllerOnChange;
+			updateControllerEveryNthFrame = _other.updateControllerEveryNthFrame;
+			updateControllerEveryXSeconds = _other.updateControllerEveryXSeconds;
 			if (_other.updateLineSubToken != nullptr)
 			{
 				**(_other.updateLineCallback.get()) -= _other.updateLineSubToken;

@@ -1168,7 +1168,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		}
 
 		LinePlotNodeData(const LinePlotNodeData& _lpnd) :
-			NodeData(_lpnd),
+			NodeData(_lpnd), linePlot{ _lpnd.linePlot },
 			inputPins{ _lpnd.inputPins[0], _lpnd.inputPins[1] , _lpnd.inputPins[2] },
 			outputPins{ _lpnd.outputPins[0] },
 			utilityState{ _lpnd.utilityState },
