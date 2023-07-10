@@ -178,9 +178,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	//X axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
 	{
-		linePlot.ptrX = (float*)_data;
-
-		linePlot.Update();
+		linePlot.updateXSubToken = std::move( *(Core::Callback<const float, const float>*)_data += std::bind(&Plot::LinePlot::UpdateX, &linePlot, std::placeholders::_1, std::placeholders::_2));
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
@@ -191,12 +189,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	{
 		Plot::Line& line = linePlot.AddLine((std::size_t)_nodeOutputPinData->node->id);
 
-		line.ptrY = (float*)_data;
-
-		if (linePlot.ptrX)
-		{
-			line.Update(*linePlot.ptrX);
-		}
+		line.updateLineSubToken = std::move(*(Core::Callback<const float, const float>*)_data += std::bind(&Plot::Line::UpdateLine, &line, std::placeholders::_1, std::placeholders::_2));
 
 		//Some nodes are representing data that have names.
 		//We try to get the name of the node and use it as the legend of the line.
@@ -237,10 +230,9 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	//X axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
 	{
-		linePlot.ptrX = nullptr;
-
-		//we set the input pin of the collapsing header as the fallback
-		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
+		//Unsub
+		*(Core::Callback<const float, const float>*)_data -= linePlot.updateXSubToken;
+		linePlot.updateXSubToken = nullptr;
 	}
 
 	//Y axis input pin
@@ -250,33 +242,32 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 
 		if (it->id == (std::size_t)_nodeOutputPinData->node->id)
 		{
+			//Unsub
+			*(Core::Callback<const float, const float>*)_data -= it->updateLineSubToken;
 			linePlot.lines.erase(it);
 		}
-
-		//we set the input pin of the collapsing header as the fallback
-		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputRefresh(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
-{
-	//X axis input pin
-	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
-	{
-		linePlot.ptrX = (float*)_data;
-	}
-
-	//Y axis input pin
-	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
-	{
-		std::vector<Plot::Line>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(linePlot.lines.begin(), linePlot.lines.end(), (std::size_t)_nodeOutputPinData->node->id);
-
-		if (it->id == (std::size_t)_nodeOutputPinData->node->id)
-		{
-			it->ptrY = (float*)_data;
-		}
-	}
-}
+//void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputRefresh(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
+//{
+//	//X axis input pin
+//	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
+//	{
+//		linePlot.ptrX = (float*)_data;
+//	}
+//
+//	//Y axis input pin
+//	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
+//	{
+//		std::vector<Plot::Line>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(linePlot.lines.begin(), linePlot.lines.end(), (std::size_t)_nodeOutputPinData->node->id);
+//
+//		if (it->id == (std::size_t)_nodeOutputPinData->node->id)
+//		{
+//			it->ptrY = (float*)_data;
+//		}
+//	}
+//}
 
 void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::InputConnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {

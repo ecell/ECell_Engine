@@ -412,11 +412,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 		}
 	}
 
-
 	if (_linePlotNodeData.IsPlotOpen())
 	{
-		_linePlotNodeData.linePlot.Update();
-
 		ImVec2& windowPadding = ImGui::GetStyle().WindowPadding;
 
 		ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.linePlot.plotSize[0] + 2 * windowPadding.x,
@@ -928,6 +925,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Event));
 	ax::NodeEditor::BeginNode(_triggerNodeInfo.id);
+	ImGui::PushID((std::size_t)_triggerNodeInfo.id);
 
 	const float headerWidth = NodeHeader("Trigger", "", Widget::MNBV::GetNodeColors(NodeType_Event), 300.f);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
@@ -987,6 +985,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 	NodeText_Out("onTriggerExit", onTriggerExitWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
 		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerExit], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
+	ImGui::PopID();
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
 }

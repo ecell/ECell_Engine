@@ -2,6 +2,7 @@
 
 #include <cstring>
 
+#include "Core/Callback.hpp"
 #include "Utility/Plot/UpdateController.hpp"
 #include "Utility/Plot/ScrollingBuffer.hpp"
 
@@ -60,11 +61,17 @@ namespace ECellEngine::Editor::Utility::Plot
 		*/
 		std::size_t id;
 
+		/*!
+		@brief The placeholder for the subscription of ::UpdateLine to a matching
+				callback.
+		*/
+		std::shared_ptr<std::function<void(const float, const float)>> updateLineSubToken = nullptr;
+
 		/*
 		@brief Pointer to the update controller to be used to control adding points
 				to this line.	
 		*/
-		UpdateController* updateController = &updateControllerNever;
+		UpdateController* updateController = &updateControllerOnChange;
 		
 		/*!
 		@brief An array of strings to display in the combo box to select the update
@@ -78,10 +85,15 @@ namespace ECellEngine::Editor::Utility::Plot
 		ScrollingBuffer dataPoints;
 
 		/*!
-		@brief The pointer to the data to use for the Y coordinate of each new
+		@brief The pointer to the data to use for the X coordinate of each new
 				point of this line.
 		*/
-		float* ptrY = nullptr;
+		float* ptrX = nullptr;
+
+		/*!
+		@brief The buffer to the Y coordinate of each new point of this line.
+		*/
+		float Y = 0.f;
 
 		/*!
 		@brief The color of the line.
@@ -93,15 +105,15 @@ namespace ECellEngine::Editor::Utility::Plot
 		*/
 		char lineLegend[64] = "f(x)";
 
-		Line(std::size_t _matchingDataId, unsigned short _maxNbDataPoints) :
-			id{ _matchingDataId }
+		Line(std::size_t _matchingDataId, unsigned short _maxNbDataPoints, float* _ptrX) :
+			id{ _matchingDataId }, ptrX{ _ptrX }
 		{
 			dataPoints.Data.reserve(_maxNbDataPoints);
 			dataPoints.AddPoint(0.f, 0.f);
 		}
 
 		Line(const Line& _other) :
-			id(_other.id), dataPoints(_other.dataPoints), ptrY(_other.ptrY)
+			id(_other.id), dataPoints(_other.dataPoints), ptrX(_other.ptrX)
 		{
 			std::memcpy(lineLegend, _other.lineLegend, 64);
 		}
@@ -160,7 +172,7 @@ namespace ECellEngine::Editor::Utility::Plot
 		@biref Decides to add a new point to ::dataPoints or not based on
 			   the ::updateController.
 		*/
-		void Update(float _x) noexcept;
+		void UpdateLine(const float _previousValue, const float _newValue) noexcept;
 
 	};
 }
