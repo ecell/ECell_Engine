@@ -33,7 +33,7 @@ bool ECellEngine::Editor::Utility::Plot::UpdateController_EveryNthFrame::TestUpd
 
 void ECellEngine::Editor::Utility::Plot::UpdateController_EveryXSeconds::Reset() noexcept
 {
-	time = 0.f;
+	previousTime = timer.ReadHighResTimer();
 }
 
 void ECellEngine::Editor::Utility::Plot::UpdateController_EveryXSeconds::Set(void* _controlValue) noexcept
@@ -43,5 +43,6 @@ void ECellEngine::Editor::Utility::Plot::UpdateController_EveryXSeconds::Set(voi
 
 bool ECellEngine::Editor::Utility::Plot::UpdateController_EveryXSeconds::TestUpdate() noexcept
 {
-	return (time += ImGui::GetIO().DeltaTime) >= timeInterval;
+	currentTime = timer.ReadHighResTimer();
+	return timer.GetDuration(previousTime, currentTime) >= timeInterval;
 }
