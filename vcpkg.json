@@ -2,8 +2,11 @@
   "name": "ecell-engine",
   "version": "0.1.0",
   "dependencies": [
-    "expat",
-    "imgui",
+    "libxml2",
+    {
+      "name": "imgui",
+      "features": [ "docking-experimental" ]
+    },
     "glfw3",
     "vulkan",
     "implot"

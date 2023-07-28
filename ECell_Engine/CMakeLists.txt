@@ -2,10 +2,48 @@
 
 cmake_minimum_required (VERSION 3.12)
 
-# Add ECell_Engine source file
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS "src/*.c" "src/*.cpp")
+# Add ECell_Engine source files
+add_library(ECellEngine SHARED
+    "src/Core/Engine.cpp"
+    "src/Core/Simulation.cpp"
+    "src/Core/SimulationsManager.cpp"
+    "src/Core/Timer.cpp"
+    "src/Core/Track.cpp"
 
-add_library(ECellEngine SHARED ${SOURCE_FILES} ${HEADER_FILES})
+    "src/Core/Events/ModifyDataStateValueEvent.cpp"
+
+    "src/Data/Constant.cpp"
+    "src/Data/DataState.cpp"
+    "src/Data/DependenciesDatabase.cpp"
+    "src/Data/Parameter.cpp"
+    "src/Data/Species.cpp"
+    "src/Data/IndexedMinHeap.cpp"
+
+    "src/IO/Commands.cpp"
+    "src/IO/CommandsManager.cpp"
+    "src/IO/ModuleImporterManager.cpp"
+    "src/IO/SBMLModuleImporter.cpp"
+    "src/IO/SbmlParser.cpp"
+    #"src/IO/SbmlWriter.cpp"
+    
+    "src/Maths/Function.cpp"
+    "src/Maths/Logic.cpp"
+    "src/Maths/LogicOperation.cpp"
+    "src/Maths/MathUtility.cpp"
+    "src/Maths/Operand.cpp"
+    "src/Maths/Operation.cpp"
+    "src/Maths/revrand.c"
+
+    "src/Logging/Logger.cpp"
+
+    "src/Solver/BiochemicalSolver.cpp"
+    "src/Solver/GillespieNRMRSolver.cpp"
+    #"src/Solver/Gillespie_NRM_R.cpp"
+    "src/Solver/ODE/ExplicitRKCoefficients.cpp"
+    "src/Solver/ODE/GeneralizedExplicitRK.cpp"
+    "src/Solver/ODE/Stepper.cpp"
+ )
+
 target_compile_features(ECellEngine PUBLIC cxx_std_17)
 
 find_package(Threads REQUIRED)
@@ -20,6 +58,12 @@ else()
     else()
         set(LIBSBML_LIBRARY libsbml)
     endif()
+endif()
+
+if (MSVC)
+
+    target_compile_options(ECellEngine PRIVATE /MP)	# Multithread compilation
+
 endif()
 
 target_link_libraries(ECellEngine

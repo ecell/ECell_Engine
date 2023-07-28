@@ -1,19 +1,16 @@
 #pragma once
 
+#ifndef IMGUI_DEFINE_MATH_OPERATORS
+#define IMGUI_DEFINE_MATH_OPERATORS
+#endif
+
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_vulkan.h"
-#define GLFW_INCLUDE_NONE
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#include <vulkan/vulkan.h>
 #include "implot.h"
 
-#include "Engine.hpp"
-#include "EngineDataVisualizationWidget.hpp"
-#include "FileIOWidget.hpp"
-#include "OptionsWidget.hpp"
-#include "SimulationFlowControlWidget.hpp"
+#include "Core/Engine.hpp"
+#include "Logging/ExeConsoleLoggerSink.hpp"
+#include "Utility/BackendUtility.hpp"
+#include "Widget/Widget.hpp"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
 // To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
@@ -27,74 +24,79 @@ namespace ECellEngine::Editor
 	class Editor
 	{
 	private:
-		Engine engine;
+		
+		/*!
+		@brief Instance of the utility to handle start and clean up of Vulkan and GLFW.
+		*/
+		Utility::BackendUtility backend;
 
-		GLFWwindow* window;
+		/*!
+		@brief The Logger to print information in the console of the executable.
+		*/
+		ECellEngine::Editor::Logging::ExeConsoleLoggerSink exeLoggerSink;
+		
+		/*!
+		@brief List of newly created widgets.
+		@details This contains pointers to the widgets only for 1 frame. Just to
+				 give them enough time to execute Widget::Awake()
+		*/
+		std::vector<Widget::Widget*> newWidgets;
 
-		VkResult				 err;
-		VkAllocationCallbacks* allocator;
-		VkInstance               instance;
-		VkPhysicalDevice         physicalDevice;
-		VkDevice                 device;
-		uint32_t                 queueFamily;
-		VkQueue                  queue;
-		VkDebugReportCallbackEXT debugReport;
-		VkPipelineCache          pipelineCache;
-		VkDescriptorPool         descriptorPool;
+		/*!
+		@brief List of all widgets to draw.
+		@details This contains pointers to the widgets as long as we need to draw
+				 them. Widget::Draw() is called for each of them every frame.
+		*/
+		std::vector<Widget::Widget*> widgets;
 
-		ImGui_ImplVulkanH_Window mainWindowData;
-		int                      minImageCount;
-		bool                     swapChainRebuild;
+		/*!
+		@brief Creates ImGui contexts, sets the style, the main flags and generates the fonts.
+		*/
+		void InitializeImGui();
 
-		EngineDataVisualizationWidget edvWidget;
-		FileIOWidget fileIOWidget;
-		OptionsWidget optionsWidget;
-		SimulationFlowControlWidget sfcWidget;
-
-
-		void cleanupVulkan();
-
-		void cleanupVulkanWindow();
-
-		void frameRender(ImGui_ImplVulkanH_Window* _wd, ImDrawData* _draw_data);
-
-		void framePresent(ImGui_ImplVulkanH_Window* _wd);
-
-		void initializeEditorWindow();
-
-		void initializeVulkan(const char** _extensions, uint32_t _extensions_count);
-
-		void initializeVulkanWindow(ImGui_ImplVulkanH_Window* _wd, VkSurfaceKHR _surface, int _width, int _height);
+		/*!
+		@brief Reprocess the font Atlas. Mainly to have clearer glyphs in the node editor (but applied everywhere).
+		@author thedmd at https://github.com/thedmd/imgui-node-editor/blob/2f99b2d613a400f6579762bd7e7c343a0d844158/examples/application/source/application.cpp#L88
+		*/
+		void RecreateFontAtlas();
 
 	public:
-		Editor() :
-			edvWidget(engine.getCommandsManager(), engine.getSimulationLoop()),
-			fileIOWidget(engine.getCommandsManager(), engine.getLoadedSBMLDocuments()),
-			optionsWidget(engine.getCommandsManager()),
-			sfcWidget(engine.getCommandsManager(), engine.getSimulationLoop())
+		ECellEngine::Core::Engine engine; /*!< ECellEngine instance. The heart of the simulation.*/
+		
+		bool showDemoWindow; /*!< For debug & dev. Shows the demo windows of ImGui and ImPlot.*/
+
+		Editor();
+
+		/*!
+		@brief Opens a new window in the editor.
+		@details Instantiates a new widget of type @p WidgetType and adds it to
+				 widgets as well as newWidgets.
+		@tparam WidgetType MUST be deriving from Widget.
+		*/
+		template <typename WidgetType, typename = std::enable_if_t<std::is_base_of_v<Widget::Widget, WidgetType>>>
+		inline WidgetType*	AddWidget()
 		{
-			window = NULL;
+			widgets.push_back(new WidgetType(*this));
+			newWidgets.push_back(widgets.back());
+			return static_cast<WidgetType*>(widgets.back());
+		}
 
-			err = VK_ERROR_UNKNOWN;
-			allocator = NULL;
-			instance = VK_NULL_HANDLE;
-			physicalDevice = VK_NULL_HANDLE;
-			device = VK_NULL_HANDLE;
-			queueFamily = (uint32_t)-1;
-			queue = VK_NULL_HANDLE;
-			debugReport = VK_NULL_HANDLE;
-			pipelineCache = VK_NULL_HANDLE;
-			descriptorPool = VK_NULL_HANDLE;
+		/*! 
+		@brief Initialize ImGui contexts, Vulkan + Glfw backends and starts the Engine.
+		*/
+		void Start();
 
-			mainWindowData;
-			minImageCount = 2;
-			swapChainRebuild = false;
-		}		
+		/*!
+		@brief Stops the engine, destroy ImGui contexts and clean ups Vulkan + Glfw backends.
+		*/
+		void Stop();
 
-		void start();
-
-		void stop();
-
-		void update();
+		/*!
+		@brief The main loop of the editor.
+		@details Runs on a while loop as long as Glfw window context is running.
+				 One loop cycle is one frame. It starts by polling events, updating
+				 the engine. Then comes the ImGui new frame and renders.
+		*/
+		void Update();
 	};
 }
