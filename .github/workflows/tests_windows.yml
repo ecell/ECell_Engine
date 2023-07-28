@@ -16,8 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         build_config: [Release, Debug]
-        msvc_toolset: [v140, v141, v142]
-        target_architecture: [x64, Win32]
+        msvc_toolset: [v142] #[v140, v141, v142]
+        target_architecture: [x64] #[x64, Win32]
 
     steps:
       - name: Checkout repository
@@ -33,7 +33,7 @@ jobs:
           vulkan-use-cache: true
 
       - name: Setup VCPKG
-        uses: lukka/run-vcpkg@v10
+        uses: lukka/run-vcpkg@v11
         with:
           # This is the glob expression used to locate the vcpkg.json and add its
           # hash to the cache key. Change it to match a single manifest file you want
