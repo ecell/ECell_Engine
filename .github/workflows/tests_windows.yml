@@ -26,7 +26,7 @@ jobs:
           submodules: 'recursive'
 
       - name: Setup Vulkan SDK
-        uses: humbletim/setup-vulkan-sdk@v1.2.0
+        uses: littlecoincoin/setup-vulkan-sdk@cmake_arch_choice
         with:
           vulkan-query-version: 1.3.224.1
           vulkan-components: Vulkan-Headers, Vulkan-Loader
