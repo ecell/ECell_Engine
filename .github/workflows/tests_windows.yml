@@ -17,7 +17,7 @@ jobs:
       matrix:
         build_config: [Release, Debug]
         msvc_toolset: [v142] #[v140, v141, v142]
-        target_architecture: [x64] #[x64, Win32]
+        target_architecture: [Win32] #[x64, Win32]
 
     steps:
       - name: Checkout repository
