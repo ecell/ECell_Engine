@@ -31,6 +31,7 @@ jobs:
           vulkan-query-version: 1.3.224.1
           vulkan-components: Vulkan-Headers, Vulkan-Loader
           vulkan-use-cache: true
+          arch: ${{ matrix.target_architecture }}
 
       - name: Setup VCPKG
         uses: lukka/run-vcpkg@v11
