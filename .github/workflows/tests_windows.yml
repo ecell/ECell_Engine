@@ -6,6 +6,18 @@ on:
       - master
       - dev
   workflow_dispatch:
+    build_config:
+      description: 'Comma-separated "Release" and/or "Debug"'
+      default: '"Release", "Debug"'
+      required: true
+    msvc_toolset: 
+      description: 'Comma-separated "v140" and/or "v141" and/or "v142"'
+      default: '"v140", "v141", "v142"'
+      required: true
+    target_architecture: 
+      description: 'Comma-separated "x64" and/or "Win32"'
+      default: '"x64", "Win32"'
+      required: true
 
 jobs:
   windows_msvc:
@@ -13,11 +25,11 @@ jobs:
     runs-on: windows-2022
 
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        build_config: [Release, Debug]
-        msvc_toolset: [v142] #[v140, v141, v142]
-        target_architecture: [x64] #[x64, Win32]
+        build_config: ${{ fromJSON(format('[{0}]', inputs.build_config)) }}
+        msvc_toolset: ${{ fromJSON(format('[{0}]', inputs.msvc_toolset)) }}
+        target_architecture: ${{ fromJSON(format('[{0}]', inputs.target_architecture)) }}
 
     steps:
       - name: Checkout repository
