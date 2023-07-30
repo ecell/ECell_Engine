@@ -1,0 +1,6 @@
+[submodule "libsbml"]
+	path = libsbml
+	url = https://github.com/sbmlteam/libsbml.git
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/microsoft/vcpkg.git
