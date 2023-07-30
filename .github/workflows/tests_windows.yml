@@ -8,15 +8,15 @@ on:
   workflow_dispatch:
     build_config:
       description: 'Comma-separated "Release" and/or "Debug"'
-      default: '"Release", "Debug"'
+      default: "Release, Debug"
       required: true
     msvc_toolset: 
       description: 'Comma-separated "v140" and/or "v141" and/or "v142"'
-      default: '"v140", "v141", "v142"'
+      default: "v140, v141, v142"
       required: true
     target_architecture: 
       description: 'Comma-separated "x64" and/or "Win32"'
-      default: '"x64", "Win32"'
+      default: "x64, Win32"
       required: true
 
 jobs:
@@ -27,9 +27,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        build_config: ${{ fromJSON(format('[{0}]', inputs.build_config)) || "Release" }}
-        msvc_toolset: ${{ fromJSON(format('[{0}]', inputs.msvc_toolset)) || "v142"}}
-        target_architecture: ${{ fromJSON(format('[{0}]', inputs.target_architecture)) || "x64" }}
+        build_config: ${{ fromJSON(format('[{0}]', inputs.build_config)) || Release }}
+        msvc_toolset: ${{ fromJSON(format('[{0}]', inputs.msvc_toolset)) || v142}}
+        target_architecture: ${{ fromJSON(format('[{0}]', inputs.target_architecture)) || x64 }}
 
     steps:
       - name: Checkout repository
