@@ -54,6 +54,15 @@ jobs:
           # to use.
           vcpkgJsonGlob: '**/vcpkg.json'
 
+      - name: Setup Visual Studio Dev Environment
+        # This action guarentess that the generator will be overriden to the appropriate VS
+        # version depending on the toolset. This is required because the default generator
+        # for the windows-latest image is VS 2017, which does is an issue for v140.
+        uses: seanmiddleditch/gha-setup-vsdevenv@v4
+        with:
+          arch: ${{ env.resolvedArch }} # This is set by the Setup Vulkan SDK
+          toolset_version: ${{ matrix.msvc_toolset }}
+
       - name: Build ECellEngine
         uses: lukka/run-cmake@v10
         with:
