@@ -3,21 +3,22 @@ name: Windows
 on:
   push:
     branches:
-      - master
+      - main
       - dev
   workflow_dispatch:
-    build_config:
-      description: 'Comma-separated "Release" and/or "Debug"'
-      default: '"Release", "Debug"'
-      required: true
-    msvc_toolset: 
-      description: 'Comma-separated "v140" and/or "v141" and/or "v142"'
-      default: '"v140", "v141", "v142"'
-      required: true
-    target_architecture: 
-      description: 'Comma-separated "x64" and/or "Win32"'
-      default: '"x64", "Win32"'
-      required: true
+    inputs:
+      build_config:
+        description: 'Comma-separated "Release" and/or "Debug"'
+        default: '"Release", "Debug"'
+        required: true
+      msvc_toolset: 
+        description: 'Comma-separated "v140" and/or "v141" and/or "v142"'
+        default: '"v140", "v141", "v142"'
+        required: true
+      target_architecture: 
+        description: 'Comma-separated "x64" and/or "Win32"'
+        default: '"x64", "Win32"'
+        required: true
 
 jobs:
   windows_msvc:
