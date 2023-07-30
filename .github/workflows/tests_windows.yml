@@ -27,9 +27,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        build_config: ${{ fromJSON(format('[{0}]', inputs.build_config)) || "" }}
-        msvc_toolset: ${{ fromJSON(format('[{0}]', inputs.msvc_toolset)) || ""}}
-        target_architecture: ${{ fromJSON(format('[{0}]', inputs.target_architecture)) || "" }}
+        build_config: ${{ fromJSON(format('[{0}]', inputs.build_config)) || "Release" }}
+        msvc_toolset: ${{ fromJSON(format('[{0}]', inputs.msvc_toolset)) || "v142"}}
+        target_architecture: ${{ fromJSON(format('[{0}]', inputs.target_architecture)) || "x64" }}
 
     steps:
       - name: Checkout repository
