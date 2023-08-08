@@ -116,9 +116,9 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 	delete[] ynp12;
 	delete[] yn_ext;
 
-	systemSize = system.size();
+	systemSize = (unsigned short)system.size();
 
-	extEqSize = dataState.GetEquations().size();
+	extEqSize = (unsigned short)dataState.GetEquations().size();
 	externalEquations.reserve(extEqSize);
 	for (auto [equationName, equation] : dataState.GetEquations())
 	{

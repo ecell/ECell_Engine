@@ -5,6 +5,7 @@
 		that are used to know how to draw these entities in ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget
 */
 
+//To disable warnings about unsafe functions such as strcpy, fopen, etc.
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "implot.h"

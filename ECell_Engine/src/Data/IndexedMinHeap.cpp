@@ -2,7 +2,7 @@
 
 void ECellEngine::Data::IndexedMinHeap::BuildMinHeap()
 {
-	for (int i = Parent(heapSize) - 1; i > -1; i--)
+	for (std::size_t i = Parent(heapSize) - 1; i > -1; i--)
 	{
 		MinHeapify(i);
 	}
@@ -10,7 +10,7 @@ void ECellEngine::Data::IndexedMinHeap::BuildMinHeap()
 
 void ECellEngine::Data::IndexedMinHeap::BubbleUp(const std::size_t _nodeIdx)
 {
-	int parent = Parent(_nodeIdx);
+	std::size_t parent = Parent(_nodeIdx);
 	if (heap[_nodeIdx].second < heap[parent].second)
 	{
 		Swap(_nodeIdx, parent);
@@ -40,9 +40,9 @@ void ECellEngine::Data::IndexedMinHeap::Initialize(const std::vector<std::pair<s
 
 void ECellEngine::Data::IndexedMinHeap::MinHeapify(const std::size_t _nodeIdx)
 {
-	int r = Right(_nodeIdx);
-	int l = Left(_nodeIdx);
-	int lowest = _nodeIdx;
+	std::size_t r = Right(_nodeIdx);
+	std::size_t l = Left(_nodeIdx);
+	std::size_t lowest = _nodeIdx;
 
 	if (l < heapSize && heap[l].second < heap[lowest].second)
 	{

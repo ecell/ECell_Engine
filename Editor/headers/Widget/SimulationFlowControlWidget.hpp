@@ -46,7 +46,7 @@ namespace ECellEngine::Editor::Widget
 
 		ECellEngine::Core::Simulation* simulation = nullptr;
 		//short* simuDirection;
-		float stepTime = 0.01;
+		float stepTime = 0.01f;
 
 		IO::SimulationCommandArgs pauseCommandArgs;
 		IO::SimulationCommandArgs playCommandArgs;

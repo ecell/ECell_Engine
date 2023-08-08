@@ -1,5 +1,8 @@
 ﻿#pragma once
 
+//To disable warnings about unsafe functions such as strcpy, fopen, etc.
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "Core/Engine.hpp"
 #include "Editor.hpp"
 

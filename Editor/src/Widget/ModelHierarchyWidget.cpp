@@ -1,3 +1,6 @@
+//To disable warnings about unsafe functions such as strcpy, fopen, etc.
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "Widget/ModelExplorerWidget.hpp"
 #include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"
 

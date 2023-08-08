@@ -30,7 +30,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_LogicOperation));
 	ax::NodeEditor::BeginNode(_arithmeticOperationNodeInfo.id);
 	
-	ImGui::PushID((std::size_t)_arithmeticOperationNodeInfo.id);
+	ImGui::PushID((int)(std::size_t)_arithmeticOperationNodeInfo.id);
 
 	const float headerWidth = NodeHeader("Arithmetic Operation", "", Style::EditorStyle::GetNodeColors(NodeType_Data), 300.f);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
@@ -256,7 +256,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Default));
 	ax::NodeEditor::BeginNode(_linePlotNodeData.id);
-	ImGui::PushID((std::size_t)_linePlotNodeData.id);
+	ImGui::PushID((int)(std::size_t)_linePlotNodeData.id);
 
 	const float headerWidth = NodeHeader("Line Plot", "", Style::EditorStyle::GetNodeColors(NodeType_Reaction), 300.f, 1, 1);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth, 1);
@@ -950,7 +950,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Event));
 	ax::NodeEditor::BeginNode(_triggerNodeInfo.id);
-	ImGui::PushID((std::size_t)_triggerNodeInfo.id);
+	ImGui::PushID((int)(std::size_t)_triggerNodeInfo.id);
 
 	const float headerWidth = NodeHeader("Trigger", "", Style::EditorStyle::GetNodeColors(NodeType_Event), 300.f);
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
@@ -1776,7 +1776,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeStringListBox(NodeL
 		ax::NodeEditor::SuspendNavigation();
 		if (ImGui::GetIO().MouseWheel != 0)
 		{
-			_nlbsData.cursor += ImGui::GetIO().MouseWheel;
+			_nlbsData.cursor += (std::size_t)ImGui::GetIO().MouseWheel;
 			if (_nlbsData.cursor < actualViewHeight)
 			{
 				_nlbsData.cursor = actualViewHeight;
