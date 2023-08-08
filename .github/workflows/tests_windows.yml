@@ -12,8 +12,8 @@ on:
         default: '"Release", "Debug"'
         required: true
       msvc_toolset: 
-        description: 'Comma-separated "v140" and/or "v141" and/or "v142"'
-        default: '"v140", "v141", "v142"'
+        description: 'Comma-separated "v141" and/or "v142" and/or "v143"'
+        default: '"v141", "v142", "v143"'
         required: true
       target_architecture: 
         description: 'Comma-separated "x64" and/or "Win32"'
@@ -29,7 +29,7 @@ jobs:
       fail-fast: false
       matrix:
         build_config: ${{ fromJSON(format('[{0}]', inputs.build_config || '"Release"')) }}
-        msvc_toolset: ${{ fromJSON(format('[{0}]', inputs.msvc_toolset || '"v142"')) }}
+        msvc_toolset: ${{ fromJSON(format('[{0}]', inputs.msvc_toolset || '"v143"')) }}
         target_architecture: ${{ fromJSON(format('[{0}]', inputs.target_architecture || '"x64"')) }}
 
     steps:
