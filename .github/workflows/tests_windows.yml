@@ -3,21 +3,22 @@ name: Windows
 on:
   push:
     branches:
-      - master
+      - main
       - dev
   workflow_dispatch:
-    build_config:
-      description: 'Comma-separated "Release" and/or "Debug"'
-      default: '"Release", "Debug"'
-      required: true
-    msvc_toolset: 
-      description: 'Comma-separated "v140" and/or "v141" and/or "v142"'
-      default: '"v140", "v141", "v142"'
-      required: true
-    target_architecture: 
-      description: 'Comma-separated "x64" and/or "Win32"'
-      default: '"x64", "Win32"'
-      required: true
+    inputs:
+      build_config:
+        description: 'Comma-separated "Release" and/or "Debug"'
+        default: '"Release", "Debug"'
+        required: true
+      msvc_toolset: 
+        description: 'Comma-separated "v141" and/or "v142" and/or "v143"'
+        default: '"v141", "v142", "v143"'
+        required: true
+      target_architecture: 
+        description: 'Comma-separated "x64" and/or "Win32"'
+        default: '"x64", "Win32"'
+        required: true
 
 jobs:
   windows_msvc:
@@ -27,9 +28,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build_config: ${{ fromJSON(format('[{0}]', inputs.python_version || '"Release"')) }}
-        msvc_toolset: ${{ fromJSON(format('[{0}]', inputs.python_version || '"v142"')) }}
-        target_architecture: ${{ fromJSON(format('[{0}]', inputs.python_version || '"x64"')) }}
+        build_config: ${{ fromJSON(format('[{0}]', inputs.build_config || '"Release"')) }}
+        msvc_toolset: ${{ fromJSON(format('[{0}]', inputs.msvc_toolset || '"v143"')) }}
+        target_architecture: ${{ fromJSON(format('[{0}]', inputs.target_architecture || '"x64"')) }}
 
     steps:
       - name: Checkout repository
@@ -52,6 +53,14 @@ jobs:
           # hash to the cache key. Change it to match a single manifest file you want
           # to use.
           vcpkgJsonGlob: '**/vcpkg.json'
+
+      - name: Setup Visual Studio Dev Environment
+        # This action guarentess that the generator will be overriden to the appropriate VS
+        # version depending on the toolset. This is required because the default generator
+        # for the windows-latest image is VS 2017, which does is an issue for v140.
+        uses: microsoft/setup-msbuild@v1.1
+        with:
+          vs-version: "15"
 
       - name: Build ECellEngine
         uses: lukka/run-cmake@v10
