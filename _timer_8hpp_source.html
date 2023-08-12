@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ECellEngine: ECell_Engine/headers/Timer.hpp Source File</title>
+<title>ECellEngine: ECell_Engine/headers/Core/Timer.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ECellEngine<span id="projectnumber">&#160;0.1.2</span>
+   <div id="projectname">ECellEngine<span id="projectnumber">&#160;v0.5.0-alpha</span>
    </div>
    <div id="projectbrief">TODO</div>
   </td>
@@ -93,49 +93,95 @@ $(document).ready(function(){initNavTree('_timer_8hpp_source.html',''); initResi
   <div class="headertitle"><div class="title">Timer.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">/*</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="comment">    Defines the interface to manipulate the simulation time</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">*/</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;ctime&gt;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;system_time.hpp&quot;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="class_timer.html">    7</a></span><span class="keyword">class </span><a class="code hl_class" href="class_timer.html">Timer</a></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>{</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    <span class="comment">//Members</span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    <span class="keywordtype">float</span> deltaTime = DEFAULT_SIMULATION_DELTA_TIME;</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <span class="keywordtype">float</span> startTime = .0f;</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keywordtype">float</span> elapsedTime = .0f;</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#pragma region Mutators</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="class_timer.html#a697f6e5be314d36b7610d5642093cda1">   20</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_timer.html#a697f6e5be314d36b7610d5642093cda1">SetStartTime</a>();</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#pragma endregion</span></div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#pragma region Logic</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="class_timer.html#aa07a2bdc847a0ed2da9d181cfc739c25">   31</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_timer.html#aa07a2bdc847a0ed2da9d181cfc739c25">CheckSimulationDeltaTime</a>();</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="class_timer.html#ae659c06c9f5893f869c2bc81037e9dae">   36</a></span>    <span class="keywordtype">float</span> <a class="code hl_function" href="class_timer.html#ae659c06c9f5893f869c2bc81037e9dae">GetDuration</a>(<span class="keywordtype">float</span>&amp; _t1, <span class="keywordtype">float</span>&amp; _t2);</div>
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">/*</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">    Defines the interface to manipulate the simulation time</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">*/</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;ctime&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;Core/Callback.hpp&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;system_time.hpp&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span>ECellEngine::Core</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>{</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html">   12</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="struct_e_cell_engine_1_1_core_1_1_timer.html">Timer</a></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    {</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html#af57f9ff7dc955b9b0217c519068e6f4f">   17</a></span>        <span class="keywordtype">float</span> <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#af57f9ff7dc955b9b0217c519068e6f4f">deltaTime</a>;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html#abee330ffb9650fce7ce499065e470c5e">   22</a></span>        <span class="keywordtype">float</span> <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#abee330ffb9650fce7ce499065e470c5e">startTime</a>;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a303618cd928fc5ddb0efd65db3e42315">   27</a></span>        <span class="keywordtype">float</span> <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a303618cd928fc5ddb0efd65db3e42315">elapsedTime</a>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a3ee528afff780436d56629ae76175a40">   36</a></span>        <a class="code hl_class" href="class_e_cell_engine_1_1_core_1_1_callback.html">Core::Callback&lt;const float, const float&gt;</a> <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a3ee528afff780436d56629ae76175a40">onTimeUpdate</a>;</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="class_timer.html#af8b0b038e0a37e0fdf19b37156f0b38b">   42</a></span>    <span class="keywordtype">float</span> <a class="code hl_function" href="class_timer.html#af8b0b038e0a37e0fdf19b37156f0b38b">ReadHighResTimer</a>();</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="class_timer.html#ad63a6eea5c4128ae644df0f90bf7d0a9">   47</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_timer.html#ad63a6eea5c4128ae644df0f90bf7d0a9">ResetTimes</a>();</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="preprocessor">#pragma endregion</span></div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>};</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
-<div class="ttc" id="aclass_timer_html"><div class="ttname"><a href="class_timer.html">Timer</a></div><div class="ttdef"><b>Definition:</b> Timer.hpp:8</div></div>
-<div class="ttc" id="aclass_timer_html_a697f6e5be314d36b7610d5642093cda1"><div class="ttname"><a href="class_timer.html#a697f6e5be314d36b7610d5642093cda1">Timer::SetStartTime</a></div><div class="ttdeci">void SetStartTime()</div><div class="ttdoc">Set the startTime public member. Uses the high resolution current time.</div></div>
-<div class="ttc" id="aclass_timer_html_aa07a2bdc847a0ed2da9d181cfc739c25"><div class="ttname"><a href="class_timer.html#aa07a2bdc847a0ed2da9d181cfc739c25">Timer::CheckSimulationDeltaTime</a></div><div class="ttdeci">void CheckSimulationDeltaTime()</div><div class="ttdoc">Checks that the current simulation delta time does not exceed the value defined by the macro MAX_SIMU...</div></div>
-<div class="ttc" id="aclass_timer_html_ad63a6eea5c4128ae644df0f90bf7d0a9"><div class="ttname"><a href="class_timer.html#ad63a6eea5c4128ae644df0f90bf7d0a9">Timer::ResetTimes</a></div><div class="ttdeci">void ResetTimes()</div><div class="ttdoc">Sets the time member values back to default.</div></div>
-<div class="ttc" id="aclass_timer_html_ae659c06c9f5893f869c2bc81037e9dae"><div class="ttname"><a href="class_timer.html#ae659c06c9f5893f869c2bc81037e9dae">Timer::GetDuration</a></div><div class="ttdeci">float GetDuration(float &amp;_t1, float &amp;_t2)</div></div>
-<div class="ttc" id="aclass_timer_html_af8b0b038e0a37e0fdf19b37156f0b38b"><div class="ttname"><a href="class_timer.html#af8b0b038e0a37e0fdf19b37156f0b38b">Timer::ReadHighResTimer</a></div><div class="ttdeci">float ReadHighResTimer()</div><div class="ttdoc">Returns the time used by the program normalised by the CPU cycles per seconds.</div></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        <a class="code hl_struct" href="struct_e_cell_engine_1_1_core_1_1_timer.html">Timer</a>()</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        {</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#af57f9ff7dc955b9b0217c519068e6f4f">deltaTime</a> = DEFAULT_SIMULATION_DELTA_TIME;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>            <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#abee330ffb9650fce7ce499065e470c5e">startTime</a> = .0f;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>            <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a303618cd928fc5ddb0efd65db3e42315">elapsedTime</a> = .0f;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        }</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">#pragma region Mutators</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html#ae7f6cff2bf66043982b5783a9778611d">   54</a></span>        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="struct_e_cell_engine_1_1_core_1_1_timer.html#ae7f6cff2bf66043982b5783a9778611d">SetStartTime</a>()</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        {</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>            <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#abee330ffb9650fce7ce499065e470c5e">startTime</a> = (float)std::clock() / CLOCKS_PER_SEC;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        }</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">#pragma endregion</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="preprocessor">#pragma region Logic</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a3742087175f61f55a8ee8f4a35291e28">   68</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a3742087175f61f55a8ee8f4a35291e28">CheckSimulationDeltaTime</a>();</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html#ab982b76526c0fbcdbd3fa23db3fce388">   76</a></span>        <span class="keyword">inline</span> <span class="keywordtype">float</span> <a class="code hl_function" href="struct_e_cell_engine_1_1_core_1_1_timer.html#ab982b76526c0fbcdbd3fa23db3fce388">GetDuration</a>(<span class="keywordtype">float</span>&amp; _t1, <span class="keywordtype">float</span>&amp; _t2)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="keyword">        </span>{</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>            <span class="keywordflow">return</span> _t2 - _t1;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>        }</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a3348cc51df6831c567ce23d46af22910">   84</a></span>        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a3348cc51df6831c567ce23d46af22910">Increment</a>(<span class="keywordtype">float</span> _deltaTime)</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        {</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>            <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#af57f9ff7dc955b9b0217c519068e6f4f">deltaTime</a> = _deltaTime;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>            <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a303618cd928fc5ddb0efd65db3e42315">elapsedTime</a> += _deltaTime;</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a3ee528afff780436d56629ae76175a40">onTimeUpdate</a>(<a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a303618cd928fc5ddb0efd65db3e42315">elapsedTime</a>-_deltaTime, <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a303618cd928fc5ddb0efd65db3e42315">elapsedTime</a>);</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        }</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html#adbc6b1a5415c63fe42bf3c38ddab83b0">   97</a></span>        <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="struct_e_cell_engine_1_1_core_1_1_timer.html#adbc6b1a5415c63fe42bf3c38ddab83b0">Decrement</a>(<span class="keywordtype">float</span> _deltaTime)</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        {</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>            <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#af57f9ff7dc955b9b0217c519068e6f4f">deltaTime</a> = _deltaTime;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>            <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a303618cd928fc5ddb0efd65db3e42315">elapsedTime</a> -= _deltaTime;</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>            <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a3ee528afff780436d56629ae76175a40">onTimeUpdate</a>(<a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a303618cd928fc5ddb0efd65db3e42315">elapsedTime</a>+<a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#af57f9ff7dc955b9b0217c519068e6f4f">deltaTime</a>, <a class="code hl_variable" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a303618cd928fc5ddb0efd65db3e42315">elapsedTime</a>);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        }</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        </div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html#ab53dc00b40ae141cbf86169d1b7d2dd6">  108</a></span>        <span class="keyword">inline</span> <span class="keywordtype">float</span> <a class="code hl_function" href="struct_e_cell_engine_1_1_core_1_1_timer.html#ab53dc00b40ae141cbf86169d1b7d2dd6">ReadHighResTimer</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="keyword">        </span>{</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            <span class="keywordflow">return</span> (<span class="keywordtype">float</span>)std::clock() / CLOCKS_PER_SEC;</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>        }</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        </div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno"><a class="line" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a01892e45e737f08b1347478761a4277b">  117</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="struct_e_cell_engine_1_1_core_1_1_timer.html#a01892e45e737f08b1347478761a4277b">ResetTimes</a>();</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="preprocessor">#pragma endregion</span></div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    };</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>}</div>
+<div class="ttc" id="aclass_e_cell_engine_1_1_core_1_1_callback_html"><div class="ttname"><a href="class_e_cell_engine_1_1_core_1_1_callback.html">ECellEngine::Core::Callback</a></div><div class="ttdoc">A callback system inpired by the C# one.</div><div class="ttdef"><b>Definition:</b> Callback.hpp:21</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html">ECellEngine::Core::Timer</a></div><div class="ttdef"><b>Definition:</b> Timer.hpp:13</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html_a01892e45e737f08b1347478761a4277b"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html#a01892e45e737f08b1347478761a4277b">ECellEngine::Core::Timer::ResetTimes</a></div><div class="ttdeci">void ResetTimes()</div><div class="ttdoc">Resets the startTime, elapsedTime and deltaTime to their default values.</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html_a303618cd928fc5ddb0efd65db3e42315"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html#a303618cd928fc5ddb0efd65db3e42315">ECellEngine::Core::Timer::elapsedTime</a></div><div class="ttdeci">float elapsedTime</div><div class="ttdoc">The elapsed time since the start of the simulation.</div><div class="ttdef"><b>Definition:</b> Timer.hpp:27</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html_a3348cc51df6831c567ce23d46af22910"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html#a3348cc51df6831c567ce23d46af22910">ECellEngine::Core::Timer::Increment</a></div><div class="ttdeci">void Increment(float _deltaTime)</div><div class="ttdoc">Increments the elapsedTime by the given _deltaTime.</div><div class="ttdef"><b>Definition:</b> Timer.hpp:84</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html_a3742087175f61f55a8ee8f4a35291e28"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html#a3742087175f61f55a8ee8f4a35291e28">ECellEngine::Core::Timer::CheckSimulationDeltaTime</a></div><div class="ttdeci">void CheckSimulationDeltaTime()</div><div class="ttdoc">Checks that the current simulation delta time does not exceed the value defined by the macro MAX_SIMU...</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html_a3ee528afff780436d56629ae76175a40"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html#a3ee528afff780436d56629ae76175a40">ECellEngine::Core::Timer::onTimeUpdate</a></div><div class="ttdeci">Core::Callback&lt; const float, const float &gt; onTimeUpdate</div><div class="ttdoc">The callback whenever the simulation time is updated.</div><div class="ttdef"><b>Definition:</b> Timer.hpp:36</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html_ab53dc00b40ae141cbf86169d1b7d2dd6"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html#ab53dc00b40ae141cbf86169d1b7d2dd6">ECellEngine::Core::Timer::ReadHighResTimer</a></div><div class="ttdeci">float ReadHighResTimer() const</div><div class="ttdoc">Returns the time used by the program normalised by the CPU cycles per seconds.</div><div class="ttdef"><b>Definition:</b> Timer.hpp:108</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html_ab982b76526c0fbcdbd3fa23db3fce388"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html#ab982b76526c0fbcdbd3fa23db3fce388">ECellEngine::Core::Timer::GetDuration</a></div><div class="ttdeci">float GetDuration(float &amp;_t1, float &amp;_t2) const</div><div class="ttdoc">Returns the duration between two times.</div><div class="ttdef"><b>Definition:</b> Timer.hpp:76</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html_abee330ffb9650fce7ce499065e470c5e"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html#abee330ffb9650fce7ce499065e470c5e">ECellEngine::Core::Timer::startTime</a></div><div class="ttdeci">float startTime</div><div class="ttdoc">System time at the start of the simulation.</div><div class="ttdef"><b>Definition:</b> Timer.hpp:22</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html_adbc6b1a5415c63fe42bf3c38ddab83b0"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html#adbc6b1a5415c63fe42bf3c38ddab83b0">ECellEngine::Core::Timer::Decrement</a></div><div class="ttdeci">void Decrement(float _deltaTime)</div><div class="ttdoc">Decrements the elapsedTime by the given _deltaTime.</div><div class="ttdef"><b>Definition:</b> Timer.hpp:97</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html_ae7f6cff2bf66043982b5783a9778611d"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html#ae7f6cff2bf66043982b5783a9778611d">ECellEngine::Core::Timer::SetStartTime</a></div><div class="ttdeci">void SetStartTime()</div><div class="ttdoc">Set the startTime public member. Uses the high resolution current time.</div><div class="ttdef"><b>Definition:</b> Timer.hpp:54</div></div>
+<div class="ttc" id="astruct_e_cell_engine_1_1_core_1_1_timer_html_af57f9ff7dc955b9b0217c519068e6f4f"><div class="ttname"><a href="struct_e_cell_engine_1_1_core_1_1_timer.html#af57f9ff7dc955b9b0217c519068e6f4f">ECellEngine::Core::Timer::deltaTime</a></div><div class="ttdeci">float deltaTime</div><div class="ttdoc">The last delata time to reach the current elapsedTime.</div><div class="ttdef"><b>Definition:</b> Timer.hpp:17</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_f5990293034574572431b8b21c83d40b.html">ECell_Engine</a></li><li class="navelem"><a class="el" href="dir_60705ddd1411bcca2da498124ecc7b17.html">headers</a></li><li class="navelem"><b>Timer.hpp</b></li>
+    <li class="navelem"><a class="el" href="dir_f5990293034574572431b8b21c83d40b.html">ECell_Engine</a></li><li class="navelem"><a class="el" href="dir_60705ddd1411bcca2da498124ecc7b17.html">headers</a></li><li class="navelem"><a class="el" href="dir_ff8841e11cc6e4b3734bd4144b2255cf.html">Core</a></li><li class="navelem"><b>Timer.hpp</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>

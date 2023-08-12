@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['gillespie_5fnrm_5fr_0',['Gillespie_NRM_R',['../class_gillespie___n_r_m___r.html',1,'']]],
-  ['gobackwardcommand_1',['GoBackwardCommand',['../class_go_backward_command.html',1,'']]],
-  ['goforwardcommand_2',['GoForwardCommand',['../class_go_forward_command.html',1,'']]]
+  ['function_0',['Function',['../struct_e_cell_engine_1_1_maths_1_1_function.html',1,'ECellEngine::Maths']]],
+  ['functions_1',['Functions',['../struct_e_cell_engine_1_1_maths_1_1_functions.html',1,'ECellEngine::Maths']]]
 ];

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ECellEngine: ECell_Engine/headers/SbmlParser.hpp Source File</title>
+<title>ECellEngine: ECell_Engine/headers/IO/SbmlParser.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ECellEngine<span id="projectnumber">&#160;0.1.2</span>
+   <div id="projectname">ECellEngine<span id="projectnumber">&#160;v0.5.0-alpha</span>
    </div>
    <div id="projectbrief">TODO</div>
   </td>
@@ -96,23 +96,27 @@ $(document).ready(function(){initNavTree('_sbml_parser_8hpp_source.html',''); in
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &lt;sbml/SBMLTypes.h&gt;</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno"><a class="line" href="class_sbml_parser.html">    4</a></span><span class="keyword">class </span><a class="code hl_class" href="class_sbml_parser.html">SbmlParser</a></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_e_cell_engine_1_1_i_o.html">ECellEngine::IO</a></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span>{</div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="class_sbml_parser.html#a56c59b0aa715d451fcd2c553d2fa6626">   12</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="class_sbml_parser.html#a56c59b0aa715d451fcd2c553d2fa6626">ValidateSBML</a>(SBMLDocument* _document);</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    SBMLDocument* OpenSBMLFile(<span class="keyword">const</span> <span class="keywordtype">char</span>* _filePath);</div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno"><a class="line" href="class_e_cell_engine_1_1_i_o_1_1_sbml_parser.html">    6</a></span>    <span class="keyword">class </span><a class="code hl_class" href="class_e_cell_engine_1_1_i_o_1_1_sbml_parser.html">SbmlParser</a></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span>    {</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="class_e_cell_engine_1_1_i_o_1_1_sbml_parser.html#a2e793a6a12aa0c5aba144c3d1ed2ed9d">   14</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="class_e_cell_engine_1_1_i_o_1_1_sbml_parser.html#a2e793a6a12aa0c5aba144c3d1ed2ed9d">ValidateSBML</a>(SBMLDocument* _document);</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keywordtype">void</span> PrettyPrintSBMLDocument(SBMLDocument* _document); </div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>};</div>
-<div class="ttc" id="aclass_sbml_parser_html"><div class="ttname"><a href="class_sbml_parser.html">SbmlParser</a></div><div class="ttdef"><b>Definition:</b> SbmlParser.hpp:5</div></div>
-<div class="ttc" id="aclass_sbml_parser_html_a56c59b0aa715d451fcd2c553d2fa6626"><div class="ttname"><a href="class_sbml_parser.html#a56c59b0aa715d451fcd2c553d2fa6626">SbmlParser::ValidateSBML</a></div><div class="ttdeci">bool ValidateSBML(SBMLDocument *_document)</div><div class="ttdoc">Performs validation checks and explain what went wrong if necessary.</div></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>        SBMLDocument* OpenSBMLFile(<span class="keyword">const</span> <span class="keywordtype">char</span>* _filePath);</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        <span class="keywordtype">void</span> PrettyPrintSBMLDocument(SBMLDocument* _document);</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    };</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>}</div>
+<div class="ttc" id="aclass_e_cell_engine_1_1_i_o_1_1_sbml_parser_html"><div class="ttname"><a href="class_e_cell_engine_1_1_i_o_1_1_sbml_parser.html">ECellEngine::IO::SbmlParser</a></div><div class="ttdef"><b>Definition:</b> SbmlParser.hpp:7</div></div>
+<div class="ttc" id="aclass_e_cell_engine_1_1_i_o_1_1_sbml_parser_html_a2e793a6a12aa0c5aba144c3d1ed2ed9d"><div class="ttname"><a href="class_e_cell_engine_1_1_i_o_1_1_sbml_parser.html#a2e793a6a12aa0c5aba144c3d1ed2ed9d">ECellEngine::IO::SbmlParser::ValidateSBML</a></div><div class="ttdeci">bool ValidateSBML(SBMLDocument *_document)</div><div class="ttdoc">Performs validation checks and explain what went wrong if necessary.</div></div>
+<div class="ttc" id="anamespace_e_cell_engine_1_1_i_o_html"><div class="ttname"><a href="namespace_e_cell_engine_1_1_i_o.html">ECellEngine::IO</a></div><div class="ttdef"><b>Definition:</b> Command.hpp:7</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_f5990293034574572431b8b21c83d40b.html">ECell_Engine</a></li><li class="navelem"><a class="el" href="dir_60705ddd1411bcca2da498124ecc7b17.html">headers</a></li><li class="navelem"><b>SbmlParser.hpp</b></li>
+    <li class="navelem"><a class="el" href="dir_f5990293034574572431b8b21c83d40b.html">ECell_Engine</a></li><li class="navelem"><a class="el" href="dir_60705ddd1411bcca2da498124ecc7b17.html">headers</a></li><li class="navelem"><a class="el" href="dir_6c041dbd7c26c2fd3c2027e11a36c1cd.html">IO</a></li><li class="navelem"><b>SbmlParser.hpp</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ECellEngine: ECell_Engine/headers/SbmlWriter.hpp Source File</title>
+<title>ECellEngine: ECell_Engine/headers/IO/SbmlWriter.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ECellEngine<span id="projectnumber">&#160;0.1.2</span>
+   <div id="projectname">ECellEngine<span id="projectnumber">&#160;v0.5.0-alpha</span>
    </div>
    <div id="projectbrief">TODO</div>
   </td>
@@ -95,69 +95,73 @@ $(document).ready(function(){initNavTree('_sbml_writer_8hpp_source.html',''); in
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">#include &lt;sbml/SBMLTypes.h&gt;</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#include &quot;MathUtility.hpp&quot;</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#include &quot;Maths/MathUtility.hpp&quot;</span></div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="class_sbml_writer.html">   48</a></span><span class="keyword">class </span><a class="code hl_class" href="class_sbml_writer.html">SbmlWriter</a></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_e_cell_engine_1_1_i_o.html">ECellEngine::IO</a></div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>{</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="comment">// The SBML Level and Version of the example SBML models.</span></div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keyword">const</span> <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> Level = 3;</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keyword">const</span> <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> Version = 2;</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keyword">struct </span>ReactionPointersCapsule</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    {</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        Reaction* r;</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        SpeciesReference* spr;</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        KineticLaw* kl;</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    };</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordtype">void</span> DefineParameter(</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        Parameter* _para_ptr,</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        <span class="keyword">const</span> std::string&amp; _paraID,</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        <span class="keyword">const</span> std::string&amp; _unit);</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="keywordtype">void</span> DefineParameter(</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        Parameter* _para_ptr,</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        <span class="keyword">const</span> std::string&amp; _paraID,</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        <span class="keyword">const</span> std::string&amp; _unit,</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <span class="keyword">const</span> <span class="keywordtype">double</span> _value);</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="keywordtype">void</span> DefineParameterAssignementRule(</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        AssignmentRule* _ar,</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        <span class="keyword">const</span> std::string&amp; _variableID,</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        <span class="keyword">const</span> std::string&amp; _formula);</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    <span class="keywordtype">void</span> DefineReaction(</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        ReactionPointersCapsule* _rpc,</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keyword">const</span> std::string&amp; _rID,</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; _reactantIDs,</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>        <span class="keyword">const</span> std::vector&lt;int&gt;&amp; _reactantStoichs,</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; _productIDs,</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>        <span class="keyword">const</span> std::vector&lt;int&gt;&amp; _productStoichs,</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>        <span class="keyword">const</span> std::string&amp; _kParamID);</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    <span class="keywordtype">void</span> DefineSpecies(</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>        Species* _sp_ptr,</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        <span class="keyword">const</span> std::string&amp; _id,</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        <span class="keyword">const</span> std::string&amp; _name,</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>        <span class="keyword">const</span> std::string&amp; _compartmentID,</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        <span class="keyword">const</span> std::string&amp; _unit,</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        <span class="keyword">const</span> <span class="keywordtype">double</span> _initialQuantity);</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno"><a class="line" href="class_sbml_writer.html#a5beb0495e5aecc44530895be47606c43">  127</a></span>    SBMLDocument* <a class="code hl_function" href="class_sbml_writer.html#a5beb0495e5aecc44530895be47606c43">GibsonAndBruckToyModel</a>();</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span> </div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno"><a class="line" href="class_sbml_writer.html#aa7652b7a332bc869f11df4d35cb3b609">  135</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="class_sbml_writer.html#aa7652b7a332bc869f11df4d35cb3b609">WriteSBML</a>(<span class="keyword">const</span> SBMLDocument* sbmlDoc, <span class="keyword">const</span> std::string&amp; filename);</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>};</div>
-<div class="ttc" id="aclass_sbml_writer_html"><div class="ttname"><a href="class_sbml_writer.html">SbmlWriter</a></div><div class="ttdef"><b>Definition:</b> SbmlWriter.hpp:49</div></div>
-<div class="ttc" id="aclass_sbml_writer_html_a5beb0495e5aecc44530895be47606c43"><div class="ttname"><a href="class_sbml_writer.html#a5beb0495e5aecc44530895be47606c43">SbmlWriter::GibsonAndBruckToyModel</a></div><div class="ttdeci">SBMLDocument * GibsonAndBruckToyModel()</div><div class="ttdoc">Creates an SBML Document corresponding to the toy model in the paper of Gibson and Brick (2000,...</div></div>
-<div class="ttc" id="aclass_sbml_writer_html_aa7652b7a332bc869f11df4d35cb3b609"><div class="ttname"><a href="class_sbml_writer.html#aa7652b7a332bc869f11df4d35cb3b609">SbmlWriter::WriteSBML</a></div><div class="ttdeci">bool WriteSBML(const SBMLDocument *sbmlDoc, const std::string &amp;filename)</div><div class="ttdoc">Writes the given SBMLDocument to the given file.</div></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="class_e_cell_engine_1_1_i_o_1_1_sbml_writer.html">   50</a></span>    <span class="keyword">class </span><a class="code hl_class" href="class_e_cell_engine_1_1_i_o_1_1_sbml_writer.html">SbmlWriter</a></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    {</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        <span class="comment">// The SBML Level and Version of the example SBML models.</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        <span class="keyword">const</span> <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> Level = 3;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        <span class="keyword">const</span> <span class="keyword">static</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> Version = 2;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="keyword">struct </span>ReactionPointersCapsule</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        {</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            LIBSBML_CPP_NAMESPACE::Reaction* r;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            SpeciesReference* spr;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            KineticLaw* kl;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        };</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        <span class="keywordtype">void</span> DefineParameter(</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>            LIBSBML_CPP_NAMESPACE::Parameter* _para_ptr,</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            <span class="keyword">const</span> std::string&amp; _paraID,</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            <span class="keyword">const</span> std::string&amp; _unit);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        <span class="keywordtype">void</span> DefineParameter(</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>            LIBSBML_CPP_NAMESPACE::Parameter* _para_ptr,</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>            <span class="keyword">const</span> std::string&amp; _paraID,</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            <span class="keyword">const</span> std::string&amp; _unit,</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>            <span class="keyword">const</span> <span class="keywordtype">double</span> _value);</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        <span class="keywordtype">void</span> DefineParameterAssignementRule(</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>            AssignmentRule* _ar,</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>            <span class="keyword">const</span> std::string&amp; _variableID,</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>            <span class="keyword">const</span> std::string&amp; _formula);</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keywordtype">void</span> DefineReaction(</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            ReactionPointersCapsule* _rpc,</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            <span class="keyword">const</span> std::string&amp; _rID,</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>            <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; _reactantIDs,</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            <span class="keyword">const</span> std::vector&lt;int&gt;&amp; _reactantStoichs,</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; _productIDs,</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>            <span class="keyword">const</span> std::vector&lt;int&gt;&amp; _productStoichs,</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>            <span class="keyword">const</span> std::string&amp; _kParamID);</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        <span class="keywordtype">void</span> DefineSpecies(</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>            LIBSBML_CPP_NAMESPACE::Species* _sp_ptr,</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>            <span class="keyword">const</span> std::string&amp; _id,</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            <span class="keyword">const</span> std::string&amp; _name,</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>            <span class="keyword">const</span> std::string&amp; _compartmentID,</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>            <span class="keyword">const</span> std::string&amp; _unit,</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>            <span class="keyword">const</span> <span class="keywordtype">double</span> _initialQuantity);</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno"><a class="line" href="class_e_cell_engine_1_1_i_o_1_1_sbml_writer.html#ac49066f2437b3b7499bc2c40517454ff">  129</a></span>        SBMLDocument* <a class="code hl_function" href="class_e_cell_engine_1_1_i_o_1_1_sbml_writer.html#ac49066f2437b3b7499bc2c40517454ff">GibsonAndBruckToyModel</a>();</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno"><a class="line" href="class_e_cell_engine_1_1_i_o_1_1_sbml_writer.html#a98be7a1568bd8581adf0ea3b41ac49af">  137</a></span>        <span class="keywordtype">bool</span> <a class="code hl_function" href="class_e_cell_engine_1_1_i_o_1_1_sbml_writer.html#a98be7a1568bd8581adf0ea3b41ac49af">WriteSBML</a>(<span class="keyword">const</span> SBMLDocument* sbmlDoc, <span class="keyword">const</span> std::string&amp; filename);</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    };</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>}</div>
+<div class="ttc" id="aclass_e_cell_engine_1_1_i_o_1_1_sbml_writer_html"><div class="ttname"><a href="class_e_cell_engine_1_1_i_o_1_1_sbml_writer.html">ECellEngine::IO::SbmlWriter</a></div><div class="ttdef"><b>Definition:</b> SbmlWriter.hpp:51</div></div>
+<div class="ttc" id="aclass_e_cell_engine_1_1_i_o_1_1_sbml_writer_html_a98be7a1568bd8581adf0ea3b41ac49af"><div class="ttname"><a href="class_e_cell_engine_1_1_i_o_1_1_sbml_writer.html#a98be7a1568bd8581adf0ea3b41ac49af">ECellEngine::IO::SbmlWriter::WriteSBML</a></div><div class="ttdeci">bool WriteSBML(const SBMLDocument *sbmlDoc, const std::string &amp;filename)</div><div class="ttdoc">Writes the given SBMLDocument to the given file.</div></div>
+<div class="ttc" id="aclass_e_cell_engine_1_1_i_o_1_1_sbml_writer_html_ac49066f2437b3b7499bc2c40517454ff"><div class="ttname"><a href="class_e_cell_engine_1_1_i_o_1_1_sbml_writer.html#ac49066f2437b3b7499bc2c40517454ff">ECellEngine::IO::SbmlWriter::GibsonAndBruckToyModel</a></div><div class="ttdeci">SBMLDocument * GibsonAndBruckToyModel()</div><div class="ttdoc">Creates an SBML Document corresponding to the toy model in the paper of Gibson and Brick (2000,...</div></div>
+<div class="ttc" id="anamespace_e_cell_engine_1_1_i_o_html"><div class="ttname"><a href="namespace_e_cell_engine_1_1_i_o.html">ECellEngine::IO</a></div><div class="ttdef"><b>Definition:</b> Command.hpp:7</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_f5990293034574572431b8b21c83d40b.html">ECell_Engine</a></li><li class="navelem"><a class="el" href="dir_60705ddd1411bcca2da498124ecc7b17.html">headers</a></li><li class="navelem"><b>SbmlWriter.hpp</b></li>
+    <li class="navelem"><a class="el" href="dir_f5990293034574572431b8b21c83d40b.html">ECell_Engine</a></li><li class="navelem"><a class="el" href="dir_60705ddd1411bcca2da498124ecc7b17.html">headers</a></li><li class="navelem"><a class="el" href="dir_6c041dbd7c26c2fd3c2027e11a36c1cd.html">IO</a></li><li class="navelem"><b>SbmlWriter.hpp</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>

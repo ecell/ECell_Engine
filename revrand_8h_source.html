@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ECellEngine: ECell_Engine/headers/revrand.h Source File</title>
+<title>ECellEngine: ECell_Engine/headers/Maths/revrand.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,7 +25,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">ECellEngine<span id="projectnumber">&#160;0.1.2</span>
+   <div id="projectname">ECellEngine<span id="projectnumber">&#160;v0.5.0-alpha</span>
    </div>
    <div id="projectbrief">TODO</div>
   </td>
@@ -166,52 +166,54 @@ $(document).ready(function(){initNavTree('revrand_8h_source.html',''); initResiz
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="comment"> * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</span></div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="comment"> */</span></div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> <span class="comment">/* Mersenne-Twister (MT-19937) key/state length */</span></div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="preprocessor"> #define KEY_LENGTH 624</span></div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> <span class="comment">/* Internal random number generator state. */</span></div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="structrng__state__.html">   78</a></span> <span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structrng__state__.html">rng_state_</a></div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> {</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>     <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> seed; <span class="comment">/* integer seed used to initialise state */</span></div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>     <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> key[KEY_LENGTH]; <span class="comment">/* Mersenne-Twister state */</span></div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>     <span class="keywordtype">int</span> pos; <span class="comment">/* current position in key array */</span></div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>     <span class="keywordtype">int</span> reversed; <span class="comment">/* ==0: forward state updates, !=0: reverse state updates */</span></div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>     <span class="keywordtype">int</span> n_twists; <span class="comment">/* number of twists performed */</span></div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> } <a class="code hl_struct" href="structrng__state__.html">rng_state</a>;</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> <span class="comment">/* Initialise generator state from an integer seed. */</span></div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> <span class="keywordtype">void</span> init_state(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> seed, <a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> <span class="comment">/* Optimised implementation of reference Mersenne-Twister from Random Kit. */</span></div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> <span class="keywordtype">void</span> twist(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> <span class="comment">/* Reverses twist of state: reverse_twist(twist(state)) is identity map. */</span></div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> <span class="keywordtype">void</span> reverse_twist(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> <span class="comment">/* Reverses direction of random number generation. */</span></div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> <span class="keywordtype">void</span> reverse(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> <span class="comment">/* Generates a random integer uniformly from range [0, 2^32 - 1]. */</span></div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> random_int32(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> <span class="comment">/*</span></div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span><span class="comment">  * Generate a random double-precision floating point value from uniform</span></div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span><span class="comment">  * distribution on [0,1).</span></div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="comment">  */</span></div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> <span class="keywordtype">double</span> random_uniform(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> <span class="comment">/*</span></div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="comment">  * Generate a pair of independent random double-precision floating point</span></div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="comment">  * values from the (zero-mean, unit variance) standard normal distribution.</span></div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span><span class="comment">  */</span></div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> <span class="keywordtype">void</span> random_normal_pair(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state, <span class="keywordtype">double</span> *ret_1, <span class="keywordtype">double</span> *ret_2);</div>
-<div class="ttc" id="astructrng__state___html"><div class="ttname"><a href="structrng__state__.html">rng_state_</a></div><div class="ttdef"><b>Definition:</b> revrand.h:79</div></div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> <span class="comment">/* Mersenne-Twister (MT-19937) key/state length */</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="preprocessor"> #define KEY_LENGTH 624</span></div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> <span class="comment">/* Internal random number generator state. */</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno"><a class="line" href="structrng__state__.html">   80</a></span> <span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code hl_struct" href="structrng__state__.html">rng_state_</a></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> {</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>     <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> seed; <span class="comment">/* integer seed used to initialise state */</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>     <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> key[KEY_LENGTH]; <span class="comment">/* Mersenne-Twister state */</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>     <span class="keywordtype">int</span> pos; <span class="comment">/* current position in key array */</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>     <span class="keywordtype">int</span> reversed; <span class="comment">/* ==0: forward state updates, !=0: reverse state updates */</span></div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>     <span class="keywordtype">int</span> n_twists; <span class="comment">/* number of twists performed */</span></div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> } <a class="code hl_struct" href="structrng__state__.html">rng_state</a>;</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> <span class="comment">/* Initialise generator state from an integer seed. */</span></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> <span class="keywordtype">void</span> init_state(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> seed, <a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> <span class="comment">/* Optimised implementation of reference Mersenne-Twister from Random Kit. */</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> <span class="keywordtype">void</span> twist(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> <span class="comment">/* Reverses twist of state: reverse_twist(twist(state)) is identity map. */</span></div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> <span class="keywordtype">void</span> reverse_twist(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> <span class="comment">/* Reverses direction of random number generation. */</span></div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> <span class="keywordtype">void</span> reverse(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> <span class="comment">/* Generates a random integer uniformly from range [0, 2^32 - 1]. */</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> random_int32(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> <span class="comment">/*</span></div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="comment">  * Generate a random double-precision floating point value from uniform</span></div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="comment">  * distribution on [0,1).</span></div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="comment">  */</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> <span class="keywordtype">double</span> random_uniform(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state);</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span> <span class="comment">/*</span></div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span><span class="comment">  * Generate a pair of independent random double-precision floating point</span></div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="comment">  * values from the (zero-mean, unit variance) standard normal distribution.</span></div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="comment">  */</span></div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> <span class="keywordtype">void</span> random_normal_pair(<a class="code hl_struct" href="structrng__state__.html">rng_state</a> *state, <span class="keywordtype">double</span> *ret_1, <span class="keywordtype">double</span> *ret_2);</div>
+<div class="ttc" id="astructrng__state___html"><div class="ttname"><a href="structrng__state__.html">rng_state_</a></div><div class="ttdef"><b>Definition:</b> revrand.h:81</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_f5990293034574572431b8b21c83d40b.html">ECell_Engine</a></li><li class="navelem"><a class="el" href="dir_60705ddd1411bcca2da498124ecc7b17.html">headers</a></li><li class="navelem"><b>revrand.h</b></li>
+    <li class="navelem"><a class="el" href="dir_f5990293034574572431b8b21c83d40b.html">ECell_Engine</a></li><li class="navelem"><a class="el" href="dir_60705ddd1411bcca2da498124ecc7b17.html">headers</a></li><li class="navelem"><a class="el" href="dir_5468ed0d632a8d555a8d156eb8cd7686.html">Maths</a></li><li class="navelem"><b>revrand.h</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>
