@@ -45,7 +45,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 	}
 
 	ImGuiSliderFlags dragFlags = ImGuiSliderFlags_None;
-	if (_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_LHS].isUsed)
+	if (_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_LHS].nbConnectedLinks > 0)
 	{
 		dragFlags |= ImGuiSliderFlags_ReadOnly;
 	}
@@ -63,7 +63,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
 	dragFlags = ImGuiSliderFlags_None;
-	if (_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS].isUsed)
+	if (_arithmeticOperationNodeInfo.inputPins[ArithmeticOperationNodeData::InputPin_RHS].nbConnectedLinks > 0)
 	{
 		dragFlags |= ImGuiSliderFlags_ReadOnly;
 	}
@@ -457,7 +457,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 		_logicOperationNodeInfo.data->UpdateLHS(!_logicOperationNodeInfo.lhs, _logicOperationNodeInfo.lhs);
 	}
 
-	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS].isUsed)
+	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS].nbConnectedLinks > 0)
 	{
 		NodeText_In("LHS", startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_LHS],
 			Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
@@ -482,7 +482,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 	NodeText_Out("onOperandChange", onOperandChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
 		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
-	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS].isUsed)
+	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS].nbConnectedLinks > 0)
 	{
 		NodeText_In("RHS", startX, _logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS],
 			Widget::MNBV::GetPinColors(PinType_BooleanCallBackSubscriber));
@@ -520,7 +520,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 	const float headerWidth = NodeHeader("Modify DataState Value Event", "", Widget::MNBV::GetNodeColors(NodeType_Event));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
-	ImGuiSliderFlags dragFlags = _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue].isUsed ? ImGuiSliderFlags_ReadOnly : ImGuiSliderFlags_None;
+	ImGuiSliderFlags dragFlags = _modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue].nbConnectedLinks > 0 ? ImGuiSliderFlags_ReadOnly : ImGuiSliderFlags_None;
 
 	_modifyDSValueEventNodeInfo.value = _modifyDSValueEventNodeInfo.data->GetValue();
 	float buffer = _modifyDSValueEventNodeInfo.value;
@@ -568,7 +568,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 			ImGui::EndDisabled();
 		}
 
-		if (!_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition].isUsed)
+		if (!_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition].nbConnectedLinks > 0)
 		{
 			NodeText_In("Condition", startX,
 				_modifyDSValueEventNodeInfo.inputPins[ModifyDataStateValueEventNodeData::InputPin_Condition],
@@ -750,7 +750,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 		ImVec2(itemsWidth, 0)))
 	{
 		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-		if (_parameterNodeInfo.inputPins[ParameterNodeData::InputPin_ParameterValue].isUsed)
+		if (_parameterNodeInfo.inputPins[ParameterNodeData::InputPin_ParameterValue].nbConnectedLinks > 0)
 		{
 			flags |= ImGuiInputTextFlags_ReadOnly;
 		}
@@ -890,7 +890,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 		ImVec2(itemsWidth, 0)))
 	{
 		ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-		if (_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Quantity].isUsed)
+		if (_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_Quantity].nbConnectedLinks > 0)
 		{
 			flags |= ImGuiInputTextFlags_ReadOnly;
 		}
@@ -949,7 +949,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 	}
 
 	ImGuiSliderFlags dragFlags = ImGuiSliderFlags_None;
-	if (_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Target].isUsed)
+	if (_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Target].nbConnectedLinks > 0)
 	{
 		dragFlags |= ImGuiSliderFlags_ReadOnly;
 		_triggerNodeInfo.target.Set(_triggerNodeInfo.data->GetTarget()->Get());
@@ -970,7 +970,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerEnter], Widget::MNBV::GetPinColors(PinType_BooleanCallBackPublisher));
 
 	dragFlags = ImGuiSliderFlags_None;
-	if (_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Threshold].isUsed)
+	if (_triggerNodeInfo.inputPins[TriggerNodeData::InputPin_Threshold].nbConnectedLinks > 0)
 	{
 		dragFlags |= ImGuiSliderFlags_ReadOnly;
 		_triggerNodeInfo.threshold.Set(_triggerNodeInfo.data->GetThreshold()->Get());
@@ -1013,7 +1013,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::Pin(const NodePinData& 
 	ax::NodeEditor::PinRect(bb.Min, bb.Max);
 	PinColorType bgColor = PinColorType_BgInactivated;
 	ImGui::ItemAdd(bb, (std::size_t)_pinData.id);
-	if (_pinData.isUsed || ImGui::IsItemHovered())
+	if (_pinData.nbConnectedLinks > 0 || ImGui::IsItemHovered())
 	{
 		bgColor = PinColorType_BgActivated;
 	}

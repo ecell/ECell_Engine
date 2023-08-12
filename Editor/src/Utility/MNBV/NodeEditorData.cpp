@@ -387,7 +387,6 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 	{
 		data->dataStateValueId = speciesNodeData->data.get()->name;
 		data->valueType = ECellEngine::Core::Events::ModifyDataStateValueEvent::DataStateValueType::Species;
-		_nodeInputPinData->isUsed = true;
 	}
 
 	ParameterNodeData* parameterNodeData = dynamic_cast<ParameterNodeData*>(_nodeInputPinData->node);
@@ -395,7 +394,6 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 	{
 		data->dataStateValueId = parameterNodeData->data.get()->name;
 		data->valueType = ECellEngine::Core::Events::ModifyDataStateValueEvent::DataStateValueType::Parameter;
-		_nodeInputPinData->isUsed = true;
 	}
 
 	Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[ModifyDataStateValueEventNodeData::OutputPin_CollHdrExecution].id, 1);
@@ -407,7 +405,6 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 
 	//Reset the data state value id
 	data->dataStateValueId = "";
-	_nodeInputPinData->isUsed = false;
 	//_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
 }
 
