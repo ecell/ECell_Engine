@@ -265,9 +265,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 		NodeData* node = nullptr;
 
 		/*!
-		@brief Whether a link is connected to the pin.
+		@brief Count the number of links connected to this pin.
 		*/
-		bool isUsed = false;
+		unsigned short nbConnectedLinks = 0;
 
 		NodePinData() = default;
 
@@ -319,7 +319,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			node->InputConnect(this, _outputNode, _data);
 
-			isUsed = true;
+			nbConnectedLinks++;
 		}
 
 		/*!
@@ -332,7 +332,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			node->InputDisconnect(this, _nodeOutput, _data);
 
-			isUsed = false;
+			nbConnectedLinks--;
 		}
 
 		/*!
@@ -376,7 +376,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			//What to do on connection.
 			node->OutputConnect(_inputNode, this);
 
-			isUsed = true;
+			nbConnectedLinks++;
 		}
 
 		/*!
@@ -389,7 +389,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			//What to do on disconnection.
 			node->OutputDisconnect(_inputNode, this);
 
-			isUsed = false;
+			nbConnectedLinks--;
 		}
 
 		/*!
