@@ -207,9 +207,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief Draw a square pin.
 		@param _pinData The struct containing the information about the
 				pin to be drawn.
-		@param _pinColors The set of colors to cutomize the looks of this pin.
 		*/
-		static void Pin(const NodePinData& _pinData, const ImVec4 _pinColors[]);
+		static void Pin(const NodePinData& _pinData);
 
 		/*!
 		@brief The basic logic to destroy links between nodes.
@@ -395,7 +394,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _drawLength The distance where to draw the output pin relatively
 				to @p _startX. Used for alignment calculations.
 		@param _pin The pin data used for the output pin to draw.
-		@param _pinColors The set of colors to cutomize the input pins.
 		@param _size The size of the button representing the collapsing header.
 		@param _hidePinsOnExpand A boolean to control whether the input pin associated
 				to the collapsing header shall NOT be drawn when the collapsing header
@@ -404,7 +402,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static bool NodeCollapsingHeader_In(const char* _label, const std::size_t _id,
 			unsigned short& _utilityState, const short _stateBitPos,
 			const float _startX, const float _drawLength,
-			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const NodePinData& _pin,
 			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
 		
 		/*!
@@ -430,7 +428,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 				to @p _startX. Used for alignment calculations.
 		@param _inputPin The pin data used for the input pin to draw.
 		@param _outputPin The pin data used for the output pin to draw.
-		@param _pinColors The set of colors to cutomize both pins.
 		@param _size The size of the button representing the collapsing header.
 		@param _hidePinsOnExpand A boolean to control whether the pins associated to
 				the collapsing header shall NOT be drawn when the collapsing header
@@ -439,7 +436,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static bool NodeCollapsingHeader_InOut(const char* _label, const std::size_t _id,
 			unsigned short& _utilityState, const short _stateBitPos,
 			const float _startX, const float _drawLength,
-			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
+			const NodePinData& _inputPin, const NodePinData& _outputPin,
 			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
 			
 		/*!
@@ -465,7 +462,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _drawLength The distance where to draw the output pin relatively
 				to @p _startX. Used for alignment calculations.
 		@param _pin The pin data used for the output pin to draw.
-		@param _pinColors The set of colors to cutomize the output pins.
 		@param _size The size of the button representing the collapsing header.
 		@param _hidePinsOnExpand A boolean to control whether the output pin associated
 				to the collapsing header shall NOT be drawn when the collapsing header
@@ -474,7 +470,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static bool NodeCollapsingHeader_Out(const char* _label, const std::size_t _id,
 			unsigned short& _utilityState, const short _stateBitPos,
 			const float _startX, const float _drawLength,
-			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const NodePinData& _pin,
 			const ImVec2& _size = ImVec2(0, 0), const bool _hidePinsOnExpand = true);
 
 		/*!
@@ -507,12 +503,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _startX The position from which the alignment calculations are
 				done. Typically the left side of the node.
 		@param _pin The pin data used for the input pin to draw.
-		@param _pinColors The set of colors to cutomize both pins.
 		@param _flags Flags to customize the behaviour of the drag field.
 		*/
 		static bool NodeDragFloat_In(const char* _label, const std::size_t _id, float* _valueBuffer,
 			const float _inputFieldWidth, const float _startX,
-			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const NodePinData& _pin,
 			const ImGuiSliderFlags _flags = ImGuiSliderFlags_None);
 
 		/*!
@@ -530,12 +525,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _drawLength The distance where to draw the output pin relatively
 				to @p _startX. Used for alignment calculations.
 		@param _pin The pin data used for the output pin to draw.
-		@param _pinColors The set of colors to cutomize both pins.
 		@param _flags Flags to customize the behaviour of the drag field.
 		*/
 		static bool NodeDragFloat_Out(const char* _label, const std::size_t _id, float* _valueBuffer,
 			const float _inputFieldWidth, const float _startX, const float _drawLength,
-			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const NodePinData& _pin,
 			const ImGuiSliderFlags _flags = ImGuiSliderFlags_None);
 
 		/*!
@@ -582,14 +576,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 				to @p _startX. Used for alignment calculations.
 		@param _inputPin The pin data used for the input pin to draw.
 		@param _outputPin The pin data used for the output pin to draw.
-		@param _pinColors The set of colors to cutomize both pins.
 		@param _flags Flags to customize the behaviour of the input field.
 				Note that not every ImGuiInputTextFlags have an effect on
 				ImGui InputFloat widget.
 		*/
 		static bool NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* _valueBuffer, 
 			const float _inputFieldWidth, const float _startX, const float _drawLength,
-			const NodePinData& _inputPin, const NodePinData& _outputPin, const ImVec4 _pinColors[],
+			const NodePinData& _inputPin, const NodePinData& _outputPin,
 			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_EnterReturnsTrue);
 		
 		/*!
@@ -607,14 +600,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _drawLength The distance where to draw the output pin relatively
 				to @p _startX. Used for alignment calculations.
 		@param _pin The pin data used for the output pin to draw.
-		@param _pinColors The set of colors to cutomize both pins.
 		@param _flags Flags to customize the behaviour of the input field.
 				Note that not every ImGuiInputTextFlags have an effect on
 				ImGui InputFloat widget.
 		*/
 		static bool NodeInputFloat_Out(const char* _label, const std::size_t _id, float* _valueBuffer, 
 			const float _inputFieldWidth, const float _startX, const float _drawLength,
-			const NodePinData& _pin, const ImVec4 _pinColors[],
+			const NodePinData& _pin,
 			const ImGuiInputTextFlags _flags = ImGuiInputTextFlags_EnterReturnsTrue);
 
 		/*!
@@ -667,10 +659,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _startX The position from which the alignment calculations are
 				done. Typically the left side of the node.
 		@param _pin The pin data used for the input pin to draw.
-		@param _pinColors The set of colors to cutomize the input pin.
 		*/
 		static void NodeText_In(const char* _label, const float _startX,
-			const NodePinData& _pin, const ImVec4 _pinColors[]);
+			const NodePinData& _pin);
 
 		/*!
 		@brief Draws a Text label with an input pin and an output pin.
@@ -683,12 +674,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 				to @p _startX. Used for alignment calculations.
 		@param _inputPin The pin data used for the input pin to draw.
 		@param _outputPin The pin data used for the output pin to draw.
-		@param _pinColors The set of colors to cutomize both pins.
 		*/
 		static void NodeText_InOut(const char* _label, const float _labelWidth,
 			const float _startX, const float _drawLength,
-			const NodePinData& _inputPin, const NodePinData& _outputPin,
-			const ImVec4 _pinColors[]);
+			const NodePinData& _inputPin, const NodePinData& _outputPin);
 
 		/*!
 		@brief Draws a Text Label with an output pin.
@@ -702,11 +691,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _itemSpacingX The spacing to respect between the text and the
 				output pin. Used for alignement calculations.
 		@param _pin The pin data used for the output pin to draw.
-		@param _pinColors The set of colors to cutomize the output pin.
 		*/
 		static void NodeText_Out(const char* _label, const float _labelWidth,
 			const float _startX, const float _drawLength, const float itemSpacingX,
-			const NodePinData& _pin, const ImVec4 _pinColors[]);
+			const NodePinData& _pin);
 #pragma endregion
 
 	};
