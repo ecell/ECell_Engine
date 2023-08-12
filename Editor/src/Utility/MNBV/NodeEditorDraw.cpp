@@ -1011,25 +1011,24 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::Pin(const NodePinData& 
 
 	const ImRect bb(startPos, endPos);
 	ax::NodeEditor::PinRect(bb.Min, bb.Max);
-	if (ImGui::ItemAdd(bb, 0))
+	PinColorType bgColor = PinColorType_BgInactivated;
+	ImGui::ItemAdd(bb, (std::size_t)_pinData.id);
+	if (_pinData.isUsed || ImGui::IsItemHovered())
 	{
-		PinColorType bgColor = PinColorType_BgInactivated;
-		if (_pinData.isUsed || ImGui::IsItemHovered())
-		{
-			bgColor = PinColorType_BgActivated;
-		}
-
-		//Drawing the center of the pin
-		ImGui::GetWindowDrawList()->AddRectFilled(bb.Min, bb.Max, ImColor(_pinColors[bgColor]));
-		//Going back to start position
-		ImGui::SetCursorPos(startPos);
-		//Drawing the border of the pin on top of the center.
-		ImGui::GetWindowDrawList()->AddRect(bb.Min, bb.Max, ImColor(_pinColors[PinColorType_Border]));
-
-		// We set the cursor here to where it already is trigger the automatic addition of the Itemspacing.x 
-		// at the end of the pin when anything is drawn on the same line after it.
-		ImGui::SetCursorPosX(endPos.x);
+		bgColor = PinColorType_BgActivated;
 	}
+
+	//Drawing the center of the pin
+	ImGui::GetWindowDrawList()->AddRectFilled(bb.Min, bb.Max, ImColor(_pinColors[bgColor]));
+	//Going back to start position
+	ImGui::SetCursorPos(startPos);
+	//Drawing the border of the pin on top of the center.
+	ImGui::GetWindowDrawList()->AddRect(bb.Min, bb.Max, ImColor(_pinColors[PinColorType_Border]));
+
+	// We set the cursor here to where it already is trigger the automatic addition of the Itemspacing.x 
+	// at the end of the pin when anything is drawn on the same line after it.
+	ImGui::SetCursorPosX(endPos.x);
+
 	ax::NodeEditor::EndPin();
 }
 
@@ -1484,28 +1483,9 @@ float ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeHeader(const char*
 	);
 
 	const ImRect bb(startPos, endPos);
-
-	if (ImGui::ItemAdd(bb, 0))
-	{
-		/*NodeStyleColor colFlag = NodeStyleColor_HeaderBg;
-		if (ImGui::IsItemHovered())
-		{
-			colFlag = NodeStyleColor_HeaderHovered;
-			if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			{
-				ECellEngine::Logging::Logger::GetSingleton().LogDebug("Id of Hovered Item is: " + std::to_string(ImGui::GetItemID()));
-			}
-		}
-
-		if (ImGui::IsItemClicked())
-		{
-			colFlag = NodeStyleColor_HeaderActivated;
-		}*/
-
-		ImGui::GetWindowDrawList()->AddRectFilled(bb.Min, bb.Max, ImColor(_colorSet[NodeColorType_HeaderBg]), ax::NodeEditor::GetStyle().NodeRounding);
-		ImGui::SetCursorPos(ImVec2(startPos.x + ImGui::GetStyle().FramePadding.x, startPos.y));
-		ImGui::Text(_type); ImGui::SameLine(); ImGui::Text(_name);
-	}
+	ImGui::GetWindowDrawList()->AddRectFilled(bb.Min, bb.Max, ImColor(_colorSet[NodeColorType_HeaderBg]), ax::NodeEditor::GetStyle().NodeRounding);
+	ImGui::SetCursorPos(ImVec2(startPos.x + ImGui::GetStyle().FramePadding.x, startPos.y));
+	ImGui::Text(_type); ImGui::SameLine(); ImGui::Text(_name);
 
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
 
@@ -1519,11 +1499,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeHorizontalSeparator
 	//ItemAdd and ImRect are part of imgui_internal.hpp
 	const ImVec2 startPos = ImGui::GetCursorPos();
 	const ImRect bb(startPos.x, startPos.y, startPos.x + _width, startPos.y);
-	if (ImGui::ItemAdd(bb, 0))
-	{
-		ImGui::ItemSize(ImVec2(0.0f, _thickness));
-		ImGui::GetWindowDrawList()->AddLine(bb.Min, bb.Max, ImColor(ImGui::GetStyleColorVec4(ImGuiCol_Separator)), _thickness);
-	}
+
+	ImGui::ItemSize(ImVec2(0.0f, _thickness));
+	ImGui::GetWindowDrawList()->AddLine(bb.Min, bb.Max, ImColor(ImGui::GetStyleColorVec4(ImGuiCol_Separator)), _thickness);
 }
 
 bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeInputFloat_InOut(const char* _label, const std::size_t _id, float* valueBuffer,
