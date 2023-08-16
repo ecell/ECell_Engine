@@ -18,7 +18,6 @@ namespace ECellEngine::Data
 	struct DataState
 	{
 	private:
-		float elapsedTime;
 		std::unordered_map<std::string, std::shared_ptr<Maths::Equation>> equations;
 		std::unordered_map<std::string, std::shared_ptr<Reaction>> reactions;
 		std::unordered_map<std::string, std::shared_ptr<Parameter>> parameters;
@@ -46,11 +45,6 @@ namespace ECellEngine::Data
 		inline const std::unordered_map<std::string, std::shared_ptr<Maths::Equation>>& GetEquations() const
 		{
 			return equations;
-		}
-
-		inline float GetElapsedTime() const
-		{
-			return elapsedTime;
 		}
 
 		Operand* GetOperand(const std::string& _name);
@@ -151,11 +145,6 @@ namespace ECellEngine::Data
 		inline std::shared_ptr<Core::Trigger<Operand*, Operand*>> AddTrigger() noexcept
 		{
 			return triggers.emplace_back(std::make_shared<ECellEngine::Core::Trigger<Operand*, Operand*>>());
-		}
-
-		inline void SetElapsedTime(const float _elapsedTime)
-		{
-			elapsedTime = _elapsedTime;
 		}
 
 		void ClearReactions(const std::vector<std::string>& _reactionNames);
