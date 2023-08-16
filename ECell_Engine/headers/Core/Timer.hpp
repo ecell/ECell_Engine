@@ -12,7 +12,7 @@ namespace ECellEngine::Core
 	struct Timer
 	{
 		/*!
-		@brief The last delata time to reach the current ::elapsedTime.
+		@brief The last delta time to reach the current ::elapsedTime.
 		*/
 		float deltaTime = DEFAULT_SIMULATION_DELTA_TIME;
 
@@ -27,13 +27,13 @@ namespace ECellEngine::Core
 		float elapsedTime = 0.f;
 
 		/*!
-		@brief The callback whenever the simulation time is updated.
+		@brief The callback whenever the ::elapsedTime is updated.
 		@details The first parameter is the previous elapsed time since the
 				 start of the simulation.
 				 The second parameter is the new elapsed time since the
 				 start of the simulation.
 		*/
-		Core::Callback<const float, const float> onTimeUpdate;
+		Core::Callback<const float, const float> onElapsedTimeUpdate;
 
 		Timer() = default;
 

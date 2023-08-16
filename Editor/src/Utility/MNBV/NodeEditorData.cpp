@@ -536,14 +536,14 @@ void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputConnect(N
 {
 	//There is only one output pin in the SimulationTimeNodeData
 
-	_nodeInputPinData->OnConnect(_nodeOutputPinData, &simulationTimer->onTimeUpdate);
+	_nodeInputPinData->OnConnect(_nodeOutputPinData, &simulationTimer->onElapsedTimeUpdate);
 }
 
 void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
 	//There is only one output pin in the SimulationTimeNodeData
 
-	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &simulationTimer->onTimeUpdate);
+	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &simulationTimer->onElapsedTimeUpdate);
 }
 
 //void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
