@@ -59,7 +59,7 @@ namespace ECellEngine::Editor::Utility::Plot
 		/*!
 		@brief All the lines to plot.
 		*/
-		std::vector<Line> lines;
+		std::vector<std::shared_ptr<Line>> lines;
 
 		/*!
 		@brief The flags to use for the plot window.
@@ -93,7 +93,7 @@ namespace ECellEngine::Editor::Utility::Plot
 
 		LinePlot() = default;
 
-		LinePlot(const LinePlot& _lp) :
+		/*LinePlot(const LinePlot& _lp) :
 			X{ _lp.X }, lines{ _lp.lines },
 			plotSize{ _lp.plotSize[0], _lp.plotSize[1] },
 			plotFlags{ _lp.plotFlags },
@@ -103,12 +103,12 @@ namespace ECellEngine::Editor::Utility::Plot
 			std::memcpy(plotTitle, _lp.plotTitle, 64);
 			std::memcpy(xAxisLabel, _lp.xAxisLabel, 64);
 			std::memcpy(yAxisLabel, _lp.yAxisLabel, 64);
-		}
+		}*/
 
 		/*!
 		@brief Add a new line to the plot.
 		*/
-		Line& AddLine(std::size_t _matchedDataID) noexcept;
+		std::shared_ptr<Line> AddLine(std::size_t _matchedDataID) noexcept;
 
 		/*!
 		@brief Draws the plot. Calls ImPlot::BeginPlot() and ImPlot::EndPlot().

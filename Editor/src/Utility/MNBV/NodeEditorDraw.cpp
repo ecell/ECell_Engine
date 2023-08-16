@@ -258,42 +258,42 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 			startX, headerWidth, ImVec2(headerWidth, 0.f)))
 		{
 			char buffer[64] = "\0";
-			NodeInputText("Plot Title", _linePlotNodeData.linePlot.plotTitle, buffer, 64, headerWidth, startX, headerWidth);
+			NodeInputText("Plot Title", _linePlotNodeData.linePlot->plotTitle, buffer, 64, headerWidth, startX, headerWidth);
 
-			NodeInputText("X Axis Label", _linePlotNodeData.linePlot.xAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
+			NodeInputText("X Axis Label", _linePlotNodeData.linePlot->xAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
 
-			NodeInputText("Y Axis Label", _linePlotNodeData.linePlot.yAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
+			NodeInputText("Y Axis Label", _linePlotNodeData.linePlot->yAxisLabel, buffer, 64, headerWidth, startX, headerWidth);
 
 			ImGui::SetNextItemWidth(headerWidth - ImGui::CalcTextSize("Plot Size").x - style.ItemSpacing.x);
-			ImGui::DragFloat2("Plot Size", _linePlotNodeData.linePlot.plotSize, 1.f, 10.f, 1000.f);
+			ImGui::DragFloat2("Plot Size", _linePlotNodeData.linePlot->plotSize, 1.f, 10.f, 1000.f);
 		}
 
 		if (NodeCollapsingHeader("Plot Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_PlotFlags],
 			_linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrPlotFlags,
 			startX, headerWidth, ImVec2(headerWidth, 0.f)))
 		{
-			NodeAllImPlotFlags(&_linePlotNodeData.linePlot.plotFlags);
+			NodeAllImPlotFlags(&_linePlotNodeData.linePlot->plotFlags);
 		}
 
 		if (NodeCollapsingHeader("X Axis Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_XAxisFlags],
 			_linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrXAxisFlags,
 			startX, headerWidth, ImVec2(headerWidth, 0.f)))
 		{
-			NodeAllImPlotAxisFlags(&_linePlotNodeData.linePlot.xAxisFlags);
+			NodeAllImPlotAxisFlags(&_linePlotNodeData.linePlot->xAxisFlags);
 		}
 
 		if (NodeCollapsingHeader("Y Axis Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_YAxisFlags],
 			_linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrYAxisFlags,
 			startX, headerWidth, ImVec2(headerWidth, 0.f)))
 		{
-			NodeAllImPlotAxisFlags(&_linePlotNodeData.linePlot.yAxisFlags);
+			NodeAllImPlotAxisFlags(&_linePlotNodeData.linePlot->yAxisFlags);
 		}
 
 		if (NodeCollapsingHeader("Axis Scale Flags", _linePlotNodeData.collapsingHeadersIds[LinePlotNodeData::CollapsingHeader_AxisScaleFlags],
 			_linePlotNodeData.utilityState, LinePlotNodeData::State_CollHdrAxisScaleFlags,
 			startX, headerWidth, ImVec2(headerWidth, 0.f)))
 		{
-			NodeAllImPlotAxisScale(_linePlotNodeData.linePlot.xAxisScale, _linePlotNodeData.linePlot.yAxisScale);
+			NodeAllImPlotAxisScale(_linePlotNodeData.linePlot->xAxisScale, _linePlotNodeData.linePlot->yAxisScale);
 		}
 	}
 
@@ -305,16 +305,16 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 		_linePlotNodeData.inputPins[LinePlotNodeData::InputPin_CollHdrPlot],
 		ImVec2(itemsWidth, 0.f)))
 	{
-		NodeText_In(_linePlotNodeData.linePlot.xAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_XAxis]);
-		NodeText_In(_linePlotNodeData.linePlot.yAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_YAxis]);
+		NodeText_In(_linePlotNodeData.linePlot->xAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_XAxis]);
+		NodeText_In(_linePlotNodeData.linePlot->yAxisLabel, startX, _linePlotNodeData.inputPins[LinePlotNodeData::InputPin_YAxis]);
 
 		//Draw Parameters for each line
-		for (unsigned short i = 0; i < _linePlotNodeData.linePlot.lines.size(); i++)
+		for (unsigned short i = 0; i < _linePlotNodeData.linePlot->lines.size(); i++)
 		{
 			ImGui::PushID(i);
 			ApplyPinDrawOffset();
 			ImGui::SetNextItemWidth(0.25f * itemsWidth);
-			ImGui::InputText("##lineIdx", _linePlotNodeData.linePlot.lines[i].lineLegend, 64, ImGuiInputTextFlags_EnterReturnsTrue);
+			ImGui::InputText("##lineIdx", _linePlotNodeData.linePlot->lines[i]->lineLegend, 64, ImGuiInputTextFlags_EnterReturnsTrue);
 			if (ImGui::IsItemActive())
 			{
 				ax::NodeEditor::Suspend();
@@ -323,7 +323,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 			}
 
 			ImGui::SameLine();
-			bool open = ImGui::ColorButton("##lineColor", _linePlotNodeData.linePlot.lines[i].color);
+			bool open = ImGui::ColorButton("##lineColor", _linePlotNodeData.linePlot->lines[i]->color);
 			ax::NodeEditor::Suspend();
 			if (open)
 			{
@@ -331,7 +331,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 			}
 			if (ImGui::BeginPopup("##ColorPicker"))
 			{
-				ImGui::ColorPicker4("##lineColorPicker", &_linePlotNodeData.linePlot.lines[i].color.x);
+				ImGui::ColorPicker4("##lineColorPicker", &_linePlotNodeData.linePlot->lines[i]->color.x);
 				ImGui::EndPopup();
 			}
 			ax::NodeEditor::Resume();
@@ -339,20 +339,20 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 			//ImGui::SameLine();
 			//ImGui::AlignTextToFramePadding(); ImGui::Text("Update:");
 			ImGui::SameLine();
-			bool EveryNthFrame = std::strcmp(_linePlotNodeData.linePlot.lines[i].GetCurrentUpdateSchemeName(), "EveryNthFrame") == 0;
-			bool EveryXSeconds = std::strcmp(_linePlotNodeData.linePlot.lines[i].GetCurrentUpdateSchemeName(), "EveryXSeconds") == 0;
+			bool EveryNthFrame = std::strcmp(_linePlotNodeData.linePlot->lines[i]->GetCurrentUpdateSchemeName(), "EveryNthFrame") == 0;
+			bool EveryXSeconds = std::strcmp(_linePlotNodeData.linePlot->lines[i]->GetCurrentUpdateSchemeName(), "EveryXSeconds") == 0;
 			float width = headerWidth - (ImGui::GetCursorPosX() - startX);
 			if (EveryNthFrame || EveryXSeconds)
 			{
 				width = 0.5f * (width - ImGui::GetStyle().ItemSpacing.x);
 			}
-			open = ImGui::Button(_linePlotNodeData.linePlot.lines[i].GetCurrentUpdateSchemeName(), ImVec2(width, 0.f));
+			open = ImGui::Button(_linePlotNodeData.linePlot->lines[i]->GetCurrentUpdateSchemeName(), ImVec2(width, 0.f));
 
 			if (EveryNthFrame)
 			{
 				ImGui::SameLine();
 				ImGui::SetNextItemWidth(width);
-				ImGui::DragInt("##nbFrames", (int*)_linePlotNodeData.linePlot.lines[i].updateController->Get(),
+				ImGui::DragInt("##nbFrames", (int*)_linePlotNodeData.linePlot->lines[i]->updateStrategy->Get(),
 					1.f, 1, INT32_MAX, "%d", ImGuiSliderFlags_AlwaysClamp);
 			}
 
@@ -360,7 +360,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 			{
 				ImGui::SameLine();
 				ImGui::SetNextItemWidth(width);
-				ImGui::DragFloat("##xSeconds", (float*)_linePlotNodeData.linePlot.lines[i].updateController->Get(),
+				ImGui::DragFloat("##xSeconds", (float*)_linePlotNodeData.linePlot->lines[i]->updateStrategy->Get(),
 					0.1f, 0.1f, FLT_MAX, "%.1f", ImGuiSliderFlags_AlwaysClamp);
 			}
 
@@ -372,11 +372,11 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 
 			if (ImGui::BeginPopup("##combo", ImGuiWindowFlags_NoMove))
 			{
-				for (int j = 0; j < Utility::Plot::UpdateScheme_Count; ++j)
+				for (int j = 0; j < Utility::Plot::UpdateStrategyType_Count; ++j)
 				{
-					if (ImGui::MenuItem(_linePlotNodeData.linePlot.lines[i].GetUpdateSchemeName(j)))
+					if (ImGui::MenuItem(Utility::Plot::UpdateStrategy::GetName((Utility::Plot::UpdateStrategyType)j)))
 					{
-						_linePlotNodeData.linePlot.lines[i].SwitchUpdateController(j);
+						_linePlotNodeData.linePlot->lines[i]->SwitchUpdateStrategy(j);
 					}
 				}
 				ImGui::EndPopup();
@@ -416,13 +416,13 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinePlotNode(LinePlotNo
 	{
 		ImVec2& windowPadding = ImGui::GetStyle().WindowPadding;
 
-		ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.linePlot.plotSize[0] + 2 * windowPadding.x,
-			_linePlotNodeData.linePlot.plotSize[1] + 2 * windowPadding.y));
+		ImGui::SetNextWindowSize(ImVec2(_linePlotNodeData.linePlot->plotSize[0] + 2 * windowPadding.x,
+			_linePlotNodeData.linePlot->plotSize[1] + 2 * windowPadding.y));
 		ax::NodeEditor::Suspend();
 		std::string windowName = "Line Plot##lineplot"+std::to_string((std::size_t)_linePlotNodeData.id);
-		if (ImGui::Begin(windowName.c_str(), NULL, _linePlotNodeData.linePlot.plotWindowFlags))
+		if (ImGui::Begin(windowName.c_str(), NULL, _linePlotNodeData.linePlot->plotWindowFlags))
 		{
-			_linePlotNodeData.linePlot.Draw();
+			_linePlotNodeData.linePlot->Draw();
 		}
 		ImGui::End();
 		ax::NodeEditor::Resume();

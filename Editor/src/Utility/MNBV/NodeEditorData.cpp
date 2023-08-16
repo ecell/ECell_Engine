@@ -178,7 +178,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	//X axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
 	{
-		linePlot.updateXSubToken = std::move( *(Core::Callback<const float, const float>*)_data += std::bind(&Plot::LinePlot::UpdateX, &linePlot, std::placeholders::_1, std::placeholders::_2));
+		linePlot->updateXSubToken = std::move( *(Core::Callback<const float, const float>*)_data += std::bind(&Plot::LinePlot::UpdateX, linePlot, std::placeholders::_1, std::placeholders::_2));
 
 		//we set the input pin of the collapsing header as the fallback
 		Widget::MNBV::GetDynamicLinks().back().OverrideEndFallbackPin(inputPins[LinePlotNodeData::InputPin_CollHdrPlot].id, 1);
@@ -187,10 +187,9 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 	//Y axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
 	{
-		Plot::Line& line = linePlot.AddLine((std::size_t)_nodeOutputPinData->node->id);
+		std::shared_ptr<Plot::Line>& line = linePlot->AddLine((std::size_t)_nodeOutputPinData->node->id);
 
-		line.updateLineCallback = std::make_shared<Core::Callback<const float, const float>*>((Core::Callback<const float, const float>*)_data);
-		line.updateLineSubToken = std::move(*(Core::Callback<const float, const float>*)_data += std::bind(&Plot::Line::UpdateLine, &line, std::placeholders::_1, std::placeholders::_2));
+		line->updateLineSubToken = std::move(*(Core::Callback<const float, const float>*)_data += std::bind(&Plot::Line::UpdateLine, line, std::placeholders::_1, std::placeholders::_2));
 
 		//Some nodes are representing data that have names.
 		//We try to get the name of the node and use it as the legend of the line.
@@ -199,26 +198,26 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 		EquationNodeData* end = dynamic_cast<EquationNodeData*>(_nodeOutputPinData->node);
 		if (end)
 		{
-			std::memcpy(line.lineLegend, end->data->GetOperand()->name.c_str(), 64);
+			std::memcpy(line->lineLegend, end->data->GetOperand()->name.c_str(), 64);
 		}
 
 		ParameterNodeData* pnd = dynamic_cast<ParameterNodeData*>(_nodeOutputPinData->node);
 		if (pnd)
 		{
-			std::memcpy(line.lineLegend, pnd->data->name.c_str(), 64);
+			std::memcpy(line->lineLegend, pnd->data->name.c_str(), 64);
 		}
 
 		ReactionNodeData* rnd = dynamic_cast<ReactionNodeData*>(_nodeOutputPinData->node);
 		if (rnd)
 		{
-			std::memcpy(line.lineLegend, rnd->data->name.c_str(), 64);
-			std::strcat(line.lineLegend, " (rate)");
+			std::memcpy(line->lineLegend, rnd->data->name.c_str(), 64);
+			std::strcat(line->lineLegend, " (rate)");
 		}
 
 		SpeciesNodeData* snd = dynamic_cast<SpeciesNodeData*>(_nodeOutputPinData->node);
 		if (snd)
 		{
-			std::memcpy(line.lineLegend, snd->data->name.c_str(), 64);
+			std::memcpy(line->lineLegend, snd->data->name.c_str(), 64);
 		}
 
 		//we set the input pin of the collapsing header as the fallback
@@ -232,20 +231,19 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
 	{
 		//Unsub
-		*(Core::Callback<const float, const float>*)_data -= linePlot.updateXSubToken;
-		linePlot.updateXSubToken = nullptr;
+		*(Core::Callback<const float, const float>*)_data -= linePlot->updateXSubToken;
+		linePlot->updateXSubToken = nullptr;
 	}
 
 	//Y axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
 	{
-		std::vector<Plot::Line>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(linePlot.lines.begin(), linePlot.lines.end(), (std::size_t)_nodeOutputPinData->node->id);
+		std::vector<std::shared_ptr<Plot::Line>>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(linePlot->lines.begin(), linePlot->lines.end(), (std::size_t)_nodeOutputPinData->node->id);
 
-		if (it->id == (std::size_t)_nodeOutputPinData->node->id)
+		if ((*it)->id == (std::size_t)_nodeOutputPinData->node->id)
 		{
 			//Unsub
-			**it->updateLineCallback -= it->updateLineSubToken;
-			linePlot.lines.erase(it);
+			linePlot->lines.erase(it);
 		}
 	}
 }

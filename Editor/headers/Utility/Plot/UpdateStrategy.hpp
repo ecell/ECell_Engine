@@ -11,25 +11,26 @@ namespace ECellEngine::Editor::Utility::Plot
 			 data should be added to the structure that stores it and that is
 			 plotteds.
 	*/
-	enum UpdateScheme
+	enum UpdateStrategyType : unsigned char
 	{
-		UpdateScheme_Never,// = 0, Never add data to the structure that stores it.
-		UpdateScheme_Always,// = 1, Always add data to the structure that stores it.
-		UpdateScheme_OnChange,// = 2, Add data to the structure that stores it only when the new value is different from the previous one.
-		UpdateScheme_EveryNthFrame,// = 3, Add data to the structure that stores it every N frames.
-		UpdateScheme_EveryXSeconds,// = 4, Add data to the structure that stores it every X seconds.
+		UpdateStrategyType_Never,// = 0, Never add data to the structure that stores it.
+		UpdateStrategyType_Always,// = 1, Always add data to the structure that stores it.
+		UpdateStrategyType_OnChange,// = 2, Add data to the structure that stores it only when the new value is different from the previous one.
+		UpdateStrategyType_EveryNthFrame,// = 3, Add data to the structure that stores it every N frames.
+		UpdateStrategyType_EveryXSeconds,// = 4, Add data to the structure that stores it every X seconds.
 
-		UpdateScheme_Count//The number of update schemes.
+		UpdateStrategyType_Count//The number of update strategys.
 	};
 
 	/*!
 	@brief A base class for the update controllers.
 	*/
-	struct UpdateController
+	struct UpdateStrategy
 	{
-		UpdateScheme scheme = UpdateScheme_Never;
+		UpdateStrategyType strategyType = UpdateStrategyType_Never;
+		static char* updateStrategyNames[5];
 
-		virtual ~UpdateController() = default;
+		virtual ~UpdateStrategy() = default;
 
 		/*!
 		@brief Get the pointer to the threshold value that controls the update
@@ -38,37 +39,57 @@ namespace ECellEngine::Editor::Utility::Plot
 		virtual void* Get() noexcept = 0;
 
 		/*!
-		@brief Set the threshold value that controls the update scheme, if any.
+		@brief Get the name of this update strategy.
+		*/
+		virtual const char* GetName() noexcept = 0;
+
+		/*!
+		@brief Get the name of the given update strategy.
+		@param _type The integer encoding the strategy type in the enum
+					 ECellEngine::Editor::Utility::Plot::UpdateStrategyType.
+		*/
+		static const char* GetName(unsigned char _type) noexcept
+		{
+			return updateStrategyNames[_type];
+		}
+
+		/*!
+		@brief Set the threshold value that controls the update strategy, if any.
 		*/
 		virtual void Set(void* _controlValue) noexcept = 0;
 
 		/*!
 		@brief Reset the update controller. In particular, reset the threshold
-			   value that controls the update scheme, if any.
+			   value that controls the update strategy, if any.
 		*/
 		virtual void Reset() noexcept = 0;
 
 		/*!
-		@brief Test if the update scheme is satisfied.
-		@returns True if the update scheme is satisfied, false otherwise.
+		@brief Test if the update strategy is satisfied.
+		@returns True if the update strategy is satisfied, false otherwise.
 		*/
-		inline virtual bool TestUpdate() noexcept = 0;
+		virtual bool TestUpdate() noexcept = 0;
 
 	};
 
 	/*!
 	@brief An update controller that never updates.
 	*/
-	struct UpdateController_Never final : public UpdateController
+	struct UpdateStrategyNever final : public UpdateStrategy
 	{
-		UpdateController_Never() noexcept
+		UpdateStrategyNever() noexcept
 		{
-			scheme = UpdateScheme_Never;
+			strategyType = UpdateStrategyType_Never;
 		}
 
 		inline void* Get() noexcept override
 		{
 			return nullptr;
+		}
+
+		inline const char* GetName() noexcept override
+		{
+			return "Never";
 		}
 
 		void Reset() noexcept override {};
@@ -84,16 +105,21 @@ namespace ECellEngine::Editor::Utility::Plot
 	/*!
 	@brief An update controller that always updates.
 	*/
-	struct UpdateController_Always final : public UpdateController
+	struct UpdateStrategyAlways final : public UpdateStrategy
 	{
-		UpdateController_Always() noexcept
+		UpdateStrategyAlways() noexcept
 		{
-			scheme = UpdateScheme_Always;
+			strategyType = UpdateStrategyType_Always;
 		}
 
 		inline void* Get() noexcept override
 		{
 			return nullptr;
+		}
+
+		inline const char* GetName() noexcept override
+		{
+			return "Always";
 		}
 
 		void Reset() noexcept override {};
@@ -109,7 +135,7 @@ namespace ECellEngine::Editor::Utility::Plot
 	/*!
 	@brief An update controller that updates only when the value changes.
 	*/
-	struct UpdateController_OnChange final : public UpdateController
+	struct UpdateStrategyOnChange final : public UpdateStrategy
 	{
 		/*!
 		@brief Pointer to the current value.
@@ -122,14 +148,19 @@ namespace ECellEngine::Editor::Utility::Plot
 		*/
 		float previous = 0.f;
 
-		UpdateController_OnChange() noexcept
+		UpdateStrategyOnChange() noexcept
 		{
-			scheme = UpdateScheme_OnChange;
+			strategyType = UpdateStrategyType_OnChange;
 		}
 
 		inline void* Get() noexcept override
 		{
 			return nullptr;
+		}
+
+		inline const char* GetName() noexcept override
+		{
+			return "OnChange";
 		}
 
 		void Reset() noexcept override;
@@ -142,7 +173,7 @@ namespace ECellEngine::Editor::Utility::Plot
 	/*!
 	@brief An update controller that updates every N frames.
 	*/
-	struct UpdateController_EveryNthFrame final : public UpdateController
+	struct UpdateStrategyEveryNthFrame final : public UpdateStrategy
 	{
 		/*!
 		@brief The current frame count.
@@ -154,14 +185,19 @@ namespace ECellEngine::Editor::Utility::Plot
 		*/
 		int frameInterval = 100;
 
-		UpdateController_EveryNthFrame() noexcept
+		UpdateStrategyEveryNthFrame() noexcept
 		{
-			scheme = UpdateScheme_EveryNthFrame;
+			strategyType = UpdateStrategyType_EveryNthFrame;
 		}
 
 		inline void* Get() noexcept override
 		{
 			return &frameInterval;
+		}
+
+		inline const char* GetName() noexcept override
+		{
+			return "EveryNthFrame";
 		}
 
 		void Reset() noexcept override;
@@ -174,7 +210,7 @@ namespace ECellEngine::Editor::Utility::Plot
 	/*!
 	@brief An update controller that updates every X seconds.
 	*/
-	struct UpdateController_EveryXSeconds final : public UpdateController
+	struct UpdateStrategyEveryXSeconds final : public UpdateStrategy
 	{
 		/*!
 		@brief The timer used to check the time interval.
@@ -196,9 +232,9 @@ namespace ECellEngine::Editor::Utility::Plot
 		*/
 		float timeInterval = 5.f;
 
-		UpdateController_EveryXSeconds() noexcept
+		UpdateStrategyEveryXSeconds() noexcept
 		{
-			scheme = UpdateScheme_EveryXSeconds;
+			strategyType = UpdateStrategyType_EveryXSeconds;
 
 			previousTime = timer.ReadHighResTimer();
 		}
@@ -206,6 +242,11 @@ namespace ECellEngine::Editor::Utility::Plot
 		inline void* Get() noexcept override
 		{
 			return &timeInterval;
+		}
+
+		inline const char* GetName() noexcept override
+		{
+			return "EveryXSeconds";
 		}
 
 		void Reset() noexcept override;

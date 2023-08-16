@@ -5,6 +5,8 @@
 		that are used to know how to draw these entities in ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget
 */
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "implot.h"
 #include "imgui_node_editor.h"
 
@@ -1121,7 +1123,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			State_Count
 		};
 
-		Plot::LinePlot linePlot;
+		std::shared_ptr<Plot::LinePlot> linePlot;
 
 		/*!
 		@brief All the input pins.
@@ -1148,7 +1150,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
 		LinePlotNodeData(ImVec2& _position) :
-			NodeData()
+			NodeData(), linePlot(std::make_shared<Plot::LinePlot>())
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 

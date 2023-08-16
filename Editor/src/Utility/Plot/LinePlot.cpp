@@ -1,10 +1,10 @@
 #include "Data/BinaryOperatedVector.hpp"
 #include "Utility/Plot/LinePlot.hpp"
 
-ECellEngine::Editor::Utility::Plot::Line& ECellEngine::Editor::Utility::Plot::LinePlot::AddLine(std::size_t _matchedDataID) noexcept
+std::shared_ptr<ECellEngine::Editor::Utility::Plot::Line> ECellEngine::Editor::Utility::Plot::LinePlot::AddLine(std::size_t _matchedDataID) noexcept
 {
-	std::vector<Line>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(lines.begin(), lines.end(), _matchedDataID);
-	it = lines.insert(it, Plot::Line(_matchedDataID, linesMaxNbDataPoints, &X));
+	std::vector<std::shared_ptr<Line>>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(lines.begin(), lines.end(), _matchedDataID);
+	it = lines.insert(it, std::make_shared<Plot::Line>(_matchedDataID, linesMaxNbDataPoints, &X));
 
 	return *it;
 }
@@ -17,9 +17,9 @@ void ECellEngine::Editor::Utility::Plot::LinePlot::Draw() noexcept
 		ImPlot::SetupAxisScale(ImAxis_X1, xAxisScale);
 		ImPlot::SetupAxisScale(ImAxis_Y1, yAxisScale);
 
-		for (std::vector<Line>::iterator it = lines.begin(); it!=lines.end(); it++)
+		for (std::vector<std::shared_ptr<Line>>::iterator it = lines.begin(); it!=lines.end(); it++)
 		{
-			it->Draw();
+			(*it)->Draw();
 		}
 		ImPlot::EndPlot();
 	}

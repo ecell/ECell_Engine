@@ -16,25 +16,25 @@ void ECellEngine::Editor::Utility::Plot::Line::Draw()
 		dataPoints.Data.Size, ImPlotLineFlags_None, dataPoints.Offset, 2 * sizeof(float));
 }
 
-void ECellEngine::Editor::Utility::Plot::Line::SwitchUpdateController(unsigned short _scheme) noexcept
+void ECellEngine::Editor::Utility::Plot::Line::SwitchUpdateStrategy(unsigned char _strategy) noexcept
 {
-	switch (_scheme)
+	switch (_strategy)
 	{
-	case(UpdateScheme_Never):
-		updateController = &updateControllerNever;
+	case(UpdateStrategyType_Never):
+		updateStrategy.reset(new UpdateStrategyNever());
 		break;
-	case(UpdateScheme_Always):
-		updateController = &updateControllerAlways;
+	case(UpdateStrategyType_Always):
+		updateStrategy.reset(new UpdateStrategyAlways());
 		break;
-	case(UpdateScheme_OnChange):
-		updateController = &updateControllerOnChange;
-		updateController->Set(&Y);
+	case(UpdateStrategyType_OnChange):
+		updateStrategy.reset(new UpdateStrategyOnChange());
+		updateStrategy->Set(&Y);
 		break;
-	case(UpdateScheme_EveryNthFrame):
-		updateController = &updateControllerEveryNthFrame;
+	case(UpdateStrategyType_EveryNthFrame):
+		updateStrategy.reset(new UpdateStrategyEveryNthFrame());
 		break;
-	case(UpdateScheme_EveryXSeconds):
-		updateController = &updateControllerEveryXSeconds;
+	case(UpdateStrategyType_EveryXSeconds):
+		updateStrategy.reset(new UpdateStrategyEveryXSeconds());
 		break;
 	default:
 		ECellEngine::Logging::Logger::GetSingleton().GetSingleton().LogError("Invalid update scheme. The data of Line " + std::string(lineLegend) + "is likely corrupted.");
@@ -45,9 +45,9 @@ void ECellEngine::Editor::Utility::Plot::Line::SwitchUpdateController(unsigned s
 void ECellEngine::Editor::Utility::Plot::Line::UpdateLine(const float _previousValue, const float _newValue) noexcept
 {
 	Y = _newValue;
-	if (updateController->TestUpdate())
+	if (updateStrategy->TestUpdate())
 	{
 		dataPoints.AddPoint(*ptrX, _newValue);
-		updateController->Reset();
+		updateStrategy->Reset();
 	}
 }
