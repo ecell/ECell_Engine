@@ -1053,31 +1053,71 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LinkCreation(std::vecto
 					std::swap(startPinId, endPinId);
 				}
 
+				//If pin is itself --> reject
 				if (startPin == endPin)
 				{
-					ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 2.0f);
+					ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 8.0f);
 					ax::NodeEditor::Suspend();
 					ImGui::SetTooltip("You cannot connect a pin to itself.");
 					ax::NodeEditor::Resume();
 				}
+
+				//If both pins qre input or output
 				else if (startPin->kind == endPin->kind)
 				{
-					ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 2.0f);
+					ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 8.0f);
 					ax::NodeEditor::Suspend();
-					ImGui::SetTooltip("You cannot connect an input pin to another input pin\nor output pin to another ouput pin.");
+					ImGui::SetTooltip("You cannot connect an INPUT pin to another INPUT pin\nor OUTPUT pin to another OUTPUT pin.");
 					ax::NodeEditor::Resume();
 				}
+
+				//If pins types are not compatible (see ModelNodeBasedViewerContext.hpp)
 				else if (!Widget::MNBV::IsDynamicLinkAuthorized(startPin->type, endPin->type))
 				{
-					ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 2.0f);
+					ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 8.0f);
 					ax::NodeEditor::Suspend();
 					ImGui::SetTooltip("You cannot connect a pin of type %s to a pin of type %s", Widget::MNBV::GetPinTypeName(startPin->type), Widget::MNBV::GetPinTypeName(endPin->type));
 					ax::NodeEditor::Resume();
 				}
+
+				//If output pin has too many connections
+				else if (startPin->nbConnectedLinks >= startPin->maxNbConnectedLinks)
+				{
+					//We handle the error message a bit differently here to be able to display the
+					//error message for both pins at the same time if it happens.
+
+					ax::NodeEditor::Suspend();
+					
+					std::string msg = "OUTPUT pin has already reached max\nnumber of connections (%d link(s)).\nDelete a link before using this pin.";
+					ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 8.0f);
+					
+					//If input pin also has too many connections
+					if (endPin->nbConnectedLinks >= endPin->maxNbConnectedLinks)
+					{
+						msg += "\n\nINPUT pin has already reached max\nnumber of connections (%d link(s)).\nDelete a link before using this pin.", endPin->maxNbConnectedLinks;
+						ImGui::SetTooltip(msg.c_str(), startPin->maxNbConnectedLinks, endPin->maxNbConnectedLinks);
+					}
+					
+					else
+					{
+						ImGui::SetTooltip(msg.c_str(), startPin->maxNbConnectedLinks);
+					}
+					ax::NodeEditor::Resume();
+				}
+
+				//If only input pin has too many connections
+				else if (endPin->nbConnectedLinks >= endPin->maxNbConnectedLinks)
+				{
+					ax::NodeEditor::RejectNewItem(ImVec4(1.0f, 0.f, 0.f, 1.0f), 8.0f);
+					ax::NodeEditor::Suspend();
+					ImGui::SetTooltip("INPUT pin has already reached max\nnumber of connections (%d link(s)).\nDelete a link before using this pin.", endPin->maxNbConnectedLinks);
+					ax::NodeEditor::Resume();
+				}
+
 				else
 				{
 					// ax::NodeEditor::AcceptNewItem() return true when user release mouse button.
-					if (ax::NodeEditor::AcceptNewItem(ImVec4(0.0f, 1.f, 0.f, 1.0f), 2.0f))
+					if (ax::NodeEditor::AcceptNewItem(ImVec4(0.0f, 1.f, 0.f, 1.0f), 8.0f))
 					{
 						// Since we accepted new link, lets add one to our list of links.
 						LinkData& newLink = _links.emplace_back(LinkData(startPin, endPin));

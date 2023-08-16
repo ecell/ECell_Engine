@@ -267,17 +267,25 @@ namespace ECellEngine::Editor::Utility::MNBV
 		NodeData* node = nullptr;
 
 		/*!
-		@brief Count the number of links connected to this pin.
+		@brief The maximum number of links that can be connected to this pin.
+		@details Theoretical max number of connections is 256.
 		*/
-		unsigned short nbConnectedLinks = 0;
+		unsigned char maxNbConnectedLinks;
+
+		/*!
+		@brief Count the number of links connected to this pin.
+		@details Theoretical max number of connections is 256.
+		*/
+		unsigned char nbConnectedLinks = 0;
 
 		NodePinData() = default;
 
 		/*!
 		@remarks @p _pinId is incremented immeditely after use.
 		*/
-		NodePinData(std::size_t& _pinId, ax::NodeEditor::PinKind _kind, PinType _type, NodeData* _node) :
-			id{ _pinId }, kind{ _kind }, type{ _type }, node{ _node }
+		NodePinData(std::size_t& _pinId, ax::NodeEditor::PinKind _kind, PinType _type, NodeData* _node,
+			const unsigned char _maxNbConnectedLinks) :
+			id{ _pinId }, kind{ _kind }, type{ _type }, node{ _node }, maxNbConnectedLinks{ _maxNbConnectedLinks }
 		{
 
 		}
@@ -307,8 +315,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 	{
 		NodeInputPinData() = default;
 
-		NodeInputPinData(std::size_t& _pinId, PinType _type, NodeData* _node) :
-			NodePinData(_pinId, ax::NodeEditor::PinKind::Input, _type, _node)
+		NodeInputPinData(std::size_t& _pinId, PinType _type, NodeData* _node,
+			const unsigned char _maxNbConnectedLinks = 1) :
+			NodePinData(_pinId, ax::NodeEditor::PinKind::Input, _type, _node, _maxNbConnectedLinks)
 		{
 
 		}
@@ -360,8 +369,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 	{
 		NodeOutputPinData() = default;
 
-		NodeOutputPinData(std::size_t& _pinId, PinType _type, NodeData* _node) :
-			NodePinData(_pinId, ax::NodeEditor::PinKind::Output, _type, _node)
+		NodeOutputPinData(std::size_t& _pinId, PinType _type, NodeData* _node,
+			const unsigned char _maxNbConnectedLinks = UCHAR_MAX) :
+			NodePinData(_pinId, ax::NodeEditor::PinKind::Output, _type, _node, _maxNbConnectedLinks)
 		{
 
 		}
@@ -1156,7 +1166,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 			inputPins[InputPin_CollHdrPlot] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Plot Collapsing Header
 			inputPins[InputPin_XAxis] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackSubscriber, this);//X
-			inputPins[InputPin_YAxis] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackSubscriber, this);//Y
+			inputPins[InputPin_YAxis] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackSubscriber, this, UCHAR_MAX);//Y
 
 			outputPins[OutputPin_None] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
 
@@ -2060,7 +2070,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//not used
-			outputPins[OutputPin_Solver] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Solver, this);//this solver transmission
+			outputPins[OutputPin_Solver] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Solver, this, 1);//this solver transmission
 
 		}
 
