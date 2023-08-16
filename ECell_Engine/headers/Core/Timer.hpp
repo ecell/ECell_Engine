@@ -14,17 +14,17 @@ namespace ECellEngine::Core
 		/*!
 		@brief The last delata time to reach the current ::elapsedTime.
 		*/
-		float deltaTime;
+		float deltaTime = DEFAULT_SIMULATION_DELTA_TIME;
 
 		/*!
 		@brief System time at the start of the simulation.
 		*/
-		float startTime;
+		float startTime = 0.f;
 
 		/*!
 		@brief The elapsed time since the start of the simulation.
 		*/
-		float elapsedTime;
+		float elapsedTime = 0.f;
 
 		/*!
 		@brief The callback whenever the simulation time is updated.
@@ -35,12 +35,7 @@ namespace ECellEngine::Core
 		*/
 		Core::Callback<const float, const float> onTimeUpdate;
 
-		Timer()
-		{
-			deltaTime = DEFAULT_SIMULATION_DELTA_TIME;
-			startTime = .0f;
-			elapsedTime = .0f;
-		}
+		Timer() = default;
 
 #pragma region Mutators
 		/// <summary>
@@ -79,29 +74,21 @@ namespace ECellEngine::Core
 		}
 
 		/*!
-		@brief Increments the ::elapsedTime by the given @p _deltaTime.
+		@brief Decrements the ::elapsedTime by the given @p _deltaTime.
+		@details  The ::onTimeUpdate callback is called after decrementing
+				 the current elapsed time. So, previous value is ::elapsedTime 
+				 + ::deltaTime and the new value is ::elapsedTime.
 		*/
-		inline void Increment(float _deltaTime)
-		{
-			deltaTime = _deltaTime;
-			elapsedTime += _deltaTime;
-
-			onTimeUpdate(elapsedTime-_deltaTime, elapsedTime);
-		}
+		inline void Decrement(float _deltaTime);
 
 		/*!
-		@brief Decrements the ::elapsedTime by the given @p _deltaTime.
-		@details  The ::onTimeUpdate callback is called with the new
-				 ::elapsedTime and - ::deltaTime (hence, negative).
+		@brief Increments the ::elapsedTime by the given @p _deltaTime.
+		@details  The ::onTimeUpdate callback is called after incrementing
+				 the current elapsed time. So, previous value is ::elapsedTime 
+				 - ::deltaTime and the new value is ::elapsedTime.
 		*/
-		inline void Decrement(float _deltaTime)
-		{
-			deltaTime = _deltaTime;
-			elapsedTime -= _deltaTime;
+		void Increment(float _deltaTime);
 
-			onTimeUpdate(elapsedTime+deltaTime, elapsedTime);
-		}
-		
 		/*!
 		@brief Returns the time used by the program normalised by the CPU cycles per seconds.
 		*/
