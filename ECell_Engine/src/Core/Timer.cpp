@@ -1,36 +1,47 @@
 #include "Core/Timer.hpp"
 
-void ECellEngine::Core::Timer::CheckSimulationDeltaTime()
+void ECellEngine::Core::Timer::Decrement(float _deltaTime)
 {
+	float temp = deltaTime;
+	deltaTime = _deltaTime;
 	if (deltaTime > MAX_SIMULATION_DELTA_TIME)
 	{
 		deltaTime = DEFAULT_SIMULATION_DELTA_TIME;
 	}
-}
+	onDeltaTimeUpdate(temp, deltaTime);
 
-void ECellEngine::Core::Timer::Decrement(float _deltaTime)
-{
-	deltaTime = _deltaTime;
-
+	temp = elapsedTime;
 	elapsedTime -= _deltaTime;
-	onElapsedTimeUpdate(elapsedTime + deltaTime, elapsedTime);
+	onElapsedTimeUpdate(temp, elapsedTime);
 }
 
 void ECellEngine::Core::Timer::Increment(float _deltaTime)
 {
+	float temp = deltaTime;
 	deltaTime = _deltaTime;
+	if (deltaTime > MAX_SIMULATION_DELTA_TIME)
+	{
+		deltaTime = DEFAULT_SIMULATION_DELTA_TIME;
+	}
+	onDeltaTimeUpdate(deltaTime, deltaTime);
 
+	temp = elapsedTime;
 	elapsedTime += _deltaTime;
-	onElapsedTimeUpdate(elapsedTime - _deltaTime, elapsedTime);
+	onElapsedTimeUpdate(temp, elapsedTime);
 }
 
 void ECellEngine::Core::Timer::ResetTimes()
 {
+	float temp = startTime;
 	startTime = (float)std::clock() / CLOCKS_PER_SEC;
+	onStartTimeUpdate(temp, startTime);
+
+	temp = deltaTime;
 	deltaTime = DEFAULT_SIMULATION_DELTA_TIME;
+	onDeltaTimeUpdate(temp, deltaTime);
 	
-	float previousElapsedTime = elapsedTime;
+	temp = elapsedTime;
 	elapsedTime = .0f;
-	onElapsedTimeUpdate(previousElapsedTime, elapsedTime);
+	onElapsedTimeUpdate(temp, elapsedTime);
 }
 

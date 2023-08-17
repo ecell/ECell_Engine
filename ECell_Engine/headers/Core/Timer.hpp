@@ -27,13 +27,27 @@ namespace ECellEngine::Core
 		float elapsedTime = 0.f;
 
 		/*!
+		@brief The callback whenever the ::deltaTime is updated.
+		@details The first parameter is the previous delta time.
+				 The second parameter is the new delta time.
+		*/
+		Core::Callback<const float, const float> onDeltaTimeUpdate;
+
+		/*!
 		@brief The callback whenever the ::elapsedTime is updated.
 		@details The first parameter is the previous elapsed time since the
-				 start of the simulation.
+				 start of the simulation (::startTime).
 				 The second parameter is the new elapsed time since the
-				 start of the simulation.
+				 start of the simulation (::startTime).
 		*/
 		Core::Callback<const float, const float> onElapsedTimeUpdate;
+
+		/*!
+		@brief The callback whenever the ::startTime is updated.
+		@details The first parameter is the previous start time.
+				 The second parameter is the new start time.
+		*/
+		Core::Callback<const float, const float> onStartTimeUpdate;
 
 		Timer() = default;
 
@@ -53,15 +67,7 @@ namespace ECellEngine::Core
 #pragma endregion
 
 
-#pragma region Logic
-		/*!
-		@brief Checks that the current simulation delta time 
-			   does not exceed the value defined by the macro
-			   MAX_SIMULATION_DELTA_TIME. If it does, its
-			   value is set back to DEFAULT_SIMULATION_DELTA_TIME
-		*/
-		void CheckSimulationDeltaTime();
-		
+#pragma region Logic		
 		/*!
 		@brief Returns the duration between two times.
 		@param _t1 The first time.
