@@ -688,13 +688,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 				done. Typically the left side of the node.
 		@param _drawLength The distance where to draw the output pin relatively
 				to @p _startX. Used for alignment calculations.
-		@param _itemSpacingX The spacing to respect between the text and the
-				output pin. Used for alignement calculations.
 		@param _pin The pin data used for the output pin to draw.
 		*/
 		static void NodeText_Out(const char* _label, const float _labelWidth,
-			const float _startX, const float _drawLength, const float itemSpacingX,
-			const NodePinData& _pin);
+			const float _startX, const float _drawLength, const NodePinData& _pin);
 #pragma endregion
 
 	};

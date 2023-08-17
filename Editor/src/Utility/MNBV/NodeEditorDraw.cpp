@@ -58,7 +58,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 
 	ImGui::SameLine();
 
-	NodeText_Out("onOperandChange", onOperandChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+	NodeText_Out("onOperandChange", onOperandChangeWidth, startX, headerWidth,
 		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange]);
 
 	dragFlags = ImGuiSliderFlags_None;
@@ -75,7 +75,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 
 	ImGui::SameLine();
 
-	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth,
 		_arithmeticOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange]);
 
 	ImGui::PopID();
@@ -475,7 +475,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 
 	ImGui::SameLine();
 
-	NodeText_Out("onOperandChange", onOperandChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+	NodeText_Out("onOperandChange", onOperandChangeWidth, startX, headerWidth,
 		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnOperandChange]);
 
 	if (!_logicOperationNodeInfo.inputPins[LogicOperationNodeData::InputPin_RHS].nbConnectedLinks > 0)
@@ -498,7 +498,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::LogicOperationNode(Logi
 
 	ImGui::SameLine();
 
-	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+	NodeText_Out("onResultChange", onResultChangeWidth, startX, headerWidth,
 		_logicOperationNodeInfo.outputPins[LogicOperationNodeData::OutputPin_OnResultChange]);
 
 	ImGui::PopID();
@@ -582,7 +582,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 
 		ImGui::SameLine();
 
-		NodeText_Out("Modify", ImGui::CalcTextSize("Modify").x, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		NodeText_Out("Modify", ImGui::CalcTextSize("Modify").x, startX, headerWidth,
 			_modifyDSValueEventNodeInfo.outputPins[ModifyDataStateValueEventNodeData::OutputPin_Modify]);
 	}
 
@@ -703,7 +703,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 
 		ImGui::SameLine();
 
-		NodeText_Out("this", thisWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		NodeText_Out("this", thisWidth, startX, headerWidth,
 			_parameterNodeInfo.outputPins[SpeciesNodeData::OutputPin_ThisData]);
 
 		if (_parameterNodeInfo.equationDep.size())
@@ -785,7 +785,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SolverNode(const char* 
 	const float labelWidth = ImGui::CalcTextSize("Target Asset").x;
 
 	NodeText_Out("Target Asset", labelWidth,
-		ImGui::GetCursorPosX(), headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		ImGui::GetCursorPosX(), headerWidth,
 		_solverNodeInfo.outputPins[SolverNodeData::OutputPin_Solver]);
 
 	ax::NodeEditor::EndNode();
@@ -814,7 +814,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 
 		ImGui::SameLine();
 
-		NodeText_Out("this", thisWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+		NodeText_Out("this", thisWidth, startX, headerWidth,
 			_speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_ThisData]);
 
 		if (_speciesNodeInfo.equationDep.size())
@@ -955,7 +955,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 
 	ImGui::SameLine();
 	
-	NodeText_Out("onTriggerEnter", onTriggerEnterWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+	NodeText_Out("onTriggerEnter", onTriggerEnterWidth, startX, headerWidth,
 		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerEnter]);
 
 	dragFlags = ImGuiSliderFlags_None;
@@ -976,10 +976,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 
 	ImGui::SameLine();
 
-	NodeText_Out("onTriggerStay", onTriggerStayWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+	NodeText_Out("onTriggerStay", onTriggerStayWidth, startX, headerWidth,
 		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerStay]);
 
-	NodeText_Out("onTriggerExit", onTriggerExitWidth, startX, headerWidth, ImGui::GetStyle().ItemSpacing.x,
+	NodeText_Out("onTriggerExit", onTriggerExitWidth, startX, headerWidth,
 		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerExit]);
 
 	ImGui::PopID();
@@ -1772,10 +1772,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeText_InOut(const ch
 }
 
 void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeText_Out(const char* _label, const float _labelWidth,
-	const float _startX, const float _drawLength, const float itemSpacingX,
-	const NodePinData& _pin)
+	const float _startX, const float _drawLength, const NodePinData& _pin)
 {
-	AlignToRight(_startX, _drawLength - Widget::MNBV::GetMNBVStyle()->pinWidth - itemSpacingX, _labelWidth);
+	AlignToRight(_startX, _drawLength - Widget::MNBV::GetMNBVStyle()->pinWidth - ImGui::GetStyle().ItemSpacing.x, _labelWidth);
 	ImGui::AlignTextToFramePadding();
 	ImGui::Text(_label);
 
