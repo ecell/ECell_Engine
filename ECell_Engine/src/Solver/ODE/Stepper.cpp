@@ -38,9 +38,9 @@ bool ECellEngine::Solvers::ODE::Stepper::ComputeError(float _y0[], float _yEst1[
 
 float ECellEngine::Solvers::ODE::Stepper::ComputeNext(unsigned short _q) noexcept
 {
-	h_next *= ECellEngine::Maths::max(facmin, ECellEngine::Maths::min(facmax, fac * powf(1.f / error, 1.f / (_q + 1))));
+	h *= ECellEngine::Maths::max(facmin, ECellEngine::Maths::min(facmax, fac * powf(1.f / error, 1.f / (_q + 1))));
 
-	return h_next;
+	return h;
 }
 
 float ECellEngine::Solvers::ODE::Stepper::ComputeTimeForValue(const float _targetValue, const float _y0,
@@ -52,7 +52,7 @@ float ECellEngine::Solvers::ODE::Stepper::ComputeTimeForValue(const float _targe
 	float a = 0.f; 
 	float b = 1.f;
 	float theta = 0.5f;
-	float deltaTheta = h_next * ComputeDenseOutputIncrement(_bsp, theta, _ks, _eqIdx, _order, _stage);
+	float deltaTheta = h * ComputeDenseOutputIncrement(_bsp, theta, _ks, _eqIdx, _order, _stage);
 
 	while (fabsf(deltaTarget - deltaTheta)/deltaStep > computeTimeThetaTolerance)
 	{
@@ -65,19 +65,18 @@ float ECellEngine::Solvers::ODE::Stepper::ComputeTimeForValue(const float _targe
 			a = theta;
 		}
 		theta = (a + b) * 0.5f;
-		deltaTheta = h_next * ComputeDenseOutputIncrement(_bsp, theta, _ks, _eqIdx, _order, _stage);
+		deltaTheta = h * ComputeDenseOutputIncrement(_bsp, theta, _ks, _eqIdx, _order, _stage);
 	}
 
-	return t + theta * h_next;
+	return timer.elapsedTime + theta * h;
 }
 
 void ECellEngine::Solvers::ODE::Stepper::ForceNext(float _h) noexcept
 {
-	t += _h;
+	timer.Increment(_h);
 };
 
-float ECellEngine::Solvers::ODE::Stepper::Next() noexcept
+void ECellEngine::Solvers::ODE::Stepper::Next() noexcept
 {
-	t += h_next;
-	return h_next;
+	timer.Increment(h);
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/Timer.hpp"
 
 namespace ECellEngine::Solvers::ODE
 {
@@ -7,15 +8,12 @@ namespace ECellEngine::Solvers::ODE
 	*/
 	struct Stepper
 	{
-		/*!
-		@brief The step size of the next step.
-		*/
-		float h_next = 0.001f;
+		Core::Timer timer;
 
 		/*!
-		@brief The current time.
+		@brief The step size used to integrate.
 		*/
-		float t = 0.f;
+		float h = 0.001f;
 
 		/*!
 		@brief A parameter used to control the step size.
@@ -116,7 +114,7 @@ namespace ECellEngine::Solvers::ODE
 				as abs((@p _targetValue - @p _y0) - @a denseOutputIncrementAtTheta)/(@p _y1 - @p _y0).
 				The search is stopped when the difference is less than ::computeTimeThetaTolerance.
 				This is equivalent to searching for the theta at which the difference
-				is less than (1/::computeTimeThetaTolerance)-th of the step range [t, t + h_next].
+				is less than (1/::computeTimeThetaTolerance)-th of the step range [t, t + h].
 		@param _targetValue The value for which we want the time.
 		@param _y0 The value at the beginning of the step.
 		@param _y1 The value at the end of the step.
@@ -135,50 +133,46 @@ namespace ECellEngine::Solvers::ODE
 			const float _ks[], const unsigned _eqIdx, const unsigned short _order, const unsigned short _stage);
 
 		/*!
-		@brief Forcefully increments the time by @p _h.
-		@details t += _h. Does not change the step size (::h_next) but updates
-				 the value of ::h_prev.
+		@brief Forcefully increments the ::time.elapsedTime by @p _h without
+				updating ::h.
 		*/
 		void ForceNext(float _h) noexcept;
 
 		/*!
-		@brief Advances the time by ::h_next.
-		@details t += h_next.
+		@brief Increments the ::time.elapsedTime by ::h.
 		*/
-		float Next() noexcept;
+		void Next() noexcept;
 		
 		/*!
-		@brief Returns true if the next step is less than or equal to the given
-				time.
+		@brief Returns true if ::timer.elapsedTime + ::h <= @p _t
 		*/
 		inline bool NextLEQ(float _t) const noexcept
 		{
-			return t+h_next <= _t;
+			return timer.elapsedTime+h <= _t;
 		}
 
 		/*!
-		@brief Returns true if the next step is less than the given time.
+		@brief Returns true if ::timer.elapsedTime + ::h < @p _t
 		*/
 		inline bool NextLE(float _t) const noexcept
 		{
-			return t+h_next < _t;
+			return timer.elapsedTime+h < _t;
 		}
 
 		/*!
-		@brief Returns true if the next step is greater than or equal to the
-				given time.
+		@brief Returns true if ::timer.elapsedTime + ::h >= @p _t
 		*/
 		inline bool NextGEQ(float _t) const noexcept
 		{
-			return t+h_next >= _t;
+			return timer.elapsedTime+h >= _t;
 		}
 		
 		/*!
-		@brief Returns true if the next step is greater than the given time.
+		@brief Returns true if ::timer.elapsedTime + ::h > @p _t
 		*/
 		inline bool NextGE(float _t) const noexcept
 		{
-			return t+h_next > _t;
+			return timer.elapsedTime+h > _t;
 		}
 	};
 }

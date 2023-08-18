@@ -80,16 +80,26 @@ namespace ECellEngine::Core
 		}
 
 		/*!
-		@brief Decrements the ::elapsedTime by the given @p _deltaTime.
-		@details  The ::onTimeUpdate callback is called after decrementing
+		@brief Sets the value of ::deltaTime and decrements the ::elapsedTime
+				accordingly.
+		@details The ::onDeltaTimeUpdate callback is called after setting the
+				 ::deltaTime to @p _deltaTime.
+				 The delta time is limited by ::MAX_SIMULATION_DELTA_TIME. It
+				 is set to ::DEFAULT_SIMULATION_DELTA_TIME if it is greater.
+				 The ::onTimeUpdate callback is called after decrementing
 				 the current elapsed time. So, previous value is ::elapsedTime 
 				 + ::deltaTime and the new value is ::elapsedTime.
 		*/
 		void Decrement(float _deltaTime);
 
 		/*!
-		@brief Increments the ::elapsedTime by the given @p _deltaTime.
-		@details  The ::onTimeUpdate callback is called after incrementing
+		@brief Sets the value of ::deltaTime and increments the ::elapsedTime
+				accordingly.
+		@details The ::onDeltaTimeUpdate callback is called after setting the
+				 ::deltaTime to @p _deltaTime.
+				 The delta time is limited by ::MAX_SIMULATION_DELTA_TIME. It
+				 is set to ::DEFAULT_SIMULATION_DELTA_TIME if it is greater.
+				 The ::onTimeUpdate callback is called after incrementing
 				 the current elapsed time. So, previous value is ::elapsedTime 
 				 - ::deltaTime and the new value is ::elapsedTime.
 		*/

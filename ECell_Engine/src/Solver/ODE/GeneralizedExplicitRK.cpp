@@ -277,7 +277,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("---- s= " + std::to_string(s) + "; ");
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
-				system[i].GetOperand()->Set(yn[i] + stepper.h_next * coeffs.ComputekSumForStage(i * systemSize, s));
+				system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForStage(i * systemSize, s));
 			}
 			//updating the external equations with the intermediate value
 			for (unsigned short i = 0; i < extEqSize; ++i)
@@ -300,7 +300,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
 			//y_n+1 = y_n + h * (b1 * k1 + b2 * k2 + ... + bs * ks)
-			system[i].GetOperand()->Set(yn[i] + stepper.h_next * coeffs.ComputekSumForSolution(i * systemSize, coeffs.bs));
+			system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForSolution(i * systemSize, coeffs.bs));
 		}
 
 		//Finally, we update the external equations with the new value of the system at t=tn+1
@@ -313,7 +313,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 		stepper.Next();
 
 		//Value Debugging
-		ECellEngine::Logging::Logger::GetSingleton().LogDebug("------ t= " + std::to_string(stepper.t) + "; ");
+		ECellEngine::Logging::Logger::GetSingleton().LogDebug("------ t= " + std::to_string(stepper.timer.elapsedTime) + "; ");
 		std::string log;
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
@@ -366,7 +366,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("---- s= " + std::to_string(s) + "; ");
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
-				system[i].GetOperand()->Set(yn[i] + stepper.h_next * coeffs.ComputekSumForStage(i * systemSize, s));
+				system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForStage(i * systemSize, s));
 			}
 			//updating the external equations with the intermediate value
 			for (unsigned short i = 0; i < extEqSize; ++i)
@@ -391,14 +391,14 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
 			//y_n+1 = y_n + h * (b1 * k1 + b2 * k2 + ... + bs * ks)
-			ynp1[i] = yn[i] + stepper.h_next * coeffs.ComputekSumForSolution(i * systemSize, coeffs.bs);
-			ynp12[i] = yn[i] + stepper.h_next * coeffs.ComputekSumForSolution(i * systemSize, coeffs.bs2);
+			ynp1[i] = yn[i] + stepper.h * coeffs.ComputekSumForSolution(i * systemSize, coeffs.bs);
+			ynp12[i] = yn[i] + stepper.h * coeffs.ComputekSumForSolution(i * systemSize, coeffs.bs2);
 		}
 
 		//If the error is acceptable
 		if (stepper.ComputeError(yn, ynp1, ynp12, systemSize))
 		{
-			triggerTriggerTime = stepper.t + 2*stepper.h_next;//just make sure triggerTimeTrigger > stepper.t + stepper.h_next
+			triggerTriggerTime = stepper.timer.elapsedTime + 2*stepper.h;//just make sure triggerTimeTrigger > stepper.timer.elapsedTime + stepper.h
 			float triggerCandidateTime;
 
 			//We start checking if any trigger using values modified in the ODE system
@@ -470,7 +470,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 					//of the dichotomy
 					for (unsigned short i = 0; i < systemSize; i++)
 					{
-						system[i].GetOperand()->Set(yn[i] + stepper.h_next * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks, i * systemSize, coeffs.order, coeffs.stages));
+						system[i].GetOperand()->Set(yn[i] + stepper.h * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks, i * systemSize, coeffs.order, coeffs.stages));
 					}
 					//we compute the external equations with the value of
 					//of the system at theta = 0.5
@@ -496,7 +496,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 						//Interpolating the system at theta
 						for (unsigned short i = 0; i < systemSize; i++)
 						{
-							system[i].GetOperand()->Set(yn[i] + stepper.h_next * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks, i * systemSize, coeffs.order, coeffs.stages));
+							system[i].GetOperand()->Set(yn[i] + stepper.h * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks, i * systemSize, coeffs.order, coeffs.stages));
 						}
 						//we compute the external equations with the value of
 						//of the system at theta
@@ -507,7 +507,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 						deltaTheta = fabsf(externalEquations[it->second]->Get() - yn_ext[it->second]);
 					}
 
-					triggerCandidateTime = stepper.t + theta * stepper.h_next;
+					triggerCandidateTime = stepper.timer.elapsedTime + theta * stepper.h;
 
 					/*ECellEngine::Logging::Logger::GetSingleton().LogDebug("The trigger comparing " +
 						(*it)->GetTarget()->name + " and " + (*it)->GetThreshold()->name +
@@ -534,10 +534,10 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 
 				//Then, we need to update the system to the time at which
 				//the trigger must be triggered (by interpolation)
-				float theta = stepper.ComputeDenseOutputTime(triggerTriggerTime, stepper.t, stepper.t + stepper.h_next);
+				float theta = stepper.ComputeDenseOutputTime(triggerTriggerTime, stepper.timer.elapsedTime, stepper.timer.elapsedTime + stepper.h);
 				for (unsigned short i = 0; i < systemSize; ++i)
 				{
-					ynp1[i] = yn[i] + stepper.h_next * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks,
+					ynp1[i] = yn[i] + stepper.h * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks,
 						i * systemSize, coeffs.denseOutputOrder, coeffs.stages);
 					system[i].GetOperand()->Set(ynp1[i]);
 					system[i].GetOperand()->onValueChange(yn[i], ynp1[i]);
@@ -552,7 +552,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 				}
 
 				//We update the stepper to the time at which the trigger was triggered
-				stepper.ForceNext(triggerTriggerTime - stepper.t);
+				stepper.ForceNext(triggerTriggerTime - stepper.timer.elapsedTime);
 			}
 
 			//if no trigger to trigger was found, then we continue the integration
@@ -618,10 +618,10 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 		}
 
 		/*ECellEngine::Logging::Logger::GetSingleton().LogDebug(
-			"t= " + std::to_string(stepper.t) +
+			"t= " + std::to_string(stepper.timer.elapsedTime) +
 			"; error= " + std::to_string(stepper.error) + 
 			"; h_prev= " + std::to_string(stepper.h_prev) +
-			"; h_next= " + std::to_string(stepper.h_next));
+			"; h= " + std::to_string(stepper.h));
 
 		std::string log;
 		for (unsigned short i = 0; i < systemSize; ++i)
