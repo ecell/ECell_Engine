@@ -161,9 +161,9 @@ namespace ECellEngine::Solvers::ODE
 		/*!
 		@brief Gets the timer used by the stepper of this solver.
 		*/
-		inline Core::Timer& GetTimer() noexcept
+		inline Stepper* GetStepper() noexcept override
 		{
-			return stepper.timer;
+			return &stepper;
 		}	
 
 		/*!
