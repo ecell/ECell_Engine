@@ -83,9 +83,9 @@ namespace ECellEngine::Data
 		}
 
 		/*
-		@brief Gets the value of the node indicated by the index stored in @see indeces 
+		@brief Gets the value of the node indicated by the index stored in ::indeces 
 				at position @p _positionIdx.
-		@param _positionIdx Position in @see indeces of the index of the node in the heap
+		@param _positionIdx Position in ::indeces of the index of the node in the heap
 							 for which we want to get the value.
 		*/
 		inline const float GetValueAtIndex( const std::size_t& _positionIdx) const
@@ -103,9 +103,9 @@ namespace ECellEngine::Data
 		}
 
 		/*
-		@brief Changes the value in the node indicated by the index stored in @see indeces 
+		@brief Changes the value in the node indicated by the index stored in ::indeces 
 				at position @p _positionIdx.
-		@param _positionIdx Position in @see indeces of the index of the node in the heap
+		@param _positionIdx Position in ::indeces of the index of the node in the heap
 							for which we want to change the value.
 		@param _value The new value to put in the node.
 		*/
@@ -130,7 +130,7 @@ namespace ECellEngine::Data
 
 		/*
 		@brief Updates the indexed Minheap. Either bubles up the node or min-heapifies it.
-		@param _positionIdx Position in @see indeces of the index of the node in the heap
+		@param _positionIdx Position in ::indeces of the index of the node in the heap
 							for which we want to change the value.
 		@param _compareValue A threshold value to which the value of the node is compared to.
 							 If the value of the node if strictly below the threshold, it is

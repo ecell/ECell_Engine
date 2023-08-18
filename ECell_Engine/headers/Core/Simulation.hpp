@@ -80,7 +80,7 @@ namespace ECellEngine::Core
 
 		/*!
 		@brief The simulation's timing information
-		@Details Namely, contains information about the deltaTime of the simulation.
+		@details Namely, contains information about the deltaTime of the simulation.
 		*/
 		Timer timer;
 
