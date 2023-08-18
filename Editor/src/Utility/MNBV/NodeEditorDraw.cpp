@@ -757,34 +757,6 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 	PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TimeNode(const char* _name, TimeNodeData& _timeNodeInfo)
-{
-	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Data));
-	ax::NodeEditor::BeginNode(_timeNodeInfo.id);
-
-	const float headerWidth = NodeHeader("Time:", _name, Widget::MNBV::GetNodeColors(NodeType_Data));
-	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
-	const float startX = ImGui::GetCursorPosX();
-
-	NodeInputFloat_Out("Delta Time", _timeNodeInfo.id.Get(), &_timeNodeInfo.timer->deltaTime,
-		itemsWidth, startX, headerWidth,
-		_timeNodeInfo.outputPins[TimeNodeData::OutputPin_DeltaTime],
-		ImGuiInputTextFlags_ReadOnly);
-
-	NodeInputFloat_Out("Elapsed Time", _timeNodeInfo.id.Get(), &_timeNodeInfo.timer->elapsedTime,
-		itemsWidth, startX, headerWidth,
-		_timeNodeInfo.outputPins[TimeNodeData::OutputPin_ElapsedTime],
-		ImGuiInputTextFlags_ReadOnly);
-
-	NodeInputFloat_Out("Start Time", _timeNodeInfo.id.Get(), &_timeNodeInfo.timer->startTime,
-		itemsWidth, startX, headerWidth,
-		_timeNodeInfo.outputPins[TimeNodeData::OutputPin_StartTime],
-		ImGuiInputTextFlags_ReadOnly);
-
-	ax::NodeEditor::EndNode();
-	PopNodeStyle();
-}
-
 void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo)
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Solver));
@@ -907,22 +879,29 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 	PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TimeNode(const char* _name, TimeNodeData& _timeNodeInfo)
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Data));
-	ax::NodeEditor::BeginNode(_valueFloatNodeInfo.id);
+	ax::NodeEditor::BeginNode(_timeNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Value:", _name, Widget::MNBV::GetNodeColors(NodeType_Data));
+	const float headerWidth = NodeHeader("Time:", _name, Widget::MNBV::GetNodeColors(NodeType_Data));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
-	float buffer = _valueFloatNodeInfo.value.Get();
-	if (NodeDragFloat_Out("Value", _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], &buffer,
+	NodeInputFloat_Out("Delta Time", _timeNodeInfo.id.Get(), &_timeNodeInfo.timer->deltaTime,
 		itemsWidth, startX, headerWidth,
-		_valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value]))
-	{
-		_valueFloatNodeInfo.value.UpdateValue(_valueFloatNodeInfo.value.Get(), buffer);
-	}
+		_timeNodeInfo.outputPins[TimeNodeData::OutputPin_DeltaTime],
+		ImGuiInputTextFlags_ReadOnly);
+
+	NodeInputFloat_Out("Elapsed Time", _timeNodeInfo.id.Get(), &_timeNodeInfo.timer->elapsedTime,
+		itemsWidth, startX, headerWidth,
+		_timeNodeInfo.outputPins[TimeNodeData::OutputPin_ElapsedTime],
+		ImGuiInputTextFlags_ReadOnly);
+
+	NodeInputFloat_Out("Start Time", _timeNodeInfo.id.Get(), &_timeNodeInfo.timer->startTime,
+		itemsWidth, startX, headerWidth,
+		_timeNodeInfo.outputPins[TimeNodeData::OutputPin_StartTime],
+		ImGuiInputTextFlags_ReadOnly);
 
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
@@ -964,7 +943,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 	}
 
 	ImGui::SameLine();
-	
+
 	NodeText_Out("onTriggerEnter", onTriggerEnterWidth, startX, headerWidth,
 		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerEnter]);
 
@@ -993,6 +972,27 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 		_triggerNodeInfo.outputPins[TriggerNodeData::OutputPin_OnTriggerExit]);
 
 	ImGui::PopID();
+	ax::NodeEditor::EndNode();
+	PopNodeStyle();
+}
+
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo)
+{
+	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Data));
+	ax::NodeEditor::BeginNode(_valueFloatNodeInfo.id);
+
+	const float headerWidth = NodeHeader("Value:", _name, Widget::MNBV::GetNodeColors(NodeType_Data));
+	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+	const float startX = ImGui::GetCursorPosX();
+
+	float buffer = _valueFloatNodeInfo.value.Get();
+	if (NodeDragFloat_Out("Value", _valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value], &buffer,
+		itemsWidth, startX, headerWidth,
+		_valueFloatNodeInfo.outputPins[ValueFloatNodeData::OutputPin_Value]))
+	{
+		_valueFloatNodeInfo.value.UpdateValue(_valueFloatNodeInfo.value.Get(), buffer);
+	}
+
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();
 }

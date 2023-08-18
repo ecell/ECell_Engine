@@ -512,42 +512,6 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::Update() noexcept
 	parameterValueBuffer = data->Get();
 }
 
-void ECellEngine::Editor::Utility::MNBV::TimeNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
-{
-	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_DeltaTime].id)
-	{
-		_nodeInputPinData->OnConnect(_nodeOutputPinData, &timer->onDeltaTimeUpdate);
-	}
-	
-	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_ElapsedTime].id)
-	{
-		_nodeInputPinData->OnConnect(_nodeOutputPinData, &timer->onElapsedTimeUpdate);
-	}
-	
-	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_StartTime].id)
-	{
-		_nodeInputPinData->OnConnect(_nodeOutputPinData, &timer->onStartTimeUpdate);
-	}
-}
-
-void ECellEngine::Editor::Utility::MNBV::TimeNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
-{
-	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_DeltaTime].id)
-	{
-		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &timer->onDeltaTimeUpdate);
-	}
-
-	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_ElapsedTime].id)
-	{
-		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &timer->onElapsedTimeUpdate);
-	}
-
-	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_StartTime].id)
-	{
-		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &timer->onStartTimeUpdate);
-	}
-}
-
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
 	//There is only one output pin in the SolverNodeData
@@ -656,26 +620,42 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::ResetNLBSDUtilityState
 	nlbsDataRKLDep.ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+void ECellEngine::Editor::Utility::MNBV::TimeNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	//There is only one output pin in the ValueFloatNodeData
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_DeltaTime].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &timer->onDeltaTimeUpdate);
+	}
 
-	_nodeInputPinData->OnConnect(_nodeOutputPinData, &value.onValueChange);
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_ElapsedTime].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &timer->onElapsedTimeUpdate);
+	}
+
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_StartTime].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &timer->onStartTimeUpdate);
+	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+void ECellEngine::Editor::Utility::MNBV::TimeNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	//There is only one output pin in the ValueFloatNodeData
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_DeltaTime].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &timer->onDeltaTimeUpdate);
+	}
 
-	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &value.onValueChange);
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_ElapsedTime].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &timer->onElapsedTimeUpdate);
+	}
+
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_StartTime].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &timer->onStartTimeUpdate);
+	}
 }
 
-//void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
-//{
-//	//There is only one output pin in the ValueFloatNodeData
-//
-//	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &value);
-//}
 
 void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
@@ -684,7 +664,7 @@ void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputConnect(NodeInput
 	{
 		data->SetTarget((Operand*)_data);
 	}
-	
+
 	//The RHS input pin
 	if (_nodeInputPinData->id == inputPins[TriggerNodeData::InputPin_Threshold].id)
 	{
@@ -748,7 +728,7 @@ void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::OutputConnect(NodeInpu
 	{
 		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->onTriggerExit);
 	}
-	
+
 }
 
 void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
@@ -771,4 +751,24 @@ void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::OutputDisconnect(NodeI
 	}
 }
 
+void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+{
+	//There is only one output pin in the ValueFloatNodeData
+
+	_nodeInputPinData->OnConnect(_nodeOutputPinData, &value.onValueChange);
+}
+
+void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+{
+	//There is only one output pin in the ValueFloatNodeData
+
+	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &value.onValueChange);
+}
+
+//void ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+//{
+//	//There is only one output pin in the ValueFloatNodeData
+//
+//	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &value);
+//}
 #pragma endregion

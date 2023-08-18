@@ -1921,93 +1921,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 	};
 
 	/*!
-	@brief The logic to encode the data needed to draw the node to access the
-			ECellEngine::Core::Timer.
-	*/
-	struct TimeNodeData final : public NodeData
-	{
-		/*!
-		@brief The local enum to manage access to the input pins.
-		@see ::inputPins
-		*/
-		enum InputPin
-		{
-			InputPin_None,
-
-			InputPin_Count
-		};
-
-		/*!
-		@brief The local enum to manage access to the output pins.
-		@see ::outputPins
-		*/
-		enum OutputPin
-		{
-			OutputPin_DeltaTime,
-			OutputPin_ElapsedTime,
-			OutputPin_StartTime,
-
-			OutputPin_Count
-		};
-
-		/*!
-		@brief Pointer to the timer partially represented by this node.
-		*/
-		ECellEngine::Core::Timer* timer;
-
-		/*!
-		@brief All the input pins.
-		@details Access the pins with the enum values InputPin_XXX
-		*/
-		NodeInputPinData inputPins[InputPin_Count];
-
-		/*!
-		@brief All the output pins.
-		@details Access the pins with the enum values OutputPin_XXX
-		*/
-		NodeOutputPinData outputPins[OutputPin_Count];
-
-		TimeNodeData(ECellEngine::Core::Timer* _timer, ImVec2& _position) :
-			NodeData(), timer{ _timer }
-		{
-			ax::NodeEditor::SetNodePosition(id, _position);
-
-			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
-			outputPins[OutputPin_DeltaTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //delta Time
-			outputPins[OutputPin_ElapsedTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //elapsed Time
-			outputPins[OutputPin_StartTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //start Time
-		}
-
-		TimeNodeData(const TimeNodeData& _stnd) :
-			NodeData(_stnd), timer{ _stnd.timer },
-			inputPins{ _stnd.inputPins[0] },
-			outputPins{ _stnd.outputPins[0], _stnd.outputPins[1], _stnd.outputPins[2] }
-		{
-			for (int i = 0; i < InputPin_Count; i++)
-			{
-				inputPins[i].node = this;
-			}
-
-			for (int i = 0; i < OutputPin_Count; i++)
-			{
-				outputPins[i].node = this;
-			}
-		}
-
-		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
-
-		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
-
-		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
-
-		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
-
-		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
-
-		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Simulation Time Node Data
-	};
-
-	/*!
 	@brief The logic to encode the data needed to draw the node representing
 			ECellEngine::Data::Solver.
 	*/
@@ -2329,10 +2242,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 	};
 
 	/*!
-	@brief The logic to encode the data needed to draw the node to define and
-			use a custom float.
+	@brief The logic to encode the data needed to draw the node to access the
+			ECellEngine::Core::Timer.
 	*/
-	struct ValueFloatNodeData final : public NodeData
+	struct TimeNodeData final : public NodeData
 	{
 		/*!
 		@brief The local enum to manage access to the input pins.
@@ -2351,18 +2264,17 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum OutputPin
 		{
-			OutputPin_Value,
+			OutputPin_DeltaTime,
+			OutputPin_ElapsedTime,
+			OutputPin_StartTime,
 
 			OutputPin_Count
 		};
 
 		/*!
-		@brief Stores the float value.
-		@details We chose to store the value in a parameter to access
-				 callback compliant datastructure and because it is the
-				 less invasive way to currently to that.
+		@brief Pointer to the timer partially represented by this node.
 		*/
-		Data::Parameter value;
+		ECellEngine::Core::Timer* timer;
 
 		/*!
 		@brief All the input pins.
@@ -2376,22 +2288,21 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		NodeOutputPinData outputPins[OutputPin_Count];
 
-		ValueFloatNodeData(float _value, ImVec2& _position) :
-			NodeData(),
-			value{ "ValueFloatNode[" + std::to_string((std::size_t)id) + "]::Value", _value }
+		TimeNodeData(ECellEngine::Core::Timer* _timer, ImVec2& _position) :
+			NodeData(), timer{ _timer }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			value.name = "ValueFloatNode[" + std::to_string((std::size_t)id) + "]::Value";
-
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
-			outputPins[OutputPin_Value] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //Value
+			outputPins[OutputPin_DeltaTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //delta Time
+			outputPins[OutputPin_ElapsedTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //elapsed Time
+			outputPins[OutputPin_StartTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //start Time
 		}
 
-		ValueFloatNodeData(const ValueFloatNodeData& _vfnd) :
-			NodeData(_vfnd), value{ _vfnd.value },
-			inputPins{ _vfnd.inputPins[0] },
-			outputPins{ _vfnd.outputPins[0] }
+		TimeNodeData(const TimeNodeData& _stnd) :
+			NodeData(_stnd), timer{ _stnd.timer },
+			inputPins{ _stnd.inputPins[0] },
+			outputPins{ _stnd.outputPins[0], _stnd.outputPins[1], _stnd.outputPins[2] }
 		{
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -2404,17 +2315,17 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
 
-		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
 
-		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
-	
-		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Value Float Node Data
+
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Simulation Time Node Data
 	};
 
 	/*!
@@ -2529,8 +2440,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		TriggerNodeData(std::shared_ptr<ECellEngine::Core::Trigger<Operand*, Operand*>> _data, ImVec2& _position) :
 			NodeData(), data{ _data },
-			target{"Trigger["+std::to_string((std::size_t)id) + "]::Target", 0},
-			threshold{"Trigger[" + std::to_string((std::size_t)id) + "]::Threshold", 0}
+			target{ "Trigger[" + std::to_string((std::size_t)id) + "]::Target", 0 },
+			threshold{ "Trigger[" + std::to_string((std::size_t)id) + "]::Threshold", 0 }
 		{
 			target.name = "Trigger[" + std::to_string((std::size_t)id) + "]::Target";
 			data->SetTarget(&target);
@@ -2559,5 +2470,95 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Trigger Node Data
 	};
+
+	/*!
+	@brief The logic to encode the data needed to draw the node to define and
+			use a custom float.
+	*/
+	struct ValueFloatNodeData final : public NodeData
+	{
+		/*!
+		@brief The local enum to manage access to the input pins.
+		@see ::inputPins
+		*/
+		enum InputPin
+		{
+			InputPin_None,
+
+			InputPin_Count
+		};
+
+		/*!
+		@brief The local enum to manage access to the output pins.
+		@see ::outputPins
+		*/
+		enum OutputPin
+		{
+			OutputPin_Value,
+
+			OutputPin_Count
+		};
+
+		/*!
+		@brief Stores the float value.
+		@details We chose to store the value in a parameter to access
+				 callback compliant datastructure and because it is the
+				 less invasive way to currently to that.
+		*/
+		Data::Parameter value;
+
+		/*!
+		@brief All the input pins.
+		@details Access the pins with the enum values InputPin_XXX
+		*/
+		NodeInputPinData inputPins[InputPin_Count];
+
+		/*!
+		@brief All the output pins.
+		@details Access the pins with the enum values OutputPin_XXX
+		*/
+		NodeOutputPinData outputPins[OutputPin_Count];
+
+		ValueFloatNodeData(float _value, ImVec2& _position) :
+			NodeData(),
+			value{ "ValueFloatNode[" + std::to_string((std::size_t)id) + "]::Value", _value }
+		{
+			ax::NodeEditor::SetNodePosition(id, _position);
+
+			value.name = "ValueFloatNode[" + std::to_string((std::size_t)id) + "]::Value";
+
+			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
+			outputPins[OutputPin_Value] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //Value
+		}
+
+		ValueFloatNodeData(const ValueFloatNodeData& _vfnd) :
+			NodeData(_vfnd), value{ _vfnd.value },
+			inputPins{ _vfnd.inputPins[0] },
+			outputPins{ _vfnd.outputPins[0] }
+		{
+			for (int i = 0; i < InputPin_Count; i++)
+			{
+				inputPins[i].node = this;
+			}
+
+			for (int i = 0; i < OutputPin_Count; i++)
+			{
+				outputPins[i].node = this;
+			}
+		}
+
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data
+
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data
+
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data
+
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+	
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Value Float Node Data
+	};
+
 #pragma endregion
 }

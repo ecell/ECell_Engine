@@ -136,14 +136,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _parameterNodeInfo The struct with information about what to draw.
 		*/
 		static void ParameterNode(const char* _name, ParameterNodeData& _parameterNodeInfo);
-
-		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::TimeNodeData.
-		@param _name The name of the node. It will appear in the header of the
-				node in the editor.
-		@param _timeNodeInfo The struct with information about what to draw.
-		*/
-		static void TimeNode(const char* _name, TimeNodeData& _timeNodeInfo);
 		
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SolverNodeData.
@@ -162,18 +154,26 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo);
 
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::TimeNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _valueFloatNodeInfo The struct with information about what to draw.
+		@param _timeNodeInfo The struct with information about what to draw.
 		*/
-		static void ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo);
+		static void TimeNode(const char* _name, TimeNodeData& _timeNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::TriggerNodeData.
 		@param _watcherNodeInfo The struct with information about what to draw.
 		*/
 		static void TriggerNode(TriggerNodeData& _watcherNodeInfo);
+
+		/*!
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData.
+		@param _name The name of the node. It will appear in the header of the
+				node in the editor.
+		@param _valueFloatNodeInfo The struct with information about what to draw.
+		*/
+		static void ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo);
 
 #pragma endregion
 
