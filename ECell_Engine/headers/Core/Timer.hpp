@@ -85,7 +85,7 @@ namespace ECellEngine::Core
 				 the current elapsed time. So, previous value is ::elapsedTime 
 				 + ::deltaTime and the new value is ::elapsedTime.
 		*/
-		inline void Decrement(float _deltaTime);
+		void Decrement(float _deltaTime);
 
 		/*!
 		@brief Increments the ::elapsedTime by the given @p _deltaTime.

@@ -13,11 +13,6 @@ namespace ECellEngine::Solvers::ODE
 		float h_next = 0.001f;
 
 		/*!
-		@brief The step size of the previous step.
-		*/
-		float h_prev = 0.001f;
-
-		/*!
 		@brief The current time.
 		*/
 		float t = 0.f;

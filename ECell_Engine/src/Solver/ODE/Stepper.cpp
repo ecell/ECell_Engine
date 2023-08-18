@@ -38,7 +38,6 @@ bool ECellEngine::Solvers::ODE::Stepper::ComputeError(float _y0[], float _yEst1[
 
 float ECellEngine::Solvers::ODE::Stepper::ComputeNext(unsigned short _q) noexcept
 {
-	h_prev = h_next;
 	h_next *= ECellEngine::Maths::max(facmin, ECellEngine::Maths::min(facmax, fac * powf(1.f / error, 1.f / (_q + 1))));
 
 	return h_next;
@@ -50,8 +49,8 @@ float ECellEngine::Solvers::ODE::Stepper::ComputeTimeForValue(const float _targe
 {
 	float deltaStep = fabsf(_y1 - _y0);
 	float deltaTarget = fabsf(_targetValue - _y0) + computeTimeThetaTolerance * deltaStep;
-	float a = 0; 
-	float b = 1;
+	float a = 0.f; 
+	float b = 1.f;
 	float theta = 0.5f;
 	float deltaTheta = h_next * ComputeDenseOutputIncrement(_bsp, theta, _ks, _eqIdx, _order, _stage);
 
@@ -74,7 +73,6 @@ float ECellEngine::Solvers::ODE::Stepper::ComputeTimeForValue(const float _targe
 
 void ECellEngine::Solvers::ODE::Stepper::ForceNext(float _h) noexcept
 {
-	h_prev = _h;
 	t += _h;
 };
 
