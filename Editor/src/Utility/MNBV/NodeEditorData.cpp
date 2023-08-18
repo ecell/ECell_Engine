@@ -248,26 +248,6 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	}
 }
 
-//void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputRefresh(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
-//{
-//	//X axis input pin
-//	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_XAxis].id)
-//	{
-//		linePlot.ptrX = (float*)_data;
-//	}
-//
-//	//Y axis input pin
-//	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
-//	{
-//		std::vector<Plot::Line>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(linePlot.lines.begin(), linePlot.lines.end(), (std::size_t)_nodeOutputPinData->node->id);
-//
-//		if (it->id == (std::size_t)_nodeOutputPinData->node->id)
-//		{
-//			it->ptrY = (float*)_data;
-//		}
-//	}
-//}
-
 void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::InputConnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	//LHS input pin of the logic comparison
@@ -532,26 +512,41 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::Update() noexcept
 	parameterValueBuffer = data->Get();
 }
 
-void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+void ECellEngine::Editor::Utility::MNBV::TimeNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	//There is only one output pin in the SimulationTimeNodeData
-
-	_nodeInputPinData->OnConnect(_nodeOutputPinData, &simulationTimer->onElapsedTimeUpdate);
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_DeltaTime].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &timer->onDeltaTimeUpdate);
+	}
+	
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_ElapsedTime].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &timer->onElapsedTimeUpdate);
+	}
+	
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_StartTime].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &timer->onStartTimeUpdate);
+	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
+void ECellEngine::Editor::Utility::MNBV::TimeNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	//There is only one output pin in the SimulationTimeNodeData
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_DeltaTime].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &timer->onDeltaTimeUpdate);
+	}
 
-	_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &simulationTimer->onElapsedTimeUpdate);
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_ElapsedTime].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &timer->onElapsedTimeUpdate);
+	}
+
+	if (_nodeOutputPinData->id == outputPins[TimeNodeData::OutputPin_StartTime].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &timer->onStartTimeUpdate);
+	}
 }
-
-//void ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
-//{
-//	//There is only one output pin in the SimulationTimeNodeData
-//
-//	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &(simulationTimer->elapsedTime));
-//}
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {

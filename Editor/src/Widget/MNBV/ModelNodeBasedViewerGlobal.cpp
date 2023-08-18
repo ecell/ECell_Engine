@@ -98,12 +98,12 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
         return;
     }
 
-    //Search in the list of Simulation Time Nodes
-    std::vector<Utility::MNBV::SimulationTimeNodeData>::iterator itSTND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->simulationTimeNodes.begin(), s_mnbvCtxt->simulationTimeNodes.end(), _nodeId);
-    if (itSTND != s_mnbvCtxt->simulationTimeNodes.end() && (std::size_t)itSTND->id == _nodeId)
+    //Search in the list of Time Nodes
+    std::vector<Utility::MNBV::TimeNodeData>::iterator itSTND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->timeNodes.begin(), s_mnbvCtxt->timeNodes.end(), _nodeId);
+    if (itSTND != s_mnbvCtxt->timeNodes.end() && (std::size_t)itSTND->id == _nodeId)
     {
-        s_mnbvCtxt->simulationTimeNodes.erase(itSTND);
-        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: SimulationTimeNodeData " + std::to_string(_nodeId));
+        s_mnbvCtxt->timeNodes.erase(itSTND);
+        //ECellEngine::Logging::Logger::GetSingleton().LogDebug("EraseNode: TimeNodeData " + std::to_string(_nodeId));
         return;
     }
 
@@ -211,7 +211,7 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
     }
 
      //Search in the list of Simulation Time Nodes
-    itND = FindNodeIn(_id, s_mnbvCtxt->simulationTimeNodes.begin(), s_mnbvCtxt->simulationTimeNodes.end());
+    itND = FindNodeIn(_id, s_mnbvCtxt->timeNodes.begin(), s_mnbvCtxt->timeNodes.end());
     if (itND != nullptr)
     {
         return itND;
@@ -319,7 +319,7 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
     }
 
     //Search in the list of Simulation Time Nodes
-    itNPD = FindNodePinIn(_id, s_mnbvCtxt->simulationTimeNodes.begin(), s_mnbvCtxt->simulationTimeNodes.end());
+    itNPD = FindNodePinIn(_id, s_mnbvCtxt->timeNodes.begin(), s_mnbvCtxt->timeNodes.end());
     if (itNPD != nullptr)
     {
         return itNPD;

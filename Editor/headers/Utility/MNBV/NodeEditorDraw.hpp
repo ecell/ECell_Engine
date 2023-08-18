@@ -138,12 +138,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		static void ParameterNode(const char* _name, ParameterNodeData& _parameterNodeInfo);
 
 		/*!
-		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SimulationTimeNodeData.
+		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::TimeNodeData.
 		@param _name The name of the node. It will appear in the header of the
 				node in the editor.
-		@param _simulationTimeNodeInfo The struct with information about what to draw.
+		@param _timeNodeInfo The struct with information about what to draw.
 		*/
-		static void SimulationTimeNode(const char* _name, SimulationTimeNodeData& _simulationTimeNodeInfo);
+		static void TimeNode(const char* _name, TimeNodeData& _timeNodeInfo);
 		
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SolverNodeData.

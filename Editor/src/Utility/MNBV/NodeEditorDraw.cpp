@@ -757,18 +757,28 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 	PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SimulationTimeNode(const char* _name, SimulationTimeNodeData& _simulationTimeNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TimeNode(const char* _name, TimeNodeData& _timeNodeInfo)
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Data));
-	ax::NodeEditor::BeginNode(_simulationTimeNodeInfo.id);
+	ax::NodeEditor::BeginNode(_timeNodeInfo.id);
 
 	const float headerWidth = NodeHeader("Time:", _name, Widget::MNBV::GetNodeColors(NodeType_Data));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
-	NodeInputFloat_Out("Elapsed Time", _simulationTimeNodeInfo.id.Get(), &_simulationTimeNodeInfo.simulationTimer->elapsedTime,
+	NodeInputFloat_Out("Delta Time", _timeNodeInfo.id.Get(), &_timeNodeInfo.timer->deltaTime,
 		itemsWidth, startX, headerWidth,
-		_simulationTimeNodeInfo.outputPins[SimulationTimeNodeData::OutputPin_SimulationTime],
+		_timeNodeInfo.outputPins[TimeNodeData::OutputPin_DeltaTime],
+		ImGuiInputTextFlags_ReadOnly);
+
+	NodeInputFloat_Out("Elapsed Time", _timeNodeInfo.id.Get(), &_timeNodeInfo.timer->elapsedTime,
+		itemsWidth, startX, headerWidth,
+		_timeNodeInfo.outputPins[TimeNodeData::OutputPin_ElapsedTime],
+		ImGuiInputTextFlags_ReadOnly);
+
+	NodeInputFloat_Out("Start Time", _timeNodeInfo.id.Get(), &_timeNodeInfo.timer->startTime,
+		itemsWidth, startX, headerWidth,
+		_timeNodeInfo.outputPins[TimeNodeData::OutputPin_StartTime],
 		ImGuiInputTextFlags_ReadOnly);
 
 	ax::NodeEditor::EndNode();

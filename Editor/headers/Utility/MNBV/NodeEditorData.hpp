@@ -1924,7 +1924,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 	@brief The logic to encode the data needed to draw the node to access the
 			ECellEngine::Core::Timer.
 	*/
-	struct SimulationTimeNodeData final : public NodeData
+	struct TimeNodeData final : public NodeData
 	{
 		/*!
 		@brief The local enum to manage access to the input pins.
@@ -1943,7 +1943,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum OutputPin
 		{
-			OutputPin_SimulationTime,
+			OutputPin_DeltaTime,
+			OutputPin_ElapsedTime,
+			OutputPin_StartTime,
 
 			OutputPin_Count
 		};
@@ -1951,7 +1953,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Pointer to the timer partially represented by this node.
 		*/
-		ECellEngine::Core::Timer* simulationTimer;
+		ECellEngine::Core::Timer* timer;
 
 		/*!
 		@brief All the input pins.
@@ -1965,19 +1967,21 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		NodeOutputPinData outputPins[OutputPin_Count];
 
-		SimulationTimeNodeData(ECellEngine::Core::Timer* _simulationTimer, ImVec2& _position) :
-			NodeData(), simulationTimer{ _simulationTimer }
+		TimeNodeData(ECellEngine::Core::Timer* _timer, ImVec2& _position) :
+			NodeData(), timer{ _timer }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
-			outputPins[OutputPin_SimulationTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //simulation Time
+			outputPins[OutputPin_DeltaTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //delta Time
+			outputPins[OutputPin_ElapsedTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //elapsed Time
+			outputPins[OutputPin_StartTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //start Time
 		}
 
-		SimulationTimeNodeData(const SimulationTimeNodeData& _stnd) :
-			NodeData(_stnd), simulationTimer{ _stnd.simulationTimer },
+		TimeNodeData(const TimeNodeData& _stnd) :
+			NodeData(_stnd), timer{ _stnd.timer },
 			inputPins{ _stnd.inputPins[0] },
-			outputPins{ _stnd.outputPins[0] }
+			outputPins{ _stnd.outputPins[0], _stnd.outputPins[1], _stnd.outputPins[2] }
 		{
 			for (int i = 0; i < InputPin_Count; i++)
 			{

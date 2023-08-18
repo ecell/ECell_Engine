@@ -110,10 +110,10 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 
 		if (ImGui::BeginMenu("Time"))
 		{
-			if (ImGui::MenuItem("Simulation Elapsed Time"))
+			if (ImGui::MenuItem("Simulation Time"))
 			{
 				ax::NodeEditor::Resume();
-				simulationTimeNodes.emplace_back(Utility::MNBV::SimulationTimeNodeData(_simulation->GetTimer(), ImGui::GetIO().MousePos));
+				timeNodes.emplace_back(Utility::MNBV::TimeNodeData(_simulation->GetTimer(), ImGui::GetIO().MousePos));
 				ax::NodeEditor::Suspend();
 				ConserveLinkDataIntegrity();
 			}
@@ -376,9 +376,9 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Draw(ECellE
 		it->ResetNLBSDUtilityStates();
 	}
 
-	for (std::vector< Utility::MNBV::SimulationTimeNodeData>::iterator it = simulationTimeNodes.begin(); it != simulationTimeNodes.end(); it++)
+	for (std::vector< Utility::MNBV::TimeNodeData>::iterator it = timeNodes.begin(); it != timeNodes.end(); it++)
 	{
-		Utility::MNBV::NodeEditorDraw::SimulationTimeNode("Simulation Elapsed Time", *it);
+		Utility::MNBV::NodeEditorDraw::TimeNode("Time", *it);
 	}
 
 	for (std::vector< Utility::MNBV::SolverNodeData>::iterator it = solverNodes.begin(); it != solverNodes.end(); it++)

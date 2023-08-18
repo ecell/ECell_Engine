@@ -99,11 +99,11 @@ namespace ECellEngine::Editor::Widget::MNBV
 		std::vector<Utility::MNBV::ParameterNodeData> parameterNodes;
 		
 		/*!
-		@brief The list of simulation time nodes.
+		@brief The list of time nodes.
 		@details It contains the information used to draw the nodes corresponding
-				 to display and use the elapsed time of the simulation.
+				 to display and use the various time information.
 		*/
-		std::vector<Utility::MNBV::SimulationTimeNodeData> simulationTimeNodes;
+		std::vector<Utility::MNBV::TimeNodeData> timeNodes;
 
 		/*!
 		@brief The list of solver nodes.
