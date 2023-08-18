@@ -37,11 +37,11 @@ add_library(ECellEngine SHARED
     "src/Logging/Logger.cpp"
 
     "src/Solver/BiochemicalSolver.cpp"
-    "src/Solver/GillespieNRMRSolver.cpp"
-    #"src/Solver/Gillespie_NRM_R.cpp"
     "src/Solver/ODE/ExplicitRKCoefficients.cpp"
     "src/Solver/ODE/GeneralizedExplicitRK.cpp"
     "src/Solver/ODE/StepperODE.cpp"
+    "src/Solver/Stochastic/GillespieNRMRSolver.cpp"
+    #"src/Solver/Stochastic/Gillespie_NRM_R.cpp"
  )
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)

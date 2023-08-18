@@ -1,7 +1,7 @@
 #include "Data/BiochemicalModule.hpp"
-#include "Solver/GillespieNRMRSolver.hpp"
+#include "Solver/Stochastic/GillespieNRMRSolver.hpp"
 
-void ECellEngine::Solvers::GillespieNRMRSolver::ApplyBackward(const std::string& _reactionName)
+void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::ApplyBackward(const std::string& _reactionName)
 {
 	ECellEngine::Data::Reaction* reaction = dataState.GetReaction(_reactionName).get();
 	//Decrementing quantities of all Products by 1
@@ -17,7 +17,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::ApplyBackward(const std::string&
 	}
 }
 
-void ECellEngine::Solvers::GillespieNRMRSolver::ApplyForward(const std::string& _reactionName)
+void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::ApplyForward(const std::string& _reactionName)
 {
 	ECellEngine::Data::Reaction* reaction = dataState.GetReaction(_reactionName).get();
 	
@@ -34,7 +34,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::ApplyForward(const std::string& 
 	}
 }
 
-void ECellEngine::Solvers::GillespieNRMRSolver::BuildDependancyGraph(const std::vector<std::string>& _reactions)
+void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::BuildDependancyGraph(const std::vector<std::string>& _reactions)
 {
 
 	std::unordered_map<std::string, std::size_t> nameToIdx;
@@ -81,17 +81,17 @@ void ECellEngine::Solvers::GillespieNRMRSolver::BuildDependancyGraph(const std::
 	}
 }
 
-const float ECellEngine::Solvers::GillespieNRMRSolver::ComputeReactionPropensity(const std::string& _reactionName)
+const float ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::ComputeReactionPropensity(const std::string& _reactionName)
 {
 	return dataState.GetReaction(_reactionName)->ComputeKineticLaw();
 }
 
-void ECellEngine::Solvers::GillespieNRMRSolver::SolveBackward(const float& _targetTime)
+void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::SolveBackward(const float& _targetTime)
 {
 
 }
 
-void ECellEngine::Solvers::GillespieNRMRSolver::SolveForward(const float& _targetTime)
+void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::SolveForward(const float& _targetTime)
 {
 	//step 2 & 3
 	std::pair<int, float> muTau = tauIMH.GetRoot();
@@ -135,7 +135,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::SolveForward(const float& _targe
 	}
 }
 
-void ECellEngine::Solvers::GillespieNRMRSolver::Initialize(const ECellEngine::Data::Module* _module)
+void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::Initialize(const ECellEngine::Data::Module* _module)
 {
 	ECellEngine::Solvers::BiochemicalSolver::Initialize(_module);
 	
@@ -160,7 +160,7 @@ void ECellEngine::Solvers::GillespieNRMRSolver::Initialize(const ECellEngine::Da
 	trace.reserve(1024);
 }
 
-void ECellEngine::Solvers::GillespieNRMRSolver::Update(const ECellEngine::Core::Timer& _timer)
+void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::Update(const ECellEngine::Core::Timer& _timer)
 {
 	SolveForward(_timer.elapsedTime);
 }

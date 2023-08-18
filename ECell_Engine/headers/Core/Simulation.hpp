@@ -6,7 +6,7 @@
 
 #include "Data/DependenciesDatabase.hpp"
 #include "IO/ModuleImporterManager.hpp"
-#include "Solver/GillespieNRMRSolver.hpp"
+#include "Solver/Stochastic/GillespieNRMRSolver.hpp"
 #include "Solver/ODE/GeneralizedExplicitRK.hpp"
 
 using namespace ECellEngine::IO;

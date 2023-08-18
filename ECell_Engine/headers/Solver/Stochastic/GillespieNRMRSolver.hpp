@@ -7,7 +7,7 @@
 #include "Maths/ReversibleRNG.hpp"
 #include "Solver/BiochemicalSolver.hpp"
 
-namespace ECellEngine::Solvers
+namespace ECellEngine::Solvers::Stochastic
 {
 	class GillespieNRMRSolver : public BiochemicalSolver
 	{
