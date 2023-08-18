@@ -5,6 +5,7 @@ namespace ECellEngine::Solvers::ODE
 {
 	/*!
 	@brief Structure to control the step size of an ODE solver.
+	@see ECellEngine::Solvers::ODE::ODESolver
 	*/
 	struct ODEStepper : public ECellEngine::Solvers::Stepper
 	{
@@ -134,7 +135,7 @@ namespace ECellEngine::Solvers::ODE
 		@brief Forcefully increments the ::time.elapsedTime by @p _deltaTime
 				without updating ::h.
 		*/
-		float ForceNext(float _deltaTime) noexcept override;
+		float ForceNext(float _deltaTime) noexcept;
 
 		/*!
 		@brief Increments the ::time.elapsedTime by ::h.

@@ -42,7 +42,8 @@ add_library(ECellEngine SHARED
     "src/Solver/ODE/ODEStepper.cpp"
     "src/Solver/Stochastic/GillespieNRMRSolver.cpp"
     #"src/Solver/Stochastic/Gillespie_NRM_R.cpp"
- )
+    "src/Solver/Stochastic/GillespieNRMRStepper.cpp"
+)
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)
 

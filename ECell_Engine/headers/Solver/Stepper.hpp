@@ -4,17 +4,14 @@
 namespace ECellEngine::Solvers
 {
 	/*!
-	@brief Structure to control the step size of an ODE solver.
+	@brief Structure to control the step size of a solver.
 	*/
 	struct Stepper
 	{
-		Core::Timer timer;
-
 		/*!
-		@brief Computes the timer's next elapsed time value based on @p _deltaTime.
-		@returns ::timer.elapsedTime.
+		@brief The timer of the stepper to control a solver.
 		*/
-		virtual float ForceNext(float _deltaTime) noexcept = 0;
+		Core::Timer timer;
 
 		/*!
 		@brief Computes the timer's next elapsed time value based on internal

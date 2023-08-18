@@ -6,12 +6,16 @@
 #include "Data/Reaction.hpp"
 #include "Maths/ReversibleRNG.hpp"
 #include "Solver/BiochemicalSolver.hpp"
+#include "Solver/Stochastic/GillespieNRMRStepper.hpp"
 
 namespace ECellEngine::Solvers::Stochastic
 {
 	class GillespieNRMRSolver : public BiochemicalSolver
 	{
 	private:
+
+		GillespieNRMRStepper stepper;
+
 		ECellEngine::Data::IndexedMinHeap tauIMH;
 		ReversibleRNG rng;
 		std::unordered_multimap<std::size_t, std::size_t> reactionsDependanceGraph;//one reaction idx maps to multiple reaction idx
@@ -34,6 +38,11 @@ namespace ECellEngine::Solvers::Stochastic
 			BiochemicalSolver(_dataState, _name)
 		{
 			
+		}
+
+		inline Stepper* GetStepper() noexcept override
+		{
+			return &stepper;
 		}
 
 		virtual void Initialize(const ECellEngine::Data::Module*) override;

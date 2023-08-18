@@ -88,50 +88,48 @@ const float ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::ComputeReacti
 
 void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::SolveBackward(const float& _targetTime)
 {
-
+	//TODO: implement from previous version
 }
 
 void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::SolveForward(const float& _targetTime)
 {
-	//step 2 & 3
-	std::pair<int, float> muTau = tauIMH.GetRoot();
-	float a_new, a_old, tau_new, tau_old;
-	std::string reactionName = module->GetReaction(muTau.first);
-	while (muTau.second < _targetTime)
+	while (stepper.IsNextLE(_targetTime))
 	{
-		ApplyForward(reactionName);
+		ApplyForward(stepper.reactionName);
+		stepper.Next();
 		//ManageTrace();
-		//trace.push_back(muTau.first);
+		//trace.push_back(stepper.muTau.first);
 		//traceBlockSize++;
 		//traceSize++;
 
 		//step 5.c: To avoid an "if" in the for loop
 		//we update tau of the current reaction here.
-		a_new = dataState.GetReaction(reactionName)->ComputeKineticLaw();//compute reaction propensity
-		tau_new = rng.Exponential(a_new) + muTau.second;
-		tauIMH.SetValueInRoot(tau_new);
+		stepper.a_new = dataState.GetReaction(stepper.reactionName)->ComputeKineticLaw();//compute reaction propensity
+		stepper.h = rng.Exponential(stepper.a_new);
+		
+		tauIMH.SetValueInRoot(stepper.timer.elapsedTime + stepper.h);
 		tauIMH.UpdateHeapFromRoot();
 
-		auto depReactions = reactionsDependanceGraph.equal_range(muTau.first);
+		auto depReactions = reactionsDependanceGraph.equal_range(stepper.muTau.first);
 		//step 5 (*it is alpha in the algorithm)
 		for (auto it = depReactions.first; it != depReactions.second; ++it)
 		{
-			reactionName = module->GetReaction(it->second);
-			a_old = dataState.GetReaction(reactionName)->GetKineticLawValue();
-			tau_old = tauIMH.GetValueAtIndex(it->second);
+			stepper.reactionName = module->GetReaction(it->second);
+			stepper.a_old = dataState.GetReaction(stepper.reactionName)->GetKineticLawValue();
+			stepper.tau_old = tauIMH.GetValueAtIndex(it->second);
 
 			//Step 5.a
-			a_new = dataState.GetReaction(reactionName)->ComputeKineticLaw();//compute reaction propensity
+			stepper.a_new = dataState.GetReaction(stepper.reactionName)->ComputeKineticLaw();//compute reaction propensity
 
 			//Step 5.b
-			tau_new = (a_old / a_new) * (tau_old - muTau.second) + muTau.second; //muTau.second is current time
-			tauIMH.SetValueAtIndex(it->second, tau_new);
-			tauIMH.UpdateHeapFrom(it->second, tau_old);
+			stepper.ComputeDepReactionNextTime();
+			tauIMH.SetValueAtIndex(it->second, stepper.tau_new);
+			tauIMH.UpdateHeapFrom(it->second, stepper.tau_old);
 		}
 
 		//we actualize step 2 & 3
-		muTau = tauIMH.GetRoot();
-		reactionName = module->GetReaction(muTau.first);
+		stepper.muTau = tauIMH.GetRoot();
+		stepper.reactionName = module->GetReaction(stepper.muTau.first);
 	}
 }
 
@@ -156,6 +154,12 @@ void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::Initialize(const ECe
 
 	//Builds the reaction times indexed priority queue (indexed Minheap)
 	tauIMH.Initialize(taus);
+
+	//step 2 & 3
+	stepper.muTau = tauIMH.GetRoot();
+	stepper.reactionName = module->GetReaction(stepper.muTau.first);
+
+	stepper.h = stepper.muTau.second;
 
 	trace.reserve(1024);
 }
