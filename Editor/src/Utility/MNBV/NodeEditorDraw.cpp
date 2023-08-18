@@ -757,18 +757,39 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 	PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SolverNode(const char* _name, SolverNodeData& _solverNodeInfo)
 {
 	PushNodeStyle(Widget::MNBV::GetNodeColors(NodeType_Solver));
 	ax::NodeEditor::BeginNode(_solverNodeInfo.id);
 
 	const float headerWidth = NodeHeader("Solver:", _name, Widget::MNBV::GetNodeColors(NodeType_Solver));
-	//const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
+	const float startX = ImGui::GetCursorPosX();
 	const float labelWidth = ImGui::CalcTextSize("Target Asset").x;
 
-	NodeText_Out("Target Asset", labelWidth,
-		ImGui::GetCursorPosX(), headerWidth,
+	NodeText_Out("Target Asset", labelWidth, startX, headerWidth,
 		_solverNodeInfo.outputPins[SolverNodeData::OutputPin_Solver]);
+
+	if (NodeCollapsingHeader_Out("Time", _solverNodeInfo.collapsingHeadersIds[SolverNodeData::CollapsingHeader_Time],
+		_solverNodeInfo.utilityState, SolverNodeData::State_CollHdrTime,
+		startX, headerWidth, _solverNodeInfo.outputPins[SolverNodeData::OutputPin_CollHdrTime],
+		ImVec2(itemsWidth, 0.f)))
+	{
+		NodeInputFloat_Out("Delta Time", _solverNodeInfo.id.Get(), &_solverNodeInfo.data->GetStepper()->timer.deltaTime,
+			itemsWidth, startX, headerWidth,
+			_solverNodeInfo.outputPins[SolverNodeData::OutputPin_DeltaTime],
+			ImGuiInputTextFlags_ReadOnly);
+
+		NodeInputFloat_Out("Elapsed Time", _solverNodeInfo.id.Get(), &_solverNodeInfo.data->GetStepper()->timer.elapsedTime,
+			itemsWidth, startX, headerWidth,
+			_solverNodeInfo.outputPins[SolverNodeData::OutputPin_ElapsedTime],
+			ImGuiInputTextFlags_ReadOnly);
+
+		NodeInputFloat_Out("Start Time", _solverNodeInfo.id.Get(), &_solverNodeInfo.data->GetStepper()->timer.startTime,
+			itemsWidth, startX, headerWidth,
+			_solverNodeInfo.outputPins[SolverNodeData::OutputPin_StartTime],
+			ImGuiInputTextFlags_ReadOnly);
+	}
 
 	ax::NodeEditor::EndNode();
 	PopNodeStyle();

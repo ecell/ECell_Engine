@@ -143,7 +143,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 				node in the editor.
 		@param _solverNodeInfo The struct with information about what to draw.
 		*/
-		static void SolverNode(const char* _name, const SolverNodeData& _solverNodeInfo);
+		static void SolverNode(const char* _name, SolverNodeData& _solverNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SpeciesNodeData.

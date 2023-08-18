@@ -514,9 +514,28 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::Update() noexcept
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	//There is only one output pin in the SolverNodeData
+	if (_nodeOutputPinData->id == outputPins[SolverNodeData::OutputPin_Solver].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->GetName());
+	}
 
-	_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->GetName());
+	if (_nodeOutputPinData->id == outputPins[SolverNodeData::OutputPin_DeltaTime].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->GetStepper()->timer.onDeltaTimeUpdate);
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[SolverNodeData::OutputPin_CollHdrTime].id, 1);
+	}
+
+	if (_nodeOutputPinData->id == outputPins[SolverNodeData::OutputPin_ElapsedTime].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->GetStepper()->timer.onElapsedTimeUpdate);
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[SolverNodeData::OutputPin_CollHdrTime].id, 1);
+	}
+
+	if (_nodeOutputPinData->id == outputPins[SolverNodeData::OutputPin_StartTime].id)
+	{
+		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->GetStepper()->timer.onStartTimeUpdate);
+		Widget::MNBV::GetDynamicLinks().back().OverrideStartFallbackPin(outputPins[SolverNodeData::OutputPin_CollHdrTime].id, 1);
+	}
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
@@ -655,7 +674,6 @@ void ECellEngine::Editor::Utility::MNBV::TimeNodeData::OutputDisconnect(NodeInpu
 		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &timer->onStartTimeUpdate);
 	}
 }
-
 
 void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {

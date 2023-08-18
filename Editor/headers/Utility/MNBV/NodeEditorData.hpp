@@ -1945,7 +1945,35 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			OutputPin_Solver,
 
+			OutputPin_CollHdrTime,
+			OutputPin_DeltaTime,
+			OutputPin_ElapsedTime,
+			OutputPin_StartTime,
+
 			OutputPin_Count
+		};
+
+		/*!
+		@brief The local enum to manage access to the collapsing headers.
+		@see ::collapsingHeaders
+		*/
+		enum CollapsingHeader
+		{
+			CollapsingHeader_Time,
+
+			CollapsingHeader_Count
+		};
+
+		/*!
+		@brief The local enum to manage to the encoding of the state of this
+				node.
+		@see ::utilityState
+		*/
+		enum State
+		{
+			State_CollHdrTime,
+
+			State_Count
 		};
 
 		/*!
@@ -1965,10 +1993,24 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		NodeOutputPinData outputPins[OutputPin_Count];
 
+		/*!
+		@brief The byte the encode the state variations of this node.
+		@details Manipulate the state with the enum values State_XXX
+		*/
+		unsigned short utilityState = 0;
+
+		/*!
+		@brief All the collapsing headers.
+		@details Access the pins with the enum values CollapsingHeader_XXX
+		*/
+		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
+
 		SolverNodeData(const SolverNodeData& _slvnd) :
 			NodeData(_slvnd), data{ _slvnd.data },
 			inputPins{ _slvnd.inputPins[0] },
-			outputPins{ _slvnd.outputPins[0] }
+			outputPins{ _slvnd.outputPins[0], _slvnd.outputPins[1], _slvnd.outputPins[2], _slvnd.outputPins[3], _slvnd.outputPins[4] },
+			utilityState{ _slvnd.utilityState },
+			collapsingHeadersIds{ _slvnd.collapsingHeadersIds[0] }
 		{
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -1987,8 +2029,14 @@ namespace ECellEngine::Editor::Utility::MNBV
 			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//not used
+			
 			outputPins[OutputPin_Solver] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Solver, this, 1);//this solver transmission
+			outputPins[OutputPin_CollHdrTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the collapsing header for Time-related data
+			outputPins[OutputPin_DeltaTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this);//the delta time of this solver
+			outputPins[OutputPin_ElapsedTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this);//the elapsed time of this solver
+			outputPins[OutputPin_StartTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this);//the start time of this solver
 
+			collapsingHeadersIds[CollapsingHeader_Time] = Widget::MNBV::GetMNBVCtxtNextId();
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Solver Node Data
