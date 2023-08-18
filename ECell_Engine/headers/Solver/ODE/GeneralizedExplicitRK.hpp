@@ -2,7 +2,7 @@
 
 #include "Solver/BiochemicalSolver.hpp"
 #include "Solver/ODE/ExplicitRKCoefficients.hpp"
-#include "Solver/ODE/Stepper.hpp"
+#include "Solver/ODE/StepperODE.hpp"
 
 namespace ECellEngine::Solvers::ODE
 {
@@ -48,7 +48,7 @@ namespace ECellEngine::Solvers::ODE
 		/*!
 		@brief The stepper to control the step size.
 		*/
-		Stepper stepper;
+		StepperODE stepper;
 
 		/*!
 		@brief The subset of triggers from the datastate that might be triggered
@@ -157,6 +157,14 @@ namespace ECellEngine::Solvers::ODE
 			delete[] ynp12;
 			delete[] yn_ext;
 		}
+
+		/*!
+		@brief Gets the timer used by the stepper of this solver.
+		*/
+		inline Core::Timer& GetTimer() noexcept
+		{
+			return stepper.timer;
+		}	
 
 		/*!
 		@brief Sets this solver to use the classic Runge-Kutta method.

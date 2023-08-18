@@ -41,7 +41,7 @@ add_library(ECellEngine SHARED
     #"src/Solver/Gillespie_NRM_R.cpp"
     "src/Solver/ODE/ExplicitRKCoefficients.cpp"
     "src/Solver/ODE/GeneralizedExplicitRK.cpp"
-    "src/Solver/ODE/Stepper.cpp"
+    "src/Solver/ODE/StepperODE.cpp"
  )
 
 target_compile_features(ECellEngine PUBLIC cxx_std_17)

@@ -254,7 +254,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 	//implementation of the Runge-Kutta 4th order method
 	//https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
 
-	while (stepper.NextLEQ(_timer.elapsedTime))
+	while (stepper.IsNextLEQ(_timer.elapsedTime))
 	{
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
@@ -339,7 +339,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 	//implementation of the Runge-Kutta 4th order method
 	//https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
 
-	while (stepper.NextLEQ(_timer.elapsedTime))
+	while (stepper.IsNextLEQ(_timer.elapsedTime))
 	{
 		//We initialize the buffers for this step
 
@@ -526,7 +526,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 
 			//if the trigger trigger time is after the current time,
 			//it means that we found a trigger that must be triggered
-			if (stepper.NextGE(triggerTriggerTime))
+			if (stepper.IsNextGE(triggerTriggerTime))
 			{
 				/*ECellEngine::Logging::Logger::GetSingleton().LogDebug("--- TRIGGERING WATCHER ---");
 				ECellEngine::Logging::Logger::GetSingleton().LogDebug(" Processing trigger of target: " +

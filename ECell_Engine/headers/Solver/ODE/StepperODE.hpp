@@ -1,15 +1,13 @@
 #pragma once
-#include "Core/Timer.hpp"
+#include "Solver/Stepper.hpp"
 
 namespace ECellEngine::Solvers::ODE
 {
 	/*!
 	@brief Structure to control the step size of an ODE solver.
 	*/
-	struct Stepper
+	struct StepperODE : public ECellEngine::Solvers::Stepper
 	{
-		Core::Timer timer;
-
 		/*!
 		@brief The step size used to integrate.
 		*/
@@ -133,44 +131,44 @@ namespace ECellEngine::Solvers::ODE
 			const float _ks[], const unsigned _eqIdx, const unsigned short _order, const unsigned short _stage);
 
 		/*!
-		@brief Forcefully increments the ::time.elapsedTime by @p _h without
-				updating ::h.
+		@brief Forcefully increments the ::time.elapsedTime by @p _deltaTime
+				without updating ::h.
 		*/
-		void ForceNext(float _h) noexcept;
+		float ForceNext(float _deltaTime) noexcept override;
 
 		/*!
 		@brief Increments the ::time.elapsedTime by ::h.
 		*/
-		void Next() noexcept;
+		float Next() noexcept override;
 		
 		/*!
-		@brief Returns true if ::timer.elapsedTime + ::h <= @p _t
+		@returns True if ::timer.elapsedTime + ::h <= @p _t ; False otherwise.
 		*/
-		inline bool NextLEQ(float _t) const noexcept
+		inline bool IsNextLEQ(float _t) const noexcept override
 		{
 			return timer.elapsedTime+h <= _t;
 		}
 
 		/*!
-		@brief Returns true if ::timer.elapsedTime + ::h < @p _t
+		@returns True if ::timer.elapsedTime + ::h < @p _t ; False otherwise.
 		*/
-		inline bool NextLE(float _t) const noexcept
+		inline bool IsNextLE(float _t) const noexcept override 
 		{
 			return timer.elapsedTime+h < _t;
 		}
 
 		/*!
-		@brief Returns true if ::timer.elapsedTime + ::h >= @p _t
+		@returns True if ::timer.elapsedTime + ::h >= @p _t ; False otherwise.
 		*/
-		inline bool NextGEQ(float _t) const noexcept
+		inline bool IsNextGEQ(float _t) const noexcept override
 		{
 			return timer.elapsedTime+h >= _t;
 		}
 		
 		/*!
-		@brief Returns true if ::timer.elapsedTime + ::h > @p _t
+		@returns True if ::timer.elapsedTime + ::h > @p _t ; False otherwise.
 		*/
-		inline bool NextGE(float _t) const noexcept
+		inline bool IsNextGE(float _t) const noexcept override
 		{
 			return timer.elapsedTime+h > _t;
 		}

@@ -7,7 +7,7 @@ namespace ECellEngine::Data
 
 #include "Data/DataState.hpp"
 #include "Data/Module.hpp"
-#include "Core/Timer.hpp"
+#include "Solver/Stepper.hpp"
 
 namespace ECellEngine::Solvers
 {
