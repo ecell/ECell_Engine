@@ -6,7 +6,7 @@ namespace ECellEngine::Solvers::ODE
 	/*!
 	@brief Structure to control the step size of an ODE solver.
 	*/
-	struct StepperODE : public ECellEngine::Solvers::Stepper
+	struct ODEStepper : public ECellEngine::Solvers::Stepper
 	{
 		/*!
 		@brief The step size used to integrate.

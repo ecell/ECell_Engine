@@ -2,7 +2,7 @@
 
 #include "Solver/BiochemicalSolver.hpp"
 #include "Solver/ODE/ExplicitRKCoefficients.hpp"
-#include "Solver/ODE/StepperODE.hpp"
+#include "Solver/ODE/ODEStepper.hpp"
 
 namespace ECellEngine::Solvers::ODE
 {
@@ -48,7 +48,7 @@ namespace ECellEngine::Solvers::ODE
 		/*!
 		@brief The stepper to control the step size.
 		*/
-		StepperODE stepper;
+		ODEStepper stepper;
 
 		/*!
 		@brief The subset of triggers from the datastate that might be triggered

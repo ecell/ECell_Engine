@@ -39,7 +39,7 @@ add_library(ECellEngine SHARED
     "src/Solver/BiochemicalSolver.cpp"
     "src/Solver/ODE/ExplicitRKCoefficients.cpp"
     "src/Solver/ODE/GeneralizedExplicitRK.cpp"
-    "src/Solver/ODE/StepperODE.cpp"
+    "src/Solver/ODE/ODEStepper.cpp"
     "src/Solver/Stochastic/GillespieNRMRSolver.cpp"
     #"src/Solver/Stochastic/Gillespie_NRM_R.cpp"
  )

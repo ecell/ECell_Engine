@@ -1,7 +1,7 @@
 #include "Maths/MathUtility.hpp"
-#include "Solver/ODE/StepperODE.hpp"
+#include "Solver/ODE/ODEStepper.hpp"
 
-float ECellEngine::Solvers::ODE::StepperODE::ComputeDenseOutputIncrement(const float _bsp[], const float _theta, const float _ks[],
+float ECellEngine::Solvers::ODE::ODEStepper::ComputeDenseOutputIncrement(const float _bsp[], const float _theta, const float _ks[],
 	const unsigned _eqIdx, const unsigned short _order, const unsigned short _stage)
 {
 	float res = 0;
@@ -18,12 +18,12 @@ float ECellEngine::Solvers::ODE::StepperODE::ComputeDenseOutputIncrement(const f
 	return res;
 }
 
-float ECellEngine::Solvers::ODE::StepperODE::ComputeDenseOutputTime(const float _t, const float _t0, const float _t1) const noexcept
+float ECellEngine::Solvers::ODE::ODEStepper::ComputeDenseOutputTime(const float _t, const float _t0, const float _t1) const noexcept
 {
 	return (_t - _t0) / (_t1 - _t0);
 }
 
-bool ECellEngine::Solvers::ODE::StepperODE::ComputeError(float _y0[], float _yEst1[], float _yEst2[], unsigned short _count) noexcept
+bool ECellEngine::Solvers::ODE::ODEStepper::ComputeError(float _y0[], float _yEst1[], float _yEst2[], unsigned short _count) noexcept
 {
 	error = 0;
 	for (unsigned short i = 0; i < _count; ++i)
@@ -36,14 +36,14 @@ bool ECellEngine::Solvers::ODE::StepperODE::ComputeError(float _y0[], float _yEs
 	return error < 1.f;
 }
 
-float ECellEngine::Solvers::ODE::StepperODE::ComputeNext(unsigned short _q) noexcept
+float ECellEngine::Solvers::ODE::ODEStepper::ComputeNext(unsigned short _q) noexcept
 {
 	h *= ECellEngine::Maths::max(facmin, ECellEngine::Maths::min(facmax, fac * powf(1.f / error, 1.f / (_q + 1))));
 
 	return h;
 }
 
-float ECellEngine::Solvers::ODE::StepperODE::ComputeTimeForValue(const float _targetValue, const float _y0,
+float ECellEngine::Solvers::ODE::ODEStepper::ComputeTimeForValue(const float _targetValue, const float _y0,
 	const float _y1, const float _bsp[], const float _ks[], const unsigned _eqIdx, const unsigned short _order,
 	const unsigned short _stage)
 {
@@ -71,14 +71,14 @@ float ECellEngine::Solvers::ODE::StepperODE::ComputeTimeForValue(const float _ta
 	return timer.elapsedTime + theta * h;
 }
 
-float ECellEngine::Solvers::ODE::StepperODE::ForceNext(float _deltaTime) noexcept
+float ECellEngine::Solvers::ODE::ODEStepper::ForceNext(float _deltaTime) noexcept
 {
 	timer.Increment(_deltaTime);
 
 	return timer.elapsedTime;
 };
 
-float ECellEngine::Solvers::ODE::StepperODE::Next() noexcept
+float ECellEngine::Solvers::ODE::ODEStepper::Next() noexcept
 {
 	timer.Increment(h);
 
