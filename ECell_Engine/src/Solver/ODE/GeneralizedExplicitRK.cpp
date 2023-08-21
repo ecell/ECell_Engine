@@ -237,6 +237,11 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::SetToMerson4() noexcept
 	coeffs.SetToMerson4(systemSize);
 }
 
+void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Start()
+{
+	stepper.Start();
+}
+
 void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Update(const ECellEngine::Core::Timer& _timer)
 {
 	if (errorControl)

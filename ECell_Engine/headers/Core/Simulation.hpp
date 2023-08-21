@@ -237,6 +237,11 @@ namespace ECellEngine::Core
 		void RemoveSolver(const std::size_t& _idx);
 
 		/*!
+		@brief API to execute code once before the simulation's update loop.
+		*/
+		void Start();
+
+		/*!
 		@brief Tries to link a solver to a module.
 		@detials Overrides any previous link the solver and module may have with
 				 ofther module or solver respectively.

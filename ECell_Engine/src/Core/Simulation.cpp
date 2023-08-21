@@ -106,6 +106,15 @@ void ECellEngine::Core::Simulation::RemoveSolver(const std::size_t& _idx)
 	//remove the key/value pair of the ModuleToSolverMap if the solver was used there
 }
 
+void ECellEngine::Core::Simulation::Start()
+{
+	timer.SetStartTime();
+	for (std::vector<std::pair<std::size_t, std::size_t>>::iterator it = modulesToSolversTable.begin(); it != modulesToSolversTable.end(); it++)
+	{
+		solvers[(*it).second].get()->Start();
+	}
+}
+
 void ECellEngine::Core::Simulation::TryAttachSolverToModule(const std::size_t& _solverIdx, const std::size_t& _moduleIdx)
 {
 	//If the type of the solver is adapted for the module

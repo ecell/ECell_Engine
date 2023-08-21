@@ -79,6 +79,7 @@ namespace ECellEngine::Core
 		*/
 		inline void PlaySimulation(const size_t& _idx) noexcept
 		{
+			simulations[_idx]->Start();
 			playingSimulations.push_back(simulations[_idx].get());
 		}
 

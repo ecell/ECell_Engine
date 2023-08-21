@@ -14,13 +14,6 @@ namespace ECellEngine::Solvers
 		Core::Timer timer;
 
 		/*!
-		@brief Computes the timer's next elapsed time value based on internal
-				parameters.
-		@returns ::timer.elapsedTime.
-		*/
-		virtual float Next() noexcept = 0;
-
-		/*!
 		@brief Checks whether the next elapsed time value is less or equal
 				than @p _t.
 		*/
@@ -41,5 +34,22 @@ namespace ECellEngine::Solvers
 		@brief Checks whether the next elapsed time value is greater than @p _t.
 		*/
 		virtual bool IsNextGE(float _t) const noexcept = 0;
+
+		/*!
+		@brief Computes the timer's next elapsed time value based on internal
+				parameters.
+		@returns ::timer.elapsedTime.
+		*/
+		virtual float Next() noexcept = 0;
+
+		/*!
+		@brief API for actions that should be performed before any use of ::Next().
+		@details Default implementation starts the timer.
+		@see ECellEngine::Core::Timer::SetStartTime()
+		*/
+		virtual void Start() noexcept
+		{
+			timer.SetStartTime();
+		}
 	};
 }

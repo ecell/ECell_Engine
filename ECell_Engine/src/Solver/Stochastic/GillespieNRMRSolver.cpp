@@ -164,6 +164,11 @@ void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::Initialize(const ECe
 	trace.reserve(1024);
 }
 
+void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::Start()
+{
+	stepper.Start();
+}
+
 void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::Update(const ECellEngine::Core::Timer& _timer)
 {
 	SolveForward(_timer.elapsedTime);

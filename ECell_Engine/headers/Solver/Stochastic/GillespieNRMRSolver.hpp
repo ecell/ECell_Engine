@@ -10,7 +10,7 @@
 
 namespace ECellEngine::Solvers::Stochastic
 {
-	class GillespieNRMRSolver : public BiochemicalSolver
+	class GillespieNRMRSolver final : public BiochemicalSolver
 	{
 	private:
 
@@ -45,8 +45,10 @@ namespace ECellEngine::Solvers::Stochastic
 			return &stepper;
 		}
 
-		virtual void Initialize(const ECellEngine::Data::Module*) override;
+		void Initialize(const ECellEngine::Data::Module*) override;
 
-		virtual void Update(const ECellEngine::Core::Timer& _timer) override;
+		void Start() override;
+
+		void Update(const ECellEngine::Core::Timer& _timer) override;
 	};
 }

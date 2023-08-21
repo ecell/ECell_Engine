@@ -159,7 +159,7 @@ namespace ECellEngine::Solvers::ODE
 		}
 
 		/*!
-		@brief Gets the timer used by the stepper of this solver.
+		@brief Gets the stepper of this solver.
 		*/
 		inline Stepper* GetStepper() noexcept override
 		{
@@ -187,9 +187,11 @@ namespace ECellEngine::Solvers::ODE
 		*/
 		void SetToMerson4() noexcept;
 
-		virtual void Initialize(const ECellEngine::Data::Module* _module) override;
+		void Initialize(const ECellEngine::Data::Module* _module) override;
 
-		virtual void Update(const ECellEngine::Core::Timer& _timer) override;
+		void Start() override;
+
+		void Update(const ECellEngine::Core::Timer& _timer) override;
 
 	};
 }

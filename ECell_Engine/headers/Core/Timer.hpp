@@ -60,10 +60,7 @@ namespace ECellEngine::Core
 		/*!
 		@brief Sets the ::startTime to the system clock time.
 		*/
-		inline void SetStartTime()
-		{
-			startTime = (float)std::clock() / CLOCKS_PER_SEC;
-		}
+		void SetStartTime();
 #pragma endregion
 
 

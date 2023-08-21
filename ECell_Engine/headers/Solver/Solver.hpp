@@ -58,6 +58,11 @@ namespace ECellEngine::Solvers
 		virtual void Initialize(const ECellEngine::Data::Module*) = 0;
 
 		/*!
+		@brief API to execute code once before the solver's update loop.
+		*/
+		virtual void Start() = 0;
+
+		/*!
 		@brief Runs the solver until the given time described by the timer is
 				reached.
 		@param _timer The timer containing information about the simulation's

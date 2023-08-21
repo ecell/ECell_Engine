@@ -22,7 +22,9 @@ namespace ECellEngine::Solvers
 
 		}
 
-		virtual void Initialize(const ECellEngine::Data::Module* _module) override;
+		virtual void Initialize(const ECellEngine::Data::Module* _module) override = 0;
+
+		virtual void Start() override = 0;
 
 		virtual void Update(const ECellEngine::Core::Timer& _timer) override = 0;
 	};
