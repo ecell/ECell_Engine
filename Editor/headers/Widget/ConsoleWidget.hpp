@@ -7,8 +7,6 @@
 #include "Logging/Logger.hpp"
 #include "Widget.hpp"
 
-using namespace ECellEngine::Editor::Logging;
-
 namespace ECellEngine::Editor::Logging
 {
 	/*! \file ConsoleWidget.hpp */
@@ -48,14 +46,41 @@ namespace ECellEngine::Editor::Widget
 	{
 	
 	private:
-		EditorConsoleLoggerSink ecLoggerSink; /*!< The logger sink used to collect the messages.*/
-		std::vector<LogMessage> log; /*< The collection of log messages received.*/
+		
+		/*!
+		@brief The enum to describe the state of the console logger.
+		*/
+		enum ConsoleState : unsigned char
+		{
+			ConsoleState_None = 0,
+			ConsoleState_MessageReceived = 1 << 0, //Message received in the last frame
+			ConsoleState_ScrollDownOnMessageReceive = 1 << 1 //Automatically scroll down when a message is received
+		};
+
+		/*!
+		@brief The logger sink used to collect the messages.
+		*/
+		ECellEngine::Editor::Logging::EditorConsoleLoggerSink ecLoggerSink;
+		
+		/*
+		@brief The collection of log messages received.
+		*/
+		std::vector<ECellEngine::Editor::Logging::LogMessage> log;
+
+		/*!
+		@brief The 8-bit unsigned integer encoding state information about the 
+				console logger.
+		@see ECellEngine::Editor::Widget::ConsoleWidget::ConsoleState
+		*/
+		unsigned char utilityState = 0;
 
 	public:
 		ConsoleWidget(Editor& _editor) :
 			Widget(_editor), ecLoggerSink(*this)
 		{
 			ecLoggerSink.sinkIdx = ECellEngine::Logging::Logger::AddSink(&ecLoggerSink);
+
+			utilityState |= ConsoleState_ScrollDownOnMessageReceive;
 		}
 
 		~ConsoleWidget()
@@ -74,9 +99,10 @@ namespace ECellEngine::Editor::Widget
 		*/
 		inline void LogTrace(const char* _msg)
 		{
-			log.push_back(LogMessage(ECellEngine::Logging::LogLevel_Trace, _msg));
+			log.push_back(Logging::LogMessage(ECellEngine::Logging::LogLevel_Trace, _msg));
+			utilityState |= ConsoleState_MessageReceived;
 		}
-		
+
 		/*!
 		@brief Display a message of type #ECellEngine::Editor::LogLevel::Debug
 			 in this ConsoleWidget of the Editor.
@@ -84,9 +110,10 @@ namespace ECellEngine::Editor::Widget
 		*/
 		inline void LogDebug(const char* _msg)
 		{
-			log.push_back(LogMessage(ECellEngine::Logging::LogLevel_Debug, _msg));
+			log.push_back(Logging::LogMessage(ECellEngine::Logging::LogLevel_Debug, _msg));
+			utilityState |= ConsoleState_MessageReceived;
 		}
-		
+
 		/*!
 		@brief Display a message of type #ECellEngine::Logging::LogLevel::Error
 			 in this ConsoleWidget of the Editor.
@@ -94,9 +121,10 @@ namespace ECellEngine::Editor::Widget
 		*/
 		inline void LogError(const char* _msg)
 		{
-			log.push_back(LogMessage(ECellEngine::Logging::LogLevel_Error, _msg));
+			log.push_back(Logging::LogMessage(ECellEngine::Logging::LogLevel_Error, _msg));
+			utilityState |= ConsoleState_MessageReceived;
 		}
-		
+
 		/*!
 		@brief Display a message of type ECellEngine::Logging::LogLevel_Warning
 			 in this ConsoleWidget of the Editor.
@@ -104,7 +132,8 @@ namespace ECellEngine::Editor::Widget
 		*/
 		inline void LogWarning(const char* _msg)
 		{
-			log.push_back(LogMessage(ECellEngine::Logging::LogLevel_Warning, _msg));
+			log.push_back(Logging::LogMessage(ECellEngine::Logging::LogLevel_Warning, _msg));
+			utilityState |= ConsoleState_MessageReceived;
 		}
 	};
 }
