@@ -419,21 +419,6 @@ std::vector<ECellEngine::Editor::Utility::MNBV::LinkData>& ECellEngine::Editor::
     return s_mnbvCtxt->staticLinks;
 }
 
-ECellEngine::Editor::Utility::MNBV::NodeEditorStyle* ECellEngine::Editor::Widget::MNBV::GetMNBVStyle()
-{
-    return &s_mnbvCtxt->style;
-}
-
-ImVec4* ECellEngine::Editor::Widget::MNBV::GetNodeColors(Utility::MNBV::NodeType _nodeType)
-{
-    return s_mnbvCtxt->style.nodeColors[_nodeType];
-}
-
-ImVec4* ECellEngine::Editor::Widget::MNBV::GetPinColors(Utility::MNBV::PinType _pinType)
-{
-    return s_mnbvCtxt->style.pinColors[_pinType];
-}
-
 void ECellEngine::Editor::Widget::MNBV::SetCurrentMNBVContext(ModelNodeBasedViewerContext* _ctxt)
 {
     s_mnbvCtxt = _ctxt;

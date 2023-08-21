@@ -1,3 +1,4 @@
+#include "Style/EditorStyle.hpp"
 #include "Widget/ConsoleWidget.hpp"
 
 void ECellEngine::Editor::Widget::ConsoleWidget::Draw()
@@ -16,7 +17,7 @@ void ECellEngine::Editor::Widget::ConsoleWidget::Draw()
 
     for (int i = 0; i < ConsoleWidget::log.size(); i++)
     {
-        ImGui::PushStyleColor(ImGuiCol_Text, loggingColors[ConsoleWidget::log[i].lvl]);
+        ImGui::PushStyleColor(ImGuiCol_Text, Style::EditorStyle::GetLogStyle().loggingColors[ConsoleWidget::log[i].lvl]);
         ImGui::TextUnformatted(ConsoleWidget::log[i].msg.c_str());
         ImGui::PopStyleColor();
     }

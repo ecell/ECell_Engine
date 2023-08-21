@@ -10,7 +10,7 @@
 #include "Core/Simulation.hpp"
 
 #include "Utility/MNBV/NodeEditorDraw.hpp"
-#include "Utility/MNBV/NodeEditorStyle.hpp"
+#include "Style/NodeEditorStyle.hpp"
 
 namespace ECellEngine::Editor::Widget::MNBV
 {
@@ -31,7 +31,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		@brief The instance of styling data for the elements (nodes, pins, links)
 				of this context.
 		*/
-		Utility::MNBV::NodeEditorStyle style;
+		Style::NodeEditorStyle style;
 
 #pragma region Nodes Lists
 

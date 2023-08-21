@@ -23,13 +23,14 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Awake()
     //We don't use the Push/Pop API on purpose because we will not change those values in the
     //future.
     ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(neCtxtIdx));
-    ax::NodeEditor::Style& style = ax::NodeEditor::GetStyle();
-    style.NodeRounding = 6; //instead of 12 by default.
-    style.NodeBorderWidth = 3; //instead of 2 by default.
-    style.HoveredNodeBorderWidth = 6; //instead of 3 by default.
-    style.SelectedNodeBorderWidth = 6; //instead of 3 by default.
-    style.PinBorderWidth = 3; //instead of 0 by default.
-    style.PinRounding = 0; //instead of 4 by default.
+    ax::NodeEditor::Style& axStyle = ax::NodeEditor::GetStyle();
+    Style::NodeEditorStyle& neStyle = Style::EditorStyle::GetMNBVStyle();
+    axStyle.NodeRounding = neStyle.nodeRounding;
+    axStyle.NodeBorderWidth = neStyle.nodeBorderWidth;
+    axStyle.HoveredNodeBorderWidth = neStyle.hoveredNodeBorderWidth;
+    axStyle.SelectedNodeBorderWidth = neStyle.selectedNodeBorderWidth;
+    axStyle.PinBorderWidth = neStyle.pinBorderWidth;
+    axStyle.PinRounding = neStyle.pinRounding;
 
     //BUGFIX: Cycle through the canvas once to give it the opportunity to initialize its size.
     //This is work-around for a badly understood bug.

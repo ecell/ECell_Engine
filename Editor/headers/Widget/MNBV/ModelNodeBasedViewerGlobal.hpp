@@ -4,7 +4,7 @@
 #include "IO/CommandsManager.hpp"
 #include "Core/Simulation.hpp"
 #include "Data/BiochemicalModule.hpp"
-#include "Utility/MNBV/NodeEditorStyle.hpp"
+#include "Utility/MNBV/MNBVTypes.hpp"
 
 namespace ECellEngine::Editor::Utility::MNBV
 {
@@ -156,171 +156,12 @@ namespace ECellEngine::Editor::Widget::MNBV
 	*/
 	std::vector<Utility::MNBV::LinkData>& GetStaticLinks();
 
-
-	/*!
-	@brief Gets the pointer to the member field ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::style
-			of the current active MNBV context.
-	*/
-	Utility::MNBV::NodeEditorStyle* GetMNBVStyle();
-
 	/*!
 	@brief Gets the value of the next unique id of the current MNBV context.
 	@details Effectively increments the member field ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::uniqueId
 			 and returns the value.
 	*/
 	std::size_t& GetMNBVCtxtNextId();
-
-	/*!
-	@brief Gets the pointer to the array of colors used to cutomize the aspect of a
-			node of type @p _nodeType.
-	@param _nodeType The type of node of which we want to retrieve the color set.
-	@remarks A reminder that in c++ the pointer to the first element of an array
-			 is the pointer to the array itself.
-	@see ECellEngine::Editor::Utility::MNBV::NodeEditorStyle::nodeColors
-	*/
-	ImVec4* GetNodeColors(Utility::MNBV::NodeType _nodeType);
-
-	/*!
-	@brief Translates a value of the enum ECellEngine::Editor::Utility::MNBV::NodeColorType
-			to a character string.
-	@param _nodeColorType The type of node color for which we want to retrieve
-			the name.
-	*/
-	inline char* GetNodeColorTypeName(Utility::MNBV::NodeColorType _nodeColorType)
-	{
-		switch (_nodeColorType)
-		{
-		case Utility::MNBV::NodeColorType_Bg:
-			return "NodeColorType_Bg";
-		case Utility::MNBV::NodeColorType_Border:
-			return "NodeColorType_Border";
-			/*case Utility::MNBV::NodeColorType_BorderHovered:
-				return "NodeColorType_BorderHovered";*/
-				/*case Utility::MNBV::NodeColorType_BorderSelected:
-					return "NodeColorType_BorderSelected";*/
-		case Utility::MNBV::NodeColorType_HeaderBg:
-			return "NodeColorType_HeaderBg";
-		case Utility::MNBV::NodeColorType_HeaderActivated:
-			return "NodeColorType_HeaderActivated";
-		case Utility::MNBV::NodeColorType_HeaderHovered:
-			return "NodeColorType_HeaderHovered";
-		default:
-			return "Unknown NodeColorType";
-		}
-	}
-
-	/*!
-	@brief Translates a value of the enum ECellEngine::Editor::Utility::MNBV::NodeType
-			to a character string.
-	@param _nodeType The type of node for which we want to retrieve the name.
-	*/
-	inline char* GetNodeTypeName(Utility::MNBV::NodeType _nodeType)
-	{
-		switch (_nodeType)
-		{
-		case Utility::MNBV::NodeType_Default:
-			return "NodeType_Default";
-		case Utility::MNBV::NodeType_Asset:
-			return "NodeType_Asset";
-		case Utility::MNBV::NodeType_Data:
-			return "NodeType_Data";
-		case Utility::MNBV::NodeType_Equation:
-			return "NodeType_Equation";
-		case Utility::MNBV::NodeType_Event:
-			return "NodeType_Event";
-		case Utility::MNBV::NodeType_Maths:
-			return "NodeType_Maths";
-		case Utility::MNBV::NodeType_ArithmeticOperation:
-			return "NodeType_ArithmeticOperation";
-		case Utility::MNBV::NodeType_LogicOperation:
-			return "NodeType_LogicOperation";
-		case Utility::MNBV::NodeType_Parameter:
-			return "NodeType_Parameter";
-		case Utility::MNBV::NodeType_Reaction:
-			return "NodeType_Reaction";
-		case Utility::MNBV::NodeType_Solver:
-			return "NodeType_Solver";
-		case Utility::MNBV::NodeType_Species:
-			return "NodeType_Species";
-		default:
-			return "Unknown NodeType";
-		}
-	}
-
-	/*!
-	@brief Gets the pointer to the array of colors used to cutomize the aspect of a
-			pin of type @p _pinType.
-	@param _pinType The type of pin for which we want to retrieve the color set.
-	@remarks A reminder that in c++ the pointer to the first element of an array
-			 is the pointer to the array itself.
-	@see ECellEngine::Editor::Utility::MNBV::NodeEditorStyle::pinColors
-	*/
-	ImVec4* GetPinColors(Utility::MNBV::PinType _pinType);
-
-	/*!
-	@brief Translates a value of the enum ECellEngine::Editor::Utility::MNBV::PinColorType
-			to a character string.
-	@param _pinColorType The type of node pin color for which we want to retrieve
-			the name.
-	*/
-	inline char* GetPinColorTypeName(Utility::MNBV::PinColorType _pinColorType)
-	{
-		switch (_pinColorType)
-		{
-		case Utility::MNBV::PinColorType_BgActivated:
-			return "PinColorType_BgActivated";
-		case Utility::MNBV::PinColorType_BgInactivated:
-			return "PinColorType_BgInactivated";
-		case Utility::MNBV::PinColorType_Border:
-			return "PinColorType_Border";
-		default:
-			return "Unknown PinColorType";
-		}
-	}
-
-	/*!
-	@brief Translates a value of the enum ECellEngine::Editor::Utility::MNBV::PinType
-			to a character string.
-	@param _pinType The type of pin for which we want to retrieve the name.
-	*/
-	inline char* GetPinTypeName(Utility::MNBV::PinType _pinType)
-	{
-		switch (_pinType)
-		{
-		case Utility::MNBV::PinType_Default:
-			return "PinType_Default";
-		case Utility::MNBV::PinType_Asset:
-			return "PinType_Asset";
-		case Utility::MNBV::PinType_DataStateValueFloat:
-			return "PinType_DataStateValueFloat";
-		case Utility::MNBV::PinType_Equation:
-			return "PinType_Equation";
-		case Utility::MNBV::PinType_EquationValueFloat:
-			return "PinType_EquationValueFloat";
-		case Utility::MNBV::PinType_FreeValueFloat:
-			return "PinType_FreeValueFloat";
-		case Utility::MNBV::PinType_BooleanCallBackPublisher:
-			return "PinType_BooleanCallBackPublisher";
-		case Utility::MNBV::PinType_BooleanCallBackSubscriber:
-			return "PinType_BooleanCallBackSubscriber";
-		case Utility::MNBV::PinType_FloatCallBackPublisher:
-			return "PinType_FloatCallBackPublisher";
-		case Utility::MNBV::PinType_FloatCallBackSubscriber:
-			return "PinType_FloatCallBackSubscriber";
-		case Utility::MNBV::PinType_Operand:
-			return "PinType_Operand";
-		case Utility::MNBV::PinType_Parameter:
-			return "PinType_Parameter";
-		case Utility::MNBV::PinType_Reaction:
-			return "PinType_Reaction";
-		case Utility::MNBV::PinType_Solver:
-			return "PinType_Solver";
-		case Utility::MNBV::PinType_Species:
-			return "PinType_Species";
-		default:
-			return "Unknown PinType";
-		}
-	}
 
 	/*!
 	@brief Checks whether a Link a user tries to make between two pin is authorized.

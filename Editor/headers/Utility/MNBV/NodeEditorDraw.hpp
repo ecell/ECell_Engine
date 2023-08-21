@@ -7,7 +7,7 @@
 
 #include "imgui_internal.h"
 #include "Utility/MNBV/NodeEditorData.hpp" //also include "implot.h"
-
+#include "Style/EditorStyle.hpp" //also includes Node and Pin Types
 #include "Logging/Logger.hpp"
 
 namespace ECellEngine::Editor::Utility::MNBV
@@ -18,63 +18,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 	*/
 	struct NodeEditorDraw
 	{
-#pragma region Custom Styles
-
-		/*!
-		@brief Pops the number of color styles pushed with ::PushNodeStyle(const ImVec4 _colorSet[])
-		*/
-		inline static void PopNodeStyle()
-		{
-			ImGui::PopStyleColor(4);
-			ax::NodeEditor::PopStyleColor(2);
-		}
-
-		/*!
-		@brief Pushes a bunch of colors to customize a node' style.
-		@details Don't forget to call ::PopNodeStyle() after you've drawn the
-				 node.
-		@see ::PopNodeStyle()
-		*/
-		inline static void PushNodeStyle(const ImVec4 _colorSet[])
-		{
-			ax::NodeEditor::PushStyleColor(ax::NodeEditor::StyleColor_NodeBg, _colorSet[NodeColorType_Bg]);
-			ax::NodeEditor::PushStyleColor(ax::NodeEditor::StyleColor_NodeBorder, _colorSet[NodeColorType_Border]);
-			ImGui::PushStyleColor(ImGuiCol_Button, _colorSet[NodeColorType_Bg]);
-			ImGui::PushStyleColor(ImGuiCol_ButtonActive, _colorSet[NodeColorType_HeaderActivated]);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, _colorSet[NodeColorType_HeaderHovered]);
-			ImGui::PushStyleColor(ImGuiCol_Separator, _colorSet[NodeColorType_Border]);
-		}
-
-		/*!
-		@brief Pops the number of styles pushed with ::PushScrollBarStyle(ImGuiStyle& _style)
-		*/
-		inline static void PopScrollBarStyle()
-		{
-			ImGui::PopStyleColor(4);
-			ImGui::PopStyleVar(2);
-		}
-
-		/*!
-		@brief Pushes a bunch of styles to match ImGui's default Scroll Bar style.
-				Can be used with sliders in nodes.
-		@details Don't forget to call ::PopScrollBarStyle() after you've drawn the
-				 slider.
-		@see ::PopScrollBarStyle()
-		*/
-		inline static void PushScrollBarStyle(const ImGuiStyle& _style)
-		{
-			//Style the vertical slider like a scroll bar
-			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, _style.ScrollbarRounding);
-			ImGui::PushStyleVar(ImGuiStyleVar_GrabRounding, _style.ScrollbarRounding);
-			ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarGrab));
-			ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
-			ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
-			ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImGui::GetStyleColorVec4(ImGuiCol_ScrollbarBg));
-		}
-#pragma endregion
-
 #pragma region Nodes
-
 		/*!
 		@brief The basic logic to destroy nodes.
 		*/
@@ -234,7 +178,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		inline static void ApplyPinDrawOffset()
 		{
-			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + Widget::MNBV::GetMNBVStyle()->pinWidth + ImGui::GetStyle().ItemSpacing.x);
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + Style::EditorStyle::GetMNBVStyle().pinWidth + ImGui::GetStyle().ItemSpacing.x);
 		}
 
 		/*!
@@ -295,12 +239,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		inline static float GetPinDrawOffset()
 		{
-			return Widget::MNBV::GetMNBVStyle()->pinWidth + ImGui::GetStyle().ItemSpacing.x;
+			return Style::EditorStyle::GetMNBVStyle().pinWidth + ImGui::GetStyle().ItemSpacing.x;
 		}
 
 		inline static float GetNodeCenterAreaWidth(const float _headerWidth, const short _nbPins = 2)
 		{
-			return std::max(Widget::MNBV::GetMNBVStyle()->nodeCenterAreaMinWidth, _headerWidth - _nbPins * Widget::MNBV::GetMNBVStyle()->pinWidth - _nbPins * ImGui::GetStyle().ItemSpacing.x);
+			return std::max(Style::EditorStyle::GetMNBVStyle().nodeCenterAreaMinWidth, _headerWidth - _nbPins * Style::EditorStyle::GetMNBVStyle().pinWidth - _nbPins * ImGui::GetStyle().ItemSpacing.x);
 		}
 #pragma endregion
 
