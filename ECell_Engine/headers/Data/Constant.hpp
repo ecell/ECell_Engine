@@ -27,7 +27,7 @@ namespace ECellEngine::Data
 		*/
         inline void Set(const float _val) noexcept override
         {
-            ECellEngine::Logging::Logger::GetSingleton().LogError("Operation::Set(const float _value) should not be used.");
+            ECellEngine::Logging::Logger::LogError("Operation::Set(const float _value) should not be used.");
 		}
 
         inline const std::string ToString() const noexcept override

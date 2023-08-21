@@ -37,7 +37,7 @@ void ECellEngine::Editor::Utility::Plot::Line::SwitchUpdateStrategy(unsigned cha
 		updateStrategy.reset(new UpdateStrategyEveryXSeconds());
 		break;
 	default:
-		ECellEngine::Logging::Logger::GetSingleton().GetSingleton().LogError("Invalid update scheme. The data of Line " + std::string(lineLegend) + "is likely corrupted.");
+		ECellEngine::Logging::Logger::LogError("Invalid update scheme. The data of Line %s is likely corrupted.", lineLegend);
 		break;
 	}
 }

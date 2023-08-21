@@ -272,7 +272,7 @@ namespace ECellEngine::Maths
 		*/
 		inline virtual void Set(const float _value) noexcept
 		{
-			ECellEngine::Logging::Logger::GetSingleton().LogError("Operation::Set(const float _value) should not be used.");
+			ECellEngine::Logging::Logger::LogError("Operation::Set(const float _value) should not be used.");
 		};
 
 		/*!

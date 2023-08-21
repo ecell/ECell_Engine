@@ -87,8 +87,8 @@ void ECellEngine::Maths::Operation::OverrideOperand(Operand* _operand, const uns
 	}
 	else
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError(
-			"ECellEngine::Maths::Operation::OverrideOperand(Operand*, const unsigned char): _idx must be 0 or 1. _idx = " + std::to_string(_idx) + ". Continuing without overriding.");
+		ECellEngine::Logging::Logger::LogError(
+			"ECellEngine::Maths::Operation::OverrideOperand(Operand*, const unsigned char): _idx must be 0 or 1. _idx = %u. Continuing without overriding.", _idx);
 	}
 }
 

@@ -6,13 +6,13 @@ bool ECellEngine::IO::AddModuleCommand::execute(const std::vector<std::string>& 
 {
 	if (receiver.CountSimulations() == 0)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("AddModuleCommand Failed: There is no simulation currently managed so it is impossible to add a module.");
+		ECellEngine::Logging::Logger::LogError("AddModuleCommand Failed: There is no simulation currently managed so it is impossible to add a module.");
 		return false;
 	}
 
 	if (std::stoi(_args[1]) >= receiver.CountSimulations())
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("AddModuleCommand Failed: Tried to add a module to a simulation that does not exist.");
+		ECellEngine::Logging::Logger::LogError("AddModuleCommand Failed: Tried to add a module to a simulation that does not exist.");
 		return false;
 	}
 
@@ -28,13 +28,13 @@ bool ECellEngine::IO::AddSolverCommand::execute(const std::vector<std::string>& 
 
 	if (receiver.CountSimulations() == 0)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("AddSolverCommand Failed: There is no simulation currently managed so it is impossible to add a solver.");
+		ECellEngine::Logging::Logger::LogError("AddSolverCommand Failed: There is no simulation currently managed so it is impossible to add a solver.");
 		return false;
 	}
 
 	if (std::stoi(_args[1]) >= receiver.CountSimulations())
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("AddSolverCommand Failed: Tried to add a solver to a simulation that does not exist.");
+		ECellEngine::Logging::Logger::LogError("AddSolverCommand Failed: Tried to add a solver to a simulation that does not exist.");
 		return false;
 	}
 
@@ -46,13 +46,13 @@ bool ECellEngine::IO::PauseSimulationCommand::execute(const std::vector<std::str
 {
 	if (receiver.CountPlayingSimulations() == 0)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("PauseSimulationCommand Failed: There is no simulation currently playing.");
+		ECellEngine::Logging::Logger::LogError("PauseSimulationCommand Failed: There is no simulation currently playing.");
 		return false;
 	}
 
 	if (std::stoi(_args[1]) >= receiver.CountPlayingSimulations())
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("PauseSimulationCommand Failed: Tried to pause a simulation that is not playing.");
+		ECellEngine::Logging::Logger::LogError("PauseSimulationCommand Failed: Tried to pause a simulation that is not playing.");
 		return false;
 	}
 	
@@ -65,13 +65,13 @@ bool ECellEngine::IO::PlaySimulationCommand::execute(const std::vector<std::stri
 {
 	if (receiver.CountSimulations() == 0)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("PlaySimulationCommand Failed: There is no simulation currently managed.");
+		ECellEngine::Logging::Logger::LogError("PlaySimulationCommand Failed: There is no simulation currently managed.");
 		return false;
 	}
 
 	if (std::stoi(_args[1]) >= receiver.CountSimulations())
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("PlaySimulationCommand Failed: Tried to play a simulation that does not exist.");
+		ECellEngine::Logging::Logger::LogError("PlaySimulationCommand Failed: Tried to play a simulation that does not exist.");
 		return false;
 	}
 
@@ -90,13 +90,13 @@ bool ECellEngine::IO::StepSimulationForwardCommand::execute(const std::vector<st
 {
 	if (receiver.CountSimulations() == 0)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("PlaySimulationCommand Failed: There is no simulation currently managed.");
+		ECellEngine::Logging::Logger::LogError("PlaySimulationCommand Failed: There is no simulation currently managed.");
 		return false;
 	}
 
 	if (std::stoi(_args[1]) >= receiver.CountSimulations())
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("PlaySimulationCommand Failed: Tried to play a simulation that does not exist.");
+		ECellEngine::Logging::Logger::LogError("PlaySimulationCommand Failed: Tried to play a simulation that does not exist.");
 		return false;
 	}
 
@@ -112,13 +112,13 @@ bool ECellEngine::IO::StopSimulationCommand::execute(const std::vector<std::stri
 
 	if (receiver.CountPlayingSimulations() == 0)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("StopSimulationCommand Failed: There is no simulation currently playing.");
+		ECellEngine::Logging::Logger::LogError("StopSimulationCommand Failed: There is no simulation currently playing.");
 		return false;
 	}
 
 	if (std::stoi(_args[1]) >= receiver.CountPlayingSimulations())
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("StopSimulationCommand Failed: Tried to stop a simulation that is not playing.");
+		ECellEngine::Logging::Logger::LogError("StopSimulationCommand Failed: Tried to stop a simulation that is not playing.");
 		return false;
 	}
 
@@ -133,13 +133,13 @@ bool ECellEngine::IO::TryAttachSolverToModuleCommand::execute(const std::vector<
 
 	if (receiver.CountSimulations() == 0)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("TryAttachSolverToModuleCommand Failed: There is no simulation currently managed.");
+		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: There is no simulation currently managed.");
 		return false;
 	}
 
 	if (std::stoi(_args[1]) >= receiver.CountSimulations())
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("TryAttachSolverToModuleCommand Failed: Tried to access a simulation that does not exist.");
+		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: Tried to access a simulation that does not exist.");
 		return false;
 	}
 
@@ -148,13 +148,13 @@ bool ECellEngine::IO::TryAttachSolverToModuleCommand::execute(const std::vector<
 
 	if (moduleIdx == SIZE_MAX)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("TryAttachSolverToModuleCommand Failed: Could not find module with name \"" + _args[3] + "\" in the modules of simulation " + _args[1]);
+		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: Could not find module with name \"%s\" in the modules of simulation %s", _args[3], _args[1]);
 		return false;
 	}
 
 	if (solverIdx == SIZE_MAX)
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogError("TryAttachSolverToModuleCommand Failed: Could not find solver with name \"" + _args[3] + "\" in the solvers of simulation " + _args[1]);
+		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: Could not find solver with name \"%s\" in the solvers of simulation %s", _args[3], _args[1]);
 		return false;
 	}
 

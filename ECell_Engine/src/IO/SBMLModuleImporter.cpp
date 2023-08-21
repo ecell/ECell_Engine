@@ -48,7 +48,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeEquations(ECellEngine::Data:
 		}
         else
         {
-            ECellEngine::Logging::Logger::GetSingleton().LogError("Rule " + rule->getVariable() + " is neither a parameter nor a species concentration. This rule was skipped. Please, check that the variable name of this rule matches a parameter or species name.");
+            ECellEngine::Logging::Logger::LogError("Rule %s is neither a parameter nor a species concentration. This rule was skipped. Please, check that the variable name of this rule matches a parameter or species name.", rule->getVariable());
         }
     }
 }
@@ -246,7 +246,7 @@ const bool ECellEngine::IO::SBMLModuleImporter::ValidateSBML(SBMLDocument* _sbml
 {
     if (!_sbmlDoc || _sbmlDoc->getModel() == NULL)
     {
-        ECellEngine::Logging::Logger::GetSingleton().LogError("The SBML Document given for validation is null.");
+        ECellEngine::Logging::Logger::LogError("The SBML Document given for validation is null.");
         return false;
     }
 
@@ -349,7 +349,7 @@ const bool ECellEngine::IO::SBMLModuleImporter::ValidateSBML(SBMLDocument* _sbml
 const std::shared_ptr<ECellEngine::Data::Module> ECellEngine::IO::SBMLModuleImporter::TryImport(const std::filesystem::path& _filePath, ECellEngine::Data::DataState& _dataState) noexcept
 {
 	// Checks whether the file is okay
-    ECellEngine::Logging::Logger::GetSingleton().LogTrace("Trying to read SBML file: " + _filePath.string());
+    ECellEngine::Logging::Logger::LogTrace("Trying to read SBML file: %s", _filePath.string().c_str());
     SBMLDocument* sbmlDoc = readSBMLFromFile(_filePath.string().c_str());
 
     std::unordered_map<std::string, std::string> docIdsToDataStateNames;
@@ -363,19 +363,19 @@ const std::shared_ptr<ECellEngine::Data::Module> ECellEngine::IO::SBMLModuleImpo
         Model* sbmlModel = sbmlDoc->getModel();
 
         //Build species
-        ECellEngine::Logging::Logger::GetSingleton().LogTrace("Building species...");
+        ECellEngine::Logging::Logger::LogTrace("Building species...");
         InitializeSpecies(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
 
         //Build parameters
-        ECellEngine::Logging::Logger::GetSingleton().LogTrace("Building parameters...");
+        ECellEngine::Logging::Logger::LogTrace("Building parameters...");
         InitializeParameters(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
 
         //Build equations
-        ECellEngine::Logging::Logger::GetSingleton().LogTrace("Building equations...");
+        ECellEngine::Logging::Logger::LogTrace("Building equations...");
         InitializeEquations(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
 
         //Build reactions
-        ECellEngine::Logging::Logger::GetSingleton().LogTrace("Building reactions...");
+        ECellEngine::Logging::Logger::LogTrace("Building reactions...");
         InitializeReactions(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
         
         return sbmlModule;
@@ -384,8 +384,7 @@ const std::shared_ptr<ECellEngine::Data::Module> ECellEngine::IO::SBMLModuleImpo
     else
     {
         //std::cout << "  << std::endl;
-        ECellEngine::Logging::Logger::GetSingleton().LogError("The SBML validation process for file at : "
-            + _filePath.filename().string() + " has FAILED(see errors above).");
+        ECellEngine::Logging::Logger::LogError("The SBML validation process for file at : %s has FAILED(see errors above).", _filePath.filename().string());
         return nullptr;
     }
 }

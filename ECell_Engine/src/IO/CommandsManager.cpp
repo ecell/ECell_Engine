@@ -11,13 +11,13 @@ bool ECellEngine::IO::CommandsManager::interpretCommand(std::vector<std::string>
 		{
 			msg += " " + _cmdSplit[i];
 		}
-		ECellEngine::Logging::Logger::GetSingleton().LogTrace(msg);
+		ECellEngine::Logging::Logger::LogTrace(msg.c_str());
 		return matchingCommand->execute(_cmdSplit);
 	}
 	else
 	{
 		msg += _cmdSplit[0] +  " doesn't exist!";
-		ECellEngine::Logging::Logger::GetSingleton().LogError(msg);
+		ECellEngine::Logging::Logger::LogError(msg.c_str());
 		return false;
 	}
 }
@@ -30,13 +30,13 @@ bool ECellEngine::IO::CommandsManager::registerCommand(std::shared_ptr<Command> 
 void ECellEngine::IO::CommandsManager::start()
 {
 	isListening = true;
-	ECellEngine::Logging::Logger::GetSingleton().LogTrace("CommandsManager started");
+	ECellEngine::Logging::Logger::LogTrace("CommandsManager started");
 }
 
 void ECellEngine::IO::CommandsManager::stop()
 {
 	isListening = false;
-	ECellEngine::Logging::Logger::GetSingleton().LogWarning("CommandsManager stopped");
+	ECellEngine::Logging::Logger::LogWarning("CommandsManager stopped");
 }
 
 std::shared_ptr<ECellEngine::IO::Command> ECellEngine::IO::CommandsManager::tryGetRegisteredCommand(std::string const& commandName)
@@ -57,5 +57,5 @@ void ECellEngine::IO::CommandsManager::update()
 		commandInputSplit = splitStr(commandInput);
 		interpretCommand(commandInputSplit);
 	};
-	ECellEngine::Logging::Logger::GetSingleton().LogWarning("Exiting keyboard input polling loop.");
+	ECellEngine::Logging::Logger::LogWarning("Exiting keyboard input polling loop.");
 }

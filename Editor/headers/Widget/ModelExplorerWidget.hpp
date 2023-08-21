@@ -216,7 +216,7 @@ namespace ECellEngine::Editor::Widget
 		{
 			if (_idx >= nodeEditorCtxts.size())
 			{
-				ECellEngine::Logging::Logger::GetSingleton().LogError("Tried to destroy a NodeEditorContext at an index beyond the size of current list.");
+				ECellEngine::Logging::Logger::LogError("Tried to destroy a NodeEditorContext at an index beyond the size of current list.");
 				return;
 			}
 
@@ -235,7 +235,7 @@ namespace ECellEngine::Editor::Widget
 		{
 			if (_idx >= mnbvCtxts.size())
 			{
-				ECellEngine::Logging::Logger::GetSingleton().LogError("Tried to destroy a ModelNodeBasedViewerContext at an index beyond the size of current list.");
+				ECellEngine::Logging::Logger::LogError("Tried to destroy a ModelNodeBasedViewerContext at an index beyond the size of current list.");
 				return;
 			}
 			mnbvCtxts.erase(mnbvCtxts.begin() + _idx);

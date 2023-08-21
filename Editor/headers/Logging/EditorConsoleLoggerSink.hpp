@@ -29,7 +29,7 @@ namespace ECellEngine::Editor::Logging
 				 sink from the list in case the console widget that was using
 				 it is closed by the user.
 		*/
-		std::size_t sinkIdx;
+		std::size_t sinkIdx = 0;
 
 		EditorConsoleLoggerSink(ECellEngine::Editor::Widget::ConsoleWidget& _logWidget):
 			consoleWidget{_logWidget}
@@ -41,26 +41,26 @@ namespace ECellEngine::Editor::Logging
 		@brief Forwards a message (@p _msg) to the ECellEngine::Editor::ConsoleWidget
 				where it will be printed as #ECellEngine::Editor::LogLevel::trace.
 		*/
-		virtual void LogTrace(const std::string& _msg) const noexcept override;
+		void LogTrace(const char* _msg) const noexcept override;
 		
 		/*!
 		@brief Forwards a message (@p _msg) to the ECellEngine::Editor::ConsoleWidget
 				where it will be printed as #ECellEngine::Editor::LogLevel::debug.
 		*/
-		virtual void LogDebug(const std::string& _msg) const noexcept override;
+		void LogDebug(const char* _msg) const noexcept override;
 		
 
 		/*!
 		@brief Forwards a message (@p _msg) to the ECellEngine::Editor::ConsoleWidget
 				where it will be printed as #ECellEngine::Editor::LogLevel::error.
 		*/
-		virtual void LogError(const std::string& _msg) const noexcept override;
+		void LogError(const char* _msg) const noexcept override;
 		
 
 		/*!
 		@brief Forwards a message (@p _msg) to the ECellEngine::Editor::ConsoleWidget
 				where it will be printed as #ECellEngine::Editor::LogLevel::warning.
 		*/
-		virtual void LogWarning(const std::string& _msg) const noexcept override;
+		void LogWarning(const char* _msg) const noexcept override;
 	};
 }

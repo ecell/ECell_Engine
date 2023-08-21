@@ -16,7 +16,7 @@ void ECellEngine::Core::Engine::Start()
 	*/
 
 	//std::cout << "Engine start" << std::endl;
-	ECellEngine::Logging::Logger::GetSingleton().LogTrace("Engine Start");
+	ECellEngine::Logging::Logger::LogTrace("Engine Start");
 
 	commandsManager.start();
 

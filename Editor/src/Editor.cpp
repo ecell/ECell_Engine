@@ -8,7 +8,7 @@
 
 ECellEngine::Editor::Editor::Editor()
 {
-    ECellEngine::Logging::Logger::GetSingleton().AddSink(&exeLoggerSink);
+    ECellEngine::Logging::Logger::AddSink(&exeLoggerSink);
 
     AddWidget<Widget::MainWindow>();
     AddWidget<Widget::ConsoleWidget>();

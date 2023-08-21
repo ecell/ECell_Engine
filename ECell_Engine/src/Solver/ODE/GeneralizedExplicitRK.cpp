@@ -63,7 +63,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 	//the species was indeed affected by a reaction (cf. above)
 	for (auto [speciesName, species] : dataState.GetAllSpecies())
 	{
-		ECellEngine::Logging::Logger::GetSingleton().LogDebug(speciesName);
+		ECellEngine::Logging::Logger::LogDebug(speciesName.c_str());
 		//Initialize the operation in-flux minus out-flux
 		auto IFSearch = allInFlux.find(speciesName);
 		auto OFSearch = allOutFlux.find(speciesName);
@@ -95,7 +95,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 			rhs.LinkLocalOperands();
 
 			system.emplace_back(Maths::Equation(species.get(), rhs));
-			ECellEngine::Logging::Logger::GetSingleton().LogDebug(rhs.ToString());
+			ECellEngine::Logging::Logger::LogDebug(rhs.ToString().c_str());
 		}
 	}
 	delete[] yn;
@@ -137,9 +137,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::ScanForTriggersOnExtEq() 
 			equationName = externalEquations[i]->GetName();
 			if (triggerTargetName == equationName || triggerThresholdName == equationName)
 			{
-				ECellEngine::Logging::Logger::GetSingleton().LogDebug("Trigger involving target " +
-					triggerTargetName + " and " + triggerThresholdName + " was found to match variable " +
-					equationName + " in the External equations.");
+				ECellEngine::Logging::Logger::LogDebug("Trigger involving target %s and %s was found to match variable %s in the External equations.", triggerTargetName, triggerThresholdName, equationName);
 
 				triggersOnExtEq.push_back(std::pair(it->get(), i));
 			}
@@ -164,9 +162,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::ScanForTriggersOnODE() no
 			systemVariableName = system[i].GetOperand()->name;
 			if (triggerTargetName == systemVariableName || triggerThresholdName == systemVariableName)
 			{
-				ECellEngine::Logging::Logger::GetSingleton().LogDebug("Trigger involving target " + 
-					triggerTargetName + " and " + triggerThresholdName + " was found to match variable " +
-					systemVariableName + " in the ODEs");
+				ECellEngine::Logging::Logger::LogDebug("Trigger involving target %s and %s was found to match variable %s in the ODEs.", triggerTargetName, triggerThresholdName, systemVariableName);
 
 				triggersOnODE.push_back(std::pair(it->get(), i));
 			}
@@ -268,7 +264,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 
 			//k1 = f(y_n)
 			coeffs.ks[i*systemSize] = system[i].GetOperation().Get();
-			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("k1[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize]));
+			//ECellEngine::Logging::Logger::LogDebug("k1[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize]));
 		}
 
 		//Storing the value of the external equations at the beginning of the step
@@ -279,7 +275,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 
 		for (unsigned short s = 2; s < coeffs.stages+1; ++s)
 		{
-			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("---- s= " + std::to_string(s) + "; ");
+			//ECellEngine::Logging::Logger::LogDebug("---- s= " + std::to_string(s) + "; ");
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
 				system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForStage(i * systemSize, s));
@@ -292,7 +288,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
 				coeffs.ks[i * systemSize + s-1] = system[i].GetOperation().Get();
-				//ECellEngine::Logging::Logger::GetSingleton().LogDebug("k" + std::to_string(s) + "[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize + s - 1]));
+				//ECellEngine::Logging::Logger::LogDebug("k" + std::to_string(s) + "[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize + s - 1]));
 			}
 		}
 
@@ -318,7 +314,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 		stepper.Next();
 
 		//Value Debugging
-		ECellEngine::Logging::Logger::GetSingleton().LogDebug("------ t= " + std::to_string(stepper.timer.elapsedTime) + "; ");
+		ECellEngine::Logging::Logger::LogDebug("------ t= %f", stepper.timer.elapsedTime);
 		std::string log;
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
@@ -328,14 +324,14 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 			{
 				log += "; k" + std::to_string(j + 1) + "=" + std::to_string(coeffs.ks[i * systemSize + j]);
 			}
-			ECellEngine::Logging::Logger::GetSingleton().LogDebug(log);
+			ECellEngine::Logging::Logger::LogDebug(log.c_str());
 		}
 		for (auto [equationName, equation] : dataState.GetEquations())
 		{
-			ECellEngine::Logging::Logger::GetSingleton().LogDebug("Extern;" + equationName + "=" + std::to_string(equation->Get()));
+			ECellEngine::Logging::Logger::LogDebug("Extern; %s=%f", equationName, equation->Get());
 		}
 
-		ECellEngine::Logging::Logger::GetSingleton().LogDebug("------");
+		ECellEngine::Logging::Logger::LogDebug("------");
 	}
 }
 
@@ -357,7 +353,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			yn[i] = system[i].GetOperand()->Get();
 			//k1 = f(y_n)
 			coeffs.ks[i*systemSize] = system[i].GetOperation().Get();
-			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("k1[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize]));
+			//ECellEngine::Logging::Logger::LogDebug("k1[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize]));
 		}
 
 		//Storing the value of the external equations at the beginning of the step
@@ -368,7 +364,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 
 		for (unsigned short s = 2; s < coeffs.stages+1; ++s)
 		{
-			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("---- s= " + std::to_string(s) + "; ");
+			//ECellEngine::Logging::Logger::LogDebug("---- s= " + std::to_string(s) + "; ");
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
 				system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForStage(i * systemSize, s));
@@ -381,7 +377,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
 				coeffs.ks[i * systemSize + s-1] = system[i].GetOperation().Get();
-				//ECellEngine::Logging::Logger::GetSingleton().LogDebug("k" + std::to_string(s) + "[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize + s - 1]));
+				//ECellEngine::Logging::Logger::LogDebug("k" + std::to_string(s) + "[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize + s - 1]));
 			}
 		}
 
@@ -421,7 +417,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 						it->first->GetThreshold()->Get(), yn[it->second], ynp1[it->second],
 						coeffs.bsp, coeffs.ks, it->second * systemSize, coeffs.order, coeffs.stages);
 
-					/*ECellEngine::Logging::Logger::GetSingleton().LogDebug("The trigger comparing " +
+					/*ECellEngine::Logging::Logger::LogDebug("The trigger comparing " +
 						it->first->GetTarget()->name + " and " + it->first->GetThreshold()->name +
 						" should be triggered at time: " + std::to_string(triggerCandidateTime));*/
 
@@ -514,7 +510,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 
 					triggerCandidateTime = stepper.timer.elapsedTime + theta * stepper.h;
 
-					/*ECellEngine::Logging::Logger::GetSingleton().LogDebug("The trigger comparing " +
+					/*ECellEngine::Logging::Logger::LogDebug("The trigger comparing " +
 						(*it)->GetTarget()->name + " and " + (*it)->GetThreshold()->name +
 						" should be triggered at time: " + std::to_string(triggerCandidateTime));*/
 
@@ -533,8 +529,8 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			//it means that we found a trigger that must be triggered
 			if (stepper.IsNextGE(triggerTriggerTime))
 			{
-				/*ECellEngine::Logging::Logger::GetSingleton().LogDebug("--- TRIGGERING WATCHER ---");
-				ECellEngine::Logging::Logger::GetSingleton().LogDebug(" Processing trigger of target: " +
+				/*ECellEngine::Logging::Logger::LogDebug("--- TRIGGERING WATCHER ---");
+				ECellEngine::Logging::Logger::LogDebug(" Processing trigger of target: " +
 					trigger->GetTarget()->name + " at time: " + std::to_string(triggerTriggerTime));*/
 
 				//Then, we need to update the system to the time at which
@@ -564,7 +560,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			else
 			{
 				//Value Debugging
-				//ECellEngine::Logging::Logger::GetSingleton().LogDebug("--- ACCEPTED ---");
+				//ECellEngine::Logging::Logger::LogDebug("--- ACCEPTED ---");
 
 				//We update the system with the new value of y_n+1
 				for (unsigned short i = 0; i < systemSize; ++i)
@@ -605,7 +601,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 		else
 		{
 			//Value Debugging
-			//ECellEngine::Logging::Logger::GetSingleton().LogDebug("--- REJECTED ---");
+			//ECellEngine::Logging::Logger::LogDebug("--- REJECTED ---");
 
 			//We reset the system to the values at the beginning of the step
 			for (unsigned short i = 0; i < systemSize; ++i)
@@ -622,7 +618,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			stepper.ComputeNext(coeffs.estimationsMinOrder);
 		}
 
-		/*ECellEngine::Logging::Logger::GetSingleton().LogDebug(
+		/*ECellEngine::Logging::Logger::LogDebug(
 			"t= " + std::to_string(stepper.timer.elapsedTime) +
 			"; error= " + std::to_string(stepper.error) + 
 			"; h_prev= " + std::to_string(stepper.h_prev) +
@@ -637,13 +633,13 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			{
 				log += "; k" + std::to_string(j + 1) + "=" + std::to_string(coeffs.ks[i * systemSize + j]);
 			}
-			ECellEngine::Logging::Logger::GetSingleton().LogDebug(log);
+			ECellEngine::Logging::Logger::LogDebug(log);
 		}
 		for (auto [equationName, equation] : dataState.GetEquations())
 		{
-			ECellEngine::Logging::Logger::GetSingleton().LogDebug("Extern; " + equationName + "=" + std::to_string(equation->Get()));
+			ECellEngine::Logging::Logger::LogDebug("Extern; " + equationName + "=" + std::to_string(equation->Get()));
 		}
 
-		ECellEngine::Logging::Logger::GetSingleton().LogDebug("------");*/
+		ECellEngine::Logging::Logger::LogDebug("------");*/
 	}
 }

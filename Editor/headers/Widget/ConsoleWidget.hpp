@@ -80,12 +80,12 @@ namespace ECellEngine::Editor::Widget
 		ConsoleWidget(Editor& _editor) :
 			Widget(_editor), ecLoggerSink(*this)
 		{
-			ecLoggerSink.sinkIdx = ECellEngine::Logging::Logger::GetSingleton().AddSink(&ecLoggerSink);
+			ecLoggerSink.sinkIdx = ECellEngine::Logging::Logger::AddSink(&ecLoggerSink);
 		}
 
 		~ConsoleWidget()
 		{
-			ECellEngine::Logging::Logger::GetSingleton().RemoveSink(ecLoggerSink.sinkIdx);
+			ECellEngine::Logging::Logger::RemoveSink(ecLoggerSink.sinkIdx);
 		}
 
 		inline void Awake() override {};
@@ -96,7 +96,7 @@ namespace ECellEngine::Editor::Widget
 		* @brief Display a message of type #ECellEngine::Editor::LogLevel::trace
 		*		 in this ConsoleWidget of the Editor.
 		*/
-		inline void LogTrace(const std::string& _msg)
+		inline void LogTrace(const char* _msg)
 		{
 			log.push_back(LogMessage(LogLevel::trace, _msg));
 		}
@@ -105,7 +105,7 @@ namespace ECellEngine::Editor::Widget
 		* @brief Display a message of type #ECellEngine::Editor::LogLevel::debug
 		*		 in this ConsoleWidget of the Editor.
 		*/
-		inline void LogDebug(const std::string& _msg)
+		inline void LogDebug(const char* _msg)
 		{
 			log.push_back(LogMessage(LogLevel::debug, _msg));
 		}
@@ -114,7 +114,7 @@ namespace ECellEngine::Editor::Widget
 		* @brief Display a message of type #ECellEngine::Editor::LogLevel::error
 		*		 in this ConsoleWidget of the Editor.
 		*/
-		inline void LogError(const std::string& _msg)
+		inline void LogError(const char* _msg)
 		{
 			log.push_back(LogMessage(LogLevel::error, _msg));
 		}
@@ -123,7 +123,7 @@ namespace ECellEngine::Editor::Widget
 		* @brief Display a message of type #ECellEngine::Editor::LogLevel::warning
 		*		 in this ConsoleWidget of the Editor.
 		*/
-		inline void LogWarning(const std::string& _msg)
+		inline void LogWarning(const char* _msg)
 		{
 			log.push_back(LogMessage(LogLevel::warning, _msg));
 		}
