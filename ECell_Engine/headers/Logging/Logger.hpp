@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Logging/LoggerSink.hpp"
+#include "Logging/LogLevels.hpp"
 
 namespace ECellEngine::Logging
 {
