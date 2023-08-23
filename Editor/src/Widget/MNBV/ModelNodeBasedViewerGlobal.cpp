@@ -1,3 +1,4 @@
+#include "Util/BinarySearch.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 
 static ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* s_mnbvCtxt = nullptr;
@@ -27,7 +28,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseDynamicLink(std::vector<Utility::MN
 void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
 {
     //Search in the list of Arithmetic Operation Nodes
-    std::vector<Utility::MNBV::ArithmeticOperationNodeData>::iterator itAOND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->arithmeticOperationNodes.begin(), s_mnbvCtxt->arithmeticOperationNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::ArithmeticOperationNodeData>::iterator itAOND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->arithmeticOperationNodes.begin(), s_mnbvCtxt->arithmeticOperationNodes.end(), _nodeId);
     if (itAOND != s_mnbvCtxt->arithmeticOperationNodes.end() && (std::size_t)itAOND->id == _nodeId)
     {
         s_mnbvCtxt->arithmeticOperationNodes.erase(itAOND);
@@ -36,7 +37,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
 
     //Search in the list of Asset Nodes
-    std::vector<Utility::MNBV::AssetNodeData>::iterator itAND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::AssetNodeData>::iterator itAND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->assetNodes.begin(), s_mnbvCtxt->assetNodes.end(), _nodeId);
     if (itAND != s_mnbvCtxt->assetNodes.end() && (std::size_t)itAND->id == _nodeId)
     {
         s_mnbvCtxt->assetNodes.erase(itAND);
@@ -45,7 +46,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
 
     //Search in the list of Equation Nodes
-    std::vector<Utility::MNBV::EquationNodeData>::iterator itCPND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->equationNodes.begin(), s_mnbvCtxt->equationNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::EquationNodeData>::iterator itCPND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->equationNodes.begin(), s_mnbvCtxt->equationNodes.end(), _nodeId);
     if (itCPND != s_mnbvCtxt->equationNodes.end() && (std::size_t)itCPND->id == _nodeId)
     {
         s_mnbvCtxt->equationNodes.erase(itCPND);
@@ -54,7 +55,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
 
     //Search in the list of Line Plot Nodes
-    std::vector<Utility::MNBV::LinePlotNodeData>::iterator itLPND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->linePlotNodes.begin(), s_mnbvCtxt->linePlotNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::LinePlotNodeData>::iterator itLPND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->linePlotNodes.begin(), s_mnbvCtxt->linePlotNodes.end(), _nodeId);
     if (itLPND != s_mnbvCtxt->linePlotNodes.end() && (std::size_t)itLPND->id == _nodeId)
     {
         s_mnbvCtxt->linePlotNodes.erase(itLPND);
@@ -63,7 +64,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
 
     //Search in the list of Line Plot Nodes
-    std::vector<Utility::MNBV::LogicOperationNodeData>::iterator itLOND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->logicOperationNodes.begin(), s_mnbvCtxt->logicOperationNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::LogicOperationNodeData>::iterator itLOND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->logicOperationNodes.begin(), s_mnbvCtxt->logicOperationNodes.end(), _nodeId);
     if (itLOND != s_mnbvCtxt->logicOperationNodes.end() && (std::size_t)itLOND->id == _nodeId)
     {
         s_mnbvCtxt->logicOperationNodes.erase(itLOND);
@@ -72,7 +73,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
 
     //Search in the list of Modify Value In DataState Event Nodes
-    std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData>::iterator itMDSTVEND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->modifyDataStateValueEventNodes.begin(), s_mnbvCtxt->modifyDataStateValueEventNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData>::iterator itMDSTVEND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->modifyDataStateValueEventNodes.begin(), s_mnbvCtxt->modifyDataStateValueEventNodes.end(), _nodeId);
     if (itMDSTVEND != s_mnbvCtxt->modifyDataStateValueEventNodes.end() && (std::size_t)itMDSTVEND->id == _nodeId)
     {
         s_mnbvCtxt->modifyDataStateValueEventNodes.erase(itMDSTVEND);
@@ -81,7 +82,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
 
     //Search in the list of Reaction Nodes
-    std::vector<Utility::MNBV::ReactionNodeData>::iterator itRND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->reactionNodes.begin(), s_mnbvCtxt->reactionNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::ReactionNodeData>::iterator itRND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->reactionNodes.begin(), s_mnbvCtxt->reactionNodes.end(), _nodeId);
     if (itRND != s_mnbvCtxt->reactionNodes.end() && (std::size_t)itRND->id == _nodeId)
     {
         s_mnbvCtxt->reactionNodes.erase(itRND);
@@ -90,7 +91,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
 
     //Search in the list of Parameter Nodes
-    std::vector<Utility::MNBV::ParameterNodeData>::iterator itSPaND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->parameterNodes.begin(), s_mnbvCtxt->parameterNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::ParameterNodeData>::iterator itSPaND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->parameterNodes.begin(), s_mnbvCtxt->parameterNodes.end(), _nodeId);
     if (itSPaND != s_mnbvCtxt->parameterNodes.end() && (std::size_t)itSPaND->id == _nodeId)
     {
         s_mnbvCtxt->parameterNodes.erase(itSPaND);
@@ -99,7 +100,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
 
     //Search in the list of Time Nodes
-    std::vector<Utility::MNBV::TimeNodeData>::iterator itSTND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->timeNodes.begin(), s_mnbvCtxt->timeNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::TimeNodeData>::iterator itSTND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->timeNodes.begin(), s_mnbvCtxt->timeNodes.end(), _nodeId);
     if (itSTND != s_mnbvCtxt->timeNodes.end() && (std::size_t)itSTND->id == _nodeId)
     {
         s_mnbvCtxt->timeNodes.erase(itSTND);
@@ -108,7 +109,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
 
     //Search in the list of Solver Nodes
-    std::vector<Utility::MNBV::SolverNodeData>::iterator itSoND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->solverNodes.begin(), s_mnbvCtxt->solverNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::SolverNodeData>::iterator itSoND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->solverNodes.begin(), s_mnbvCtxt->solverNodes.end(), _nodeId);
     if (itSoND != s_mnbvCtxt->solverNodes.end() && (std::size_t)itSoND->id == _nodeId)
     {
         s_mnbvCtxt->solverNodes.erase(itSoND);
@@ -117,7 +118,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
 
     //Search in the list of Species Nodes
-    std::vector<Utility::MNBV::SpeciesNodeData>::iterator itSpND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->speciesNodes.begin(), s_mnbvCtxt->speciesNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::SpeciesNodeData>::iterator itSpND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->speciesNodes.begin(), s_mnbvCtxt->speciesNodes.end(), _nodeId);
     if (itSpND != s_mnbvCtxt->speciesNodes.end() && (std::size_t)itSpND->id == _nodeId)
     {
         s_mnbvCtxt->speciesNodes.erase(itSpND);
@@ -126,7 +127,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
 
     //Search in the list of Value Float Nodes
-    std::vector<Utility::MNBV::ValueFloatNodeData>::iterator itVFND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->valueFloatNodes.begin(), s_mnbvCtxt->valueFloatNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::ValueFloatNodeData>::iterator itVFND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->valueFloatNodes.begin(), s_mnbvCtxt->valueFloatNodes.end(), _nodeId);
     if (itVFND != s_mnbvCtxt->valueFloatNodes.end() && (std::size_t)itVFND->id == _nodeId)
     {
         s_mnbvCtxt->valueFloatNodes.erase(itVFND);
@@ -135,7 +136,7 @@ void ECellEngine::Editor::Widget::MNBV::EraseNode(const std::size_t _nodeId)
     }
     
     //Search in the list of Trigger Nodes
-    std::vector<Utility::MNBV::TriggerNodeData>::iterator itWND = ECellEngine::Data::BinaryOperation::LowerBound(s_mnbvCtxt->triggerNodes.begin(), s_mnbvCtxt->triggerNodes.end(), _nodeId);
+    std::vector<Utility::MNBV::TriggerNodeData>::iterator itWND = ECellEngine::Util::BinarySearch::LowerBound(s_mnbvCtxt->triggerNodes.begin(), s_mnbvCtxt->triggerNodes.end(), _nodeId);
     if (itWND != s_mnbvCtxt->triggerNodes.end() && (std::size_t)itWND->id == _nodeId)
     {
         s_mnbvCtxt->triggerNodes.erase(itWND);
@@ -253,7 +254,7 @@ ECellEngine::Editor::Utility::MNBV::NodeData* ECellEngine::Editor::Widget::MNBV:
 {
     if (_first != _last)
     {   
-        return &*ECellEngine::Data::BinaryOperation::LowerBound(_first, _last, _id);
+        return &*ECellEngine::Util::BinarySearch::LowerBound(_first, _last, _id);
     }
     return nullptr;
 }
@@ -375,7 +376,7 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
         {
             //Entering this section there is a possibility that the target id is indeed within the list/array
             //We do the search among the nodes data
-            it = ECellEngine::Data::BinaryOperation::LowerBound(_first, _last, _id);
+            it = ECellEngine::Util::BinarySearch::LowerBound(_first, _last, _id);
 
             //If the lower bound is NOT the id of the first node
             if (it != _first)
@@ -385,7 +386,7 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
                 it--;
                 
                 //We search the target id within the output pins
-                itNPD = ECellEngine::Data::BinaryOperation::LowerBound((*it).outputPins, (*it).outputPins + nbpins, _id);
+                itNPD = ECellEngine::Util::BinarySearch::LowerBound((*it).outputPins, (*it).outputPins + nbpins, _id);
                 if (*itNPD == _id)
                 {
                     return itNPD;
@@ -393,7 +394,7 @@ ECellEngine::Editor::Utility::MNBV::NodePinData* ECellEngine::Editor::Widget::MN
                 
                 //We search the target id within the input pins
                 nbpins = (unsigned short)std::size(it->inputPins);
-                itNPD = ECellEngine::Data::BinaryOperation::LowerBound((*it).inputPins, (*it).inputPins + nbpins, _id);
+                itNPD = ECellEngine::Util::BinarySearch::LowerBound((*it).inputPins, (*it).inputPins + nbpins, _id);
                 if (*itNPD == _id)
                 {
                     return itNPD;
@@ -426,7 +427,7 @@ void ECellEngine::Editor::Widget::MNBV::SetCurrentMNBVContext(ModelNodeBasedView
 
 std::size_t& ECellEngine::Editor::Widget::MNBV::GetMNBVCtxtNextId()
 {
-    return ++(s_mnbvCtxt->uniqueId);
+    return ++s_mnbvCtxt->uniqueId;
 }
 
 bool ECellEngine::Editor::Widget::MNBV::IsDynamicLinkAuthorized(Utility::MNBV::PinType _startPinType, Utility::MNBV::PinType _endPinType)
@@ -434,10 +435,10 @@ bool ECellEngine::Editor::Widget::MNBV::IsDynamicLinkAuthorized(Utility::MNBV::P
     return s_mnbvCtxt->authorizedDynamicLinks[_startPinType][_endPinType];
 }
 
-void ECellEngine::Editor::Widget::MNBV::QueueEngineTASToMCmd(const char* _moduleName, const char* _solverName)
+void ECellEngine::Editor::Widget::MNBV::QueueEngineTASToMCmd(const std::size_t _moduleID, const std::size_t _solverID)
 {
     s_mnbvCtxt->TASToMCmds.insert(s_mnbvCtxt->TASToMCmds.begin(),
-        ModelNodeBasedViewerContext::EngineTASToMCmdParameter(_moduleName, _solverName));
+        ModelNodeBasedViewerContext::EngineTASToMCmdParameter(_moduleID, _solverID));
     s_mnbvCtxt->countTASToMCmds++;
 }
 
@@ -451,7 +452,11 @@ void ECellEngine::Editor::Widget::MNBV::SendEngineTASToMCmd(const char* _simuIdx
 {
     while (s_mnbvCtxt->countTASToMCmds > 0)
     {
-        _cmdsManager->interpretCommand({ "tryAttachSolver", _simuIdx, s_mnbvCtxt->TASToMCmds.back().solverName, s_mnbvCtxt->TASToMCmds.back().moduleName });
+        _cmdsManager->interpretCommand({
+            "tryAttachSolver",
+            _simuIdx,
+            std::to_string(s_mnbvCtxt->TASToMCmds.back().solverID),
+            std::to_string(s_mnbvCtxt->TASToMCmds.back().moduleID) });
         s_mnbvCtxt->countTASToMCmds--;
     }
 }

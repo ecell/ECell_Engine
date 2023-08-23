@@ -4,7 +4,7 @@
 
 namespace ECellEngine::Data
 {
-	struct Parameter : public ECellEngine::Maths::Operand
+	struct Parameter final : public ECellEngine::Maths::Operand
 	{
 	private:
 		float previousValue;

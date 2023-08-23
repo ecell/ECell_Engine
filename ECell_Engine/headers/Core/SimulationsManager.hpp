@@ -2,6 +2,7 @@
 
 #include <cstdint>
 
+#include "Core/IDProvider.hpp"
 #include "Core/Simulation.hpp"
 
 namespace ECellEngine::Core
@@ -13,6 +14,12 @@ namespace ECellEngine::Core
 	class SimulationsManager
 	{
 	private:
+
+		/*!
+		@brief The ID provider for the simulations.
+		*/
+		IDProvider simulationIDProvider;
+
 		/*!
 		@brief All created simulations.
 		*/
@@ -58,7 +65,7 @@ namespace ECellEngine::Core
 		*/
 		inline void NewSimulation() noexcept
 		{
-			simulations.push_back(std::make_unique<Simulation>());
+			simulations.push_back(std::make_unique<Simulation>(++simulationIDProvider));
 		}
 
 		/*!

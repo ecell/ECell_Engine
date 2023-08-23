@@ -7,8 +7,8 @@
 
 #include <vector>
 
+#include "Core/IDProvider.hpp"
 #include "Core/Simulation.hpp"
-
 #include "Utility/MNBV/NodeEditorDraw.hpp"
 #include "Style/NodeEditorStyle.hpp"
 
@@ -25,7 +25,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 				part of this context.
 		@see ECellEngine::Editor::Widget::MNBV::GetMNBVCtxtNextId()
 		*/
-		std::size_t uniqueId;
+		ECellEngine::Core::IDProvider uniqueId;
 
 		/*!
 		@brief The instance of styling data for the elements (nodes, pins, links)
@@ -165,15 +165,15 @@ namespace ECellEngine::Editor::Widget::MNBV
 			/*!
 			@brief The name of the module we try to attach a solver to.
 			*/
-			const char* moduleName;
+			std::size_t moduleID;
 
 			/*!
 			@brief The name of the solver we try to attach to a module.
 			*/
-			const char* solverName;
+			std::size_t solverID;
 
-			EngineTASToMCmdParameter(const char* _moduleName, const char* _solverName) :
-				moduleName{_moduleName}, solverName{ _solverName }
+			EngineTASToMCmdParameter(const std::size_t _moduleID, const std::size_t _solverID) :
+				moduleID{_moduleID}, solverID{ _solverID }
 			{
 
 			}

@@ -143,18 +143,18 @@ bool ECellEngine::IO::TryAttachSolverToModuleCommand::execute(const std::vector<
 		return false;
 	}
 
-	std::size_t moduleIdx = receiver.GetSimulation(std::stoi(_args[1]))->FindModuleIdx(_args[3].c_str());
-	std::size_t solverIdx = receiver.GetSimulation(std::stoi(_args[1]))->FindSolverIdx(_args[2].c_str());
+	std::size_t moduleIdx = receiver.GetSimulation(std::stoi(_args[1]))->FindModuleIdx(std::stoi(_args[3]));
+	std::size_t solverIdx = receiver.GetSimulation(std::stoi(_args[1]))->FindSolverIdx(std::stoi(_args[2]));
 
 	if (moduleIdx == SIZE_MAX)
 	{
-		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: Could not find module with name \"%s\" in the modules of simulation %u", _args[3].c_str(), std::stoi(_args[1]));
+		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: Could not find module with ID \"%s\" in the modules of simulation %s", _args[3].c_str(), _args[1].c_str());
 		return false;
 	}
 
 	if (solverIdx == SIZE_MAX)
 	{
-		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: Could not find solver with name \"%s\" in the solvers of simulation %u", _args[3].c_str(), std::stoi(_args[1]));
+		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: Could not find solver with name \"%s\" in the solvers of simulation %s", _args[3].c_str(), _args[1].c_str());
 		return false;
 	}
 

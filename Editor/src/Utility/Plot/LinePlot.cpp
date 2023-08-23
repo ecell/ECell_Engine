@@ -1,9 +1,9 @@
-#include "Data/BinaryOperatedVector.hpp"
+#include "Util/BinarySearch.hpp"
 #include "Utility/Plot/LinePlot.hpp"
 
 std::shared_ptr<ECellEngine::Editor::Utility::Plot::Line> ECellEngine::Editor::Utility::Plot::LinePlot::AddLine(std::size_t _matchedDataID) noexcept
 {
-	std::vector<std::shared_ptr<Line>>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(lines.begin(), lines.end(), _matchedDataID);
+	std::vector<std::shared_ptr<Line>>::iterator it = ECellEngine::Util::BinarySearch::LowerBound(lines.begin(), lines.end(), _matchedDataID);
 	it = lines.insert(it, std::make_shared<Plot::Line>(_matchedDataID, linesMaxNbDataPoints, &X));
 
 	return *it;

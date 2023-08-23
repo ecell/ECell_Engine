@@ -5,18 +5,33 @@
 
 namespace ECellEngine::Data
 {
-    class Constant : public ECellEngine::Maths::Operand
+    /*!
+    @brief A struct to encapsulate a constant value.
+    @details This is useful to create the tree of operations.
+    @see ECellEngine::Maths::Operation
+    */
+    class Constant final : public ECellEngine::Maths::Operand
     {
     private:
+        /*!
+        @brief The value of the constant.
+        */
         float value;
 
     public:
+        /*!
+        @brief Creates a new constant with value @p _value.
+        @param _value The value of the constant.
+        @details The name of the constant is set to the empty string.
+        The id of the constant is set to SIZE_MAX because we will never
+        need to identify a constant so the id is not important.
+        */
         Constant(float _value) :
             ECellEngine::Maths::Operand(""), value{ _value }
         {
         }
 
-        virtual float Get() const noexcept override
+        float Get() const noexcept override
         {
             return value;
         }

@@ -1,3 +1,4 @@
+#include "Util/BinarySearch.hpp"
 #include "Utility/MNBV/NodeEditorDraw.hpp"
 
 #pragma region Nodes
@@ -1169,7 +1170,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::DynamicLinkDestruction(
 		while (ax::NodeEditor::QueryDeletedLink(&deletedLinkId))
 		{
 			//Search the Link data to erase.
-			std::vector<Utility::MNBV::LinkData>::iterator link = ECellEngine::Data::BinaryOperation::LowerBound(_dynamicLinks.begin(), _dynamicLinks.end(), (std::size_t)deletedLinkId);
+			std::vector<Utility::MNBV::LinkData>::iterator link = ECellEngine::Util::BinarySearch::LowerBound(_dynamicLinks.begin(), _dynamicLinks.end(), (std::size_t)deletedLinkId);
 
 			if (link != _dynamicLinks.end() && link->id == deletedLinkId)
 			{
@@ -1211,7 +1212,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::StaticLinkDestruction(s
 			else
 			{
 				//Search the Link data to erase.
-				std::vector<Utility::MNBV::LinkData>::iterator link = ECellEngine::Data::BinaryOperation::LowerBound(_staticLinks.begin(), _staticLinks.end(), (std::size_t)deletedLinkId);
+				std::vector<Utility::MNBV::LinkData>::iterator link = ECellEngine::Util::BinarySearch::LowerBound(_staticLinks.begin(), _staticLinks.end(), (std::size_t)deletedLinkId);
 
 				if (link != _staticLinks.end() && link->id == deletedLinkId)
 				{

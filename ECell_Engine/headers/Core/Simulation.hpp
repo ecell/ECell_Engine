@@ -40,7 +40,7 @@ namespace ECellEngine::Core
 
 		/*!
 		@brief The list of imported assets.
-		@warning For the search API ::FindModuleIdx(const char* _moduleName) to
+		@warning For the search API ::FindModuleIdx(const char* _moduleID) to
 				 work accordingly, the number of module in this list must be less
 				 or equal to SIZE_MAX-1 (the highest value of std::size_t). This
 				 is: modules.size <= SIZE_MAX-1
@@ -51,7 +51,7 @@ namespace ECellEngine::Core
 		@brief The list of added solvers in the simulation space.
 		@remarks A solver added to a simulation but not attached to any solver
 				 will have no impact on the simulation.
-		@warning For the search API ::FindSolverIdx(const char* _solverName) to
+		@warning For the search API ::FindSolverIdx(const char* _solverID) to
 				 work accordingly, the number of solver in this list must be less
 				 or equal to SIZE_MAX-1 (the highest value of std::size_t). This
 				 is: solvers.size <= SIZE_MAX-1
@@ -85,7 +85,17 @@ namespace ECellEngine::Core
 		Timer timer;
 
 	public:
-		Simulation() = default;
+
+		/*!
+		@brief The unique identifier of this simulation.
+		*/
+		const std::size_t id;
+
+		Simulation(const std::size_t _id) :
+			id(_id)
+		{
+
+		}
 
 		/*!
 		@brief Tries to add the file at path @p _filePath as an asset to the simulation.
@@ -169,27 +179,25 @@ namespace ECellEngine::Core
 
 		/*
 		@brief Finds the index of the module which name matches the argument
-				@p _moduleName.
-		@details Implements a naive linear search from the start of the list
-				 towards the end.
-		@param _moduleName the name of the module which index to look for.
+				@p _moduleID.
+		@details Uses a binary search from the start of the list of ::modules.
+		@param _moduleID The ID of the module which index to look for.
 		@returns The index of the first encounterd module which name matches
-				 the argument @p _moduleName. Returns @a SIZE_MAX if no match
+				 the argument @p _moduleID. Returns @a SIZE_MAX if no match
 				 was found.
 		*/
-		const std::size_t FindModuleIdx(const char* _moduleName);
+		const std::size_t FindModuleIdx(const std::size_t _moduleID);
 
 		/*
 		@brief Finds the index of the solver which name matches the argument
-				@p _solverName.
-		@details Implements a naive linear search from the start of the list
-				 towards the end.
-		@param _solverName the name of the solver which index to look for.
+				@p _solverID.
+		@details Implements a naive linear search on the list of ::solvers.
+		@param _solverID The ID of the solver which index to look for.
 		@returns The index of the first encounterd solver which name matches
-				 the argument @p _solverName. Returns @a SIZE_MAX if no match
+				 the argument @p _solverID. Returns @a SIZE_MAX if no match
 				 was found.
 		*/
-		const std::size_t FindSolverIdx(const char* _solverName);
+		const std::size_t FindSolverIdx(const std::size_t _solverID);
 
 		/*!
 		@brief Computes all the dependencies between the datastructures loaded

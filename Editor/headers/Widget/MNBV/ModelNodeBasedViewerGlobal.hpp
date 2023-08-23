@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Data/BinaryOperatedVector.hpp"
 #include "IO/CommandsManager.hpp"
 #include "Core/Simulation.hpp"
 #include "Data/BiochemicalModule.hpp"
@@ -176,7 +175,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 
 	/*!
 	@brief Queues a command to send to the core of the engine to try to attach
-			the solver of name @p _solverName to the module of name @p _moduleName.
+			the solver of id @p _solverID to the module of id @p _moduleID.
 	@details In fact, it doesn't queue the command but an instance of
 			ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EngineTASToMCmdParameter
 			which stores the parameters of the command. The queued commands are
@@ -184,7 +183,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 			node and processing the users interactions of this frame.
 	@see ECellEngine::Editor::Utility::MNBV::SendEngineTASToMCmd(const char* _simuIdx, ECellEngine::IO::CommandsManager* _cmdsManager)
 	*/
-	void QueueEngineTASToMCmd(const char* _moduleName, const char* _solverName);
+	void QueueEngineTASToMCmd(const std::size_t _moduleID, const std::size_t _solverID);
 
 	/*!
 	@brief Removes as asset node from ModelNodeBasedViewerContext::assetNodes
@@ -194,8 +193,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 
 	/*!
 	@brief Sends the queue commands to the core of the engine to try to attach
-			the solver of name @p _solverName to the module of name @p _moduleName.
-	@see ECellEngine::Editor::Utility::MNBV::QueueEngineTASToMCmd(const char* _moduleName, const char* _solverName)
+			the solver of id @p _solverID to the module of id @p _moduleID.
+	@see ECellEngine::Editor::Utility::MNBV::QueueEngineTASToMCmd(const std::size_t _moduleID, const std::size_t _solverID)
 	*/
 	void SendEngineTASToMCmd(const char* _simuIdx, CommandsManager* _cmdsManager);
 

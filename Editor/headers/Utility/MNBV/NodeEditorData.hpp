@@ -11,7 +11,6 @@
 #include "imgui_node_editor.h"
 
 #include "Core/Callback.hpp"
-#include "Data/BinaryOperatedVector.hpp"
 #include "Core/Timer.hpp"
 #include "Utility/Plot/LinePlot.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerGlobal.hpp"

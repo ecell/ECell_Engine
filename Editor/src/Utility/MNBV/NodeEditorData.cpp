@@ -1,5 +1,6 @@
-#include "Utility/MNBV/NodeEditorData.hpp"
 #include "Core/Events/ModifyDataStateValueEvent.hpp"
+#include "Util/BinarySearch.hpp"
+#include "Utility/MNBV/NodeEditorData.hpp"
 
 #pragma region NodeListBoxStringData<DataType>
 
@@ -234,7 +235,7 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputDisconnect(NodeI
 	//Y axis input pin
 	if (_nodeInputPin->id == inputPins[LinePlotNodeData::InputPin_YAxis].id)
 	{
-		std::vector<std::shared_ptr<Plot::Line>>::iterator it = ECellEngine::Data::BinaryOperation::LowerBound(linePlot->lines.begin(), linePlot->lines.end(), (std::size_t)_nodeOutputPinData->node->id);
+		std::vector<std::shared_ptr<Plot::Line>>::iterator it = ECellEngine::Util::BinarySearch::LowerBound(linePlot->lines.begin(), linePlot->lines.end(), (std::size_t)_nodeOutputPinData->node->id);
 
 		if ((*it)->id == (std::size_t)_nodeOutputPinData->node->id)
 		{
@@ -511,7 +512,7 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::Update() noexcept
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	//There is only one input pin for the solver node so we don't need to check the id at this time
-	Widget::MNBV::QueueEngineTASToMCmd(((Data::Module*)_data)->GetName(), data->GetName().c_str());
+	Widget::MNBV::QueueEngineTASToMCmd(((Data::Module*)_data)->id, data->id);
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)

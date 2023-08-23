@@ -1,27 +1,98 @@
 #pragma once
 
-namespace ECellEngine::Data
-{
-	class Module;
-}
+/*!
+@file Solver.hpp
+@brief The base class for all solvers.
+*/
 
 #include "Data/DataState.hpp"
 #include "Data/Module.hpp"
 #include "Solver/Stepper.hpp"
 
+//Forward declaration
+namespace ECellEngine::Data
+{
+	class Module;
+}
+
 namespace ECellEngine::Solvers
 {
+	/*!
+	@brief The base class for all solvers.
+	*/
 	class Solver
 	{
 	private:
+		/*!
+		@brief The name of the solver.
+		*/
 		std::string name;
 
 	protected:
 		ECellEngine::Data::DataState& dataState;
 
 	public:
+
+		/*!
+		@brief The comparison function object for the solver's id.
+		*/
+		struct CompareID
+		{
+			/*!
+			@brief Compares if solver @p _s1 id is less (strictly) than solver
+					@p _s2 id.
+			@param _s1 The left hand side of the comparison.
+			@param _s2 The right hand side of the comparison.
+			@returns True if @p _s1 < @p _s2 id, false otherwise.
+			*/
+			inline bool operator()(const Solver& _s1, const Solver& _s2) const
+			{
+				return _s1.id < _s2.id;
+			}
+
+			/*!
+			@brief Compares if solver @p _s1 id is less (strictly) than solver
+					@p _s2 id.
+			@param _s1 The left hand side of the comparison.
+			@param _id The right hand side of the comparison.
+			@returns True if @p _s1 < @p _id, false otherwise.
+			*/
+			inline bool operator()(const Solver& _s1, const std::size_t _id)
+			{
+				return _s1.id < _id;
+			}
+			/*!
+			@brief Compares if solver @p _s1 id is less (strictly) than solver
+					@p _s2 id.
+			@param _s1 The left hand side of the comparison.
+			@param _s2 The right hand side of the comparison.
+			@returns True if @p _s1 < @p _s2 id, false otherwise.
+			*/
+			inline bool operator()(std::shared_ptr<Solver> _s1, std::shared_ptr<Solver> _s2)
+			{
+				return _s1->id < _s2->id;
+			}
+
+			/*!
+			@brief Compares if solver @p _s1 id is less (strictly) than solver
+					@p _s2 id.
+			@param _s1 The left hand side of the comparison.
+			@param _id The right hand side of the comparison.
+			@returns True if @p _s1 < @p _id, false otherwise.
+			*/
+			inline bool operator()(std::shared_ptr<Solver> _s1, const std::size_t _id)
+			{
+				return _s1->id < _id;
+			}
+		};
+
+		/*!
+		@brief The unique id of the solver.
+		*/
+		const std::size_t id;
+
 		Solver(ECellEngine::Data::DataState& _dataState, const std::string& _name) :
-			dataState{ _dataState }, name{_name}
+			dataState{ _dataState }, id{ ++_dataState.idProvider }, name{_name}
 		{
 
 		}

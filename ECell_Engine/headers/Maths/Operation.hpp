@@ -16,7 +16,7 @@ namespace ECellEngine::Maths
 	@details It is designed for binary operations. A, operation may have other
 			 operations as its operands.
 	*/
-	struct Operation : public Operand
+	struct Operation final : public Operand
 	{
 	public :
 
