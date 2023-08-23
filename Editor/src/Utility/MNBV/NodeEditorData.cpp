@@ -511,7 +511,7 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::Update() noexcept
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	//There is only one input pin for the solver node so we don't need to check the id at this time
-	Widget::MNBV::QueueEngineTASToMCmd(((Data::Module*)_data)->GetName(), data->GetName().c_str());
+	Widget::MNBV::QueueEngineTASToMCmd(((Data::Module*)_data)->id, data->id);
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)

@@ -165,15 +165,15 @@ namespace ECellEngine::Editor::Widget::MNBV
 			/*!
 			@brief The name of the module we try to attach a solver to.
 			*/
-			const char* moduleName;
+			std::size_t moduleID;
 
 			/*!
 			@brief The name of the solver we try to attach to a module.
 			*/
-			const char* solverName;
+			std::size_t solverID;
 
-			EngineTASToMCmdParameter(const char* _moduleName, const char* _solverName) :
-				moduleName{_moduleName}, solverName{ _solverName }
+			EngineTASToMCmdParameter(const std::size_t _moduleID, const std::size_t _solverID) :
+				moduleID{_moduleID}, solverID{ _solverID }
 			{
 
 			}

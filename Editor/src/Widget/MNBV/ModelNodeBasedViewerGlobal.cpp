@@ -434,10 +434,10 @@ bool ECellEngine::Editor::Widget::MNBV::IsDynamicLinkAuthorized(Utility::MNBV::P
     return s_mnbvCtxt->authorizedDynamicLinks[_startPinType][_endPinType];
 }
 
-void ECellEngine::Editor::Widget::MNBV::QueueEngineTASToMCmd(const char* _moduleName, const char* _solverName)
+void ECellEngine::Editor::Widget::MNBV::QueueEngineTASToMCmd(const std::size_t _moduleID, const std::size_t _solverID)
 {
     s_mnbvCtxt->TASToMCmds.insert(s_mnbvCtxt->TASToMCmds.begin(),
-        ModelNodeBasedViewerContext::EngineTASToMCmdParameter(_moduleName, _solverName));
+        ModelNodeBasedViewerContext::EngineTASToMCmdParameter(_moduleID, _solverID));
     s_mnbvCtxt->countTASToMCmds++;
 }
 
@@ -451,7 +451,11 @@ void ECellEngine::Editor::Widget::MNBV::SendEngineTASToMCmd(const char* _simuIdx
 {
     while (s_mnbvCtxt->countTASToMCmds > 0)
     {
-        _cmdsManager->interpretCommand({ "tryAttachSolver", _simuIdx, s_mnbvCtxt->TASToMCmds.back().solverName, s_mnbvCtxt->TASToMCmds.back().moduleName });
+        _cmdsManager->interpretCommand({
+            "tryAttachSolver",
+            _simuIdx,
+            std::to_string(s_mnbvCtxt->TASToMCmds.back().solverID),
+            std::to_string(s_mnbvCtxt->TASToMCmds.back().moduleID) });
         s_mnbvCtxt->countTASToMCmds--;
     }
 }
