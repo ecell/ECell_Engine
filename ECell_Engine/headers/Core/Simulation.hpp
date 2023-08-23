@@ -168,17 +168,6 @@ namespace ECellEngine::Core
 		}
 
 		/*
-		@brief Finds the module which name matches the argument @p _moduleName.
-		@details Implements a naive linear search from the start of the list
-				 towards the end.
-		@param _moduleName the name of the module to look for.
-		@returns The pointer to the first encounterd module which name matches
-				 the argument @p _moduleName. Returns @a nullptr if no match
-				 was found.
-		*/
-		ECellEngine::Data::Module* FindModule(const char* _moduleName);
-
-		/*
 		@brief Finds the index of the module which name matches the argument
 				@p _moduleName.
 		@details Implements a naive linear search from the start of the list
@@ -189,17 +178,6 @@ namespace ECellEngine::Core
 				 was found.
 		*/
 		const std::size_t FindModuleIdx(const char* _moduleName);
-
-		/*
-		@brief Finds the solver which name matches the argument @p _solverName.
-		@details Implements a naive linear search from the start of the list
-				 towards the end.
-		@param _solverName the name of the solver to look for.
-		@returns The pointer to the first encounterd solver which name matches
-				 the argument @p _solverName. Returns @a nullptr if no match
-				 was found.
-		*/
-		ECellEngine::Solvers::Solver* FindSolver(const char* _solverName);
 
 		/*
 		@brief Finds the index of the solver which name matches the argument
