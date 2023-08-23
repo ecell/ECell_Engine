@@ -148,13 +148,13 @@ bool ECellEngine::IO::TryAttachSolverToModuleCommand::execute(const std::vector<
 
 	if (moduleIdx == SIZE_MAX)
 	{
-		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: Could not find module with name \"%s\" in the modules of simulation %s", _args[3], _args[1]);
+		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: Could not find module with name \"%s\" in the modules of simulation %u", _args[3].c_str(), std::stoi(_args[1]));
 		return false;
 	}
 
 	if (solverIdx == SIZE_MAX)
 	{
-		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: Could not find solver with name \"%s\" in the solvers of simulation %s", _args[3], _args[1]);
+		ECellEngine::Logging::Logger::LogError("TryAttachSolverToModuleCommand Failed: Could not find solver with name \"%s\" in the solvers of simulation %u", _args[3].c_str(), std::stoi(_args[1]));
 		return false;
 	}
 
