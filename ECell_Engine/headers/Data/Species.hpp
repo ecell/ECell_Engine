@@ -6,7 +6,7 @@
 
 namespace ECellEngine::Data
 {
-	struct Species : public ECellEngine::Maths::Operand
+	struct Species final : public ECellEngine::Maths::Operand
 	{
 	private:
 		float previousQuantity;
@@ -21,14 +21,14 @@ namespace ECellEngine::Data
 
 		}
 
-		inline virtual float Get() const noexcept override
+		inline float Get() const noexcept override
 		{
 			return quantity;
 		}
 
 		void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
 		
-		virtual void Set(const float _val) noexcept override;
+		void Set(const float _val) noexcept override;
 
 		void Increment(const float _inc);
 
