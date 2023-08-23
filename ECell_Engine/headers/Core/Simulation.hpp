@@ -85,7 +85,17 @@ namespace ECellEngine::Core
 		Timer timer;
 
 	public:
-		Simulation() = default;
+
+		/*!
+		@brief The unique identifier of this simulation.
+		*/
+		const std::size_t id;
+
+		Simulation(const std::size_t _id) :
+			id(_id)
+		{
+
+		}
 
 		/*!
 		@brief Tries to add the file at path @p _filePath as an asset to the simulation.
