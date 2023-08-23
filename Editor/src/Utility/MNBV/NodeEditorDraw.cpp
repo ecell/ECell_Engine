@@ -91,10 +91,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _
 	const float headerWidth = NodeHeader("Asset:", _name, Style::EditorStyle::GetNodeColors(NodeType_Asset));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
+	const float thisLabelWidth = ImGui::CalcTextSize("This").x;
 
 	// ----- Pin and Text to connect the solver to the asset -----
-	Pin(_assetNodeInfo.inputPins[AssetNodeData::InputPin_Solver]);
-	ImGui::SameLine(); ImGui::AlignTextToFramePadding(); ImGui::Text("Solver");
+	NodeText_Out("This", thisLabelWidth, startX, headerWidth, _assetNodeInfo.outputPins[AssetNodeData::OutputPin_ThisData]);
 
 	// ----- String List Box and Pin to access the species of the asset -----
 	if (NodeCollapsingHeader_Out("Species", _assetNodeInfo.collapsingHeadersIds[AssetNodeData::CollapsingHeader_Species],
@@ -765,10 +765,8 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SolverNode(const char* 
 	const float headerWidth = NodeHeader("Solver:", _name, Style::EditorStyle::GetNodeColors(NodeType_Solver));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
-	const float labelWidth = ImGui::CalcTextSize("Target Asset").x;
 
-	NodeText_Out("Target Asset", labelWidth, startX, headerWidth,
-		_solverNodeInfo.outputPins[SolverNodeData::OutputPin_Solver]);
+	NodeText_In("Data", startX, _solverNodeInfo.inputPins[SolverNodeData::InputPin_Data]);
 
 	if (NodeCollapsingHeader_Out("Time", _solverNodeInfo.collapsingHeadersIds[SolverNodeData::CollapsingHeader_Time],
 		_solverNodeInfo.utilityState, SolverNodeData::State_CollHdrTime,

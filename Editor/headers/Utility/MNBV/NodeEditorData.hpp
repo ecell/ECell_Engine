@@ -646,7 +646,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum InputPin
 		{
-			InputPin_Solver,
+			InputPin_None,
 
 			InputPin_Count
 		};
@@ -657,6 +657,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum OutputPin
 		{
+			OutputPin_ThisData,
 			OutputPin_CollHdrEquations,
 			OutputPin_CollHdrReactions,
 			OutputPin_CollHdrParameters,
@@ -747,7 +748,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			NodeData(_and), data{ _and.data },
 			inputPins{ _and.inputPins[0] },
 			outputPins{ _and.outputPins[0], _and.outputPins[1] , _and.outputPins[2] ,
-					  _and.outputPins[3] },
+					  _and.outputPins[3], _and.outputPins[4] },
 			utilityState{ _and.utilityState },
 			collapsingHeadersIds{ _and.collapsingHeadersIds[0], _and.collapsingHeadersIds[1] , _and.collapsingHeadersIds[2] ,
 					  _and.collapsingHeadersIds[3] },
@@ -769,12 +770,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
 
-			inputPins[InputPin_Solver] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Solver, this);//Solver
+			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
 
-			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//Species Collapsing header
-			outputPins[OutputPin_CollHdrReactions] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//Simple Parameters Collapsing header
-			outputPins[OutputPin_CollHdrParameters] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//Computed Parameters Collapsing header
-			outputPins[OutputPin_CollHdrSpecies] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//Reactions Collapsing header
+			outputPins[OutputPin_ThisData] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//Species Collapsing header
+			outputPins[OutputPin_CollHdrEquations] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Species Collapsing header
+			outputPins[OutputPin_CollHdrReactions] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Simple Parameters Collapsing header
+			outputPins[OutputPin_CollHdrParameters] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Computed Parameters Collapsing header
+			outputPins[OutputPin_CollHdrSpecies] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Reactions Collapsing header
 
 			collapsingHeadersIds[CollapsingHeader_Equations] = Widget::MNBV::GetMNBVCtxtNextId();//Species Collapsing header
 			collapsingHeadersIds[CollapsingHeader_Reactions] = Widget::MNBV::GetMNBVCtxtNextId();//Simple Parameters Collapsing header
@@ -789,15 +791,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {}; //not used in asset node data
 
-		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {}; //not used in asset node data
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in asset node data
 
-		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in asset node data
+		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in asset node data
+		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in asset node data
 
@@ -1932,7 +1934,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum InputPin
 		{
-			InputPin_None,
+			InputPin_Data,
 
 			InputPin_Count
 		};
@@ -1943,8 +1945,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		enum OutputPin
 		{
-			OutputPin_Solver,
-
 			OutputPin_CollHdrTime,
 			OutputPin_DeltaTime,
 			OutputPin_ElapsedTime,
@@ -2008,7 +2008,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		SolverNodeData(const SolverNodeData& _slvnd) :
 			NodeData(_slvnd), data{ _slvnd.data },
 			inputPins{ _slvnd.inputPins[0] },
-			outputPins{ _slvnd.outputPins[0], _slvnd.outputPins[1], _slvnd.outputPins[2], _slvnd.outputPins[3], _slvnd.outputPins[4] },
+			outputPins{ _slvnd.outputPins[0], _slvnd.outputPins[1], _slvnd.outputPins[2], _slvnd.outputPins[3]},
 			utilityState{ _slvnd.utilityState },
 			collapsingHeadersIds{ _slvnd.collapsingHeadersIds[0] }
 		{
@@ -2028,9 +2028,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//not used
+			inputPins[InputPin_Data] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Asset, this);//The data to solve
 			
-			outputPins[OutputPin_Solver] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Solver, this, 1);//this solver transmission
 			outputPins[OutputPin_CollHdrTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the collapsing header for Time-related data
 			outputPins[OutputPin_DeltaTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this);//the delta time of this solver
 			outputPins[OutputPin_ElapsedTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this);//the elapsed time of this solver
@@ -2039,9 +2038,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds[CollapsingHeader_Time] = Widget::MNBV::GetMNBVCtxtNextId();
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Solver Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
-		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Solver Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Solver Node Data
 
@@ -2049,7 +2048,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Solver Node Data
 	};
 	
 	/*!

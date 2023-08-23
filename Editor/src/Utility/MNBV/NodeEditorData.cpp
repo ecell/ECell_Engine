@@ -100,20 +100,16 @@ void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::OutputDisc
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputConnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData, void* _data)
+void ECellEngine::Editor::Utility::MNBV::AssetNodeData::OutputConnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData)
 {
-	//The node input pin representing the solver attached to this asset.
-	if (_nodeInputPin->id == inputPins[AssetNodeData::InputPin_Solver].id)
+	//The node output pin representing the data of the asset
+	if (_nodeOutputPinData->id == outputPins[AssetNodeData::OutputPin_ThisData].id)
 	{
-		//In this case, the parameter _data is the name of the solver node that is attempting to attach.
-		//So, we know that the action to perform is to queue the TryAttachSolverToModuleCommand
-		//of the engine.
-		//This command will be processed after the current context has been entirely draw in this frame.
-		Widget::MNBV::QueueEngineTASToMCmd(data->GetName(), ((std::string*)_data)->c_str());
+		_nodeInputPin->OnConnect(_nodeOutputPinData, data);
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::AssetNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin, void* _data)
+void ECellEngine::Editor::Utility::MNBV::AssetNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
 	//TODO: remove the link between the solver and the asset data in the simulation
 	//		by calling the appropriate command in the engine (also TODO)
@@ -512,13 +508,22 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::Update() noexcept
 	parameterValueBuffer = data->Get();
 }
 
+void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
+{
+	//There is only one input pin for the solver node so we don't need to check the id at this time
+	Widget::MNBV::QueueEngineTASToMCmd(((Data::Module*)_data)->GetName(), data->GetName().c_str());
+}
+
+void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
+{
+	//There is only one input pin for the solver node so we don't need to check the id at this time
+	//TODO: remove the link between the solver and the asset data in the simulation
+	//		by calling the appropriate command in the engine (also TODO)
+	//		This can be done here or in AssetNodeData::InputDisconnect()
+}
+
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	if (_nodeOutputPinData->id == outputPins[SolverNodeData::OutputPin_Solver].id)
-	{
-		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->GetName());
-	}
-
 	if (_nodeOutputPinData->id == outputPins[SolverNodeData::OutputPin_DeltaTime].id)
 	{
 		_nodeInputPinData->OnConnect(_nodeOutputPinData, &data->GetStepper()->timer.onDeltaTimeUpdate);

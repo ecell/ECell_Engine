@@ -193,7 +193,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		ModelNodeBasedViewerContext() :
 			uniqueId{ 0 }, countTASToMCmds{ 0 }
 		{
-			authorizedDynamicLinks[Utility::MNBV::PinType_Solver][Utility::MNBV::PinType_Solver] = true;
+			authorizedDynamicLinks[Utility::MNBV::PinType_Asset][Utility::MNBV::PinType_Asset] = true;
 			
 			//The interest of PinType_DataStateValueFloat might disappear in the future.
 			authorizedDynamicLinks[Utility::MNBV::PinType_DataStateValueFloat][Utility::MNBV::PinType_FreeValueFloat] = true;
