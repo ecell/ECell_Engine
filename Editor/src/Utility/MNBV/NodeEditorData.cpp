@@ -538,18 +538,22 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInput
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
+void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
-	//TODO: remove the link between the solver and the asset adata in the simulation
-	//		by calling the appropriate command in the engine (also TODO)
-	//		This can be done here or in AssetNodeData::InputDisconnect()
-}
+	if (_nodeOutputPinData->id == outputPins[SolverNodeData::OutputPin_DeltaTime].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &data->GetStepper()->timer.onDeltaTimeUpdate);
+	}
 
-void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
-{
-	//There is only one output pin in the SolverNodeData
+	if (_nodeOutputPinData->id == outputPins[SolverNodeData::OutputPin_ElapsedTime].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &data->GetStepper()->timer.onElapsedTimeUpdate);
+	}
 
-	_nodeInputPinData->OnRefresh(_nodeOutputPinData, &data->GetName());
+	if (_nodeOutputPinData->id == outputPins[SolverNodeData::OutputPin_StartTime].id)
+	{
+		_nodeInputPinData->OnDisconnect(_nodeOutputPinData, &data->GetStepper()->timer.onStartTimeUpdate);
+	}
 }
 
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin, void* _data)
