@@ -426,7 +426,7 @@ void ECellEngine::Editor::Widget::MNBV::SetCurrentMNBVContext(ModelNodeBasedView
 
 std::size_t& ECellEngine::Editor::Widget::MNBV::GetMNBVCtxtNextId()
 {
-    return ++(s_mnbvCtxt->uniqueId);
+    return ++s_mnbvCtxt->uniqueId;
 }
 
 bool ECellEngine::Editor::Widget::MNBV::IsDynamicLinkAuthorized(Utility::MNBV::PinType _startPinType, Utility::MNBV::PinType _endPinType)

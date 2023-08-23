@@ -7,8 +7,8 @@
 
 #include <vector>
 
+#include "Core/IDProvider.hpp"
 #include "Core/Simulation.hpp"
-
 #include "Utility/MNBV/NodeEditorDraw.hpp"
 #include "Style/NodeEditorStyle.hpp"
 
@@ -25,7 +25,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 				part of this context.
 		@see ECellEngine::Editor::Widget::MNBV::GetMNBVCtxtNextId()
 		*/
-		std::size_t uniqueId;
+		ECellEngine::Core::IDProvider uniqueId;
 
 		/*!
 		@brief The instance of styling data for the elements (nodes, pins, links)
