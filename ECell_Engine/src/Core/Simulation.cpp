@@ -1,5 +1,5 @@
 #include "Core/Simulation.hpp"
-#include "Data/BinaryOperatedVector.hpp"
+#include "Util/BinarySearch.hpp"
 
 std::shared_ptr<ECellEngine::Data::Module> ECellEngine::Core::Simulation::AddModule(const std::string& _filePath)
 {
@@ -27,7 +27,7 @@ std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::stri
 const std::size_t ECellEngine::Core::Simulation::FindModuleIdx(const std::size_t _moduleID)
 {
 	static Data::Module::CompareID compareID;
-	std::vector<std::shared_ptr<Data::Module>>::iterator it = Data::BinaryOperation::LowerBound(modules.begin(), modules.end(), _moduleID, compareID);
+	std::vector<std::shared_ptr<Data::Module>>::iterator it = Util::BinarySearch::LowerBound(modules.begin(), modules.end(), _moduleID, compareID);
 	if (it != modules.end() && (*it)->id == _moduleID)
 	{
 		return std::distance(modules.begin(), it);
@@ -38,7 +38,7 @@ const std::size_t ECellEngine::Core::Simulation::FindModuleIdx(const std::size_t
 const std::size_t ECellEngine::Core::Simulation::FindSolverIdx(const std::size_t _solverID)
 {
 	static Solvers::Solver::CompareID compareID;
-	std::vector<std::shared_ptr<Solvers::Solver>>::iterator it = Data::BinaryOperation::LowerBound(solvers.begin(), solvers.end(), _solverID, compareID);
+	std::vector<std::shared_ptr<Solvers::Solver>>::iterator it = Util::BinarySearch::LowerBound(solvers.begin(), solvers.end(), _solverID, compareID);
 	if (it != solvers.end() && (*it)->id == _solverID)
 	{
 		return std::distance(solvers.begin(), it);
@@ -113,8 +113,9 @@ void ECellEngine::Core::Simulation::TryAttachSolverToModule(const std::size_t& _
 
 		//We create the pair in the table to have the binding information
 		modulesToSolversTable.push_back(std::pair(_moduleIdx, _solverIdx));
+
 		//We initialize the solver according to the data stored in the module.
-		solvers[_solverIdx].get()->Initialize(modules[_moduleIdx].get());
+		solvers[_solverIdx]->Initialize(modules[_moduleIdx].get());
 	}
 }
 
