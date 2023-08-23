@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Core/Events/ModifyDataStateValueEvent.hpp"
+#include "Core/IDProvider.hpp"
 #include "Core/Trigger.hpp"
 #include "Data/Reaction.hpp"
 #include "Data/Parameter.hpp"
@@ -31,11 +32,12 @@ namespace ECellEngine::Data
 		std::vector<std::shared_ptr<Core::Trigger<Operand*, Operand*>>> triggers;
 
 	public:
+		Core::IDProvider idProvider;
+
 		DataState()
 		{
 
 		}
-
 
 		inline std::shared_ptr<Maths::Equation> GetEquation(const std::string& _equation) const
 		{

@@ -1,4 +1,5 @@
 #include "Core/Simulation.hpp"
+#include "Data/BinaryOperatedVector.hpp"
 
 std::shared_ptr<ECellEngine::Data::Module> ECellEngine::Core::Simulation::AddModule(const std::string& _filePath)
 {
@@ -23,26 +24,24 @@ std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::stri
 	}
 }
 
-const std::size_t ECellEngine::Core::Simulation::FindModuleIdx(const char* _moduleName)
+const std::size_t ECellEngine::Core::Simulation::FindModuleIdx(const std::size_t _moduleID)
 {
-	for (std::size_t i = 0; i<modules.size(); ++i)
+	static Data::Module::CompareID compareID;
+	std::vector<std::shared_ptr<Data::Module>>::iterator it = Data::BinaryOperation::LowerBound(modules.begin(), modules.end(), _moduleID, compareID);
+	if (it != modules.end() && (*it)->id == _moduleID)
 	{
-		if (std::strcmp(modules[i].get()->GetName(), _moduleName) == 0)
-		{
-			return i;
-		}
+		return std::distance(modules.begin(), it);
 	}
 	return SIZE_MAX;
 }
 
-const std::size_t ECellEngine::Core::Simulation::FindSolverIdx(const char* _solverName)
+const std::size_t ECellEngine::Core::Simulation::FindSolverIdx(const std::size_t _solverID)
 {
-	for (std::size_t i = 0; i < solvers.size(); ++i)
+	static Solvers::Solver::CompareID compareID;
+	std::vector<std::shared_ptr<Solvers::Solver>>::iterator it = Data::BinaryOperation::LowerBound(solvers.begin(), solvers.end(), _solverID, compareID);
+	if (it != solvers.end() && (*it)->id == _solverID)
 	{
-		if (solvers[i].get()->GetName() == _solverName)
-		{
-			return i;
-		}
+		return std::distance(solvers.begin(), it);
 	}
 	return SIZE_MAX;
 }
