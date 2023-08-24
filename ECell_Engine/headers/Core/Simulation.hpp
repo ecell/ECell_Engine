@@ -258,18 +258,26 @@ namespace ECellEngine::Core
 		}
 
 		/*!
-		@brief Removes (destroy) the module at position @p _idx in ::modules
-		@param _idx The position of the module to remove from ::modules.
-		@todo Definition.
+		@brief Removes (destroy) the module with ID @p _id in ::modules
+		@details This is "easy" because ::moduleSolverLinks is sorted on the module 
+				 index first. So, we can get the range (2 binary searches) where the
+				 module is in ::moduleSolverLinks and remove all the pairs in one go.
+		@param _id The ID of the module to remove from ::modules.
 		*/
-		void RemoveModule(const std::size_t& _idx);
+		void RemoveModule(const std::size_t _id);
 
 		/*!
-		@brief Removes (destroy) the solver at position @p _idx in ::solvers
-		@param _idx The position of the solver to remove from ::solvers.
-		@todo Definition.
+		@brief Removes (destroy) the solver with ID @p _id in ::solvers
+		@details This is more "complicated" than ::RemoveModule(const std::size_t _id).
+				 because ::moduleSolverLinks is sorted on the module index first and then
+				 the solver index. So, we cannot find a range of pairs to remove in one go.
+				 Rather, we need to iterate over the list of ::moduleSolverLinks and remove
+				 them one by one. This can be done with k binary searches where k is the
+				 number of modules linked to the solver we want to remove. Each binary search
+				 will be on a smaller range than the previous one as we move forward.
+		@param _id The ID of the solver to remove from ::solvers.
 		*/
-		void RemoveSolver(const std::size_t& _idx);
+		void RemoveSolver(const std::size_t _id);
 
 		/*!
 		@brief API to execute code once before the simulation's update loop.

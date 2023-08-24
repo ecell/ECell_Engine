@@ -54,16 +54,39 @@ const std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator ECell
 	return Util::BinarySearch::LowerBound(solvers.begin(), solvers.end(), _solverID, compareID);
 }
 
-void ECellEngine::Core::Simulation::RemoveModule(const std::size_t& _idx)
+void ECellEngine::Core::Simulation::RemoveModule(const std::size_t _id)
 {
-	//delete the module
-	//remove the key/value pair of the ModuleToSolverMap if the module was used there
+	//Find the module in the ::modules list
+	std::vector<std::shared_ptr<Data::Module>>::iterator moduleIt = FindModule(_id);
+	std::pair<std::size_t, std::size_t> value(std::distance(modules.begin(), moduleIt), 0);
+
+	//delete the module from the ::modules list
+	modules.erase(moduleIt);
+
+	//Find the Range of the module in the ::moduleSolverLinks list
+	static CompareLinksFirst compareLinksFirst;
+	std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = Util::BinarySearch::LowerBound(moduleSolverLinks.begin(), moduleSolverLinks.end(), value, compareLinksFirst);
+	std::vector<std::pair<std::size_t, std::size_t>>::iterator upperBound = Util::BinarySearch::UpperBound(lowerBound, moduleSolverLinks.end(), value, compareLinksFirst);
+
+	//delete the module from the ::moduleSolverLinks list
+	moduleSolverLinks.erase(lowerBound, upperBound);
 }
 
-void ECellEngine::Core::Simulation::RemoveSolver(const std::size_t& _idx)
+void ECellEngine::Core::Simulation::RemoveSolver(const std::size_t _id)
 {
-	//delete the solver
-	//remove the key/value pair of the ModuleToSolverMap if the solver was used there
+	//Find the solver in the ::solvers list
+	std::vector<std::shared_ptr<Solvers::Solver>>::iterator solverIt = FindSolver(_id);
+	std::pair<std::size_t, std::size_t> value(0, std::distance(solvers.begin(), solverIt));
+
+	solvers.erase(solverIt);
+
+	//Iterate with binary search to find and delete all the links using this solver until the end of the ::moduleSolverLinks list
+	static CompareLinksSecond compareLinksSecond;
+	std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = Util::BinarySearch::LowerBound(moduleSolverLinks.begin(), moduleSolverLinks.end(), value, compareLinksSecond);
+	while (lowerBound != moduleSolverLinks.end())
+	{
+		lowerBound = Util::BinarySearch::LowerBound(moduleSolverLinks.erase(lowerBound), moduleSolverLinks.end(), value, compareLinksSecond);
+	}
 }
 
 void ECellEngine::Core::Simulation::Start()

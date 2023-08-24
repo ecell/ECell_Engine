@@ -27,12 +27,6 @@ namespace ECellEngine::Editor::Widget::MNBV
 		*/
 		ECellEngine::Core::IDProvider uniqueId;
 
-		/*!
-		@brief The instance of styling data for the elements (nodes, pins, links)
-				of this context.
-		*/
-		Style::NodeEditorStyle style;
-
 #pragma region Nodes Lists
 
 		/*!

@@ -115,6 +115,7 @@ void ECellEngine::Editor::Utility::MNBV::AssetNodeData::OutputDisconnect(NodeInp
 	//TODO: remove the link between the solver and the asset data in the simulation
 	//		by calling the appropriate command in the engine (also TODO)
 	//		This can be done here or in SolverNodeData::OutputDisconnect()
+
 }
 
 void ECellEngine::Editor::Utility::MNBV::AssetNodeData::ResetNLBSDUtilityStates() noexcept
