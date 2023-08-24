@@ -450,13 +450,14 @@ void ECellEngine::Editor::Widget::MNBV::RemoveAssetNode(const std::size_t _idx)
 
 void ECellEngine::Editor::Widget::MNBV::SendEngineTASToMCmd(const char* _simuIdx, CommandsManager* _cmdsManager)
 {
-    while (s_mnbvCtxt->countTASToMCmds > 0)
+    while (s_mnbvCtxt->countTASToMCmds)
     {
         _cmdsManager->interpretCommand({
-            "tryAttachSolver",
+            "tryLinkModuleWithSolver",
             _simuIdx,
             std::to_string(s_mnbvCtxt->TASToMCmds.back().solverID),
             std::to_string(s_mnbvCtxt->TASToMCmds.back().moduleID) });
+        s_mnbvCtxt->TASToMCmds.pop_back();
         s_mnbvCtxt->countTASToMCmds--;
     }
 }

@@ -59,24 +59,18 @@ namespace ECellEngine::Core
 		std::vector<std::shared_ptr<Solver>> solvers;
 
 		/*!
-		@brief The list of models assets which have a solver attached to them.
-		@details  First item is the index to find the module in the vector ::modeuls.
-				  Second item is the index to find the module in the vector ::solvers.
+		@brief The list of module-solver links (the module is used as input by
+				the solver).
+		@details This is list is sorted by the module index first and then by the
+				 solver index.
+				 First item is the index to find the module in the vector ::modules.
+				 Second item is the index to find the module in the vector ::solvers.
+				 It is possible to do a stable insertion of any new link by using
+				 ::FindModuleSolverLinkIdx(const std::size_t _moduleIdx, const std::size_t _solverIdx)
+				 to find the pointer to the position where to insert the new link.
+				 
 		*/
-		std::vector<std::pair<std::size_t, std::size_t>> modulesToSolversTable;
-
-		/*!
-		@brief Scans to find if either the module at index @p _modIdx in ::modules or
-				the solver at index @p _solverIdx in ::solvers are present in
-				::modulesToSolversTable.
-		@returns A pair of search reasults. At the first position is the search
-				 result for the module; at the second position is the search result
-				 for the solver. The search results are pairs as well with a boolean
-				 at the first position and an idex at the second position. If the
-				 boolean is TRUE, then we found a module (or solver) and the position
-				 of indicated by the index.
-		*/
-		const std::pair<std::pair<bool, std::size_t>, std::pair<bool, std::size_t>> ScanModuleToSolverTable(const std::size_t& _solverIdx, const std::size_t& _modIdx);
+		std::vector<std::pair<std::size_t, std::size_t>> moduleSolverLinks;
 
 		/*!
 		@brief The simulation's timing information
@@ -85,6 +79,42 @@ namespace ECellEngine::Core
 		Timer timer;
 
 	public:
+
+		/*!
+		@brief The comparison function object to compare the first item of a pair
+				in ::moduleSolverLinks.
+		*/
+		struct CompareLinksFirst
+		{
+			/*!
+			@brief Compares if @p _lhs.first is less than @p _rhs.first.
+			@param _lhs The left hand side of the comparison.
+			@param _rhs The right hand side of the comparison.
+			@return True if @p _lhs.first < @p _rhs.first; false otherwise.
+			*/
+			bool operator()(const std::pair<std::size_t, std::size_t>& _lhs, const std::pair<std::size_t, std::size_t>& _rhs) const
+			{
+				return _lhs.first < _rhs.first;
+			}
+		};
+
+		/*!
+		@brief The comparison function object to compare the second item of a pair
+				in ::moduleSolverLinks.
+		*/
+		struct CompareLinksSecond
+		{
+			/*!
+			@brief Compares if @p _lhs.second is less than @p _rhs.second.
+			@param _lhs The left hand side of the comparison.
+			@param _rhs The right hand side of the comparison.
+			@return True if @p _lhs.second < @p _rhs.second; false otherwise.
+			*/
+			bool operator()(const std::pair<std::size_t, std::size_t>& _lhs, const std::pair<std::size_t, std::size_t>& _rhs) const
+			{
+				return _lhs.second < _rhs.second;
+			}
+		};
 
 		/*!
 		@brief The unique identifier of this simulation.
@@ -178,26 +208,45 @@ namespace ECellEngine::Core
 		}
 
 		/*
-		@brief Finds the index of the module which name matches the argument
+		@brief Finds the iterator of the module which ID matches the argument
 				@p _moduleID.
-		@details Uses a binary search from the start of the list of ::modules.
-		@param _moduleID The ID of the module which index to look for.
-		@returns The index of the first encounterd module which name matches
+		@details Uses a binary search from the start to the end of the list of ::modules.
+		@param _moduleID The ID of the module which iterator to look for.
+		@returns The iterator of the first encounterd module which ID matches
 				 the argument @p _moduleID. Returns @a SIZE_MAX if no match
 				 was found.
 		*/
-		const std::size_t FindModuleIdx(const std::size_t _moduleID);
+		const std::vector<std::shared_ptr<Data::Module>>::iterator FindModule(const std::size_t _moduleID);
+
+		/*!
+		brief Finds the pointer to the first pair <moduleID, solverID> in ::moduleSolverLinks
+			  which moduleID is less than @p _moduleID and solverID is less than @p _solverID.
+		@details Uses 3 binary searches: two to find the range (lower & upper bounds)
+				 of modules with the same ID as @p _moduleID and one to find
+				 the solver with ID @p _solverID in the range found by the
+				 first two searches.
+				 
+				 This is possible because ::moduleSolverLinks
+				 is sorted on first the moduleID and then the solverID.
+		@param _moduleID The ID of the module to look for in the pairs.
+		@param _solverID The ID of the solver to look for in the pairs.
+		@returns The pointer to the first pair <moduleID, solverID> in ::moduleSolverLinks
+				 which moduleID is less than @p _moduleID and solverID is less
+				 than @p _solverID. Returns @a ::moduleSolverLinks.end() if no
+				 match was found.
+		*/
+		const std::vector<std::pair<std::size_t, std::size_t>>::iterator FindModuleSolverLinkLB(const std::size_t _moduleID, const std::size_t _solverID);
 
 		/*
-		@brief Finds the index of the solver which name matches the argument
+		@brief Finds the iterator of the solver which ID matches the argument
 				@p _solverID.
-		@details Implements a naive linear search on the list of ::solvers.
-		@param _solverID The ID of the solver which index to look for.
-		@returns The index of the first encounterd solver which name matches
+		@details Uses a binary search from the start to the end of the list of ::solvers.
+		@param _solverID The ID of the solver which iterator to look for.
+		@returns The iterator of the first encounterd solver which ID matches
 				 the argument @p _solverID. Returns @a SIZE_MAX if no match
 				 was found.
 		*/
-		const std::size_t FindSolverIdx(const std::size_t _solverID);
+		const std::vector<std::shared_ptr<Solvers::Solver>>::iterator FindSolver(const std::size_t _solverID);
 
 		/*!
 		@brief Computes all the dependencies between the datastructures loaded
@@ -229,12 +278,12 @@ namespace ECellEngine::Core
 
 		/*!
 		@brief Tries to link a solver to a module.
-		@detials Overrides any previous link the solver and module may have with
+		@details Overrides any previous link the solver and module may have with
 				 ofther module or solver respectively.
-		@param _solverIdx The position of the solver in ::solvers to try to attach.
-		@param _moduleIdx The position of the module in ::modules we try to attach to.
+		@param _solverID The ID of the solver in ::solvers to try to attach.
+		@param _moduleID The ID of the module in ::modules we try to attach to.
 		*/
-		void TryAttachSolverToModule(const std::size_t& _solverIdx, const std::size_t& _moduleIdx);
+		void TryModuleSolverLink(const std::size_t& _solverID, const std::size_t& _moduleID);
 
 		/*!
 		@brief Updates one step of duration @p _deltaTime for every linked solver

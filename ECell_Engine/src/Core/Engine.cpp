@@ -32,7 +32,7 @@ void ECellEngine::Core::Engine::Start()
 	commandsManager.registerCommand(std::make_shared<StepSimulationBackwardCommand>(simulationManager));
 	commandsManager.registerCommand(std::make_shared<StepSimulationForwardCommand>(simulationManager));
 	commandsManager.registerCommand(std::make_shared<StopSimulationCommand>(simulationManager));
-	commandsManager.registerCommand(std::make_shared<TryAttachSolverToModuleCommand>(simulationManager));
+	commandsManager.registerCommand(std::make_shared<TryModuleSolverLinkCommand>(simulationManager));
 
 	//Creates a new simulation by default.
 	simulationManager.NewSimulation();

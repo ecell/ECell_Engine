@@ -24,49 +24,34 @@ std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::stri
 	}
 }
 
-const std::size_t ECellEngine::Core::Simulation::FindModuleIdx(const std::size_t _moduleID)
+const std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator ECellEngine::Core::Simulation::FindModule(const std::size_t _moduleID)
 {
 	static Data::Module::CompareID compareID;
-	std::vector<std::shared_ptr<Data::Module>>::iterator it = Util::BinarySearch::LowerBound(modules.begin(), modules.end(), _moduleID, compareID);
-	if (it != modules.end() && (*it)->id == _moduleID)
-	{
-		return std::distance(modules.begin(), it);
-	}
-	return SIZE_MAX;
+	return Util::BinarySearch::LowerBound(modules.begin(), modules.end(), _moduleID, compareID);
 }
 
-const std::size_t ECellEngine::Core::Simulation::FindSolverIdx(const std::size_t _solverID)
+const std::vector<std::pair<std::size_t, std::size_t>>::iterator ECellEngine::Core::Simulation::FindModuleSolverLinkLB(const std::size_t _moduleIdx, const std::size_t _solverIdx)
+{
+	static CompareLinksFirst compareLinksFirst;
+	static CompareLinksSecond compareLinksSecond;
+
+	std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = Util::BinarySearch::LowerBound(moduleSolverLinks.begin(), moduleSolverLinks.end(), std::pair(_moduleIdx, _solverIdx), compareLinksFirst);
+
+	//if the module was not found, return the lower bound directly (end())
+	if (lowerBound == moduleSolverLinks.end())
+	{
+		return lowerBound;
+	}
+
+	std::vector<std::pair<std::size_t, std::size_t>>::iterator upperBound = Util::BinarySearch::UpperBound(lowerBound, moduleSolverLinks.end(), std::pair(_moduleIdx, _solverIdx), compareLinksFirst);
+
+	return Util::BinarySearch::LowerBound(lowerBound, upperBound, std::pair(_moduleIdx, _solverIdx), compareLinksSecond);
+}
+
+const std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator ECellEngine::Core::Simulation::FindSolver(const std::size_t _solverID)
 {
 	static Solvers::Solver::CompareID compareID;
-	std::vector<std::shared_ptr<Solvers::Solver>>::iterator it = Util::BinarySearch::LowerBound(solvers.begin(), solvers.end(), _solverID, compareID);
-	if (it != solvers.end() && (*it)->id == _solverID)
-	{
-		return std::distance(solvers.begin(), it);
-	}
-	return SIZE_MAX;
-}
-
-const std::pair<std::pair<bool, std::size_t>, std::pair<bool, std::size_t>>
-	ECellEngine::Core::Simulation::ScanModuleToSolverTable(const std::size_t& _moduleIdx, const std::size_t& _solverIdx)
-{
-	std::pair<bool, std::size_t> moduleScan = std::pair(false, 0);
-	std::pair<bool, std::size_t> solverScan = std::pair(false, 0);
-	for (std::size_t i = 0; i < modulesToSolversTable.size(); i++)
-	{
-		if (modulesToSolversTable[i].first == _moduleIdx)
-		{
-			moduleScan.first = true;
-			moduleScan.second = i;
-		}
-
-		if (modulesToSolversTable[i].second == _solverIdx)
-		{
-			solverScan.first = true;
-			solverScan.second = i;
-		}
-	}
-
-	return std::pair(moduleScan, solverScan);
+	return Util::BinarySearch::LowerBound(solvers.begin(), solvers.end(), _solverID, compareID);
 }
 
 void ECellEngine::Core::Simulation::RemoveModule(const std::size_t& _idx)
@@ -84,45 +69,49 @@ void ECellEngine::Core::Simulation::RemoveSolver(const std::size_t& _idx)
 void ECellEngine::Core::Simulation::Start()
 {
 	timer.SetStartTime();
-	for (std::vector<std::pair<std::size_t, std::size_t>>::iterator it = modulesToSolversTable.begin(); it != modulesToSolversTable.end(); it++)
+	for (std::vector<std::pair<std::size_t, std::size_t>>::iterator it = moduleSolverLinks.begin(); it != moduleSolverLinks.end(); it++)
 	{
 		solvers[(*it).second].get()->Start();
 	}
 }
 
-void ECellEngine::Core::Simulation::TryAttachSolverToModule(const std::size_t& _solverIdx, const std::size_t& _moduleIdx)
+void ECellEngine::Core::Simulation::TryModuleSolverLink(const std::size_t& _solverID, const std::size_t& _moduleID)
 {
+	//search for the module in the ::modules list
+	std::vector<std::shared_ptr<Data::Module>>::iterator moduleIt = FindModule(_moduleID);
+	//TODO: return an error code if the module is not found
+
+	//search for the solver in the ::solvers list
+	std::vector<std::shared_ptr<Solvers::Solver>>::iterator solverIt = FindSolver(_solverID);
+	//TODO:return an error code if the solver is not found
+	
 	//If the type of the solver is adapted for the module
-	if (modules[_moduleIdx].get()->IsValidSolverType(solvers[_solverIdx].get()))
+	if ((*moduleIt)->IsValidSolverType(solverIt->get()))
 	{
-		auto search = ScanModuleToSolverTable(_moduleIdx, _solverIdx);
+		//We search for the lower bound where to insert the pair <moduleIdx, solverIdx> in ::moduleSolverLinks
+		std::size_t moduleIdx = std::distance(modules.begin(), moduleIt);
+		std::size_t solverIdx = std::distance(solvers.begin(), solverIt);
+		std::vector<std::pair<std::size_t, std::size_t>>::iterator it = FindModuleSolverLinkLB(moduleIdx, solverIdx);
 
-		//If the module already has a solver attached to it
-		if (search.first.first)
-		{
-			//We remove the pair
-			modulesToSolversTable.erase(modulesToSolversTable.begin() + search.first.second);
-		}
-
-		//If the solver is already attached to another module
-		if (search.second.first)
-		{
-			//We remove the pair
-			modulesToSolversTable.erase(modulesToSolversTable.begin() + search.second.second);
-		}
-
-		//We create the pair in the table to have the binding information
-		modulesToSolversTable.push_back(std::pair(_moduleIdx, _solverIdx));
+		moduleSolverLinks.insert(it, std::pair(moduleIdx, solverIdx));
+				
+		//TODO: Return an error code if the pair <moduleIdx, solverIdx> is already in ::moduleSolverLinks
+		// 
+		// We should also probably return errors in the following cases:
+		//	- TODO: Return an error code if the module is already linked to another solver
+		//	- TODO: Return an error code if the solver is already linked to another module
+		// This will change with introduction of the asset system because it will make sense to allow
+		// multiple reactions or modules to connect to a biochemical solver (for example).
 
 		//We initialize the solver according to the data stored in the module.
-		solvers[_solverIdx]->Initialize(modules[_moduleIdx].get());
+		solvers[solverIdx]->Initialize(modules[moduleIdx].get());
 	}
 }
 
 void ECellEngine::Core::Simulation::Update(const float& _deltaTime)
 {
 	timer.Increment(_deltaTime);
-	for (std::vector<std::pair<std::size_t, std::size_t>>::iterator it = modulesToSolversTable.begin(); it != modulesToSolversTable.end(); it++)
+	for (std::vector<std::pair<std::size_t, std::size_t>>::iterator it = moduleSolverLinks.begin(); it != moduleSolverLinks.end(); it++)
 	{
 		solvers[(*it).second].get()->Update(timer);
 	}
