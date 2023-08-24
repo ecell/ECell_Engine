@@ -58,28 +58,28 @@ namespace ECellEngine::Util
 				 This is to avoid to include the whole <algorithm> header.
 		*/
 		template<class ForwardIt, class T, class Compare>
-		static ForwardIt LowerBound(ForwardIt first, ForwardIt last, const T& value, Compare comp)
+		static ForwardIt LowerBound(ForwardIt _first, ForwardIt _last, const T& _value, Compare _comp)
 		{
 			ForwardIt it;
 			typename std::iterator_traits<ForwardIt>::difference_type count, step;
-			count = std::distance(first, last);
+			count = std::distance(_first, _last);
 
 			while (count > 0)
 			{
-				it = first;
+				it = _first;
 				step = count / 2;
 				std::advance(it, step);
 
-				if (comp(*it, value))
+				if (_comp(*it, _value))
 				{
-					first = ++it;
+					_first = ++it;
 					count -= step + 1;
 				}
 				else
 					count = step;
 			}
 
-			return first;
+			return _first;
 		}
 
 		/*!
@@ -107,7 +107,7 @@ namespace ECellEngine::Util
 				step = count / 2;
 				std::advance(it, step);
 
-				if (!(*it < _value))
+				if (!(_value < *it))
 				{
 					_first = ++it;
 					count -= step + 1;
@@ -134,28 +134,28 @@ namespace ECellEngine::Util
 				 This is to avoid to include the whole <algorithm> header.
 		*/
 		template<class ForwardIt, class T, class Compare>
-		static ForwardIt UpperBound(ForwardIt first, ForwardIt last, const T& value, Compare comp)
+		static ForwardIt UpperBound(ForwardIt _first, ForwardIt _last, const T& _value, Compare _comp)
 		{
 			ForwardIt it;
 			typename std::iterator_traits<ForwardIt>::difference_type count, step;
-			count = std::distance(first, last);
+			count = std::distance(_first, _last);
 
 			while (count > 0)
 			{
-				it = first;
+				it = _first;
 				step = count / 2;
 				std::advance(it, step);
 
-				if (!(comp(*it, value)))
+				if (!(_comp(_value, *it)))
 				{
-					first = ++it;
+					_first = ++it;
 					count -= step + 1;
 				}
 				else
 					count = step;
 			}
 
-			return first;
+			return _first;
 		}
 	};
 
