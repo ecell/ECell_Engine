@@ -366,6 +366,17 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawPreferencesPopup()
     }
 }
 
+void ECellEngine::Editor::Widget::ModelExplorerWidget::RemoveModelNodeBasedViewerWidget(std::size_t _idx)
+{
+    if (_idx >= mnbViewers.size())
+    {
+        ECellEngine::Logging::Logger::LogError("Tried to destroy a ModelNodeBasedViewerWidget at an index beyond the size of current list.");
+        return;
+    }
+    ax::NodeEditor::DestroyEditor(mnbViewers[_idx].editorCtxt);
+    mnbViewers.erase(mnbViewers.begin() + _idx);
+}
+
 void ECellEngine::Editor::Widget::ModelExplorerWidget::RemoveModelNodeBasedViewerContext(std::size_t _idx)
 {
     if (_idx >= mnbvCtxts.size())

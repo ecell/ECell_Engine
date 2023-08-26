@@ -189,10 +189,16 @@ namespace ECellEngine::Editor::Widget
 		}
 
 		/*!
-		@brief Erases the node editor styles struct stored a index @p
-				_idx in ::mnbvCtxts.
-		@param _idx The index of the style struct to erase from
+		@brief Erases the model node-based viewer at index @p _idx in ::mnbViewers.
+		@param _idx The index of the viewer to erase from ::mnbViewers.
+		@remarks Checks that @p _idx is not out of bounds of ::mnbViewers.
+		*/
+		void RemoveModelNodeBasedViewerWidget(std::size_t _idx);
+
+		/*!
+		@brief Erases the node editor styles struct stored a index @p _idx in 
 				::mnbvCtxts.
+		@param _idx The index of the style struct to erase from ::mnbvCtxts.
 		@remarks Checks that @p _idx is not out of bounds of ::mnbvCtxts.
 		*/
 		void RemoveModelNodeBasedViewerContext(std::size_t _idx);
