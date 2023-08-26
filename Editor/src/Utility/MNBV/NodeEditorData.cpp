@@ -346,14 +346,6 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Inpu
 	}
 }
 
-//void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::InputRefresh(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
-//{
-//	if (_nodeInputPinData->id == inputPins[ModifyDataStateValueEventNodeData::InputPin_FloatValue].id)
-//	{
-//		data->newValue = (float*)_data;
-//	}
-//}
-
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
 	//There is only one output pin (Modify Pin), so we don't need to check the id of the output pin
@@ -513,7 +505,16 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::Update() noexcept
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
 {
 	//There is only one input pin for the solver node so we don't need to check the id at this time
-	Widget::MNBV::QueueEngineTASToMCmd(((Data::Module*)_data)->id, data->id);
+	
+	//Widget::MNBV::QueueEngineTASToMCmd(((Data::Module*)_data)->id, data->id);
+
+	//Get access to commands manager to call the command that attaches the solver to the asset data
+
+	//_cmdsManager->InterpretCommand({
+	//            "tryLinkModuleWithSolver",
+	//            _simuIdx,
+	//            std::to_string(s_mnbvCtxt->TASToMCmds.back().solverID),
+	//            std::to_string(s_mnbvCtxt->TASToMCmds.back().moduleID) })
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)

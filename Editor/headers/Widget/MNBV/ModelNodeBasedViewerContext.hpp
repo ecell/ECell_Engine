@@ -150,42 +150,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 		*/
 		bool authorizedDynamicLinks[Utility::MNBV::PinType_Count][Utility::MNBV::PinType_Count]{};
 
-		/*!
-		@brief A local struct to encapsulate the parameters mandatory to send a
-				a command to the engine to try to attach a solver to an asset.
-		*/
-		struct EngineTASToMCmdParameter
-		{
-			/*!
-			@brief The name of the module we try to attach a solver to.
-			*/
-			std::size_t moduleID;
-
-			/*!
-			@brief The name of the solver we try to attach to a module.
-			*/
-			std::size_t solverID;
-
-			EngineTASToMCmdParameter(const std::size_t _moduleID, const std::size_t _solverID) :
-				moduleID{_moduleID}, solverID{ _solverID }
-			{
-
-			}
-		};
-
-		/*!
-		@brief The number of queue commands parameters in ::TASToMCmds.
-		*/
-		unsigned short countTASToMCmds;
-
-		/*!
-		@brief The queue of parameters to be sent as part of commands to the
-				engine core to try to attach a solver to a module.
-		*/
-		std::vector<EngineTASToMCmdParameter> TASToMCmds;
-
 		ModelNodeBasedViewerContext() :
-			uniqueId{ 0 }, countTASToMCmds{ 0 }
+			uniqueId{ 0 }
 		{
 			authorizedDynamicLinks[Utility::MNBV::PinType_Asset][Utility::MNBV::PinType_Asset] = true;
 			

@@ -1,5 +1,13 @@
 #pragma once
 
+/*!
+@file ModelNodeBasedViewerGlobal.hpp
+@brief Global API to access, query, add, remove, ... the nodes and links of
+		ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext.
+@details Make sure to use ECellEngine::Editor::Widget::MNBV::SetCurrentMNBVContext(ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* _ctxt)
+			before using these global functions.
+*/
+
 #include "IO/CommandsManager.hpp"
 #include "Core/Simulation.hpp"
 #include "Data/BiochemicalModule.hpp"
@@ -17,15 +25,6 @@ namespace ECellEngine::Editor::Widget::MNBV
 {
 	//forward declaration
 	struct ModelNodeBasedViewerContext;
-
-	/*!
-	@file ModelNodeBasedViewerGlobal.hpp
-	@brief Global API to access, query, add, remove, ... the nodes and links of
-			ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext.
-	@details Make sure to use ECellEngine::Editor::Widget::MNBV::SetCurrentMNBVContext(ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* _ctxt)
-			 before using these global functions.
-	*/
-
 
 	/*!
 	@brief Adds an ECellEngine::Editor::Utility::MNBV::AssetNodeData in
@@ -174,29 +173,10 @@ namespace ECellEngine::Editor::Widget::MNBV
 	bool IsDynamicLinkAuthorized(Utility::MNBV::PinType _startPinType, Utility::MNBV::PinType _endPinType);
 
 	/*!
-	@brief Queues a command to send to the core of the engine to try to attach
-			the solver of id @p _solverID to the module of id @p _moduleID.
-	@details In fact, it doesn't queue the command but an instance of
-			ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EngineTASToMCmdParameter
-			which stores the parameters of the command. The queued commands are
-			sent to the engine once the MNBV context has finished drawing the
-			node and processing the users interactions of this frame.
-	@see ECellEngine::Editor::Utility::MNBV::SendEngineTASToMCmd(const char* _simuIdx, ECellEngine::IO::CommandsManager* _cmdsManager)
-	*/
-	void QueueEngineTASToMCmd(const std::size_t _moduleID, const std::size_t _solverID);
-
-	/*!
 	@brief Removes as asset node from ModelNodeBasedViewerContext::assetNodes
 	@param _idx The index of the node to erase from ModelNodeBasedViewerContext::assetNodes.
 	*/
 	void RemoveAssetNode(const std::size_t _idx);
-
-	/*!
-	@brief Sends the queue commands to the core of the engine to try to attach
-			the solver of id @p _solverID to the module of id @p _moduleID.
-	@see ECellEngine::Editor::Utility::MNBV::QueueEngineTASToMCmd(const std::size_t _moduleID, const std::size_t _solverID)
-	*/
-	void SendEngineTASToMCmd(const char* _simuIdx, CommandsManager* _cmdsManager);
 
 	/*!
 	@brief Sets the current context.

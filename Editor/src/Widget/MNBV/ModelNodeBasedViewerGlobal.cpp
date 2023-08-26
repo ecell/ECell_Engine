@@ -435,12 +435,12 @@ bool ECellEngine::Editor::Widget::MNBV::IsDynamicLinkAuthorized(Utility::MNBV::P
     return s_mnbvCtxt->authorizedDynamicLinks[_startPinType][_endPinType];
 }
 
-void ECellEngine::Editor::Widget::MNBV::QueueEngineTASToMCmd(const std::size_t _moduleID, const std::size_t _solverID)
-{
-    s_mnbvCtxt->TASToMCmds.insert(s_mnbvCtxt->TASToMCmds.begin(),
-        ModelNodeBasedViewerContext::EngineTASToMCmdParameter(_moduleID, _solverID));
-    s_mnbvCtxt->countTASToMCmds++;
-}
+//void ECellEngine::Editor::Widget::MNBV::QueueEngineTASToMCmd(const std::size_t _moduleID, const std::size_t _solverID)
+//{
+//    s_mnbvCtxt->TASToMCmds.insert(s_mnbvCtxt->TASToMCmds.begin(),
+//        ModelNodeBasedViewerContext::EngineTASToMCmdParameter(_moduleID, _solverID));
+//    s_mnbvCtxt->countTASToMCmds++;
+//}
 
 void ECellEngine::Editor::Widget::MNBV::RemoveAssetNode(const std::size_t _idx)
 {
@@ -448,16 +448,16 @@ void ECellEngine::Editor::Widget::MNBV::RemoveAssetNode(const std::size_t _idx)
     s_mnbvCtxt->assetNodes.erase(it);
 }
 
-void ECellEngine::Editor::Widget::MNBV::SendEngineTASToMCmd(const char* _simuIdx, CommandsManager* _cmdsManager)
-{
-    while (s_mnbvCtxt->countTASToMCmds)
-    {
-        _cmdsManager->InterpretCommand({
-            "tryLinkModuleWithSolver",
-            _simuIdx,
-            std::to_string(s_mnbvCtxt->TASToMCmds.back().solverID),
-            std::to_string(s_mnbvCtxt->TASToMCmds.back().moduleID) });
-        s_mnbvCtxt->TASToMCmds.pop_back();
-        s_mnbvCtxt->countTASToMCmds--;
-    }
-}
+//void ECellEngine::Editor::Widget::MNBV::SendEngineTASToMCmd(const char* _simuIdx, CommandsManager* _cmdsManager)
+//{
+//    while (s_mnbvCtxt->countTASToMCmds)
+//    {
+//        _cmdsManager->InterpretCommand({
+//            "tryLinkModuleWithSolver",
+//            _simuIdx,
+//            std::to_string(s_mnbvCtxt->TASToMCmds.back().solverID),
+//            std::to_string(s_mnbvCtxt->TASToMCmds.back().moduleID) });
+//        s_mnbvCtxt->TASToMCmds.pop_back();
+//        s_mnbvCtxt->countTASToMCmds--;
+//    }
+//}
