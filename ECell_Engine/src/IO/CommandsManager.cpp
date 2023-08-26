@@ -1,8 +1,8 @@
 #include "IO/CommandsManager.hpp"
 
-bool ECellEngine::IO::CommandsManager::interpretCommand(std::vector<std::string> const& _cmdSplit)
+bool ECellEngine::IO::CommandsManager::InterpretCommand(std::vector<std::string> const& _cmdSplit)
 {
-	std::shared_ptr<Command> matchingCommand = tryGetRegisteredCommand(_cmdSplit[0]);
+	std::shared_ptr<Command> matchingCommand = TryGetRegisteredCommand(_cmdSplit[0]);
 	std::string msg = "Command: ";
 	if (matchingCommand.get() != nullptr)
 	{
@@ -12,7 +12,7 @@ bool ECellEngine::IO::CommandsManager::interpretCommand(std::vector<std::string>
 			msg += " " + _cmdSplit[i];
 		}
 		ECellEngine::Logging::Logger::LogTrace(msg.c_str());
-		return matchingCommand->execute(_cmdSplit);
+		return matchingCommand->Execute(_cmdSplit);
 	}
 	else
 	{
@@ -22,12 +22,12 @@ bool ECellEngine::IO::CommandsManager::interpretCommand(std::vector<std::string>
 	}
 }
 
-bool ECellEngine::IO::CommandsManager::registerCommand(std::shared_ptr<Command> _command)
+bool ECellEngine::IO::CommandsManager::RegisterCommand(std::shared_ptr<Command> _command)
 {
-	return commands.emplace(_command->getName(), _command).second;
+	return commands.emplace(_command->GetName(), _command).second;
 }
 
-std::shared_ptr<ECellEngine::IO::Command> ECellEngine::IO::CommandsManager::tryGetRegisteredCommand(std::string const& commandName)
+std::shared_ptr<ECellEngine::IO::Command> ECellEngine::IO::CommandsManager::TryGetRegisteredCommand(std::string const& commandName)
 {
 	auto foundCommandIterator = commands.find(commandName);
 

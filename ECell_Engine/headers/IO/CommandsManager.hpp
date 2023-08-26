@@ -31,7 +31,7 @@ namespace ECellEngine::IO
 		@return True if the interpretation and execution of the command succeeds.
 				False, otherwise.
 		*/
-		bool interpretCommand(std::vector<std::string> const& _cmdSplit);
+		bool InterpretCommand(std::vector<std::string> const& _cmdSplit);
 
 		/*
 		@brief Adds @p _command to the register.
@@ -39,7 +39,7 @@ namespace ECellEngine::IO
 		@returns False if the command already exists. True otherwise (and the command
 				 is duely registered).
 		*/
-		bool registerCommand(std::shared_ptr<Command> _command);
+		bool RegisterCommand(std::shared_ptr<Command> _command);
 
 		/*
 		@brief  Searches in the hash table of registered commands whether one has a name
@@ -48,6 +48,6 @@ namespace ECellEngine::IO
 		@returns The command encapsulated as a std::shared_ptr if a match was found. A
 				 nullptr otherwise.
 		*/
-		std::shared_ptr<Command> tryGetRegisteredCommand(std::string const& _commandName);
+		std::shared_ptr<Command> TryGetRegisteredCommand(std::string const& _commandName);
 	};
 }

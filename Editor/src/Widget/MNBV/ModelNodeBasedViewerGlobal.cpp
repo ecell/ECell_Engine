@@ -452,7 +452,7 @@ void ECellEngine::Editor::Widget::MNBV::SendEngineTASToMCmd(const char* _simuIdx
 {
     while (s_mnbvCtxt->countTASToMCmds)
     {
-        _cmdsManager->interpretCommand({
+        _cmdsManager->InterpretCommand({
             "tryLinkModuleWithSolver",
             _simuIdx,
             std::to_string(s_mnbvCtxt->TASToMCmds.back().solverID),

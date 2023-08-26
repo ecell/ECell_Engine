@@ -15,7 +15,7 @@ namespace ECellEngine::IO
 		const std::string name;
 
 	protected:
-		Command(char const* _commandName) :
+		Command(const char* _commandName) :
 			name(_commandName)
 		{
 		};
@@ -27,7 +27,7 @@ namespace ECellEngine::IO
 
 		virtual ~Command() = default;
 
-		inline std::string const& getName() const noexcept
+		inline std::string const& GetName() const noexcept
 		{
 			return name;
 		}
@@ -40,6 +40,6 @@ namespace ECellEngine::IO
 					1 onward.
 		@return True if the execution succeeds. False, otherwise.
 		*/
-		virtual bool execute(const std::vector<std::string>& _args) = 0;
+		virtual bool Execute(const std::vector<std::string>& _args) = 0;
 	};
 }

@@ -2,7 +2,7 @@
 
 #pragma region Simulation Commands
 
-bool ECellEngine::IO::AddModuleCommand::execute(const std::vector<std::string>& _args)
+bool ECellEngine::IO::AddModuleCommand::Execute(const std::vector<std::string>& _args)
 {
 	if (receiver.CountSimulations() == 0)
 	{
@@ -23,7 +23,7 @@ bool ECellEngine::IO::AddModuleCommand::execute(const std::vector<std::string>& 
 	return true;
 }
 
-bool ECellEngine::IO::AddSolverCommand::execute(const std::vector<std::string>& _args)
+bool ECellEngine::IO::AddSolverCommand::Execute(const std::vector<std::string>& _args)
 {
 
 	if (receiver.CountSimulations() == 0)
@@ -42,7 +42,7 @@ bool ECellEngine::IO::AddSolverCommand::execute(const std::vector<std::string>& 
 	receiver.GetSimulation(std::stoi(_args[1]))->AddSolver(_args[2]);
 }
 
-bool ECellEngine::IO::PauseSimulationCommand::execute(const std::vector<std::string>& _args)
+bool ECellEngine::IO::PauseSimulationCommand::Execute(const std::vector<std::string>& _args)
 {
 	if (receiver.CountPlayingSimulations() == 0)
 	{
@@ -61,7 +61,7 @@ bool ECellEngine::IO::PauseSimulationCommand::execute(const std::vector<std::str
 	return true;
 }
 
-bool ECellEngine::IO::PlaySimulationCommand::execute(const std::vector<std::string>& _args)
+bool ECellEngine::IO::PlaySimulationCommand::Execute(const std::vector<std::string>& _args)
 {
 	if (receiver.CountSimulations() == 0)
 	{
@@ -80,13 +80,13 @@ bool ECellEngine::IO::PlaySimulationCommand::execute(const std::vector<std::stri
 	return true;
 }
 
-bool ECellEngine::IO::StepSimulationBackwardCommand::execute(const std::vector<std::string>& _args)
+bool ECellEngine::IO::StepSimulationBackwardCommand::Execute(const std::vector<std::string>& _args)
 {
 	//TODO
 	return false;
 }
 
-bool ECellEngine::IO::StepSimulationForwardCommand::execute(const std::vector<std::string>& _args)
+bool ECellEngine::IO::StepSimulationForwardCommand::Execute(const std::vector<std::string>& _args)
 {
 	if (receiver.CountSimulations() == 0)
 	{
@@ -107,7 +107,7 @@ bool ECellEngine::IO::StepSimulationForwardCommand::execute(const std::vector<st
 	return false;
 }
 
-bool ECellEngine::IO::StopSimulationCommand::execute(const std::vector<std::string>& _args)
+bool ECellEngine::IO::StopSimulationCommand::Execute(const std::vector<std::string>& _args)
 {
 
 	if (receiver.CountPlayingSimulations() == 0)
@@ -127,7 +127,7 @@ bool ECellEngine::IO::StopSimulationCommand::execute(const std::vector<std::stri
 	return true;
 }
 
-bool ECellEngine::IO::TryModuleSolverLinkCommand::execute(const std::vector<std::string>& _args)
+bool ECellEngine::IO::TryModuleSolverLinkCommand::Execute(const std::vector<std::string>& _args)
 {
 	//TODO: check _args[1], _args[2] & _args[3]
 
