@@ -16,7 +16,7 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user add a module in a simulation.
 	*/
-	class AddModuleCommand : public Command
+	class AddModuleCommand final : public Command
 	{
 		ECellEngine::Core::SimulationsManager& receiver;
 
@@ -39,7 +39,7 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user add a solver in a simulation.
 	*/
-	class AddSolverCommand : public Command
+	class AddSolverCommand final : public Command
 	{
 		ECellEngine::Core::SimulationsManager& receiver;
 
@@ -62,7 +62,7 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user pause a simulation.
 	*/
-	class PauseSimulationCommand : public Command
+	class PauseSimulationCommand final : public Command
 	{
 		ECellEngine::Core::SimulationsManager& receiver;
 
@@ -85,7 +85,7 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user start (play) a simulation.
 	*/
-	class PlaySimulationCommand : public Command
+	class PlaySimulationCommand final : public Command
 	{
 		ECellEngine::Core::SimulationsManager& receiver;
 
@@ -108,7 +108,7 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user run one step of a simulation backward.
 	*/
-	class StepSimulationBackwardCommand : public Command
+	class StepSimulationBackwardCommand final : public Command
 	{
 		ECellEngine::Core::SimulationsManager& receiver;
 
@@ -131,7 +131,7 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user run one step of a simulation forward.
 	*/
-	class StepSimulationForwardCommand : public Command
+	class StepSimulationForwardCommand final : public Command
 	{
 		ECellEngine::Core::SimulationsManager& receiver;
 
@@ -154,7 +154,7 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user stop a simulation.
 	*/
-	class StopSimulationCommand : public Command
+	class StopSimulationCommand final : public Command
 	{
 		ECellEngine::Core::SimulationsManager& receiver;
 
@@ -177,7 +177,7 @@ namespace ECellEngine::IO
 	/*
 	@brief The command to let the user bind a solver to a module in a simulation.
 	*/
-	class TryModuleSolverLinkCommand : public Command
+	class TryModuleSolverLinkCommand final : public Command
 	{
 		ECellEngine::Core::SimulationsManager& receiver;
 
