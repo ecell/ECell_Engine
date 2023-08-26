@@ -31,13 +31,6 @@ namespace ECellEngine::Editor::Widget::MNBV
 	class ModelNodeBasedViewerWidget : public Widget
 	{
 	private:
-
-		/*!
-		@brief The index of the NodeEditorContext in ModelExplorerWidget::nodeEditorCtxts
-				that this model viewer is using.
-		*/
-		std::size_t neCtxtIdx = 0;
-
 		/*!
 		@brief The index of the ModelNodeBasedViewerContext in
 				ModelExplorerWidget::mnbvCtxts that this model viewer is using.
@@ -57,17 +50,39 @@ namespace ECellEngine::Editor::Widget::MNBV
 		*/
 		ModelExplorerWidget* rootExplorer;
 
+		/*!
+		@brief The index of the NodeEditorContext this model viewer is using.
+		*/
+		ax::NodeEditor::EditorContext* editorCtxt;
+
 		ModelNodeBasedViewerWidget(Editor& _editor, ModelExplorerWidget* _rootExplorer) :
-			Widget(_editor), rootExplorer{ _rootExplorer }
+			Widget(_editor), rootExplorer{ _rootExplorer }, editorCtxt(ax::NodeEditor::CreateEditor())
 		{
-			
+			//Updates global style values that we want to be applied to everything in our use case.
+			//We don't use the Push/Pop API on purpose because we will not change those values in the
+			//future.
+			ax::NodeEditor::SetCurrentEditor(editorCtxt);
+
+			ax::NodeEditor::Style& axStyle = ax::NodeEditor::GetStyle();
+			Style::NodeEditorStyle& neStyle = Style::EditorStyle::GetMNBVStyle();
+			axStyle.NodeRounding = neStyle.nodeRounding;
+			axStyle.NodeBorderWidth = neStyle.nodeBorderWidth;
+			axStyle.HoveredNodeBorderWidth = neStyle.hoveredNodeBorderWidth;
+			axStyle.SelectedNodeBorderWidth = neStyle.selectedNodeBorderWidth;
+			axStyle.PinBorderWidth = neStyle.pinBorderWidth;
+			axStyle.PinRounding = neStyle.pinRounding;
+
+			ax::NodeEditor::SetCurrentEditor(nullptr);
 		}
 
 		/*!
 		@remarks We are using ::rootExplorer which is forward declared so the
 				 definition of this destructor is in the .cpp.
 		*/
-		~ModelNodeBasedViewerWidget();
+		~ModelNodeBasedViewerWidget()
+		{
+			ax::NodeEditor::DestroyEditor(editorCtxt);
+		}
 
 		void Awake() override;
 

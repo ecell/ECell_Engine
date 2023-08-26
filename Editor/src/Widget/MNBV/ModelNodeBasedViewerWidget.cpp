@@ -1,36 +1,11 @@
 #include "Widget/ModelExplorerWidget.hpp"//forward declaration
 #include "Editor.hpp"
 
-ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::~ModelNodeBasedViewerWidget()
-{
-    rootExplorer->RemoveNodeEditorContext(neCtxtIdx);
-}
-
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Awake()
 {
-    ax::NodeEditor::Config nodeConfig;
-
-    //Create a new Editor context and add it to the list of all Editor contexts managed
-    //by the Model Explorer.
-    rootExplorer->AddNodeEditorContext(ax::NodeEditor::CreateEditor(&nodeConfig));
-    neCtxtIdx = rootExplorer->CountEditorContexts() - 1;
-
     //Create the style data customized for the nodes specific to our use case.
     rootExplorer->AddModelNodeBasedViewerContext();
     mnbvCtxIdx = rootExplorer->CountModelNodeBasedViewerContext() - 1;
-
-    //Updates global style values that we want to be applied to everything in our use case.
-    //We don't use the Push/Pop API on purpose because we will not change those values in the
-    //future.
-    ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(neCtxtIdx));
-    ax::NodeEditor::Style& axStyle = ax::NodeEditor::GetStyle();
-    Style::NodeEditorStyle& neStyle = Style::EditorStyle::GetMNBVStyle();
-    axStyle.NodeRounding = neStyle.nodeRounding;
-    axStyle.NodeBorderWidth = neStyle.nodeBorderWidth;
-    axStyle.HoveredNodeBorderWidth = neStyle.hoveredNodeBorderWidth;
-    axStyle.SelectedNodeBorderWidth = neStyle.selectedNodeBorderWidth;
-    axStyle.PinBorderWidth = neStyle.pinBorderWidth;
-    axStyle.PinRounding = neStyle.pinRounding;
 
     //BUGFIX: Cycle through the canvas once to give it the opportunity to initialize its size.
     //This is work-around for a badly understood bug.
@@ -43,8 +18,6 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Awake()
     //in the Draw function.
     ax::NodeEditor::Begin("Model Exploration Space");
     ax::NodeEditor::End();
-
-    ax::NodeEditor::SetCurrentEditor(nullptr);
 }
 
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
@@ -56,7 +29,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
         ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
 
         ImGui::Separator();
-        ax::NodeEditor::SetCurrentEditor(rootExplorer->GetNodeEditorContext(neCtxtIdx));
+        ax::NodeEditor::SetCurrentEditor(editorCtxt);
         SetCurrentMNBVContext(rootExplorer->GetModelNodeBasedViewerContext(mnbvCtxIdx));
 
         // Start interaction with editor.

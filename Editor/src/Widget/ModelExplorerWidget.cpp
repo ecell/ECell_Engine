@@ -134,26 +134,25 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawMenuBar()
 
 void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawPreferencesPopup()
 {
-    
     if (ImGui::Begin("Preferences", NULL, popupWindowFlags | ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar))
     {
         if (ImGui::BeginTabBar("##ModelExplorerPreferencesTabs"))
         {
             if (ImGui::BeginTabItem("Node Editor Original"))
             {
-                if (CountEditorContexts() > 0)
+                if (mnbViewers.size() > 0)
                 {
-                    static int currentEditorCtxtIdx = 0; // Here we store our selection data as an index.
-                    const std::string combo_preview_value = std::to_string(currentEditorCtxtIdx + 1);  // Pass in the preview value visible before opening the combo (it could be anything)
-                    std::string combo_visualization_value = std::to_string(CountEditorContexts() + 1);
+                    static int currentMNBVIdx = 0; // Here we store our selection data as an index.
+                    const std::string combo_preview_value = std::to_string(currentMNBVIdx + 1);  // Pass in the preview value visible before opening the combo (it could be anything)
+                    std::string combo_visualization_value = std::to_string(mnbViewers.size() + 1);
                     if (ImGui::BeginCombo("Editor Context", combo_preview_value.c_str()))
                     {
-                        for (int n = 0; n < CountEditorContexts(); n++)
+                        for (std::size_t n = 0; n < mnbViewers.size(); n++)
                         {
                             combo_visualization_value = std::to_string(n + 1);
                             if (ImGui::Selectable(combo_visualization_value.c_str()))
                             {
-                                currentEditorCtxtIdx = n;
+                                currentMNBVIdx = n;
                             }
                         }
                         ImGui::EndCombo();
@@ -161,7 +160,7 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawPreferencesPopup()
 
                     if (ImGui::CollapsingHeader("Node Style"))
                     {
-                        ax::NodeEditor::SetCurrentEditor(nodeEditorCtxts[currentEditorCtxtIdx]);
+                        ax::NodeEditor::SetCurrentEditor(mnbViewers[currentMNBVIdx].editorCtxt);
                         ax::NodeEditor::Style& nodeStyle = ax::NodeEditor::GetStyle();
 
                         if (ImGui::TreeNode("Flow"))
@@ -244,7 +243,7 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawPreferencesPopup()
                             alpha_flags = ImGuiColorEditFlags_AlphaPreviewHalf;
                         }
 
-                        ax::NodeEditor::SetCurrentEditor(nodeEditorCtxts[currentEditorCtxtIdx]);
+                        ax::NodeEditor::SetCurrentEditor(mnbViewers[currentMNBVIdx].editorCtxt);
                         ax::NodeEditor::Style& nodeStyle = ax::NodeEditor::GetStyle();
                         for (int i = 0; i < ax::NodeEditor::StyleColor_Count; i++)
                         {
@@ -364,18 +363,6 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawPreferencesPopup()
 
         ImGui::End();
     }
-}
-
-void ECellEngine::Editor::Widget::ModelExplorerWidget::RemoveNodeEditorContext(std::size_t _idx)
-{
-    if (_idx >= nodeEditorCtxts.size())
-    {
-        ECellEngine::Logging::Logger::LogError("Tried to destroy a NodeEditorContext at an index beyond the size of current list.");
-        return;
-    }
-
-    ax::NodeEditor::DestroyEditor(nodeEditorCtxts[_idx]);
-    nodeEditorCtxts.erase(nodeEditorCtxts.begin() + _idx);
 }
 
 void ECellEngine::Editor::Widget::ModelExplorerWidget::RemoveModelNodeBasedViewerContext(std::size_t _idx)

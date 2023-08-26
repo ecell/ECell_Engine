@@ -71,11 +71,6 @@ namespace ECellEngine::Editor::Widget
 				space as a tree.
 		*/
 		ModelHierarchyWidget modelHierarchy;
-		
-		/*!
-		@brief The list of node editor contexts used in this Model Explorer.
-		*/
-		std::vector<ax::NodeEditor::EditorContext*> nodeEditorCtxts;
 
 		/*!
 		@brief The list of model node-based viewer contexts used in this
@@ -127,30 +122,12 @@ namespace ECellEngine::Editor::Widget
 		}
 
 		/*!
-		@brief Adds an editor context (@p _ctxt) to ::nodeEditorCtxts.
-		@param _ctxt The pointer to a ax::NodeEditor::EditorContext to add.
-		@remarks You probably also want to call ::AddNodeEditorContext()
-		*/
-		inline void AddNodeEditorContext(ax::NodeEditor::EditorContext* _ctxt)
-		{
-			nodeEditorCtxts.push_back(_ctxt);
-		}
-
-		/*!
 		@brief Adds a new ECellEngine::Editor::Utility::ModelNodeBasedViewerContext() to
 				::nodeEditorCtxts.
 		*/
 		inline void AddModelNodeBasedViewerContext()
 		{
 			mnbvCtxts.push_back(MNBV::ModelNodeBasedViewerContext());
-		}
-
-		/*!
-		@brief Gets the size of ::nodeEditorCtxts
-		*/
-		inline std::size_t CountEditorContexts()
-		{
-			return nodeEditorCtxts.size();
 		}
 
 		/*!
@@ -180,16 +157,6 @@ namespace ECellEngine::Editor::Widget
 		}
 
 		/*!
-		@brief Retrieves the pointer to the node editor context at index
-				@p _idx in ::nodeEditorCtxts.
-		@param _idx The index of the context to retrieve in ::nodeEditorCtxts.
-		*/
-		inline ax::NodeEditor::EditorContext* GetNodeEditorContext(std::size_t _idx)
-		{
-			return nodeEditorCtxts[_idx];
-		}
-
-		/*!
 		@brief Retrieves the pointer to the node editor style data at index
 				@p _idx in ::mnbvCtxts.
 		@param _idx The index of the style struct to retrieve in ::mnbvCtxts.
@@ -198,15 +165,6 @@ namespace ECellEngine::Editor::Widget
 		{
 			return &mnbvCtxts[_idx];
 		}
-
-		/*!
-		@brief Destroys and removes the pointer of the node editor context
-				at index @p _idx in ::nodeEditorCtxts.
-		@param _idx The index of the context to destroy and remove in
-				::nodeEditorCtxts.
-		@remarks Checks that @p _idx is not out of bounds of ::nodeEditorCtxts.
-		*/
-		void RemoveNodeEditorContext(std::size_t _idx);
 
 		/*!
 		@brief Erases the node editor styles struct stored a index @p

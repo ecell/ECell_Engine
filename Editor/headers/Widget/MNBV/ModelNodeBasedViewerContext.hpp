@@ -129,6 +129,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		std::vector<Utility::MNBV::TriggerNodeData> triggerNodes;
 #pragma endregion
 
+#pragma region Links Data
 		/*!
 		@brief The list of dynamic links in this context.
 		@details It contains the links that were created by the user to connect
@@ -149,6 +150,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		@see Utility::MNBV::PinType.
 		*/
 		bool authorizedDynamicLinks[Utility::MNBV::PinType_Count][Utility::MNBV::PinType_Count]{};
+#pragma endregion
 
 		ModelNodeBasedViewerContext()
 		{
