@@ -67,12 +67,6 @@ namespace ECellEngine::Editor::Widget
 		std::vector<std::string> addModuleCommandArray = {"addModule", "0", "path"};
 
 		/*!
-		@brief The vector that contains the arguments for the 
-				ECellEngine::IO::AddSolverCommand
-		*/
-		std::vector<std::string> addSolverCommandArray = {"addSolver", "0", "solverName"};
-
-		/*!
 		@brief The widget to display the data added to the current simulation
 				space as a tree.
 		*/
@@ -212,17 +206,7 @@ namespace ECellEngine::Editor::Widget
 				::nodeEditorCtxts.
 		@remarks Checks that @p _idx is not out of bounds of ::nodeEditorCtxts.
 		*/
-		inline void RemoveNodeEditorContext(std::size_t _idx)
-		{
-			if (_idx >= nodeEditorCtxts.size())
-			{
-				ECellEngine::Logging::Logger::LogError("Tried to destroy a NodeEditorContext at an index beyond the size of current list.");
-				return;
-			}
-
-			ax::NodeEditor::DestroyEditor(nodeEditorCtxts[_idx]);
-			nodeEditorCtxts.erase(nodeEditorCtxts.begin() + _idx);
-		}
+		void RemoveNodeEditorContext(std::size_t _idx);
 
 		/*!
 		@brief Erases the node editor styles struct stored a index @p
@@ -231,15 +215,7 @@ namespace ECellEngine::Editor::Widget
 				::mnbvCtxts.
 		@remarks Checks that @p _idx is not out of bounds of ::mnbvCtxts.
 		*/
-		inline void RemoveModelNodeBasedViewerContext(std::size_t _idx)
-		{
-			if (_idx >= mnbvCtxts.size())
-			{
-				ECellEngine::Logging::Logger::LogError("Tried to destroy a ModelNodeBasedViewerContext at an index beyond the size of current list.");
-				return;
-			}
-			mnbvCtxts.erase(mnbvCtxts.begin() + _idx);
-		}
+		void RemoveModelNodeBasedViewerContext(std::size_t _idx);
 
 		void Awake() override;
 

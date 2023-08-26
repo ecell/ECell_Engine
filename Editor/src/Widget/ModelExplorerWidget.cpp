@@ -365,3 +365,25 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawPreferencesPopup()
         ImGui::End();
     }
 }
+
+void ECellEngine::Editor::Widget::ModelExplorerWidget::RemoveNodeEditorContext(std::size_t _idx)
+{
+    if (_idx >= nodeEditorCtxts.size())
+    {
+        ECellEngine::Logging::Logger::LogError("Tried to destroy a NodeEditorContext at an index beyond the size of current list.");
+        return;
+    }
+
+    ax::NodeEditor::DestroyEditor(nodeEditorCtxts[_idx]);
+    nodeEditorCtxts.erase(nodeEditorCtxts.begin() + _idx);
+}
+
+void ECellEngine::Editor::Widget::ModelExplorerWidget::RemoveModelNodeBasedViewerContext(std::size_t _idx)
+{
+    if (_idx >= mnbvCtxts.size())
+    {
+        ECellEngine::Logging::Logger::LogError("Tried to destroy a ModelNodeBasedViewerContext at an index beyond the size of current list.");
+        return;
+    }
+    mnbvCtxts.erase(mnbvCtxts.begin() + _idx);
+}
