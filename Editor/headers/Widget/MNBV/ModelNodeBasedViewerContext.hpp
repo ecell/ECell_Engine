@@ -150,8 +150,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		*/
 		bool authorizedDynamicLinks[Utility::MNBV::PinType_Count][Utility::MNBV::PinType_Count]{};
 
-		ModelNodeBasedViewerContext() :
-			uniqueId{ 0 }
+		ModelNodeBasedViewerContext()
 		{
 			authorizedDynamicLinks[Utility::MNBV::PinType_Asset][Utility::MNBV::PinType_Asset] = true;
 			
