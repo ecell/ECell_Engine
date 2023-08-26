@@ -27,21 +27,18 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
         ImGui::Separator();
 
         ax::NodeEditor::SetCurrentEditor(editorCtxt);
-        //SetCurrentMNBVContext(rootExplorer->GetModelNodeBasedViewerContext(mnbvCtxIdx));
 
         // Start interaction with editor.
         ax::NodeEditor::Begin("Model Exploration Space");
 
         //Checks for incomming Drag & Drop payloads
-        //Relevant payloads are the references to assets or solvers loaded in
-        //the simulation space.
         HandleSimuDataRefDrop();
 
         CurrentMNBVContextDraw(ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0));
 
         // End of interaction with editor.
         ax::NodeEditor::End();
-        //SetCurrentMNBVContext(nullptr);
+
         ax::NodeEditor::SetCurrentEditor(nullptr);
 
     }
