@@ -11,7 +11,7 @@ namespace ECellEngine::Editor::Widget
 	class OptionsWidget : public Widget
 	{
 	public:
-		OptionsWidget(Editor& _editor) :
+		OptionsWidget(Editor* _editor) :
 			Widget(_editor)
 		{
 

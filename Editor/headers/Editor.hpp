@@ -76,7 +76,7 @@ namespace ECellEngine::Editor
 		template <typename WidgetType, typename = std::enable_if_t<std::is_base_of_v<Widget::Widget, WidgetType>>>
 		inline WidgetType*	AddWidget()
 		{
-			widgets.push_back(new WidgetType(*this));
+			widgets.push_back(new WidgetType(this));
 			newWidgets.push_back(widgets.back());
 			return static_cast<WidgetType*>(widgets.back());
 		}

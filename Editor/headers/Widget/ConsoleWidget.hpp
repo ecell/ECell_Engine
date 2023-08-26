@@ -86,7 +86,7 @@ namespace ECellEngine::Editor::Widget
 									 ConsoleState_ShowWarningMessages;
 
 	public:
-		ConsoleWidget(Editor& _editor) :
+		ConsoleWidget(Editor* _editor) :
 			Widget(_editor), ecLoggerSink(*this)
 		{
 			ecLoggerSink.sinkIdx = ECellEngine::Logging::Logger::AddSink(&ecLoggerSink);

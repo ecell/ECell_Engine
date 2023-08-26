@@ -44,7 +44,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		*/
 		ax::NodeEditor::EditorContext* editorCtxt;
 
-		ModelNodeBasedViewerWidget(Editor& _editor) :
+		ModelNodeBasedViewerWidget(Editor* _editor) :
 			Widget(_editor), editorCtxt(ax::NodeEditor::CreateEditor())
 		{
 			

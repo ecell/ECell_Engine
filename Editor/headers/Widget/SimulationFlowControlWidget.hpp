@@ -61,7 +61,7 @@ namespace ECellEngine::Editor::Widget
 		void DrawSimulationControls();
 
 	public:
-		SimulationFlowControlWidget(Editor& _editor) :
+		SimulationFlowControlWidget(Editor* _editor) :
 			Widget(_editor)
 		{
 			

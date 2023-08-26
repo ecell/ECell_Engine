@@ -16,11 +16,11 @@ namespace ECellEngine::Editor::Widget
 	class Widget
 	{
 	protected:
-		Editor& editor;
+		Editor* editor;
 
 	public:
 
-		Widget(Editor& _editor) : editor(_editor)
+		Widget(Editor* _editor) : editor(_editor)
 		{
 
 		}

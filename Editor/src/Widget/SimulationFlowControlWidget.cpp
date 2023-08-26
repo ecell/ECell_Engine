@@ -21,7 +21,7 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationCon
 
     if (ImGui::Button("Play"))
     {
-        if (editor.engine.GetCommandsManager()->InterpretCommand(playCommandArray))
+        if (editor->engine.GetCommandsManager()->InterpretCommand(playCommandArray))
         {
             simuStateColor = ImVec4(0.902f, 0.272f, 0.070f, 1.000f);
             isPlaying = true;
@@ -37,20 +37,20 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationCon
         {
             if (ImGui::Button("Backward"))
             {
-                editor.engine->GetCommandsManager()->InterpretCommand(goBackwardCommandArray);
+                editor->engine->GetCommandsManager()->InterpretCommand(goBackwardCommandArray);
             }
         }
         else
         {
             if (ImGui::Button("Forward"))
             {
-                editor.engine->GetCommandsManager()->InterpretCommand(goForwardCommandArray);
+                editor->engine->GetCommandsManager()->InterpretCommand(goForwardCommandArray);
             }
         }*/
 
         if (ImGui::Button("Pause"))
         {
-            if (editor.engine.GetCommandsManager()->InterpretCommand(pauseCommandArray))
+            if (editor->engine.GetCommandsManager()->InterpretCommand(pauseCommandArray))
             {
                 isPlaying = false;
                 simuStateColor = ImVec4(1.000f, 0.794f, 0.000f, 1.000f);
@@ -61,7 +61,7 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationCon
 
         if (ImGui::Button("Stop"))
         {
-            if (editor.engine.GetCommandsManager()->InterpretCommand(stopCommandArray))
+            if (editor->engine.GetCommandsManager()->InterpretCommand(stopCommandArray))
             {
                 isPlaying = false;
                 simuStateColor = ImVec4(0.191f, 0.845f, 0.249f, 1.000f);
@@ -84,7 +84,7 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationCon
         if (ImGui::Button("Step Forward"))
         {
             stepForwardCommandArray[2] = std::to_string(stepTime);
-            editor.engine.GetCommandsManager()->InterpretCommand(stepForwardCommandArray);
+            editor->engine.GetCommandsManager()->InterpretCommand(stepForwardCommandArray);
         }
     }
 

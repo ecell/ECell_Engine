@@ -55,7 +55,7 @@ namespace ECellEngine::Editor::Widget
 			ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Bullet;
 
 	public:
-		ModelHierarchyWidget(Editor& _editor) :
+		ModelHierarchyWidget(Editor* _editor) :
 			Widget(_editor)
 		{
 

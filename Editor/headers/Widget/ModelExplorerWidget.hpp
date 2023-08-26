@@ -123,7 +123,7 @@ namespace ECellEngine::Editor::Widget
 		
 
 	public:
-		ModelExplorerWidget(Editor& _editor) :
+		ModelExplorerWidget(Editor* _editor) :
 			Widget(_editor), modelHierarchy(_editor)
 		{
 			//By default we add one context and one viewer.

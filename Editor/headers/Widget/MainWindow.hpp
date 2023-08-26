@@ -37,7 +37,7 @@ namespace ECellEngine::Editor::Widget
 			ImGuiWindowFlags_NoDocking;
 
 	public:
-		MainWindow(Editor& _editor) :
+		MainWindow(Editor* _editor) :
 			Widget(_editor)
 		{
 

@@ -80,7 +80,7 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawImportAssetPopup()
         if (ImGui::Button("Import"))
         {
             addModuleCommandArray[2] = assetPathBuffer;
-            if (editor.engine.GetCommandsManager()->InterpretCommand(addModuleCommandArray))
+            if (editor->engine.GetCommandsManager()->InterpretCommand(addModuleCommandArray))
             {
                 ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetModules().back().get()->SetName(assetNameBuffer);
             }
