@@ -1,3 +1,5 @@
+#pragma once
+
 #include "LogStyle.hpp"
 #include "NodeEditorStyle.hpp"
 

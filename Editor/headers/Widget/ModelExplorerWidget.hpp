@@ -9,7 +9,6 @@
 #include <string>
 #include <vector>
 
-#include "Logging/Logger.hpp"
 #include "Widget/ModelHierarchyWidget.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerWidget.hpp"
@@ -86,6 +85,15 @@ namespace ECellEngine::Editor::Widget
 		std::vector<MNBV::ModelNodeBasedViewerWidget> mnbViewers;
 
 		/*!
+		@brief The list of the indeces of the contexts that are currently
+				being displayed in the viewers.
+		@details The size of this vector is equal to the size of ::mnbViewers.
+				 The value at index i is the index of the context displayed in
+				 the viewer at index i.
+		*/
+		std::vector<unsigned short> ctxtsPerViewer;
+
+		/*!
 		@brief Draws the popup window used to inform the path of the asset to
 				import in the current simulation space.
 		*/
@@ -118,12 +126,26 @@ namespace ECellEngine::Editor::Widget
 		ModelExplorerWidget(Editor& _editor) :
 			Widget(_editor), modelHierarchy(_editor)
 		{
-			mnbViewers.push_back(MNBV::ModelNodeBasedViewerWidget(editor, this));
+			//By default we add one context and one viewer.
+			//The viewer will display the context at index 0.
+			mnbvCtxts.emplace_back(MNBV::ModelNodeBasedViewerContext());
+			mnbViewers.emplace_back(MNBV::ModelNodeBasedViewerWidget(editor));
+			ctxtsPerViewer.emplace_back(0);
+		}
+
+		/*!
+		@brief Adds a new ECellEngine::Editor::Utility::ModelNodeBasedViewer() to
+				::mnbViewers.
+		*/
+		inline void AddModelNodeBasedViewerWidget()
+		{
+			mnbViewers.emplace_back(MNBV::ModelNodeBasedViewerWidget(editor));
+			ctxtsPerViewer.emplace_back(0);//By default we display the context at index 0.
 		}
 
 		/*!
 		@brief Adds a new ECellEngine::Editor::Utility::ModelNodeBasedViewerContext() to
-				::nodeEditorCtxts.
+				::mnbvCtxts.
 		*/
 		inline void AddModelNodeBasedViewerContext()
 		{

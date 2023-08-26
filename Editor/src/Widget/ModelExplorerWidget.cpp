@@ -1,4 +1,5 @@
 #include "Widget/ModelExplorerWidget.hpp"
+#include "Style/EditorStyle.hpp"
 #include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"
 
 void ECellEngine::Editor::Widget::ModelExplorerWidget::Awake()
@@ -17,14 +18,12 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::Awake()
 
     ImGui::DockBuilderFinish(ImGui::GetID("MainWindow"));
 
-
-    ImGui::End();
-
     modelHierarchy.Awake();
     for (std::vector<MNBV::ModelNodeBasedViewerWidget>::iterator it = mnbViewers.begin(); it != mnbViewers.end(); it++)
     {
         it->Awake();
     }
+    ImGui::End();
 }
 
 void ECellEngine::Editor::Widget::ModelExplorerWidget::Draw()
@@ -61,9 +60,11 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::Draw()
 
     modelHierarchy.Draw();
 
-    for (std::vector<MNBV::ModelNodeBasedViewerWidget>::iterator it = mnbViewers.begin(); it != mnbViewers.end(); it++)
+    for (unsigned char i = 0; i < mnbViewers.size(); i++)
     {
-        it->Draw();
+        MNBV::SetCurrentMNBVContext(&mnbvCtxts[i]);
+        mnbViewers[i].Draw();
+        MNBV::SetCurrentMNBVContext(nullptr);
     }
 
     ImGui::End();
