@@ -18,33 +18,7 @@ namespace ECellEngine::IO
 	class CommandsManager
 	{
 	private:
-		bool isListening;
 		std::unordered_map<std::string, std::shared_ptr<Command>> commands;
-
-		/*
-		@brief Splits a string according to white spaces
-		@param _str The string we want to split.
-		@returns A vector containing the token of the splitted string.
-		*/
-		inline std::vector<std::string> splitStr(std::string _str)
-		{
-			std::istringstream iss(_str);
-			std::vector<std::string> results(std::istream_iterator<std::string>{iss},
-				std::istream_iterator<std::string>());
-			return results;
-		}
-
-		/*
-		@brief Blocks the execution of the current thread to and gets
-				a string input from the console.
-		@returns The string input.
-		*/
-		inline std::string waitForConsoleInput()
-		{
-			std::string input;
-			std::cin >> input;
-			return input;
-		}
 
 	public:
 		CommandsManager() = default;
@@ -68,16 +42,6 @@ namespace ECellEngine::IO
 		bool registerCommand(std::shared_ptr<Command> _command);
 
 		/*
-		@brief Does everything needed to start listening to commands.
-		*/
-		void start();
-
-		/*
-		@brief Does everything needed to stop listening to commands.
-		*/
-		void stop();
-
-		/*
 		@brief  Searches in the hash table of registered commands whether one has a name
 				that matches @p _commandName.
 		@param _commandName Target name of the command we are looking for.
@@ -85,10 +49,5 @@ namespace ECellEngine::IO
 				 nullptr otherwise.
 		*/
 		std::shared_ptr<Command> tryGetRegisteredCommand(std::string const& _commandName);
-
-		/*
-		@brief Update loop to listen to commands and process them.
-		*/
-		void update();
 	};
 }

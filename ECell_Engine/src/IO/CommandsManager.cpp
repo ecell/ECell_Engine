@@ -27,35 +27,9 @@ bool ECellEngine::IO::CommandsManager::registerCommand(std::shared_ptr<Command> 
 	return commands.emplace(_command->getName(), _command).second;
 }
 
-void ECellEngine::IO::CommandsManager::start()
-{
-	isListening = true;
-	ECellEngine::Logging::Logger::LogTrace("CommandsManager started");
-}
-
-void ECellEngine::IO::CommandsManager::stop()
-{
-	isListening = false;
-	ECellEngine::Logging::Logger::LogWarning("CommandsManager stopped");
-}
-
 std::shared_ptr<ECellEngine::IO::Command> ECellEngine::IO::CommandsManager::tryGetRegisteredCommand(std::string const& commandName)
 {
 	auto foundCommandIterator = commands.find(commandName);
 
 	return (foundCommandIterator != commands.cend()) ? foundCommandIterator->second : nullptr;
-}
-
-void ECellEngine::IO::CommandsManager::update()
-{
-	std::string commandInput;
-	std::vector<std::string> commandInputSplit;
-
-	while (isListening)
-	{
-		commandInput = waitForConsoleInput();
-		commandInputSplit = splitStr(commandInput);
-		interpretCommand(commandInputSplit);
-	};
-	ECellEngine::Logging::Logger::LogWarning("Exiting keyboard input polling loop.");
 }
