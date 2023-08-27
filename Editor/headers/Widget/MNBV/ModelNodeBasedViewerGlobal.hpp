@@ -36,16 +36,6 @@ namespace ECellEngine::Editor::Widget::MNBV
 	void AddAssetNode(ECellEngine::Data::Module* _data);
 
 	/*!
-	@brief Asks the current Model Node Based Viewer (MNBV) Context to draw the
-			nodes registered to it.
-	@param  _simulation The pointer to the simulation from where the nodes
-			registered in the current MNBV come from. This is used to keep
-			adding nodes to the MNBV context depending on the user's
-			interaction with the node editor.
-	*/
-	void CurrentMNBVContextDraw(ECellEngine::Core::Simulation* _simulation);
-
-	/*!
 	@brief The logic to delete the visuals of a dynamic link (created by the user
 			for data flow) and clean the data subscription.
 	@param _dynamicLink The iterator of the link to erase in the list of dynamic links.

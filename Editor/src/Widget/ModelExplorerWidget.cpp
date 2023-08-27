@@ -19,9 +19,11 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::Awake()
     ImGui::DockBuilderFinish(ImGui::GetID("MainWindow"));
 
     modelHierarchy.Awake();
-    for (std::vector<MNBV::ModelNodeBasedViewerWidget>::iterator it = mnbViewers.begin(); it != mnbViewers.end(); it++)
+    for (unsigned char i = 0; i < mnbViewers.size(); i++)
     {
-        it->Awake();
+        MNBV::SetCurrentMNBVContext(&mnbvCtxts[i]);
+        mnbViewers[i].Awake();
+        MNBV::SetCurrentMNBVContext(nullptr);
     }
     ImGui::End();
 }

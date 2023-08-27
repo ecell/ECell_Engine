@@ -14,6 +14,7 @@ namespace ECellEngine::Editor::Widget
 	class ModelExplorerWidget;
 }
 
+#include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 #include "Utility/MNBV/NodeEditorDraw.hpp"
 
 namespace ECellEngine::Editor::Widget::MNBV
@@ -37,12 +38,24 @@ namespace ECellEngine::Editor::Widget::MNBV
 		*/
 		void HandleSimuDataRefDrop();
 
+		void DrawNodes();
+
+		void DrawNodesPopupMenu();
+
 	public:
 
 		/*!
 		@brief The NodeEditorContext this model viewer is using.
+		@remark This is set on construction and unlikely to be changed.
 		*/
 		ax::NodeEditor::EditorContext* editorCtxt;
+
+		/*!
+		@brief Buffer pointer to the current context.
+		@remark This will be set at every ::Draw() call to the current context.
+		@see ECellEngine::Editor::Utility::MNBV::GetCurrentMNBVContext()
+		*/
+		ModelNodeBasedViewerContext* currentMNBVContext = nullptr;
 
 		ModelNodeBasedViewerWidget(Editor* _editor) :
 			Widget(_editor), editorCtxt(ax::NodeEditor::CreateEditor())
@@ -53,7 +66,5 @@ namespace ECellEngine::Editor::Widget::MNBV
 		void Awake() override;
 
 		void Draw() override;
-
-		
 	};
 }

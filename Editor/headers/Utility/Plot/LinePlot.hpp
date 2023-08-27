@@ -1,7 +1,5 @@
 #pragma once 
 
-#include <vector>
-
 #include "implot.h"
 
 #include "Core/Callback.hpp"

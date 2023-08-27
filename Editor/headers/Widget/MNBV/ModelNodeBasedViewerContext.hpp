@@ -5,12 +5,9 @@
 @brief The source to store the data of the nodes to draw in a ECellEngine::Editor::ModelNodeBasedViewerWidget 
 */
 
-#include <vector>
-
 #include "Core/IDProvider.hpp"
 #include "Core/Simulation.hpp"
 #include "Utility/MNBV/NodeEditorDraw.hpp"
-#include "Style/NodeEditorStyle.hpp"
 
 namespace ECellEngine::Editor::Widget::MNBV
 {
@@ -26,6 +23,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 		@see ECellEngine::Editor::Widget::MNBV::GetMNBVCtxtNextId()
 		*/
 		ECellEngine::Core::IDProvider uniqueId;
+
+		/*!
+		@brief The buffer pointer to the simulation this context is associated to.
+		@details It is used to access the data that can be displayed as nodes in the
+				 ECellEngine::Editor::ModelNodeBasedViewerWidget. It is also used to
+				 know which simulation commands should target.
+		*/
+		Core::Simulation* simulation = nullptr;
 
 #pragma region Nodes Lists
 
@@ -181,6 +186,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 		}
 
 		/*!
+		@brief Sets the ::simulation pointer of this context.
+		*/
+		void SetSimulation(Core::Simulation* _simulation)
+		{
+			simulation = _simulation;
+		}
+
+		/*!
 		@brief Insures that the data pointers that may be alive between nodes of
 				this context are reassigned to stay valid.
 		@details Typically, when the size of the nodes lists are changed, the pointers
@@ -188,11 +201,5 @@ namespace ECellEngine::Editor::Widget::MNBV
 				 This method is then called whenever a node is added.
 		*/
 		void ConserveLinkDataIntegrity();
-
-		/*!
-		@brief The logic to draw the elements (nodes, pins, links) stored in
-				this context.
-		*/
-		void Draw(ECellEngine::Core::Simulation* _simulation);
 	};
 }

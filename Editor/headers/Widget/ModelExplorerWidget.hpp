@@ -126,10 +126,13 @@ namespace ECellEngine::Editor::Widget
 		ModelExplorerWidget(Editor* _editor) :
 			Widget(_editor), modelHierarchy(_editor)
 		{
-			//By default we add one context and one viewer.
-			//The viewer will display the context at index 0.
+			//By default when opening a new explorer widget:
+			
+			// - We add one context and one viewer. The context is added to first simulation.
 			mnbvCtxts.emplace_back(MNBV::ModelNodeBasedViewerContext());
 			mnbViewers.emplace_back(MNBV::ModelNodeBasedViewerWidget(editor));
+
+			// - The viewer will display the context at index 0.
 			ctxtsPerViewer.emplace_back(0);
 		}
 
@@ -144,12 +147,15 @@ namespace ECellEngine::Editor::Widget
 		}
 
 		/*!
-		@brief Adds a new ECellEngine::Editor::Utility::ModelNodeBasedViewerContext() to
+		@brief Adds a new ECellEngine::Editor::Utility::ModelNodeBasedViewerContext to
 				::mnbvCtxts.
+		@param _simulation The simulation the new context will be based on.
+		@see ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::simulation
 		*/
-		inline void AddModelNodeBasedViewerContext()
+		inline void AddModelNodeBasedViewerContext(Core::Simulation* _simulation)
 		{
 			mnbvCtxts.push_back(MNBV::ModelNodeBasedViewerContext());
+			mnbvCtxts.back().SetSimulation(_simulation);
 		}
 
 		/*!
