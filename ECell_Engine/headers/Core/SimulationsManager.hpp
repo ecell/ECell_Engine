@@ -32,6 +32,35 @@ namespace ECellEngine::Core
 
 	public:
 
+		/*!
+		@brief The comparison function object to compare simulations based on
+				their IDs.
+		*/
+		struct CompareSimulationIDs
+		{
+			/*!
+			@brief Compares two simulations based on their IDs.
+			@param _lhs The left hand side simulation to compare.
+			@param _rhs The right hand side simulation to compare.
+			@returns True if the ID of @p _lhs ->id < @p _rhs ->id; false otherwise.
+			*/
+			bool operator()(std::unique_ptr<Simulation>& _lhs, std::unique_ptr<Simulation>& _rhs) const noexcept
+			{
+				return _lhs->id < _rhs->id;
+			}
+			
+			/*!
+			@brief Compares a simulation based on its ID and a given ID.
+			@param _lhs The left hand side simulation to compare.
+			@param _id The ID to compare with.
+			@returns True if the ID of @p _lhs ->id < @p _id; false otherwise.
+			*/
+			bool operator()(std::unique_ptr<Simulation>& _lhs, std::size_t _id) const noexcept
+			{
+				return _lhs->id < _id;
+			}
+		};
+
 		static SimulationsManager& GetSingleton() noexcept;
 
 		/*!
@@ -59,6 +88,14 @@ namespace ECellEngine::Core
 		{
 			return simulations[_idx].get();
 		}
+
+		/*!
+		@brief Finds the simulation with ID @p _id in ::simulations.
+		@details Performs a binary search.
+		@param _id The ID of the simulation to retrieve from ::simulations.
+		@returns The pointer to the target simulation. nullptr if not found.
+		*/
+		Simulation* FindSimulation(const std::size_t _id) noexcept;
 
 		/*!
 		@brief Instantiates a new simulation and adds it to ::simulations.
