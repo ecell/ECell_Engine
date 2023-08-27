@@ -2,6 +2,19 @@
 #include "Style/EditorStyle.hpp"
 #include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"
 
+void ECellEngine::Editor::Widget::ModelExplorerWidget::AddModelNodeBasedViewerWidget()
+{
+    mnbViewers.emplace_back(MNBV::ModelNodeBasedViewerWidget(editor));
+    ctxtsPerViewer.emplace_back(0);//By default we display the context at index 0.
+}
+
+void ECellEngine::Editor::Widget::ModelExplorerWidget::AddModelNodeBasedViewerContext(Core::Simulation* _simulation, IO::CommandsManager* _commandsManager)
+{
+    mnbvCtxts.push_back(MNBV::ModelNodeBasedViewerContext());
+    mnbvCtxts.back().SetSimulation(_simulation);
+    mnbvCtxts.back().SetCommandsManager(_commandsManager);
+}
+
 void ECellEngine::Editor::Widget::ModelExplorerWidget::Awake()
 {
     ImGui::Begin("Model Explorer");

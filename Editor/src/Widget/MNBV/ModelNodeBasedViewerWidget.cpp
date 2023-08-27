@@ -17,9 +17,17 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Awake()
 
     ax::NodeEditor::SetCurrentEditor(nullptr);
 
+	currentMNBVContext = GetCurrentMNBVContext();
+
+	//If the current MNBV context doesn't have any commands manager at Awake time,
+	//we set the commands manager defined in the engine at startup by default.
+	if (currentMNBVContext->commandsManager == nullptr)
+	{
+		currentMNBVContext->SetCommandsManager(editor->engine.GetCommandsManager());
+	}
+
 	//If the current MNBV context doesn't have any simulation at Awake time,
 	//we set the simulation at index 0 by default.
-	currentMNBVContext = GetCurrentMNBVContext();
 	if (currentMNBVContext->simulation == nullptr)
 	{
 		currentMNBVContext->SetSimulation(Core::SimulationsManager::GetSingleton().GetSimulation(0));

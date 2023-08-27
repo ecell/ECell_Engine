@@ -7,6 +7,7 @@
 
 #include "Core/IDProvider.hpp"
 #include "Core/Simulation.hpp"
+#include "IO/CommandsManager.hpp"
 #include "Utility/MNBV/NodeEditorDraw.hpp"
 
 namespace ECellEngine::Editor::Widget::MNBV
@@ -29,8 +30,20 @@ namespace ECellEngine::Editor::Widget::MNBV
 		@details It is used to access the data that can be displayed as nodes in the
 				 ECellEngine::Editor::ModelNodeBasedViewerWidget. It is also used to
 				 know which simulation commands should target.
+		@remarks The value of this pointer should only change if a context moves from
+				 one simulation to another. But be careful to check that the nodes
+				 (and the data they encapsulate) is still relevant to the new simulation.
 		*/
 		Core::Simulation* simulation = nullptr;
+
+		/*!
+		@brief The pointer to the commands manager of the engine.
+		@details It is used to get access to the commands defined in the engine
+				 to be able to execute them.
+		@remarks The value of this pointer should only change if a context has a need
+				 for a different set of commands than the one defined in the engine.
+		*/
+		IO::CommandsManager* commandsManager = nullptr;
 
 #pragma region Nodes Lists
 
@@ -183,6 +196,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 
 			authorizedDynamicLinks[Utility::MNBV::PinType_Parameter][Utility::MNBV::PinType_Operand] = true;
 			authorizedDynamicLinks[Utility::MNBV::PinType_Species][Utility::MNBV::PinType_Operand] = true;
+		}
+
+		/*!
+		@brief Sets the ::commandsManager pointer of this context.
+		*/
+		void SetCommandsManager(IO::CommandsManager* _commandsManager)
+		{
+			commandsManager = _commandsManager;
 		}
 
 		/*!
