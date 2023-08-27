@@ -1,31 +1,31 @@
 #pragma once
 
-namespace ECellEngine::Data::Util
+namespace ECellEngine::Util
 {
 #pragma region IsFlagSet
 	static inline const bool IsFlagSet(const unsigned char _flags, const unsigned char _flagToCheck) noexcept
 	{
-		return (_flags & _flagToCheck) == _flagToCheck;
+		return (_flags & _flagToCheck);
 	}
 
 	static inline const bool IsFlagSet(const unsigned short _flags, const unsigned short _flagToCheck) noexcept
 	{
-		return (_flags & _flagToCheck) == _flagToCheck;
+		return (_flags & _flagToCheck);
 	}
 
 	static inline const bool IsFlagSet(const unsigned int _flags, const unsigned int _flagToCheck) noexcept
 	{
-		return (_flags & _flagToCheck) == _flagToCheck;
+		return (_flags & _flagToCheck);
 	}
 	
 	static inline const bool IsFlagSet(const unsigned long _flags, const unsigned long _flagToCheck) noexcept
 	{
-		return (_flags & _flagToCheck) == _flagToCheck;
+		return (_flags & _flagToCheck);
 	}
 
 	static inline const bool IsFlagSet(const unsigned long long _flags, const unsigned long long _flagToCheck) noexcept
 	{
-		return (_flags & _flagToCheck) == _flagToCheck;
+		return (_flags & _flagToCheck);
 	}
 #pragma endregion
 

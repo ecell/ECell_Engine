@@ -45,15 +45,15 @@ void ECellEngine::Maths::Operation::InformStructureOfAddConstant() noexcept
 {
 	if (structure == OperationStructure_Empty)// 000 0 00 00
 	{
-		Data::Util::SetFlag(structure, OperationStructure_FirstOperandIsLocal);// 000 0 00 01
+		Util::SetFlag(structure, OperationStructure_FirstOperandIsLocal);// 000 0 00 01
 		if (operands.size() > 0)
 		{
-			Data::Util::SetFlag(structure, OperationStructure_FirstLocalOperandIsRHS); // 000 0 10 01
+			Util::SetFlag(structure, OperationStructure_FirstLocalOperandIsRHS); // 000 0 10 01
 		}
 	}
 	else
 	{
-		Data::Util::SetFlag(structure, OperationStructure_SecondOperandIsLocal); // 000 0 XX 11
+		Util::SetFlag(structure, OperationStructure_SecondOperandIsLocal); // 000 0 XX 11
 	}
 }
 
@@ -61,21 +61,21 @@ void ECellEngine::Maths::Operation::InformStructureOfAddOperation() noexcept
 {
 	if (structure == OperationStructure_Empty)// 000 0 00 00
 	{
-		Data::Util::SetFlag(structure, OperationStructure_FirstOperandIsLocal);// 000 0 00 01 --> We add the first operand
-		Data::Util::SetFlag(structure, OperationStructure_FirstLocalOperandIsOperation);// 000 0 01 01 --> The first operand is an Operation
+		Util::SetFlag(structure, OperationStructure_FirstOperandIsLocal);// 000 0 00 01 --> We add the first operand
+		Util::SetFlag(structure, OperationStructure_FirstLocalOperandIsOperation);// 000 0 01 01 --> The first operand is an Operation
 
 		//if there is already one element in operands,
 		//we register the operation as the second operand.
 		// --> The bit 4 (so idx 3) is set to 1
 		if (operands.size() > 0)
 		{
-			Data::Util::SetFlag(structure, OperationStructure_FirstLocalOperandIsRHS);// 000 0 11 01
+			Util::SetFlag(structure, OperationStructure_FirstLocalOperandIsRHS);// 000 0 11 01
 		}
 	}
 	else
 	{
-		Data::Util::SetFlag(structure, OperationStructure_SecondOperandIsLocal);// 000 0 XX 11 --> We add the second operand
-		Data::Util::SetFlag(structure, OperationStructure_SecondLocalOperandIsOperation);// 000 1 XX 11 --> The second operand is an Operation
+		Util::SetFlag(structure, OperationStructure_SecondOperandIsLocal);// 000 0 XX 11 --> We add the second operand
+		Util::SetFlag(structure, OperationStructure_SecondLocalOperandIsOperation);// 000 1 XX 11 --> The second operand is an Operation
 	}
 }
 
@@ -96,11 +96,11 @@ void ECellEngine::Maths::Operation::PushOperands()
 {
 	// PushOperands is called for the 1st time here, and 
 	// if there is at least 1 operand placement to decode
-	if (!Data::Util::IsFlagSet(structure, OperationStructure_IsCompiled) && 
-		  Data::Util::IsFlagSet(structure, OperationStructure_FirstOperandIsLocal))
+	if (!Util::IsFlagSet(structure, OperationStructure_IsCompiled) && 
+		  Util::IsFlagSet(structure, OperationStructure_FirstOperandIsLocal))
 	{
 		// if the first operand is an Operation
-		if (Data::Util::IsFlagSet(structure, OperationStructure_FirstLocalOperandIsOperation))
+		if (Util::IsFlagSet(structure, OperationStructure_FirstLocalOperandIsOperation))
 		{
 			//((structure >> 3) & 1) indicates the operand (Operation or Cst) shall be
 			//inserted at the index 0 or 1. We add operands.begin() to convert to an
@@ -114,9 +114,9 @@ void ECellEngine::Maths::Operation::PushOperands()
 			operands.insert(operands.begin() + ((structure >> 3) & 1), &constants[0]);
 		}
 
-		if (Data::Util::IsFlagSet(structure, OperationStructure_SecondOperandIsLocal))//if the second operand must also be decoded
+		if (Util::IsFlagSet(structure, OperationStructure_SecondOperandIsLocal))//if the second operand must also be decoded
 		{
-			if (Data::Util::IsFlagSet(structure, OperationStructure_SecondLocalOperandIsOperation))// if this is the code for Operation
+			if (Util::IsFlagSet(structure, OperationStructure_SecondLocalOperandIsOperation))// if this is the code for Operation
 			{
 				//This is the second operand so there must have been a first one.
 				//Therefore, the operand to be decoded is in the second place (so
@@ -132,7 +132,7 @@ void ECellEngine::Maths::Operation::PushOperands()
 			}
 		}
 	}
-	Data::Util::SetFlag(structure, OperationStructure_IsCompiled);// 000 1 XX XX --> The Operation has been compiled: PushOperands has been called
+	Util::SetFlag(structure, OperationStructure_IsCompiled);// 000 1 XX XX --> The Operation has been compiled: PushOperands has been called
 }
 
 void ECellEngine::Maths::Operation::UpdateFunction() noexcept
@@ -171,9 +171,9 @@ void ECellEngine::Maths::Operation::UpdateFunction() noexcept
 
 void ECellEngine::Maths::Operation::UpdateOperands()
 {
-	if (Data::Util::IsFlagSet(structure, OperationStructure_FirstOperandIsLocal)) //if there is at least 1 operand placement to decode
+	if (Util::IsFlagSet(structure, OperationStructure_FirstOperandIsLocal)) //if there is at least 1 operand placement to decode
 	{
-		if (Data::Util::IsFlagSet(structure, OperationStructure_FirstLocalOperandIsOperation)) // if this is the code for Operation
+		if (Util::IsFlagSet(structure, OperationStructure_FirstLocalOperandIsOperation)) // if this is the code for Operation
 		{
 			//((structure >> 3) & 1) indicates the operand (Operation or Cst) shall be
 			//inserted at the index 0 or 1.
@@ -186,9 +186,9 @@ void ECellEngine::Maths::Operation::UpdateOperands()
 			operands[((structure >> 3) & 1)] = &constants[0];
 		}
 
-		if (Data::Util::IsFlagSet(structure, OperationStructure_SecondOperandIsLocal)) //if the second operand must also be decoded
+		if (Util::IsFlagSet(structure, OperationStructure_SecondOperandIsLocal)) //if the second operand must also be decoded
 		{
-			if (Data::Util::IsFlagSet(structure, OperationStructure_SecondLocalOperandIsOperation)) // if this is the code for Operation
+			if (Util::IsFlagSet(structure, OperationStructure_SecondLocalOperandIsOperation)) // if this is the code for Operation
 			{
 				//This is the second operand so there must have been a first one.
 				//Therefore, the operand to be decoded is in the second place (so

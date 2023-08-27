@@ -6,7 +6,7 @@
 
 #include "Core/Callback.hpp"
 #include "Data/Constant.hpp" //#include "Operand.hpp"
-#include "Data/BitwiseOperationsUtility.hpp"
+#include "Util/BitwiseOperationsUtility.hpp"
 #include "Maths/Function.hpp"
 
 namespace ECellEngine::Maths
@@ -211,7 +211,7 @@ namespace ECellEngine::Maths
 			Operand{ _op.name }, structure{ _op.structure }, function{ _op.function },
 			constants{_op.constants}, operations{_op.operations}, operands{_op.operands}
 		{
-			if (Data::Util::IsFlagSet(structure, OperationStructure_IsCompiled))
+			if (Util::IsFlagSet(structure, OperationStructure_IsCompiled))
 			{
 				UpdateOperands();
 			}
