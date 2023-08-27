@@ -5,7 +5,6 @@
 @brief The source to draw reusable elements within nodes as well as nodes themselves.
 */
 
-#include "imgui_internal.h"
 #include "Utility/MNBV/NodeEditorData.hpp" //also include "implot.h"
 #include "Style/EditorStyle.hpp" //also includes Node and Pin Types
 #include "Logging/Logger.hpp"

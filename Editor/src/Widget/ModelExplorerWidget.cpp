@@ -1,3 +1,4 @@
+#include "imgui_internal.h"
 #include "Widget/ModelExplorerWidget.hpp"
 #include "Style/EditorStyle.hpp"
 #include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"

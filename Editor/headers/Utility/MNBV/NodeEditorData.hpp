@@ -269,7 +269,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The maximum number of links that can be connected to this pin.
 		@details Theoretical max number of connections is 256.
 		*/
-		unsigned char maxNbConnectedLinks;
+		unsigned char maxNbConnectedLinks = UCHAR_MAX;
 
 		/*!
 		@brief Count the number of links connected to this pin.
