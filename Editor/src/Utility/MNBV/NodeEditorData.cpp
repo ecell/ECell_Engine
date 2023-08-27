@@ -508,7 +508,7 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputConnect(NodeInputP
 
 	//Get access to commands manager to call the command that attaches the solver to the asset data
 	Widget::MNBV::GetCurrentMNBVContext()->commandsManager->InterpretCommand({
-		"tryLinkModuleWithSolver",
+		"moduleSolverConnection",
 		std::to_string(Widget::MNBV::GetCurrentMNBVContext()->simulation->id),
 		std::to_string(data->id),
 		std::to_string(((Data::Module*)_data)->id)});

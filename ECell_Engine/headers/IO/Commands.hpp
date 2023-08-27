@@ -58,6 +58,32 @@ namespace ECellEngine::IO
 		*/
 		bool Execute(const std::vector<std::string>& _args) override;
 	};
+
+	/*
+	@brief The command to let the user bind a solver to a module in a simulation.
+	*/
+	class ModuleSolverConnectionCommand final : public Command
+	{
+		ECellEngine::Core::SimulationsManager& receiver;
+
+	public:
+		ModuleSolverConnectionCommand(ECellEngine::Core::SimulationsManager& _receiver) :
+			Command("moduleSolverConnection"), receiver(_receiver)
+		{
+		}
+
+		/*
+		@brief Executes the code to play a simulation.
+		@param _args The arguments of the command. At position [0] is always the
+				name of the command ("tryLinkModuleWithSolver"). Then, for this command, come
+				[1] the ID of the target simulation in the SimulationsManager's
+				simulation list; [2] is the ID of the solver in the Simulation's
+				solvers list; [3] is the ID of the module in the Simulation's
+				modules list.
+
+		*/
+		bool Execute(const std::vector<std::string>& _args) override;
+	};
 	
 	/*
 	@brief The command to let the user pause a simulation.
@@ -170,32 +196,6 @@ namespace ECellEngine::IO
 				name of the command ("stopSimulation"). Then, for this command, come
 				[1] the index of the target simulation in the SimulationsManager's
 				playing simulation list.
-		*/
-		bool Execute(const std::vector<std::string>& _args) override;
-	};
-
-	/*
-	@brief The command to let the user bind a solver to a module in a simulation.
-	*/
-	class TryModuleSolverLinkCommand final : public Command
-	{
-		ECellEngine::Core::SimulationsManager& receiver;
-
-	public:
-		TryModuleSolverLinkCommand(ECellEngine::Core::SimulationsManager& _receiver) :
-			Command("tryLinkModuleWithSolver"), receiver(_receiver)
-		{
-		}
-
-		/*
-		@brief Executes the code to play a simulation.
-		@param _args The arguments of the command. At position [0] is always the
-				name of the command ("tryLinkModuleWithSolver"). Then, for this command, come
-				[1] the ID of the target simulation in the SimulationsManager's
-				simulation list; [2] is the ID of the solver in the Simulation's
-				solvers list; [3] is the ID of the module in the Simulation's
-				modules list.
-
 		*/
 		bool Execute(const std::vector<std::string>& _args) override;
 	};

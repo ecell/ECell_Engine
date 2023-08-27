@@ -9,12 +9,12 @@ void ECellEngine::Core::Engine::Start()
 	SimulationsManager& simulationManager = SimulationsManager::GetSingleton();
 	commandsManager.RegisterCommand(std::make_shared<AddModuleCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<AddSolverCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<ModuleSolverConnectionCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<PauseSimulationCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<PlaySimulationCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<StepSimulationBackwardCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<StepSimulationForwardCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<StopSimulationCommand>(simulationManager));
-	commandsManager.RegisterCommand(std::make_shared<TryModuleSolverLinkCommand>(simulationManager));
 
 	//Creates a new simulation by default.
 	simulationManager.NewSimulation();
