@@ -77,9 +77,9 @@ namespace ECellEngine::IO
 		@param _args The arguments of the command. At position [0] is always the
 				name of the command ("moduleSolverConnection"). Then, for this command, come
 				[1] the ID of the target simulation in the SimulationsManager's
-				simulation list; [2] is the ID of the solver in the Simulation's
-				solvers list; [3] is the ID of the module in the Simulation's
-				modules list.
+				simulation list; [2] is the ID of the module in the Simulation's
+				modules list. [3] is the ID of the solver in the Simulation's
+				solvers list;
 
 		*/
 		bool Execute(const std::vector<std::string>& _args) override;
@@ -103,9 +103,9 @@ namespace ECellEngine::IO
 		@param _args The arguments of the command. At position [0] is always the
 				name of the command ("moduleSolverDisconnection"). Then, for this command, come
 				[1] the ID of the target simulation in the SimulationsManager's
-				simulation list; [2] is the ID of the solver in the Simulation's
-				solvers list; [3] is the ID of the module in the Simulation's
-				modules list.
+				simulation list; [2] is the ID of the module in the Simulation's
+				modules list. [3] is the ID of the solver in the Simulation's
+				solvers list;
 
 		*/
 		bool Execute(const std::vector<std::string>& _args) override;

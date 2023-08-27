@@ -63,29 +63,29 @@ bool ECellEngine::IO::ModuleSolverConnectionCommand::Execute(const std::vector<s
 		return false;
 	}
 
-	std::size_t solverID = 0;
-	try
-	{
-		solverID = std::stoll(_args[2]);
-	}
-	catch (const std::invalid_argument& _e)
-	{
-		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed: Could not convert second argument \"%s\" to an integer to represent the ID of a solver", _args[2].c_str());
-		return false;
-	}
-
 	std::size_t moduleID = 0;
 	try
 	{
-		moduleID = std::stoll(_args[3]);
+		moduleID = std::stoll(_args[2]);
 	}
 	catch (const std::invalid_argument& _e)
 	{
-		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed: Could not convert third argument \"%s\" to an integer to represent the ID of a module", _args[3].c_str());
+		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed: Could not convert second argument \"%s\" to an integer to represent the ID of a module", _args[2].c_str());
 		return false;
 	}
 
-	simulation->TryModuleSolverLink(solverID, moduleID);
+	std::size_t solverID = 0;
+	try
+	{
+		solverID = std::stoll(_args[3]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed: Could not convert third argument \"%s\" to an integer to represent the ID of a solver", _args[3].c_str());
+		return false;
+	}
+
+	simulation->TryModuleSolverLink(moduleID, solverID);
 	return true;
 }
 
@@ -110,25 +110,25 @@ bool ECellEngine::IO::ModuleSolverDisconnectionCommand::Execute(const std::vecto
 		return false;
 	}
 
-	std::size_t solverID = 0;
-	try
-	{
-		solverID = std::stoll(_args[2]);
-	}
-	catch (const std::invalid_argument& _e)
-	{
-		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not convert second argument \"%s\" to an integer to represent the ID of a solver", _args[2].c_str());
-		return false;
-	}
-
 	std::size_t moduleID = 0;
 	try
 	{
-		moduleID = std::stoll(_args[3]);
+		moduleID = std::stoll(_args[2]);
 	}
 	catch (const std::invalid_argument& _e)
 	{
-		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not convert third argument \"%s\" to an integer to represent the ID of a module", _args[3].c_str());
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not convert second argument \"%s\" to an integer to represent the ID of a module", _args[2].c_str());
+		return false;
+	}
+
+	std::size_t solverID = 0;
+	try
+	{
+		solverID = std::stoll(_args[3]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not convert third argument \"%s\" to an integer to represent the ID of a solver", _args[3].c_str());
 		return false;
 	}
 

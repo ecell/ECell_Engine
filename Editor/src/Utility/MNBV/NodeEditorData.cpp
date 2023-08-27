@@ -516,9 +516,10 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputConnect(NodeInputP
 	//Get access to commands manager to call the command that attaches the solver to the asset data.
 	Widget::MNBV::GetCurrentMNBVContext()->commandsManager->InterpretCommand({
 		"moduleSolverConnection",
-		std::to_string(Widget::MNBV::GetCurrentMNBVContext()->simulation->id),
-		std::to_string(data->id),
-		std::to_string(((Data::Module*)_data)->id)});
+		std::to_string(Widget::MNBV::GetCurrentMNBVContext()->simulation->id),//simulation id
+		std::to_string(((Data::Module*)_data)->id),//module id
+		std::to_string(data->id),//solver id
+		});
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
@@ -528,9 +529,10 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputDisconnect(NodeInp
 	//Get access to commands manager to call the command that detaches the solver from the asset data.
 	Widget::MNBV::GetCurrentMNBVContext()->commandsManager->InterpretCommand({
 		"moduleSolverDisconnection",
-		std::to_string(Widget::MNBV::GetCurrentMNBVContext()->simulation->id),
-		std::to_string(data->id),
-		std::to_string(((Data::Module*)_data)->id)});
+		std::to_string(Widget::MNBV::GetCurrentMNBVContext()->simulation->id),//simulation id
+		std::to_string(((Data::Module*)_data)->id),//module id
+		std::to_string(data->id)//solver id
+		});
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)

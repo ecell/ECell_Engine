@@ -123,7 +123,7 @@ void ECellEngine::Core::Simulation::Start()
 	}
 }
 
-void ECellEngine::Core::Simulation::TryModuleSolverLink(const std::size_t& _solverID, const std::size_t& _moduleID)
+void ECellEngine::Core::Simulation::TryModuleSolverLink(const std::size_t& _moduleID, const std::size_t& _solverID)
 {
 	//search for the module in the ::modules list
 	std::vector<std::shared_ptr<Data::Module>>::iterator moduleIt = FindModule(_moduleID);

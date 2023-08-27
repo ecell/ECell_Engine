@@ -298,10 +298,10 @@ namespace ECellEngine::Core
 		@brief Tries to link a solver to a module.
 		@details Overrides any previous link the solver and module may have with
 				 ofther module or solver respectively.
-		@param _solverID The ID of the solver in ::solvers to try to attach.
 		@param _moduleID The ID of the module in ::modules we try to attach to.
+		@param _solverID The ID of the solver in ::solvers to try to attach.
 		*/
-		void TryModuleSolverLink(const std::size_t& _solverID, const std::size_t& _moduleID);
+		void TryModuleSolverLink(const std::size_t& _moduleID, const std::size_t& _solverID);
 
 		/*!
 		@brief Updates one step of duration @p _deltaTime for every linked solver
