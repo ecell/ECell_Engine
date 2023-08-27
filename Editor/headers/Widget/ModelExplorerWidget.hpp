@@ -34,19 +34,6 @@ namespace ECellEngine::Editor::Widget
 		unsigned char utilityState = 0;
 
 		/*!
-		@brief A char array to hold the path to an asset to import. 
-		*/
-		char assetPathBuffer[256] = "C:/Users/eliot/Documents/Source/External/Papers/Hat-et-al_p53_BNG/S2_Code_BioNetGen/export/p53_L3V2_mod2.xml";
-		//char assetPathBuffer[256] = "C:/Users/eliot/Documents/Source/External/Papers/Novak-et-al_FissionYeast_CellCycle/BIOMD0000000111_L3V2.xml";
-		
-		/*!
-		@brief A char array to hold the name of the asset node to be drawn in the
-				editor and that matches the imported asset.
-		*/
-		char assetNameBuffer[64] = "p53_L3V2_mod2.xml";
-		//char assetNameBuffer[64] = "FissionYeast_CellCycle_L3V2.xml";
-
-		/*!
 		  @brief Flags for the model explorer window.
 		  @details Enables the MenuBar.
 		*/
@@ -58,12 +45,6 @@ namespace ECellEngine::Editor::Widget
 		*/
 		const ImGuiWindowFlags popupWindowFlags =
 			ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking;
-
-		/*!
-		@brief The vector that contains the arguments for the 
-				ECellEngine::IO::AddModuleCommand
-		*/
-		std::vector<std::string> addModuleCommandArray = {"addModule", "0", "path"};
 
 		/*!
 		@brief The widget to display the data added to the current simulation
@@ -92,12 +73,6 @@ namespace ECellEngine::Editor::Widget
 				 the viewer at index i.
 		*/
 		std::vector<unsigned short> ctxtsPerViewer;
-
-		/*!
-		@brief Draws the popup window used to inform the path of the asset to
-				import in the current simulation space.
-		*/
-		void DrawImportAssetPopup();
 
 		/*!
 		@brief Draws the popup window used to consult and change the preference

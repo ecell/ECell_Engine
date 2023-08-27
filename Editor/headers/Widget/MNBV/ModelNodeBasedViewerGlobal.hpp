@@ -27,15 +27,6 @@ namespace ECellEngine::Editor::Widget::MNBV
 	struct ModelNodeBasedViewerContext;
 
 	/*!
-	@brief Adds an ECellEngine::Editor::Utility::MNBV::AssetNodeData in
-			ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::assetNodes.
-	@details After being added, the asset node data will be drawn in the editor.
-	@param _data The data source of the asset node to add. It probably comes
-			from a ECellEngine::Data::DataState.
-	*/
-	void AddAssetNode(ECellEngine::Data::Module* _data);
-
-	/*!
 	@brief The logic to delete the visuals of a dynamic link (created by the user
 			for data flow) and clean the data subscription.
 	@param _dynamicLink The iterator of the link to erase in the list of dynamic links.

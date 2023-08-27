@@ -3,11 +3,6 @@
 
 static ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* s_mnbvCtxt = nullptr;
 
-void ECellEngine::Editor::Widget::MNBV::AddAssetNode(ECellEngine::Data::Module* _module)
-{
-    s_mnbvCtxt->assetNodes.push_back(Utility::MNBV::AssetNodeData(_module));
-}
-
 void ECellEngine::Editor::Widget::MNBV::EraseDynamicLink(std::vector<Utility::MNBV::LinkData>::iterator& _dynamicLink)
 {
     //Call the methods that will clear the data links via the pins.

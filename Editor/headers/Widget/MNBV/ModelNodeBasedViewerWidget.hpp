@@ -32,11 +32,52 @@ namespace ECellEngine::Editor::Widget::MNBV
 	class ModelNodeBasedViewerWidget : public Widget
 	{
 	private:
+
+		enum MNBVState : unsigned char
+		{
+			MNBVState_None = 0,
+			MNBVState_ImportAssetPopup = 1 << 0,
+		};
+
+		/*
+		@brief 1-byte char to encode states of the widget.
+		*/
+		unsigned char utilityState = 0;
+
+		/*!
+		@brief A char array to hold the path to an asset to import.
+		*/
+		//char assetPathBuffer[256] = "C:/Users/EliottJacopin/Documents/Source/External/Papers/p53/Hat-et-al_p53_BNG/S2_Code_BioNetGen/export/p53_L3V2_mod2.xml";
+		char assetPathBuffer[256] = "C:/Users/EliottJacopin/Documents/Source/External/Papers/Novak-et-al_FissionYeast_CellCycle/BIOMD0000000111_L3V2.xml";
+
+		/*!
+		@brief A char array to hold the name of the asset node to be drawn in the
+				editor and that matches the imported asset.
+		*/
+		//char assetNameBuffer[64] = "p53_L3V2_mod2.xml";
+		char assetNameBuffer[64] = "FissionYeast_CellCycle_L3V2.xml";
+
+		/*!
+		@brief The vector that contains the arguments for the ECellEngine::IO::AddModuleCommand
+		*/
+		std::vector<std::string> addModuleCommandArray = { "addModule", "simulationID", "path", "name"};
+
+		/*!
+		@brief A buffer for the mouse position since we use it a few times.
+		*/
+		ImVec2 mousePos = ImVec2(0, 0);
+
 		/*!
 		@brief The logic to decide what to draw when the user drops (from a drag
 				& drop action) a payload in the area of this viewer.
 		*/
 		void HandleSimuDataRefDrop();
+
+		/*!
+		@brief Draws the popup window used to inform the path of the asset to
+				import in the current simulation space.
+		*/
+		void DrawImportAssetPopup();
 
 		void DrawNodes();
 

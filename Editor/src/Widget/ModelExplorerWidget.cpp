@@ -65,11 +65,6 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::Draw()
 
         DrawMenuBar();
 
-        if ((utilityState >> 0) & 1)
-        {
-            DrawImportAssetPopup();
-        }
-
         if ((utilityState >> 2) & 1)
         {
             DrawPreferencesPopup();
@@ -88,52 +83,10 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::Draw()
     ImGui::End();
 }
 
-void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawImportAssetPopup()
-{
-    if (ImGui::Begin("Import Asset From File", NULL, popupWindowFlags))
-    {
-        ImGui::InputText("File Path", assetPathBuffer, 256);
-        ImGui::InputText("Name to Display", assetNameBuffer, 64);
-
-        if (ImGui::Button("Import"))
-        {
-            addModuleCommandArray[2] = assetPathBuffer;
-            if (editor->engine.GetCommandsManager()->InterpretCommand(addModuleCommandArray))
-            {
-                ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetModules().back().get()->SetName(assetNameBuffer);
-            }
-
-            SwitchState(0); //Marks the Import Asset popup as closed
-        }
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("Close"))
-        {
-            SwitchState(0); //Marks the Import Asset popup as closed
-        }
-
-        ImGui::End();
-    }
-}
-
 void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawMenuBar()
 {
     if (ImGui::BeginMenuBar())
     {
-        if (ImGui::BeginMenu("Add"))
-        {
-            if (ImGui::MenuItem("Import Asset From File"))
-            {
-                SwitchState(0); //Marks the Import Asset From File popup as opened
-                ImGui::SetNextWindowPos(ImGui::GetIO().MousePos, ImGuiCond_Always);
-                ImGui::SetNextWindowSize(ImVec2(400, 120), ImGuiCond_Always);
-                DrawImportAssetPopup();//to draw immediately during this frame
-            }
-
-            ImGui::EndMenu();
-        }
-
         if (ImGui::BeginMenu("Options"))
         {
             if (ImGui::MenuItem("Preferences"))

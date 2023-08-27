@@ -764,10 +764,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		AssetNodeData(ECellEngine::Data::Module* _data) :
+		AssetNodeData(ECellEngine::Data::Module* _data, ImVec2& _position) :
 			NodeData(), data{ dynamic_cast<ECellEngine::Data::BiochemicalModule*>(_data) }
 		{
-			ax::NodeEditor::SetNodePosition(id, ImGui::GetIO().MousePos);
+			ax::NodeEditor::SetNodePosition(id, _position);
 
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
 

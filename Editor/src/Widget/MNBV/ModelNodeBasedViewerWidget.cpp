@@ -1,3 +1,4 @@
+#include "Util/BitwiseOperationsUtility.hpp"
 #include "Widget/ModelExplorerWidget.hpp"//forward declaration
 #include "Editor.hpp"
 
@@ -53,6 +54,11 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
         //Draw the popup menu to choose which node to add (if it is open)
         DrawNodesPopupMenu();
 
+		if (Util::IsFlagSet(utilityState, MNBVState_ImportAssetPopup))
+		{
+			DrawImportAssetPopup();
+		}
+
         //Draw the nodes
         DrawNodes();
 
@@ -69,6 +75,46 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
 		ax::NodeEditor::SetCurrentEditor(nullptr);
 	}
 	ImGui::End();
+}
+
+void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawImportAssetPopup()
+{
+	ax::NodeEditor::Suspend();
+	ImGui::SetNextWindowPos(ImGui::GetMousePos(), ImGuiCond_Appearing);
+	ImGui::SetNextWindowSize(ImVec2(400, 120), ImGuiCond_Always);
+	if (ImGui::Begin("Import Asset Node", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking))
+	{
+		ImGui::InputText("File Path", assetPathBuffer, 256);
+		ImGui::InputText("Name to Display", assetNameBuffer, 64);
+
+		if (ImGui::Button("Import"))
+		{
+			addModuleCommandArray[1] = std::to_string(GetCurrentMNBVContext()->simulation->id);
+			addModuleCommandArray[2] = assetPathBuffer;
+			addModuleCommandArray[3] = assetNameBuffer;
+			if (editor->engine.GetCommandsManager()->InterpretCommand(addModuleCommandArray))
+			{
+				//Spawn the corresponding asset node
+				currentMNBVContext->assetNodes.emplace_back(Utility::MNBV::AssetNodeData(
+					ECellEngine::Core::SimulationsManager::GetSingleton().FindSimulation(GetCurrentMNBVContext()->simulation->id)->GetModules().back().get(),
+					mousePos));
+				currentMNBVContext->ConserveLinkDataIntegrity();
+
+				Util::ClearFlag(utilityState, MNBVState_ImportAssetPopup); //Marks the Import Asset popup as closed
+			}
+
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Close"))
+		{
+			Util::ClearFlag(utilityState, MNBVState_ImportAssetPopup); //Marks the Import Asset popup as closed
+		}
+
+		ImGui::End();
+	}
+	ax::NodeEditor::Resume();
 }
 
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
@@ -412,7 +458,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodesPop
 {
 	//Taking the mouse position before suspending the node editor
 	//to spawn the nodes at the correct position.
-	ImVec2 mousePos = ImGui::GetIO().MousePos;
+	mousePos = ImGui::GetMousePos();
 
 	ax::NodeEditor::Suspend();
 	if (ax::NodeEditor::ShowBackgroundContextMenu())
@@ -424,6 +470,11 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodesPop
 	{
 		if (ImGui::BeginMenu("Data"))
 		{
+			if (ImGui::MenuItem("Import Asset From File"))
+			{
+				Util::SetFlag(utilityState, MNBVState_ImportAssetPopup); //Marks the Import Asset From File popup as opened
+			}
+
 			if (ImGui::MenuItem("Value Float Node"))
 			{
 				currentMNBVContext->valueFloatNodes.emplace_back(Utility::MNBV::ValueFloatNodeData(0.f, mousePos));
@@ -519,7 +570,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::HandleSimuDa
         {
             IM_ASSERT(payload->DataSize == sizeof(std::size_t));
             const std::size_t dataIdx = *(const std::size_t*)payload->Data;
-            AddAssetNode(ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetModule(dataIdx).get());
+            //AddAssetNode(ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetModule(dataIdx).get());
         }
 
         ImGui::EndDragDropTarget();
