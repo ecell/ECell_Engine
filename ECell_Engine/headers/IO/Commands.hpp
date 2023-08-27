@@ -191,9 +191,9 @@ namespace ECellEngine::IO
 		@brief Executes the code to play a simulation.
 		@param _args The arguments of the command. At position [0] is always the
 				name of the command ("tryLinkModuleWithSolver"). Then, for this command, come
-				[1] the index of the target simulation in the SimulationsManager's
-				simulation list; [2] is the name of the solver in the Simulation's
-				solvers list; [3] is the name of the module in the Simulation's
+				[1] the ID of the target simulation in the SimulationsManager's
+				simulation list; [2] is the ID of the solver in the Simulation's
+				solvers list; [3] is the ID of the module in the Simulation's
 				modules list.
 
 		*/

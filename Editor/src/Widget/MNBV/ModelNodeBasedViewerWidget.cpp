@@ -43,8 +43,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
         ImGui::Separator();
 
         ax::NodeEditor::SetCurrentEditor(editorCtxt);
-
-        // Start interaction with editor.
+        //Start interaction with editor.
         ax::NodeEditor::Begin("Model Exploration Space");
         currentMNBVContext = GetCurrentMNBVContext();
 
@@ -68,7 +67,6 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
 		// End of interaction with editor.
 		ax::NodeEditor::End();
 		ax::NodeEditor::SetCurrentEditor(nullptr);
-
 	}
 	ImGui::End();
 }

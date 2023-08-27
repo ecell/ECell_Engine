@@ -45,42 +45,44 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::Awake()
 void ECellEngine::Editor::Widget::ModelExplorerWidget::Draw()
 {
     static bool wasdocked = false;
-    ImGui::Begin("Model Explorer", NULL, windowFlags);
-    if (ImGui::IsWindowDocked())
+    if(ImGui::Begin("Model Explorer", NULL, windowFlags))
     {
-        if (!wasdocked)
+        if (ImGui::IsWindowDocked())
         {
-            ImGui::DockBuilderSetNodeSize(ImGui::GetWindowDockID(), ImVec2(ImGui::GetMainViewport()->Size.x, (float)ImGui::GetMainViewport()->Size.y * 0.95f));
-            wasdocked = true;
+            if (!wasdocked)
+            {
+                ImGui::DockBuilderSetNodeSize(ImGui::GetWindowDockID(), ImVec2(ImGui::GetMainViewport()->Size.x, (float)ImGui::GetMainViewport()->Size.y * 0.95f));
+                wasdocked = true;
+            }
         }
-    }
-    else
-    {
-        wasdocked = false;
-    }
+        else
+        {
+            wasdocked = false;
+        }
 
-    ImGuiID dockspaceID = ImGui::GetID("Model Explorer");
-    ImGui::DockSpace(dockspaceID);
+        ImGuiID dockspaceID = ImGui::GetID("Model Explorer");
+        ImGui::DockSpace(dockspaceID);
 
-    DrawMenuBar();
+        DrawMenuBar();
 
-    if ((utilityState >> 0) & 1)
-    {
-        DrawImportAssetPopup();
-    }
+        if ((utilityState >> 0) & 1)
+        {
+            DrawImportAssetPopup();
+        }
 
-    if ((utilityState >> 2) & 1)
-    {
-        DrawPreferencesPopup();
-    }
+        if ((utilityState >> 2) & 1)
+        {
+            DrawPreferencesPopup();
+        }
 
-    modelHierarchy.Draw();
+        modelHierarchy.Draw();
 
-    for (unsigned char i = 0; i < mnbViewers.size(); i++)
-    {
-        MNBV::SetCurrentMNBVContext(&mnbvCtxts[i]);
-        mnbViewers[i].Draw();
-        MNBV::SetCurrentMNBVContext(nullptr);
+        for (unsigned char i = 0; i < mnbViewers.size(); i++)
+        {
+            MNBV::SetCurrentMNBVContext(&mnbvCtxts[i]);
+            mnbViewers[i].Draw();
+            MNBV::SetCurrentMNBVContext(nullptr);
+        }
     }
 
     ImGui::End();
