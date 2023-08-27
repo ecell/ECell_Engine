@@ -89,6 +89,53 @@ bool ECellEngine::IO::ModuleSolverConnectionCommand::Execute(const std::vector<s
 	return true;
 }
 
+bool ECellEngine::IO::ModuleSolverDisconnectionCommand::Execute(const std::vector<std::string>& _args)
+{
+	std::size_t simulationID = 0;
+	try
+	{
+		simulationID = std::stoll(_args[1]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a simulation", _args[1].c_str());
+		return false;
+	}
+
+	Core::Simulation* simulation = receiver.FindSimulation(simulationID);
+
+	if (simulation == nullptr)
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not find simulation with ID \"%s\".", _args[1].c_str());
+		return false;
+	}
+
+	std::size_t solverID = 0;
+	try
+	{
+		solverID = std::stoll(_args[2]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not convert second argument \"%s\" to an integer to represent the ID of a solver", _args[2].c_str());
+		return false;
+	}
+
+	std::size_t moduleID = 0;
+	try
+	{
+		moduleID = std::stoll(_args[3]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not convert third argument \"%s\" to an integer to represent the ID of a module", _args[3].c_str());
+		return false;
+	}
+
+	simulation->RemoveModuleSolverLink(moduleID, solverID);
+	return true;
+}
+
 bool ECellEngine::IO::PauseSimulationCommand::Execute(const std::vector<std::string>& _args)
 {
 	if (receiver.CountPlayingSimulations() == 0)

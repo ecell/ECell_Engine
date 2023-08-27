@@ -72,6 +72,31 @@ void ECellEngine::Core::Simulation::RemoveModule(const std::size_t _id)
 	moduleSolverLinks.erase(lowerBound, upperBound);
 }
 
+bool ECellEngine::Core::Simulation::RemoveModuleSolverLink(const std::size_t _moduleID, const std::size_t _solverID)
+{
+	//search for the module in the ::modules list
+	std::vector<std::shared_ptr<Data::Module>>::iterator moduleIt = FindModule(_moduleID);
+	std::size_t moduleIdx = std::distance(modules.begin(), moduleIt);
+	//TODO: return an error code if the module is not found
+
+	//search for the solver in the ::solvers list
+	std::vector<std::shared_ptr<Solvers::Solver>>::iterator solverIt = FindSolver(_solverID);
+	std::size_t solverIdx = std::distance(solvers.begin(), solverIt);
+	//TODO:return an error code if the solver is not found
+
+	std::vector<std::pair<std::size_t, std::size_t>>::iterator moduleSolverLinkIt = FindModuleSolverLinkLB(moduleIdx, solverIdx);
+
+	if (moduleSolverLinkIt != moduleSolverLinks.end() && moduleSolverLinkIt->first == moduleIdx && moduleSolverLinkIt->second == solverIdx)
+	{
+		moduleSolverLinks.erase(moduleSolverLinkIt);
+		return true;
+	}
+
+	//TODO: return an error code if the link is not found
+
+	return false;
+}
+
 void ECellEngine::Core::Simulation::RemoveSolver(const std::size_t _id)
 {
 	//Find the solver in the ::solvers list

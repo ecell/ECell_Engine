@@ -60,7 +60,7 @@ namespace ECellEngine::IO
 	};
 
 	/*
-	@brief The command to let the user bind a solver to a module in a simulation.
+	@brief The command to let the user bind a solver and a module in a simulation.
 	*/
 	class ModuleSolverConnectionCommand final : public Command
 	{
@@ -73,9 +73,35 @@ namespace ECellEngine::IO
 		}
 
 		/*
-		@brief Executes the code to play a simulation.
+		@brief Executes the code to connection a module and solver in a simulation.
 		@param _args The arguments of the command. At position [0] is always the
-				name of the command ("tryLinkModuleWithSolver"). Then, for this command, come
+				name of the command ("moduleSolverConnection"). Then, for this command, come
+				[1] the ID of the target simulation in the SimulationsManager's
+				simulation list; [2] is the ID of the solver in the Simulation's
+				solvers list; [3] is the ID of the module in the Simulation's
+				modules list.
+
+		*/
+		bool Execute(const std::vector<std::string>& _args) override;
+	};
+
+	/*
+	@brief The command to let the user unbind a solver and a module in a simulation.
+	*/
+	class ModuleSolverDisconnectionCommand final : public Command
+	{
+		ECellEngine::Core::SimulationsManager& receiver;
+
+	public:
+		ModuleSolverDisconnectionCommand(ECellEngine::Core::SimulationsManager& _receiver) :
+			Command("moduleSolverDisconnection"), receiver(_receiver)
+		{
+		}
+
+		/*
+		@brief Executes the code to disconnect a module and a solver in a simulation.
+		@param _args The arguments of the command. At position [0] is always the
+				name of the command ("moduleSolverDisconnection"). Then, for this command, come
 				[1] the ID of the target simulation in the SimulationsManager's
 				simulation list; [2] is the ID of the solver in the Simulation's
 				solvers list; [3] is the ID of the module in the Simulation's
