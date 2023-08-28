@@ -96,7 +96,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawImportAs
 			{
 				//Spawn the corresponding asset node
 				currentMNBVContext->assetNodes.emplace_back(Utility::MNBV::AssetNodeData(
-					Core::SimulationsManager::GetSingleton().FindSimulation(GetCurrentMNBVContext()->simulation->id)->GetModules().back().get(),
+					GetCurrentMNBVContext()->simulation->GetModules().back().get(),
 					mousePos));
 				currentMNBVContext->ConserveLinkDataIntegrity();
 
@@ -552,7 +552,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodesPop
 				{
 					//Spawn the corresponding asset node
 					currentMNBVContext->solverNodes.emplace_back(Utility::MNBV::SolverNodeData(
-						Core::SimulationsManager::GetSingleton().FindSimulation(GetCurrentMNBVContext()->simulation->id)->GetSolvers().back(),
+						GetCurrentMNBVContext()->simulation->GetSolvers().back(),
 						mousePos));
 					currentMNBVContext->ConserveLinkDataIntegrity();
 				}			}
