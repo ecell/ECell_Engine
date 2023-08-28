@@ -95,7 +95,7 @@ namespace ECellEngine::Core
 		@param _id The ID of the simulation to retrieve from ::simulations.
 		@returns The pointer to the target simulation. nullptr if not found.
 		*/
-		Simulation* FindSimulation(const std::size_t _id) noexcept;
+		std::vector<std::unique_ptr<Simulation>>::iterator FindSimulation(const std::size_t _id) noexcept;
 
 		/*!
 		@brief Instantiates a new simulation and adds it to ::simulations.
@@ -106,36 +106,24 @@ namespace ECellEngine::Core
 		}
 
 		/*!
-		@brief Pauses the execution the simulation at position @p _idx in
-				::playingSimulations.
-		@param _idx The position of the target simulation in ::playingSimulations.
+		@brief Pauses the execution the simulation with ID @p _id in ::playingSimulations.
+		@param _id The position of the target simulation in ::playingSimulations.
 		*/
-		inline void PauseSimulation(const size_t& _idx) noexcept
-		{
-			playingSimulations.erase(playingSimulations.begin() + _idx);
-		}
+		bool PauseSimulation(const size_t _id) noexcept;
 
 		/*!
-		@brief Adds in ::playingSimulations the simulation at position
-				@p _idx in ::simulations.
+		@brief Adds in ::playingSimulations the simulation with ID @p _id in 
+				::simulations.
 		@details The simulation will start updating at the next frame.
-		@param _idx The position of the target simulation in ::simulations.
+		@param _id The position of the target simulation in ::simulations.
 		*/
-		inline void PlaySimulation(const size_t& _idx) noexcept
-		{
-			simulations[_idx]->Start();
-			playingSimulations.push_back(simulations[_idx].get());
-		}
+		bool PlaySimulation(const size_t _id) noexcept;
 
 		/*!
-		@brief Removes the simulation at position @p _idx from ::playingSimulations.
-		@param _idx The position of the target simulation in ::simulations.
+		@brief Removes the simulation with ID @p _id from ::playingSimulations.
+		@param _id The position of the target simulation in ::simulations.
 		*/
-		inline void StopSimulation(const size_t& _idx) noexcept
-		{
-			//TODO: Reset Data in Simulation;
-			playingSimulations.erase(playingSimulations.begin() + _idx);
-		}
+		bool StopSimulation(const size_t _id) noexcept;
 
 		/*!
 		@brief Updates one step of duration @p _deltaTime for every simulation 
