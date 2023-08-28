@@ -63,6 +63,11 @@ namespace ECellEngine::Editor::Widget::MNBV
 		std::vector<std::string> addModuleCommandArray = { "addModule", "simulationID", "path", "name"};
 
 		/*!
+		@brief The vector that contains the arguments for the ECellEngine::IO::AddSolverCommand
+		*/
+		std::vector<std::string> addSolverCommandArray = { "addSolver", "simulationID", "name" };
+
+		/*!
 		@brief A buffer for the mouse position since we use it a few times.
 		*/
 		ImVec2 mousePos = ImVec2(0, 0);

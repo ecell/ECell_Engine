@@ -25,7 +25,7 @@ bool ECellEngine::IO::AddModuleCommand::Execute(const std::vector<std::string>& 
 
 	if (simulation->AddModule(_args[2]) == nullptr)
 	{
-		ECellEngine::Logging::Logger::LogError("AddModuleCommand Failed: Could not import module \"%s\"", _args[2].c_str(), _args[1].c_str());
+		ECellEngine::Logging::Logger::LogError("AddModuleCommand Failed: Could not import module \"%s\"", _args[2].c_str());
 		return false;
 	}
 
@@ -36,21 +36,32 @@ bool ECellEngine::IO::AddModuleCommand::Execute(const std::vector<std::string>& 
 
 bool ECellEngine::IO::AddSolverCommand::Execute(const std::vector<std::string>& _args)
 {
-
-	if (receiver.CountSimulations() == 0)
+	std::size_t simulationID = 0;
+	try
 	{
-		ECellEngine::Logging::Logger::LogError("AddSolverCommand Failed: There is no simulation currently managed so it is impossible to add a solver.");
+		simulationID = std::stoll(_args[1]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("AddSolverCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a simulation", _args[1].c_str());
 		return false;
 	}
 
-	if (std::stoi(_args[1]) >= receiver.CountSimulations())
+	Core::Simulation* simulation = receiver.FindSimulation(simulationID);
+
+	if (simulation == nullptr)
 	{
-		ECellEngine::Logging::Logger::LogError("AddSolverCommand Failed: Tried to add a solver to a simulation that does not exist.");
+		ECellEngine::Logging::Logger::LogError("AddSolverCommand Failed: Could not find simulation with ID \"%s\".", _args[1].c_str());
 		return false;
 	}
 
-	//TODO: check _args[2]
-	receiver.GetSimulation(std::stoi(_args[1]))->AddSolver(_args[2]);
+	if (simulation->AddSolver(_args[2]) == nullptr)
+	{
+		ECellEngine::Logging::Logger::LogError("AddSolverCommand Failed: Could not import solver \"%s\"", _args[2].c_str());
+		return false;
+	}
+
+	return true;
 }
 
 bool ECellEngine::IO::ModuleSolverConnectionCommand::Execute(const std::vector<std::string>& _args)

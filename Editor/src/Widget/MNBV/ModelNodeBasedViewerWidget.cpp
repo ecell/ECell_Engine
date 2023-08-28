@@ -96,7 +96,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawImportAs
 			{
 				//Spawn the corresponding asset node
 				currentMNBVContext->assetNodes.emplace_back(Utility::MNBV::AssetNodeData(
-					ECellEngine::Core::SimulationsManager::GetSingleton().FindSimulation(GetCurrentMNBVContext()->simulation->id)->GetModules().back().get(),
+					Core::SimulationsManager::GetSingleton().FindSimulation(GetCurrentMNBVContext()->simulation->id)->GetModules().back().get(),
 					mousePos));
 				currentMNBVContext->ConserveLinkDataIntegrity();
 
@@ -531,19 +531,32 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodesPop
 
 		if (ImGui::BeginMenu("Solvers"))
 		{
+			bool addsolver = false;
 			if (ImGui::MenuItem("Gillespie Next Reaction Method"))
 			{
-				//TODO: Use a command to add a solver
-				currentMNBVContext->solverNodes.emplace_back(Utility::MNBV::SolverNodeData(currentMNBVContext->simulation->AddSolver("GillespieNRMRSolver"), mousePos));
-				currentMNBVContext->ConserveLinkDataIntegrity();
+				addSolverCommandArray[1] = std::to_string(GetCurrentMNBVContext()->simulation->id);
+				addSolverCommandArray[2] = "GillespieNRMRSolver";
+				addsolver = true;
 			}
 
 			if (ImGui::MenuItem("ODE Runge-Kutta 4"))
 			{
-				//TODO: Use a command to add a solver
-				currentMNBVContext->solverNodes.emplace_back(Utility::MNBV::SolverNodeData(currentMNBVContext->simulation->AddSolver("GeneralizedExplicitRK"), mousePos));
-				currentMNBVContext->ConserveLinkDataIntegrity();
+				addSolverCommandArray[1] = std::to_string(GetCurrentMNBVContext()->simulation->id);
+				addSolverCommandArray[2] = "GeneralizedExplicitRK";
+				addsolver = true;
 			}
+			
+			if (addsolver)
+			{
+				if (editor->engine.GetCommandsManager()->InterpretCommand(addSolverCommandArray))
+				{
+					//Spawn the corresponding asset node
+					currentMNBVContext->solverNodes.emplace_back(Utility::MNBV::SolverNodeData(
+						Core::SimulationsManager::GetSingleton().FindSimulation(GetCurrentMNBVContext()->simulation->id)->GetSolvers().back(),
+						mousePos));
+					currentMNBVContext->ConserveLinkDataIntegrity();
+				}			}
+
 			ImGui::EndMenu();
 		}
 

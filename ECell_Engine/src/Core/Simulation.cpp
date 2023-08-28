@@ -22,6 +22,8 @@ std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::stri
 	{
 		return solvers.emplace_back(std::make_shared<ODE::GeneralizedExplicitRK>(dataState, _solverClassName));
 	}
+
+	return nullptr;
 }
 
 const std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator ECellEngine::Core::Simulation::FindModule(const std::size_t _moduleID)
