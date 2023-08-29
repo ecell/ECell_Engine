@@ -59,8 +59,8 @@ namespace ECellEngine::Core
 		std::vector<std::shared_ptr<Solver>> solvers;
 
 		/*!
-		@brief The list of module-solver links (the module is used as input by
-				the solver).
+		@brief The list of pairs of indeces <moduleIdx solverIdx> representing the
+				link between a module and a solver.
 		@details This is list is sorted by the module index first and then by the
 				 solver index.
 				 First item is the index to find the module in the vector ::modules.
@@ -166,7 +166,7 @@ namespace ECellEngine::Core
 		@param _idx The position of the module to retrieve from ::modules.
 		@returns The reference to the shared pointer encapsulating the target module.
 		*/
-		inline const std::shared_ptr<ECellEngine::Data::Module>& GetModule(const std::size_t& _idx) const
+		inline const std::shared_ptr<ECellEngine::Data::Module>& GetModule(const std::size_t _idx) const
 		{
 			return modules[_idx];
 		}
@@ -185,7 +185,7 @@ namespace ECellEngine::Core
 		@param _idx The position of the solver to retrieve from ::solvers.
 		@returns The reference to the shared pointer encapsulating the target solver.
 		*/
-		inline const std::shared_ptr<Solver>& GetSolver(const std::size_t& _idx) const
+		inline const std::shared_ptr<Solver>& GetSolver(const std::size_t _idx) const
 		{
 			return solvers[_idx];
 		}
@@ -212,32 +212,51 @@ namespace ECellEngine::Core
 				@p _moduleID.
 		@details Uses a binary search from the start to the end of the list of ::modules.
 		@param _moduleID The ID of the module which iterator to look for.
-		@returns The iterator of the first encounterd module which ID matches
-				 the argument @p _moduleID. Returns @a SIZE_MAX if no match
-				 was found.
+		@returns A pair <bool iterator> where the bool indicates whether the 
+				 module was found and the iterator the position at the end of
+				 the search. If the module was found, bool is @a True and the
+				 iterator points to the target module. Otherwise, bool is @a
+				 False and the iterator points at ::modules.end().
 		*/
-		const std::vector<std::shared_ptr<Data::Module>>::iterator FindModule(const std::size_t _moduleID);
+		std::pair<bool, std::vector<std::shared_ptr<Data::Module>>::iterator> FindModule(const std::size_t _moduleID);
 
 		/*!
-		brief Finds the pointer to the first pair <moduleIdx, solverIdx> in ::moduleSolverLinks
-			  which moduleIdx is less than @p _moduleIdx and solverIdx is less than @p _solverIdx.
-		@details Uses 3 binary searches: two to find the range (lower & upper bounds)
-				 of modules with the same ID as @p _moduleIdx and one to find
-				 the solver with ID @p _solverIdx in the range found by the
-				 first two searches.
+		brief Gets the lower bound such that to the first pair <moduleIdx, solverIdx>
+				in ::moduleSolverLinks which moduleIdx is less than @p _moduleIdx
+				and solverIdx is less than @p _solverIdx.
+		@details Uses 3 binary searches: two to find the range (lower & upper
+				 bounds) of modules with the same ID as @p _moduleIdx and one
+				 to find the solver with ID @p _solverIdx in the range found
+				 by the first two searches.
 				 
 				 This is possible because ::moduleSolverLinks
 				 is sorted on first the moduleIdx and then the solverIdx.
-		@param _moduleIdx The index of the module in ::modules which is part of the pair
-						  to look for in ::moduleSolverLinks.
-		@param _solverIdx The index of the solver in ::solvers which is part of the pair
-						  to look for in ::moduleSolverLinks.
-		@returns The pointer to the first pair <moduleIdx, solverIdx> in ::moduleSolverLinks
-				 which moduleIdx is less than @p _moduleIdx and solverIdx is less
-				 than @p _solverIdx. Returns @a ::moduleSolverLinks.end() if no
-				 match was found.
+		@param _moduleIdx The index of the module in ::modules which is part of
+						  the pair to look for in ::moduleSolverLinks.
+		@param _solverIdx The index of the solver in ::solvers which is part of
+						  the pair to look for in ::moduleSolverLinks.
+		@returns A pair <bool iterator> where the bool indicates whether the
+				 pair was found and the iterator the position at the end of the
+				 search. If the pair was found, bool is @a True and the iterator
+				 points to the target pair. Otherwise, bool is @a False and the
+				 iterator points either:
+				 
+				 1. at ::moduleSolverLinks.end()
+					
+					1.1 if no pair <moduleIdx, solverIdx> has a moduleIdx equal to
+						@p _moduleIdx
+					1.2 if the target moduleIdx is the greatest moduleIdx in
+						::moduleSolverLinks and the target solverIdx is the greatest
+						in the range of pairs with this moduleIdx.
+
+				 2. at the first pair <moduleIdx, solverIdx> in ::moduleSolverLinks
+				 with moduleIdx < @p _moduleIdx
+				 
+					2.1 if the search on moduleIdx failed.
+					2.2 if the search on moduleIdx succeeded but the search on solverIdx
+						failed.
 		*/
-		const std::vector<std::pair<std::size_t, std::size_t>>::iterator FindModuleSolverLinkLB(const std::size_t _moduleIdx, const std::size_t _solverIdx);
+		std::pair<bool, std::vector<std::pair<std::size_t, std::size_t>>::iterator> FindModuleSolverLink(const std::size_t _moduleIdx, const std::size_t _solverIdx);
 
 		/*
 		@brief Finds the iterator of the solver which ID matches the argument
@@ -248,7 +267,7 @@ namespace ECellEngine::Core
 				 the argument @p _solverID. Returns @a SIZE_MAX if no match
 				 was found.
 		*/
-		const std::vector<std::shared_ptr<Solvers::Solver>>::iterator FindSolver(const std::size_t _solverID);
+		std::pair<bool, std::vector<std::shared_ptr<Solvers::Solver>>::iterator> FindSolver(const std::size_t _solverID);
 
 		/*!
 		@brief Computes all the dependencies between the datastructures loaded
@@ -260,13 +279,16 @@ namespace ECellEngine::Core
 		}
 
 		/*!
-		@brief Removes (destroy) the module with ID @p _id in ::modules
+		@brief Removes (destroy) the module with ID @p _id in ::modules and all
+				the pairs <moduleID, solverID> in ::moduleSolverLinks which
+				occurs under the form of their indeces in and moduleID matches @p _id.
 		@details This is "easy" because ::moduleSolverLinks is sorted on the module 
 				 index first. So, we can get the range (2 binary searches) where the
 				 module is in ::moduleSolverLinks and remove all the pairs in one go.
 		@param _id The ID of the module to remove from ::modules.
+		@return @a True if the module was found and removed, @a False otherwise.
 		*/
-		void RemoveModule(const std::size_t _id);
+		bool RemoveModule(const std::size_t _id);
 
 		/*!
 		@brief Removes the pair <moduleID, solverID> from ::moduleSolverLinks
@@ -277,7 +299,9 @@ namespace ECellEngine::Core
 		bool RemoveModuleSolverLink(const std::size_t _moduleID, const std::size_t _solverID);
 
 		/*!
-		@brief Removes (destroy) the solver with ID @p _id in ::solvers
+		@brief Removes (destroy) the solver with ID @p _id in ::solvers and all
+				the pairs <moduleID, solverID> which occurs under the form of
+				their indeces in ::moduleSolverLinks which have @p _id as solverID.
 		@details This is more "complicated" than ::RemoveModule(const std::size_t _id).
 				 because ::moduleSolverLinks is sorted on the module index first and then
 				 the solver index. So, we cannot find a range of pairs to remove in one go.
@@ -286,8 +310,9 @@ namespace ECellEngine::Core
 				 number of modules linked to the solver we want to remove. Each binary search
 				 will be on a smaller range than the previous one as we move forward.
 		@param _id The ID of the solver to remove from ::solvers.
+		@return @a True if the solver was found and removed, @a False otherwise.
 		*/
-		void RemoveSolver(const std::size_t _id);
+		bool RemoveSolver(const std::size_t _id);
 
 		/*!
 		@brief API to execute code once before the simulation's update loop.

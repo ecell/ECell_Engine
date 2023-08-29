@@ -26,13 +26,18 @@ std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::stri
 	return nullptr;
 }
 
-const std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator ECellEngine::Core::Simulation::FindModule(const std::size_t _moduleID)
+std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator> ECellEngine::Core::Simulation::FindModule(const std::size_t _moduleID)
 {
 	static Data::Module::CompareID compareID;
-	return Util::BinarySearch::LowerBound(modules.begin(), modules.end(), _moduleID, compareID);
+	std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator it = Util::BinarySearch::LowerBound(modules.begin(), modules.end(), _moduleID, compareID);
+	if (it != modules.end() && (*it)->id == _moduleID)
+	{
+		return std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator>(true, it);
+	}
+	return std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator>(false, it);
 }
 
-const std::vector<std::pair<std::size_t, std::size_t>>::iterator ECellEngine::Core::Simulation::FindModuleSolverLinkLB(const std::size_t _moduleIdx, const std::size_t _solverIdx)
+std::pair<bool, std::vector<std::pair<std::size_t, std::size_t>>::iterator> ECellEngine::Core::Simulation::FindModuleSolverLink(const std::size_t _moduleIdx, const std::size_t _solverIdx)
 {
 	static CompareLinksFirst compareLinksFirst;
 	static CompareLinksSecond compareLinksSecond;
@@ -42,32 +47,66 @@ const std::vector<std::pair<std::size_t, std::size_t>>::iterator ECellEngine::Co
 	//if the module was not found, return the lower bound directly (end())
 	if (lowerBound == moduleSolverLinks.end())
 	{
-		return lowerBound;
+		return std::pair<bool, std::vector<std::pair<std::size_t, std::size_t>>::iterator>(false, lowerBound);
+	}
+
+	//if a lower bound was found, but the module is not the one we are looking for, return the lower bound directly
+	if ((*lowerBound).first != _moduleIdx)
+	{
+		return std::pair<bool, std::vector<std::pair<std::size_t, std::size_t>>::iterator>(false, lowerBound);
 	}
 
 	std::vector<std::pair<std::size_t, std::size_t>>::iterator upperBound = Util::BinarySearch::UpperBound(lowerBound, moduleSolverLinks.end(), std::pair(_moduleIdx, _solverIdx), compareLinksFirst);
 
-	return Util::BinarySearch::LowerBound(lowerBound, upperBound, std::pair(_moduleIdx, _solverIdx), compareLinksSecond);
+	lowerBound = Util::BinarySearch::LowerBound(lowerBound, upperBound, std::pair(_moduleIdx, _solverIdx), compareLinksSecond);
+
+	//if the solver was not found, return the lower bound directly (upperBound, it may be end())
+	if (lowerBound == upperBound)
+	{
+		return std::pair<bool, std::vector<std::pair<std::size_t, std::size_t>>::iterator>(false, lowerBound);
+	}
+
+	//if a lower bound was found, but the solver is not the one we are looking for, return the lower bound directly
+	if ((*lowerBound).second != _solverIdx)
+	{
+		return std::pair<bool, std::vector<std::pair<std::size_t, std::size_t>>::iterator>(false, lowerBound);
+	}
+
+	return std::pair<bool, std::vector<std::pair<std::size_t, std::size_t>>::iterator>(true, lowerBound);
 }
 
-const std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator ECellEngine::Core::Simulation::FindSolver(const std::size_t _solverID)
+std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator> ECellEngine::Core::Simulation::FindSolver(const std::size_t _solverID)
 {
 	static Solvers::Solver::CompareID compareID;
-	return Util::BinarySearch::LowerBound(solvers.begin(), solvers.end(), _solverID, compareID);
+	std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator it = Util::BinarySearch::LowerBound(solvers.begin(), solvers.end(), _solverID, compareID);
+	if (it != solvers.end() && (*it)->id == _solverID)
+	{
+		return std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator>(true, it);
+	}
+	return std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator>(false, it);
 }
 
-void ECellEngine::Core::Simulation::RemoveModule(const std::size_t _id)
+bool ECellEngine::Core::Simulation::RemoveModule(const std::size_t _id)
 {
 	//Find the module in the ::modules list
-	std::vector<std::shared_ptr<Data::Module>>::iterator moduleIt = FindModule(_id);
-	std::pair<std::size_t, std::size_t> value(std::distance(modules.begin(), moduleIt), 0);
+	std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator> moduleSearch = FindModule(_id);
+	if (!moduleSearch.first)
+	{
+		return false;
+	}
+	std::pair<std::size_t, std::size_t> value(std::distance(modules.begin(), moduleSearch.second), 0);
 
 	//delete the module from the ::modules list
-	modules.erase(moduleIt);
+	modules.erase(moduleSearch.second);
 
 	//Find the Range of the module in the ::moduleSolverLinks list
 	static CompareLinksFirst compareLinksFirst;
 	std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = Util::BinarySearch::LowerBound(moduleSolverLinks.begin(), moduleSolverLinks.end(), value, compareLinksFirst);
+	if (*lowerBound != value)
+	{
+		return false;
+	}
+	
 	std::vector<std::pair<std::size_t, std::size_t>>::iterator upperBound = Util::BinarySearch::UpperBound(lowerBound, moduleSolverLinks.end(), value, compareLinksFirst);
 
 	//delete the module from the ::moduleSolverLinks list
@@ -77,8 +116,8 @@ void ECellEngine::Core::Simulation::RemoveModule(const std::size_t _id)
 bool ECellEngine::Core::Simulation::RemoveModuleSolverLink(const std::size_t _moduleID, const std::size_t _solverID)
 {
 	//search for the module in the ::modules list
-	std::vector<std::shared_ptr<Data::Module>>::iterator moduleIt = FindModule(_moduleID);
-	std::size_t moduleIdx = std::distance(modules.begin(), moduleIt);
+	std::vector<std::shared_ptr<Data::Module>>::iterator moduleSearch = FindModule(_moduleID);
+	std::size_t moduleIdx = std::distance(modules.begin(), moduleSearch);
 	//TODO: return an error code if the module is not found
 
 	//search for the solver in the ::solvers list
@@ -99,7 +138,7 @@ bool ECellEngine::Core::Simulation::RemoveModuleSolverLink(const std::size_t _mo
 	return false;
 }
 
-void ECellEngine::Core::Simulation::RemoveSolver(const std::size_t _id)
+bool ECellEngine::Core::Simulation::RemoveSolver(const std::size_t _id)
 {
 	//Find the solver in the ::solvers list
 	std::vector<std::shared_ptr<Solvers::Solver>>::iterator solverIt = FindSolver(_id);
@@ -128,7 +167,7 @@ void ECellEngine::Core::Simulation::Start()
 void ECellEngine::Core::Simulation::TryModuleSolverLink(const std::size_t& _moduleID, const std::size_t& _solverID)
 {
 	//search for the module in the ::modules list
-	std::vector<std::shared_ptr<Data::Module>>::iterator moduleIt = FindModule(_moduleID);
+	std::vector<std::shared_ptr<Data::Module>>::iterator moduleSearch = FindModule(_moduleID);
 	//TODO: return an error code if the module is not found
 
 	//search for the solver in the ::solvers list
@@ -136,10 +175,10 @@ void ECellEngine::Core::Simulation::TryModuleSolverLink(const std::size_t& _modu
 	//TODO:return an error code if the solver is not found
 	
 	//If the type of the solver is adapted for the module
-	if ((*moduleIt)->IsValidSolverType(solverIt->get()))
+	if ((*moduleSearch)->IsValidSolverType(solverIt->get()))
 	{
 		//We search for the lower bound where to insert the pair <moduleIdx, solverIdx> in ::moduleSolverLinks
-		std::size_t moduleIdx = std::distance(modules.begin(), moduleIt);
+		std::size_t moduleIdx = std::distance(modules.begin(), moduleSearch);
 		std::size_t solverIdx = std::distance(solvers.begin(), solverIt);
 		std::vector<std::pair<std::size_t, std::size_t>>::iterator it = FindModuleSolverLinkLB(moduleIdx, solverIdx);
 
