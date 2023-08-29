@@ -281,12 +281,11 @@ namespace ECellEngine::Core
 		/*!
 		@brief Removes (destroy) the module with ID @p _id in ::modules and all
 				the pairs <moduleID, solverID> in ::moduleSolverLinks which
-				occurs under the form of their indeces in and moduleID matches @p _id.
-		@details This is "easy" because ::moduleSolverLinks is sorted on the module 
-				 index first. So, we can get the range (2 binary searches) where the
-				 module is in ::moduleSolverLinks and remove all the pairs in one go.
+				occurs under the form of their indeces in and moduleID matches
+				@p _id.
 		@param _id The ID of the module to remove from ::modules.
-		@return @a True if the module was found and removed, @a False otherwise.
+		@return @a False if the module was not even found in ::modules;
+				@a True otherwise.
 		*/
 		bool RemoveModule(const std::size_t _id);
 
@@ -295,6 +294,13 @@ namespace ECellEngine::Core
 		@param _moduleID The ID of the module in the pair to remove.
 		@param _solverID The ID of the solver in the pair to remove.
 		@return @a True if the pair was found and removed, @a False otherwise.
+				@a False is returned if:
+				- No module with ID @p _moduleID was found in ::modules.
+				- No solver with ID @p _solverID was found in ::solvers.
+				- No pair <moduleIdx solverIdx> was found in ::moduleSolverLinks
+				  with moduleIdx equal to the index of the module with ID
+				  @p _moduleID in ::modules and solverIdx equal to the index of
+				  the solver with ID @p _solverID in ::solvers.
 		*/
 		bool RemoveModuleSolverLink(const std::size_t _moduleID, const std::size_t _solverID);
 
@@ -302,15 +308,9 @@ namespace ECellEngine::Core
 		@brief Removes (destroy) the solver with ID @p _id in ::solvers and all
 				the pairs <moduleID, solverID> which occurs under the form of
 				their indeces in ::moduleSolverLinks which have @p _id as solverID.
-		@details This is more "complicated" than ::RemoveModule(const std::size_t _id).
-				 because ::moduleSolverLinks is sorted on the module index first and then
-				 the solver index. So, we cannot find a range of pairs to remove in one go.
-				 Rather, we need to iterate over the list of ::moduleSolverLinks and remove
-				 them one by one. This can be done with k binary searches where k is the
-				 number of modules linked to the solver we want to remove. Each binary search
-				 will be on a smaller range than the previous one as we move forward.
 		@param _id The ID of the solver to remove from ::solvers.
-		@return @a True if the solver was found and removed, @a False otherwise.
+		@return @a False if the solver was not even found in ::solvers;
+				@a True otherwise.
 		*/
 		bool RemoveSolver(const std::size_t _id);
 
@@ -321,12 +321,16 @@ namespace ECellEngine::Core
 
 		/*!
 		@brief Tries to link a solver to a module.
-		@details Overrides any previous link the solver and module may have with
-				 ofther module or solver respectively.
-		@param _moduleID The ID of the module in ::modules we try to attach to.
+		@param _moduleID The ID of the module in ::modules we try to attach.
 		@param _solverID The ID of the solver in ::solvers to try to attach.
+		@return @a True if the solver was found and attached, @a False otherwise.
+				False can be returned if:
+				- The module was not found.
+				- The solver was not found.
+				- The link already exists.
+				- The module is not compatible with the solver.
 		*/
-		void TryModuleSolverLink(const std::size_t& _moduleID, const std::size_t& _solverID);
+		bool TryModuleSolverLink(const std::size_t& _moduleID, const std::size_t& _solverID);
 
 		/*!
 		@brief Updates one step of duration @p _deltaTime for every linked solver

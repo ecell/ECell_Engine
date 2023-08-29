@@ -107,7 +107,11 @@ bool ECellEngine::IO::ModuleSolverConnectionCommand::Execute(const std::vector<s
 		return false;
 	}
 
-	(*simuSearch.second)->TryModuleSolverLink(moduleID, solverID);
+	if ((*simuSearch.second)->TryModuleSolverLink(moduleID, solverID))
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed : Could not link module \"%s\" and solver \"%s\".", _args[2].c_str(), _args[3].c_str());
+		return false;
+	}
 	return true;
 }
 
@@ -154,7 +158,11 @@ bool ECellEngine::IO::ModuleSolverDisconnectionCommand::Execute(const std::vecto
 		return false;
 	}
 
-	(*simuSearch.second)->RemoveModuleSolverLink(moduleID, solverID);
+	if ((*simuSearch.second)->RemoveModuleSolverLink(moduleID, solverID))
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed : Could not unlink module \"%s\" and solver \"%s\".", _args[2].c_str(), _args[3].c_str());
+		return false;
+	}
 	return true;
 }
 
