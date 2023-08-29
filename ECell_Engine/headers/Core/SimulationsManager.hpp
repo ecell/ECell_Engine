@@ -93,9 +93,11 @@ namespace ECellEngine::Core
 		@brief Finds the simulation with ID @p _id in ::simulations.
 		@details Performs a binary search.
 		@param _id The ID of the simulation to retrieve from ::simulations.
-		@returns The pointer to the target simulation. nullptr if not found.
+		@returns A pair with a bool at the first place and the pointer to the 
+				result of the binary search. The bool is true if the simulation
+				was found; false otherwise.
 		*/
-		std::vector<std::unique_ptr<Simulation>>::iterator FindSimulation(const std::size_t _id) noexcept;
+		std::pair<bool, std::vector<std::unique_ptr<Simulation>>::iterator> FindSimulation(const std::size_t _id) noexcept;
 
 		/*!
 		@brief Instantiates a new simulation and adds it to ::simulations.

@@ -15,22 +15,22 @@ bool ECellEngine::IO::AddModuleCommand::Execute(const std::vector<std::string>& 
 		return false;
 	}
 
-	Core::Simulation* simulation = receiver.FindSimulation(simulationID);
+	std::pair<bool, std::vector<std::unique_ptr<Core::Simulation>>::iterator> simuSearch = receiver.FindSimulation(simulationID);
 
-	if (simulation == nullptr)
+	if (!simuSearch.first)
 	{
 		ECellEngine::Logging::Logger::LogError("AddModuleCommand Failed: Could not find simulation with ID \"%s\".", _args[1].c_str());
 		return false;
 	}
 
-	if (simulation->AddModule(_args[2]) == nullptr)
+	if ((*simuSearch.second)->AddModule(_args[2]) == nullptr)
 	{
 		ECellEngine::Logging::Logger::LogError("AddModuleCommand Failed: Could not import module \"%s\"", _args[2].c_str());
 		return false;
 	}
 
-	simulation->RefreshDependenciesDatabase();
-	simulation->GetModules().back()->SetName(const_cast<char*>(_args[3].c_str()));
+	(*simuSearch.second)->RefreshDependenciesDatabase();
+	(*simuSearch.second)->GetModules().back()->SetName(const_cast<char*>(_args[3].c_str()));
 	return true;
 }
 
@@ -47,15 +47,15 @@ bool ECellEngine::IO::AddSolverCommand::Execute(const std::vector<std::string>& 
 		return false;
 	}
 
-	Core::Simulation* simulation = receiver.FindSimulation(simulationID);
+	std::pair<bool, std::vector<std::unique_ptr<Core::Simulation>>::iterator> simuSearch = receiver.FindSimulation(simulationID);
 
-	if (simulation == nullptr)
+	if (!simuSearch.first)
 	{
 		ECellEngine::Logging::Logger::LogError("AddSolverCommand Failed: Could not find simulation with ID \"%s\".", _args[1].c_str());
 		return false;
 	}
 
-	if (simulation->AddSolver(_args[2]) == nullptr)
+	if ((*simuSearch.second)->AddSolver(_args[2]) == nullptr)
 	{
 		ECellEngine::Logging::Logger::LogError("AddSolverCommand Failed: Could not import solver \"%s\"", _args[2].c_str());
 		return false;
@@ -77,9 +77,9 @@ bool ECellEngine::IO::ModuleSolverConnectionCommand::Execute(const std::vector<s
 		return false;
 	}
 
-	Core::Simulation* simulation = receiver.FindSimulation(simulationID);
+	std::pair<bool, std::vector<std::unique_ptr<Core::Simulation>>::iterator> simuSearch = receiver.FindSimulation(simulationID);
 
-	if (simulation == nullptr)
+	if (!simuSearch.first)
 	{
 		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed: Could not find simulation with ID \"%s\".", _args[1].c_str());
 		return false;
@@ -107,7 +107,7 @@ bool ECellEngine::IO::ModuleSolverConnectionCommand::Execute(const std::vector<s
 		return false;
 	}
 
-	simulation->TryModuleSolverLink(moduleID, solverID);
+	(*simuSearch.second)->TryModuleSolverLink(moduleID, solverID);
 	return true;
 }
 
@@ -124,9 +124,9 @@ bool ECellEngine::IO::ModuleSolverDisconnectionCommand::Execute(const std::vecto
 		return false;
 	}
 
-	Core::Simulation* simulation = receiver.FindSimulation(simulationID);
+	std::pair<bool, std::vector<std::unique_ptr<Core::Simulation>>::iterator> simuSearch = receiver.FindSimulation(simulationID);
 
-	if (simulation == nullptr)
+	if (!simuSearch.first)
 	{
 		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not find simulation with ID \"%s\".", _args[1].c_str());
 		return false;
@@ -154,7 +154,7 @@ bool ECellEngine::IO::ModuleSolverDisconnectionCommand::Execute(const std::vecto
 		return false;
 	}
 
-	simulation->RemoveModuleSolverLink(moduleID, solverID);
+	(*simuSearch.second)->RemoveModuleSolverLink(moduleID, solverID);
 	return true;
 }
 

@@ -8,15 +8,15 @@ ECellEngine::Core::SimulationsManager& ECellEngine::Core::SimulationsManager::Ge
 	return instance;
 }
 
-std::vector<std::unique_ptr<ECellEngine::Core::Simulation>>::iterator ECellEngine::Core::SimulationsManager::FindSimulation(const std::size_t _id) noexcept
+std::pair<bool, std::vector<std::unique_ptr<ECellEngine::Core::Simulation>>::iterator> ECellEngine::Core::SimulationsManager::FindSimulation(const std::size_t _id) noexcept
 {
 	CompareSimulationIDs compareSimulationIDs;
 	std::vector<std::unique_ptr<Simulation>>::iterator it = Util::BinarySearch::LowerBound(simulations.begin(), simulations.end(), _id, compareSimulationIDs);
 	if (it != simulations.end() && (*it)->id == _id)
 	{
-		return it;
+		return std::pair<bool, std::vector<std::unique_ptr<Simulation>>::iterator>(true, it);
 	}
-	return nullptr;
+	return std::pair<bool, std::vector<std::unique_ptr<Simulation>>::iterator>(false, it);
 }
 
 
