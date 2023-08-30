@@ -107,11 +107,42 @@ bool ECellEngine::IO::ModuleSolverConnectionCommand::Execute(const std::vector<s
 		return false;
 	}
 
-	if (!(*simuSearch.second)->TryModuleSolverLink(moduleID, solverID))
+	//Search for the module in the ::modules list
+	std::pair<bool, std::vector<std::shared_ptr<Data::Module>>::iterator> moduleSearch = (*simuSearch.second)->FindModule(moduleID);
+	if (!moduleSearch.first)
 	{
-		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed : Could not link module \"%llu\" and solver \"%llu\".", moduleID, solverID);
+		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed: Could not find module with ID \"%llu\".", moduleID);
 		return false;
 	}
+
+	//Search for the solver in the ::solvers list
+	std::pair<bool, std::vector<std::shared_ptr<Solvers::Solver>>::iterator> solverSearch = (*simuSearch.second)->FindSolver(solverID);
+	if (!solverSearch.first)
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed: Could not find solver with ID \"%llu\".", solverID);
+		return false;
+	}
+
+	//Check if the solver is compatible with the module
+	if (!(*moduleSearch.second)->IsValidSolverType(solverSearch.second->get()))
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed: Solver \"%llu\" is not compatible with module \"%llu\".", solverID, moduleID);
+		return false;
+	}
+
+	//We search for the lower bound where to insert the pair <moduleIdx, solverIdx> in ::moduleSolverLinks
+	std::size_t moduleIdx = std::distance((*simuSearch.second)->GetModules().begin(), moduleSearch.second);
+	std::size_t solverIdx = std::distance((*simuSearch.second)->GetSolvers().begin(), solverSearch.second);
+	std::pair<bool, std::vector<std::pair<std::size_t, std::size_t>>::iterator> linkSearch = (*simuSearch.second)->FindModuleSolverLink(moduleIdx, solverIdx);
+	
+	//Check if the link already exists
+	if (linkSearch.first)
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed: Link between module \"%llu\" and solver \"%llu\" already exists.", moduleID, solverID);
+		return false;
+	}
+
+	(*simuSearch.second)->InsertModuleSolverLink(linkSearch.second, std::pair<std::size_t, std::size_t>(moduleIdx, solverIdx));
 	return true;
 }
 
@@ -158,11 +189,35 @@ bool ECellEngine::IO::ModuleSolverDisconnectionCommand::Execute(const std::vecto
 		return false;
 	}
 
-	if (!(*simuSearch.second)->RemoveModuleSolverLink(moduleID, solverID))
+	//Search for the module in the ::modules list
+	std::pair<bool, std::vector<std::shared_ptr<Data::Module>>::iterator> moduleSearch = (*simuSearch.second)->FindModule(moduleID);
+	if (!moduleSearch.first)
 	{
-		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed : Could not unlink module \"%llu\" and solver \"%llu\".", moduleID, solverID);
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not find module with ID \"%llu\".", moduleID);
 		return false;
 	}
+
+	//Search for the solver in the ::solvers list
+	std::pair<bool, std::vector<std::shared_ptr<Solvers::Solver>>::iterator> solverSearch = (*simuSearch.second)->FindSolver(solverID);
+	if (!solverSearch.first)
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not find solver with ID \"%llu\".", solverID);
+		return false;
+	}
+
+	//Search for the link in the ::moduleSolverLinks list
+	std::size_t moduleIdx = std::distance((*simuSearch.second)->GetModules().begin(), moduleSearch.second);
+	std::size_t solverIdx = std::distance((*simuSearch.second)->GetSolvers().begin(), solverSearch.second);
+	std::pair<bool, std::vector<std::pair<std::size_t, std::size_t>>::iterator> linkSearch = (*simuSearch.second)->FindModuleSolverLink(moduleIdx, solverIdx);
+	
+	//Check if the link exists
+	if (!linkSearch.first)
+	{
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not find link between module \"%llu\" and solver \"%llu\".", moduleID, solverID);
+		return false;
+	}
+
+	(*simuSearch.second)->RemoveModuleSolverLink(linkSearch.second);
 	return true;
 }
 

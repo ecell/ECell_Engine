@@ -166,7 +166,7 @@ namespace ECellEngine::Core
 		@param _idx The position of the module to retrieve from ::modules.
 		@returns The reference to the shared pointer encapsulating the target module.
 		*/
-		inline const std::shared_ptr<ECellEngine::Data::Module>& GetModule(const std::size_t _idx) const
+		inline std::shared_ptr<ECellEngine::Data::Module>& GetModule(const std::size_t _idx)
 		{
 			return modules[_idx];
 		}
@@ -175,7 +175,7 @@ namespace ECellEngine::Core
 		@brief Gets the list of modules imported in this simulation (::modules).
 		@returns The list of all modules.
 		*/
-		inline const std::vector<std::shared_ptr<ECellEngine::Data::Module>>& GetModules() const noexcept
+		inline std::vector<std::shared_ptr<ECellEngine::Data::Module>>& GetModules() noexcept
 		{
 			return modules;
 		}
@@ -185,7 +185,7 @@ namespace ECellEngine::Core
 		@param _idx The position of the solver to retrieve from ::solvers.
 		@returns The reference to the shared pointer encapsulating the target solver.
 		*/
-		inline const std::shared_ptr<Solver>& GetSolver(const std::size_t _idx) const
+		inline std::shared_ptr<Solver>& GetSolver(const std::size_t _idx)
 		{
 			return solvers[_idx];
 		}
@@ -194,7 +194,7 @@ namespace ECellEngine::Core
 		@brief Gets the list of solvers added in this simulation (::solvers).
 		@returns The list of all solvers.
 		*/
-		inline const std::vector<std::shared_ptr<Solver>>& GetSolvers() const noexcept
+		inline std::vector<std::shared_ptr<Solver>>& GetSolvers() noexcept
 		{
 			return solvers;
 		}
@@ -279,40 +279,37 @@ namespace ECellEngine::Core
 		}
 
 		/*!
-		@brief Removes (destroy) the module with ID @p _id in ::modules and all
-				the pairs <moduleID, solverID> in ::moduleSolverLinks which
-				occurs under the form of their indeces in and moduleID matches
-				@p _id.
-		@param _id The ID of the module to remove from ::modules.
-		@return @a False if the module was not even found in ::modules;
-				@a True otherwise.
+		@brief Erases the module at the position @p _moduleIt in ::modules as
+				well as the module-solver links in ::moduleSolverLinks which
+				contains the ID of the module to remove.
+		@details Also maintains the integrity of ::moduleSolverLinks by decrementing
+				 the moduleIdx of all the pairs <moduleIdx, solverIdx> which have
+				 a moduleIdx greater than the moduleIdx of the module to remove.
+		@param _moduleIt The iterator pointing to the module to remove.
+		@remarks Does not check whether _moduleIt is actually in ::modules. To
+				 make sure this is the case, use ::FindModule(const std::size_t _moduleID)
 		*/
-		bool RemoveModule(const std::size_t _id);
+		void RemoveModule(std::vector<std::shared_ptr<Data::Module>>::iterator _moduleIt);
 
 		/*!
-		@brief Removes the pair <moduleID, solverID> from ::moduleSolverLinks
-		@param _moduleID The ID of the module in the pair to remove.
-		@param _solverID The ID of the solver in the pair to remove.
-		@return @a True if the pair was found and removed, @a False otherwise.
-				@a False is returned if:
-				- No module with ID @p _moduleID was found in ::modules.
-				- No solver with ID @p _solverID was found in ::solvers.
-				- No pair <moduleIdx solverIdx> was found in ::moduleSolverLinks
-				  with moduleIdx equal to the index of the module with ID
-				  @p _moduleID in ::modules and solverIdx equal to the index of
-				  the solver with ID @p _solverID in ::solvers.
+		@brief Erases the module-solver link at the position @p _linkIt in
+				::moduleSolverLinks.
+		@param _linkIt The iterator pointing to the module-solver link to remove.
 		*/
-		bool RemoveModuleSolverLink(const std::size_t _moduleID, const std::size_t _solverID);
+		void RemoveModuleSolverLink(std::vector<std::pair<std::size_t, std::size_t>>::iterator _linkIt);
 
 		/*!
-		@brief Removes (destroy) the solver with ID @p _id in ::solvers and all
-				the pairs <moduleID, solverID> which occurs under the form of
-				their indeces in ::moduleSolverLinks which have @p _id as solverID.
-		@param _id The ID of the solver to remove from ::solvers.
-		@return @a False if the solver was not even found in ::solvers;
-				@a True otherwise.
+		@brief Erases the solver at the position @p _solverIt in ::solvers as
+				well as the module-solver links in ::moduleSolverLinks which
+				contains the ID of the solver to remove.
+		@details Also maintains the integrity of ::moduleSolverLinks by decrementing
+				 the solverIdx of all the pairs <moduleIdx, solverIdx> which have
+				 a solverIdx greater than the solverIdx of the solver to remove.
+		@param _solverIt The iterator pointing to the solver to remove.
+		@remarks Does not check whether @p _solverIt is actually in ::solvers. To
+				 make sure this is the case, use ::FindSolver(const std::size_t _solverID)
 		*/
-		bool RemoveSolver(const std::size_t _id);
+		void RemoveSolver(std::vector<std::shared_ptr<Solvers::Solver>>::iterator _solverIt);
 
 		/*!
 		@brief API to execute code once before the simulation's update loop.
@@ -320,17 +317,18 @@ namespace ECellEngine::Core
 		void Start();
 
 		/*!
-		@brief Tries to link a solver to a module.
-		@param _moduleID The ID of the module in ::modules we try to attach.
-		@param _solverID The ID of the solver in ::solvers to try to attach.
-		@return @a True if the solver was found and attached, @a False otherwise.
-				False can be returned if:
-				- The module was not found.
-				- The solver was not found.
-				- The link already exists.
-				- The module is not compatible with the solver.
+		@brief Insert the module-solver link @p _link in ::moduleSolverLinks
+				at the position @p _pos and initializes the solver @p _solver
+				with the data of the module @p _module.
+		@param _pos The position in ::moduleSolverLinks where to insert the
+					module-solver link @p _link.
+		@param _link The module-solver link to insert in ::moduleSolverLinks.
+		@remark Does not check whether @p _pos is actually in ::moduleSolverLinks nor
+				whether @p _link is actually in ::moduleSolverLinks. To make sure this
+				is the case, use ::FindModuleSolverLink(const std::size_t _moduleIdx, const std::size_t _solverIdx)
 		*/
-		bool TryModuleSolverLink(const std::size_t& _moduleID, const std::size_t& _solverID);
+		void InsertModuleSolverLink(std::vector<std::pair<std::size_t, std::size_t>>::iterator _pos,
+									std::pair<std::size_t, std::size_t>& _link);
 
 		/*!
 		@brief Updates one step of duration @p _deltaTime for every linked solver

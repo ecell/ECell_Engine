@@ -86,23 +86,18 @@ std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iter
 	return std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator>(false, it);
 }
 
-bool ECellEngine::Core::Simulation::RemoveModule(const std::size_t _id)
+void ECellEngine::Core::Simulation::RemoveModule(std::vector<std::shared_ptr<Data::Module>>::iterator _moduleIt)
 {
 	// -- Remove the module from the ::modules list --
-	//Find the module in the ::modules list
-	std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator> moduleSearch = FindModule(_id);
-	if (!moduleSearch.first)
-	{
-		return false;
-	}
-	
-	//Make a pair with the module index (and a dummy value for the solver index)
-	std::pair<std::size_t, std::size_t> value(std::distance(modules.begin(), moduleSearch.second), 0);
-
+	// 
 	//Erase the module from the ::modules list
-	modules.erase(moduleSearch.second);
+	modules.erase(_moduleIt);
 
 	// -- Remove the pairs with the module index from the ::moduleSolverLinks list --
+
+	//Make a pair with the module index (and a dummy value for the solver index)
+	std::pair<std::size_t, std::size_t> value(std::distance(modules.begin(), _moduleIt), 0);
+
 	//Find the Range of the module in the ::moduleSolverLinks list
 	static CompareLinksFirst compareLinksFirst;
 	std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = Util::BinarySearch::LowerBound(moduleSolverLinks.begin(), moduleSolverLinks.end(), value, compareLinksFirst);
@@ -122,59 +117,25 @@ bool ECellEngine::Core::Simulation::RemoveModule(const std::size_t _id)
 			(*it).first--;
 		}
 	}
-	
-	return true;
 }
 
-bool ECellEngine::Core::Simulation::RemoveModuleSolverLink(const std::size_t _moduleID, const std::size_t _solverID)
+void ECellEngine::Core::Simulation::RemoveModuleSolverLink(std::vector<std::pair<std::size_t, std::size_t>>::iterator _linkIt)
 {
-	//Search for the module in the ::modules list
-	std::pair<bool, std::vector<std::shared_ptr<Data::Module>>::iterator> moduleSearch = FindModule(_moduleID);
-	if (!moduleSearch.first)
-	{
-		return false;
-	}
-
-	//Search for the solver in the ::solvers list
-	std::pair<bool, std::vector<std::shared_ptr<Solvers::Solver>>::iterator> solverSearch = FindSolver(_solverID);
-	if (!solverSearch.first)
-	{
-		return false;
-	}
-
-	//Search for the link in the ::moduleSolverLinks list
-	std::size_t moduleIdx = std::distance(modules.begin(), moduleSearch.second);
-	std::size_t solverIdx = std::distance(solvers.begin(), solverSearch.second);
-	std::pair<bool, std::vector<std::pair<std::size_t, std::size_t>>::iterator> linkSearch = FindModuleSolverLink(moduleIdx, solverIdx);
-	if (!linkSearch.first)
-	{
-		return false;
-	}
-
 	//Erase the link from the ::moduleSolverLinks list
-	moduleSolverLinks.erase(linkSearch.second);
-	return true;
+	moduleSolverLinks.erase(_linkIt);
 }
 
-bool ECellEngine::Core::Simulation::RemoveSolver(const std::size_t _id)
+void ECellEngine::Core::Simulation::RemoveSolver(std::vector<std::shared_ptr<Solvers::Solver>>::iterator _solverIt)
 {
-	// -- Remove the solver from the ::solvers list --
-	//Find the solver in the ::solvers list
-	std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator> solverSearch = FindSolver(_id);
-	if (!solverSearch.first)
-	{
-		return false;
-	}
-
-	//Make a pair with the solver index (and a dummy value for the module index)
-	std::pair<std::size_t, std::size_t> value(0, std::distance(solvers.begin(), solverSearch.second));
-
 	//Erase the solver from the ::solvers list
-	solvers.erase(solverSearch.second);
+	solvers.erase(_solverIt);
 
 	// -- Remove the pairs with the solver index from the ::moduleSolverLinks list --
 	static CompareLinksFirst compareLinksFirst;
 	static CompareLinksSecond compareLinksSecond;
+
+	//Make a pair with the solver index (and a dummy value for the module index)
+	std::pair<std::size_t, std::size_t> value(0, std::distance(solvers.begin(), _solverIt));
 	std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = moduleSolverLinks.begin();
 
 	//Iterate on all ranges starting with an identical module index and delete the links that have the target solver index
@@ -199,8 +160,6 @@ bool ECellEngine::Core::Simulation::RemoveSolver(const std::size_t _id)
 			(*it).second--;
 		}
 	}
-
-	return true;
 }
 
 void ECellEngine::Core::Simulation::Start()
@@ -212,47 +171,13 @@ void ECellEngine::Core::Simulation::Start()
 	}
 }
 
-bool ECellEngine::Core::Simulation::TryModuleSolverLink(const std::size_t& _moduleID, const std::size_t& _solverID)
+void ECellEngine::Core::Simulation::InsertModuleSolverLink(std::vector<std::pair<std::size_t, std::size_t>>::iterator _pos,
+									std::pair<std::size_t, std::size_t>& _link)
 {
-	//search for the module in the ::modules list
-	std::pair<bool, std::vector<std::shared_ptr<Data::Module>>::iterator> moduleSearch = FindModule(_moduleID);
-	if (!moduleSearch.first)
-	{
-		return false;
-	}
-
-	//search for the solver in the ::solvers list
-	std::pair<bool, std::vector<std::shared_ptr<Solvers::Solver>>::iterator> solverSearch = FindSolver(_solverID);
-	if (!solverSearch.first)
-	{
-		return false;
-	}
-	
-	//If the type of the solver is adapted for the module
-	if ((*(moduleSearch.second))->IsValidSolverType(solverSearch.second->get()))
-	{
-		//We search for the lower bound where to insert the pair <moduleIdx, solverIdx> in ::moduleSolverLinks
-		std::size_t moduleIdx = std::distance(modules.begin(), moduleSearch.second);
-		std::size_t solverIdx = std::distance(solvers.begin(), solverSearch.second);
-
-		//We search for the lower bound where to insert the pair <moduleIdx, solverIdx> in ::moduleSolverLinks
-		//We do so using the FindModuleSolverLink function which will tell us whether the pair is already in the list or not
-		std::pair<bool, std::vector<std::pair<std::size_t, std::size_t>>::iterator> linkSearch = FindModuleSolverLink(moduleIdx, solverIdx);
-
-		//If the pair is already in the list, we return false
-		if (linkSearch.first)
-		{
-			return false;
-		}
-
-		moduleSolverLinks.insert(linkSearch.second, std::pair(moduleIdx, solverIdx));
+	moduleSolverLinks.insert(_pos, _link);
 		
-		//We initialize the solver with the module
-		solvers[solverIdx]->Initialize(modules[moduleIdx].get());
-
-		return true;
-	}
-	return false;
+	//We initialize the solver with the module
+	solvers[_link.second]->Initialize(modules[_link.first].get());
 }
 
 void ECellEngine::Core::Simulation::Update(const float& _deltaTime)
