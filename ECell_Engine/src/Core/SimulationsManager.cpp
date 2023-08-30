@@ -8,9 +8,20 @@ ECellEngine::Core::SimulationsManager& ECellEngine::Core::SimulationsManager::Ge
 	return instance;
 }
 
+std::pair<bool, std::vector<ECellEngine::Core::Simulation*>::iterator> ECellEngine::Core::SimulationsManager::FindPlayingSimulation(const std::size_t _id) noexcept
+{
+	static CompareSimulationIDs compareSimulationIDs;
+	std::vector<Simulation*>::iterator it = Util::BinarySearch::LowerBound(playingSimulations.begin(), playingSimulations.end(), _id, compareSimulationIDs);
+	if (it != playingSimulations.end() && (*it)->id == _id)
+	{
+		return std::pair<bool, std::vector<Simulation*>::iterator>(true, it);
+	}
+	return std::pair<bool, std::vector<Simulation*>::iterator>(false, it);
+}
+
 std::pair<bool, std::vector<std::unique_ptr<ECellEngine::Core::Simulation>>::iterator> ECellEngine::Core::SimulationsManager::FindSimulation(const std::size_t _id) noexcept
 {
-	CompareSimulationIDs compareSimulationIDs;
+	static CompareSimulationIDs compareSimulationIDs;
 	std::vector<std::unique_ptr<Simulation>>::iterator it = Util::BinarySearch::LowerBound(simulations.begin(), simulations.end(), _id, compareSimulationIDs);
 	if (it != simulations.end() && (*it)->id == _id)
 	{
@@ -20,31 +31,33 @@ std::pair<bool, std::vector<std::unique_ptr<ECellEngine::Core::Simulation>>::ite
 }
 
 
-bool ECellEngine::Core::SimulationsManager::PauseSimulation(const size_t _id) noexcept
+bool ECellEngine::Core::SimulationsManager::PauseSimulation(std::vector<Simulation*>::iterator _playingSimulation) noexcept
 {
-	//playingSimulations.erase(playingSimulations.begin() + _idx);
+	playingSimulations.erase(_playingSimulation);
 	return true;
 }
 
 
-bool ECellEngine::Core::SimulationsManager::PlaySimulation(const size_t _id) noexcept
+bool ECellEngine::Core::SimulationsManager::PlaySimulation(std::vector<std::unique_ptr<Simulation>>::iterator _simulation) noexcept
 {
-	/*Simulation* simulation = FindSimulation(_id);
-	if (simulation == nullptr)
+	//Check if simulation is already playing
+	std::pair<bool, std::vector<Simulation*>::iterator> search = FindPlayingSimulation((*_simulation)->id);
+	if (search.first)
 	{
-		ECellEngine::Logging::Logger::LogError("")
+		ECellEngine::Logging::Logger::LogError("PlaySimulation Failed: Simulation with ID \"%llu\" is already playing.", (*_simulation)->id);
+		return false;
 	}
 
-	simulations[_idx]->Start();
-	playingSimulations.push_back(simulations[_idx].get());*/
+	(*_simulation)->Start();
+	playingSimulations.insert(search.second, (*_simulation).get());
 	return true;
 }
 
 
-bool ECellEngine::Core::SimulationsManager::StopSimulation(const size_t _id) noexcept
+bool ECellEngine::Core::SimulationsManager::StopSimulation(std::vector<Simulation*>::iterator _playingSimulation) noexcept
 {
+	playingSimulations.erase(_playingSimulation);
 	//TODO: Reset Data in Simulation;
-	//playingSimulations.erase(playingSimulations.begin() + _idx);
 	return true;
 }
 

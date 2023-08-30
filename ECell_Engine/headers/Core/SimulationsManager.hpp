@@ -42,7 +42,7 @@ namespace ECellEngine::Core
 			@brief Compares two simulations based on their IDs.
 			@param _lhs The left hand side simulation to compare.
 			@param _rhs The right hand side simulation to compare.
-			@returns True if the ID of @p _lhs ->id < @p _rhs ->id; false otherwise.
+			@returns True if the ID of @p _lhs->id < @p _rhs->id; false otherwise.
 			*/
 			bool operator()(std::unique_ptr<Simulation>& _lhs, std::unique_ptr<Simulation>& _rhs) const noexcept
 			{
@@ -53,9 +53,20 @@ namespace ECellEngine::Core
 			@brief Compares a simulation based on its ID and a given ID.
 			@param _lhs The left hand side simulation to compare.
 			@param _id The ID to compare with.
-			@returns True if the ID of @p _lhs ->id < @p _id; false otherwise.
+			@returns True if the ID of @p _lhs->id < @p _id; false otherwise.
 			*/
 			bool operator()(std::unique_ptr<Simulation>& _lhs, std::size_t _id) const noexcept
+			{
+				return _lhs->id < _id;
+			}
+			
+			/*!
+			@brief Compares a simulation based on its ID and a given ID.
+			@param _lhs The left hand side simulation to compare.
+			@param _id The ID to compare with.
+			@returns True if the ID of @p _lhs->id < @p _id; false otherwise.
+			*/
+			bool operator()(Simulation* _lhs, std::size_t _id) const noexcept
 			{
 				return _lhs->id < _id;
 			}
@@ -66,18 +77,18 @@ namespace ECellEngine::Core
 		/*!
 		@brief Gets the number of simulation in ::simulations.
 		*/
-		inline std::size_t CountSimulations() const noexcept
+		/*inline std::size_t CountSimulations() const noexcept
 		{
 			return simulations.size();
-		}
+		}*/
 
 		/*!
 		@brief Gets the number of playing simulation in ::playingSimulations.
 		*/
-		inline std::size_t CountPlayingSimulations() const noexcept
+		/*inline std::size_t CountPlayingSimulations() const noexcept
 		{
 			return playingSimulations.size();
-		}
+		}*/
 
 		/*!
 		@brief Gets the simulation at position @p _idx in ::simulations.
@@ -88,6 +99,16 @@ namespace ECellEngine::Core
 		{
 			return simulations[_idx].get();
 		}
+
+		/*!
+		@brief Finds the simulation with ID @p _id in ::playingSimulations.
+		@details Performs a binary search.
+		@param _id The ID of the simulation to retrieve from ::playingSimulations.
+		@returns A pair with a bool at the first place and the pointer to the 
+				result of the binary search. The bool is true if the simulation
+				was found; false otherwise.
+		*/
+		std::pair<bool, std::vector<ECellEngine::Core::Simulation*>::iterator> FindPlayingSimulation(const std::size_t _id) noexcept;
 
 		/*!
 		@brief Finds the simulation with ID @p _id in ::simulations.
@@ -109,23 +130,22 @@ namespace ECellEngine::Core
 
 		/*!
 		@brief Pauses the execution the simulation with ID @p _id in ::playingSimulations.
-		@param _id The position of the target simulation in ::playingSimulations.
+		@param _playingSimulation The iterator to the target simulation in ::playingSimulations.
 		*/
-		bool PauseSimulation(const size_t _id) noexcept;
+		bool PauseSimulation(std::vector<Simulation*>::iterator _playingSimulation) noexcept;
 
 		/*!
-		@brief Adds in ::playingSimulations the simulation with ID @p _id in 
+		@brief Adds in ::playingSimulations the simulation with ID @p _id in
 				::simulations.
-		@details The simulation will start updating at the next frame.
-		@param _id The position of the target simulation in ::simulations.
+		@param _simulation The iterator to the target simulation in ::simulations.
 		*/
-		bool PlaySimulation(const size_t _id) noexcept;
+		bool PlaySimulation(std::vector<std::unique_ptr<Simulation>>::iterator _simulation) noexcept;
 
 		/*!
-		@brief Removes the simulation with ID @p _id from ::playingSimulations.
-		@param _id The position of the target simulation in ::simulations.
+		@brief Removes the playing simulation with ID @p _id from ::playingSimulations.
+		@param _playingSimulation The iterator to the target simulation in ::playingSimulations.
 		*/
-		bool StopSimulation(const size_t _id) noexcept;
+		bool StopSimulation(std::vector<Simulation*>::iterator _playingSimulation) noexcept;
 
 		/*!
 		@brief Updates one step of duration @p _deltaTime for every simulation 

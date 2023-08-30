@@ -19,7 +19,7 @@ bool ECellEngine::IO::AddModuleCommand::Execute(const std::vector<std::string>& 
 
 	if (!simuSearch.first)
 	{
-		ECellEngine::Logging::Logger::LogError("AddModuleCommand Failed: Could not find simulation with ID \"%s\".", _args[1].c_str());
+		ECellEngine::Logging::Logger::LogError("AddModuleCommand Failed: Could not find simulation with ID \"%llu\".", simulationID);
 		return false;
 	}
 
@@ -51,7 +51,7 @@ bool ECellEngine::IO::AddSolverCommand::Execute(const std::vector<std::string>& 
 
 	if (!simuSearch.first)
 	{
-		ECellEngine::Logging::Logger::LogError("AddSolverCommand Failed: Could not find simulation with ID \"%s\".", _args[1].c_str());
+		ECellEngine::Logging::Logger::LogError("AddSolverCommand Failed: Could not find simulation with ID \"%llu\".", simulationID);
 		return false;
 	}
 
@@ -81,7 +81,7 @@ bool ECellEngine::IO::ModuleSolverConnectionCommand::Execute(const std::vector<s
 
 	if (!simuSearch.first)
 	{
-		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed: Could not find simulation with ID \"%s\".", _args[1].c_str());
+		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed: Could not find simulation with ID \"%llu\".", simulationID);
 		return false;
 	}
 
@@ -107,9 +107,9 @@ bool ECellEngine::IO::ModuleSolverConnectionCommand::Execute(const std::vector<s
 		return false;
 	}
 
-	if ((*simuSearch.second)->TryModuleSolverLink(moduleID, solverID))
+	if (!(*simuSearch.second)->TryModuleSolverLink(moduleID, solverID))
 	{
-		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed : Could not link module \"%s\" and solver \"%s\".", _args[2].c_str(), _args[3].c_str());
+		ECellEngine::Logging::Logger::LogError("ModuleSolverConnectionCommand Failed : Could not link module \"%llu\" and solver \"%llu\".", moduleID, solverID);
 		return false;
 	}
 	return true;
@@ -132,7 +132,7 @@ bool ECellEngine::IO::ModuleSolverDisconnectionCommand::Execute(const std::vecto
 
 	if (!simuSearch.first)
 	{
-		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not find simulation with ID \"%s\".", _args[1].c_str());
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed: Could not find simulation with ID \"%llu\".", simulationID);
 		return false;
 	}
 
@@ -158,9 +158,9 @@ bool ECellEngine::IO::ModuleSolverDisconnectionCommand::Execute(const std::vecto
 		return false;
 	}
 
-	if ((*simuSearch.second)->RemoveModuleSolverLink(moduleID, solverID))
+	if (!(*simuSearch.second)->RemoveModuleSolverLink(moduleID, solverID))
 	{
-		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed : Could not unlink module \"%s\" and solver \"%s\".", _args[2].c_str(), _args[3].c_str());
+		ECellEngine::Logging::Logger::LogError("ModuleSolverDisconnectionCommand Failed : Could not unlink module \"%llu\" and solver \"%llu\".", moduleID, solverID);
 		return false;
 	}
 	return true;
@@ -168,39 +168,68 @@ bool ECellEngine::IO::ModuleSolverDisconnectionCommand::Execute(const std::vecto
 
 bool ECellEngine::IO::PauseSimulationCommand::Execute(const std::vector<std::string>& _args)
 {
-	if (receiver.CountPlayingSimulations() == 0)
+	std::size_t simulationID = 0;
+	try
 	{
-		ECellEngine::Logging::Logger::LogError("PauseSimulationCommand Failed: There is no simulation currently playing.");
+		simulationID = std::stoll(_args[1]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("PauseSimulationCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a simulation", simulationID);
 		return false;
 	}
 
-	if (std::stoi(_args[1]) >= receiver.CountPlayingSimulations())
+	std::pair<bool, std::vector<std::unique_ptr<Core::Simulation>>::iterator> simuSearch = receiver.FindSimulation(simulationID);
+
+	if (!simuSearch.first)
 	{
-		ECellEngine::Logging::Logger::LogError("PauseSimulationCommand Failed: Tried to pause a simulation that is not playing.");
+		ECellEngine::Logging::Logger::LogError("PauseSimulationCommand Failed: Could not find simulation with ID \"%llu\".", simulationID);
 		return false;
 	}
-	
-	// std::stoi(_args[1]) < receiver.CountPlayingSimulations()
-	receiver.PauseSimulation(std::stoi(_args[1]));
+
+	//Search for playing simulation with ID simulationID
+	std::pair<bool, std::vector<Core::Simulation*>::iterator> playingSimuSearch = receiver.FindPlayingSimulation(simulationID);
+	if (!playingSimuSearch.first)
+	{
+		ECellEngine::Logging::Logger::LogError("PauseSimulationCommand Failed: Could not find a playing simulation with ID \"%llu\".", simulationID);
+		return false;
+	}
+
+	if (!receiver.PauseSimulation(playingSimuSearch.second))
+	{
+		ECellEngine::Logging::Logger::LogError("PauseSimulationCommand Failed: Could not pause simulation with ID \"%llu\".", simulationID);
+		return false;
+	}
+
 	return true;
 }
 
 bool ECellEngine::IO::PlaySimulationCommand::Execute(const std::vector<std::string>& _args)
 {
-	if (receiver.CountSimulations() == 0)
+	std::size_t simulationID = 0;
+	try
 	{
-		ECellEngine::Logging::Logger::LogError("PlaySimulationCommand Failed: There is no simulation currently managed.");
+		simulationID = std::stoll(_args[1]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("PlaySimulationCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a simulation", simulationID);
 		return false;
 	}
 
-	if (std::stoi(_args[1]) >= receiver.CountSimulations())
+	std::pair<bool, std::vector<std::unique_ptr<Core::Simulation>>::iterator> simuSearch = receiver.FindSimulation(simulationID);
+
+	if (!simuSearch.first)
 	{
-		ECellEngine::Logging::Logger::LogError("PlaySimulationCommand Failed: Tried to play a simulation that does not exist.");
+		ECellEngine::Logging::Logger::LogError("PlaySimulationCommand Failed: Could not find simulation with ID \"%llu\".", simulationID);
 		return false;
 	}
 
-	//std::stoi(_args[1]) < receiver.CountSimulation()
-	receiver.PlaySimulation(std::stoi(_args[1]));
+	if (!receiver.PlaySimulation(simuSearch.second))
+	{
+		ECellEngine::Logging::Logger::LogError("PlaySimulationCommand Failed: Could not play simulation with ID \"%llu\".", simulationID);
+		return false;
+	}
 	return true;
 }
 
@@ -212,42 +241,75 @@ bool ECellEngine::IO::StepSimulationBackwardCommand::Execute(const std::vector<s
 
 bool ECellEngine::IO::StepSimulationForwardCommand::Execute(const std::vector<std::string>& _args)
 {
-	if (receiver.CountSimulations() == 0)
+	std::size_t simulationID = 0;
+	try
 	{
-		ECellEngine::Logging::Logger::LogError("PlaySimulationCommand Failed: There is no simulation currently managed.");
+		simulationID = std::stoll(_args[1]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("StepSimulationForwardCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a simulation", simulationID);
 		return false;
 	}
 
-	if (std::stoi(_args[1]) >= receiver.CountSimulations())
+	std::pair<bool, std::vector<std::unique_ptr<Core::Simulation>>::iterator> simuSearch = receiver.FindSimulation(simulationID);
+
+	if (!simuSearch.first)
 	{
-		ECellEngine::Logging::Logger::LogError("PlaySimulationCommand Failed: Tried to play a simulation that does not exist.");
+		ECellEngine::Logging::Logger::LogError("StepSimulationForwardCommand Failed: Could not find simulation with ID \"%llu\".", simulationID);
 		return false;
 	}
 
-	//std::stoi(_args[1]) < receiver.CountSimulation()
-	receiver.GetSimulation(std::stoi(_args[1]))->Update(std::stof(_args[2]));
+	float deltaTime = 0.f;
+	try
+	{
+		deltaTime = std::stof(_args[2]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("StepSimulationForwardCommand Failed: Could not convert second argument \"%s\" to a float to represent the delta time of the update loop", deltaTime);
+		return false;
+	}
+
+	(*simuSearch.second)->Update(deltaTime);
 	return true;
-
-	return false;
 }
 
 bool ECellEngine::IO::StopSimulationCommand::Execute(const std::vector<std::string>& _args)
 {
 
-	if (receiver.CountPlayingSimulations() == 0)
+	std::size_t simulationID = 0;
+	try
 	{
-		ECellEngine::Logging::Logger::LogError("StopSimulationCommand Failed: There is no simulation currently playing.");
+		simulationID = std::stoll(_args[1]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("StopSimulationCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a simulation", simulationID);
 		return false;
 	}
 
-	if (std::stoi(_args[1]) >= receiver.CountPlayingSimulations())
+	std::pair<bool, std::vector<std::unique_ptr<Core::Simulation>>::iterator> simuSearch = receiver.FindSimulation(simulationID);
+
+	if (!simuSearch.first)
 	{
-		ECellEngine::Logging::Logger::LogError("StopSimulationCommand Failed: Tried to stop a simulation that is not playing.");
+		ECellEngine::Logging::Logger::LogError("StopSimulationCommand Failed: Could not find simulation with ID \"%llu\".", simulationID);
 		return false;
 	}
 
-	//std::stoi(_args[1]) < receiver.CountPlayingSimulations()
-	receiver.StopSimulation(std::stoi(_args[1]));
+	//Search for playing simulation with ID simulationID
+	std::pair<bool, std::vector<Core::Simulation*>::iterator> playingSimuSearch = receiver.FindPlayingSimulation(simulationID);
+	if (!playingSimuSearch.first)
+	{
+		ECellEngine::Logging::Logger::LogError("StopSimulationCommand Failed: Could not find a playing simulation with ID \"%llu\".", simulationID);
+		return false;
+	}
+
+	if (!receiver.StopSimulation(playingSimuSearch.second))
+	{
+		ECellEngine::Logging::Logger::LogError("StopSimulationCommand Failed: Could not stop simulation with ID \"%llu\".", simulationID);
+		return false;
+	}
 	return true;
 }
 

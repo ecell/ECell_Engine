@@ -239,7 +239,7 @@ namespace ECellEngine::Core
 				 pair was found and the iterator the position at the end of the
 				 search. If the pair was found, bool is @a True and the iterator
 				 points to the target pair. Otherwise, bool is @a False and the
-				 iterator points either:
+				 iterator points:
 				 
 				 1. at ::moduleSolverLinks.end()
 					
