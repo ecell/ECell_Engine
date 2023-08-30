@@ -18,7 +18,7 @@ namespace ECellEngine::IO
 	class CommandsManager
 	{
 	private:
-		std::unordered_map<std::string, std::shared_ptr<Command>> commands;
+		std::unordered_map<std::string, std::shared_ptr<AbstractCommand>> commands;
 
 	public:
 		CommandsManager() = default;
@@ -39,7 +39,7 @@ namespace ECellEngine::IO
 		@returns False if the command already exists. True otherwise (and the command
 				 is duely registered).
 		*/
-		bool RegisterCommand(std::shared_ptr<Command> _command);
+		bool RegisterCommand(std::shared_ptr<AbstractCommand> _command);
 
 		/*
 		@brief  Searches in the hash table of registered commands whether one has a name
@@ -48,6 +48,6 @@ namespace ECellEngine::IO
 		@returns The command encapsulated as a std::shared_ptr if a match was found. A
 				 nullptr otherwise.
 		*/
-		std::shared_ptr<Command> TryGetRegisteredCommand(std::string const& _commandName);
+		std::shared_ptr<AbstractCommand> TryGetRegisteredCommand(std::string const& _commandName);
 	};
 }
