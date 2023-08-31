@@ -84,3 +84,18 @@ float ECellEngine::Solvers::ODE::ODEStepper::Next() noexcept
 
 	return timer.elapsedTime;
 }
+
+void ECellEngine::Solvers::ODE::ODEStepper::Reset() noexcept
+{
+	timer.ResetTimes();
+
+	h = 0.001f;
+	//fac = 0.8f;
+	//facmax = 5.f;
+	//facmin = 0.2f;
+	error = 0.f;
+	sc = 0.f;
+	absoluteTolerance = 0.000001f;
+	relativeTolerance = 0.000001f;
+	computeTimeThetaTolerance = 0.05f;
+}

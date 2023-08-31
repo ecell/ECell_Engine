@@ -123,13 +123,27 @@ namespace ECellEngine::Solvers
 		}
 
 		/*!
+		@brief Clears the solver's data.
+		@details Brings back the solver in a state where ::Initialize(const ECellEngine::Data::Module*)
+				 must be called again before ::Start() and ::Update(const ECellEngine::Core::Timer&)
+				 can be called.
+		*/
+		virtual void Clear() = 0;
+
+		/*!
 		@brief Initializes the solver based on the given module.
 		@param _module The module to initialize the solver with.
 		*/
 		virtual void Initialize(const ECellEngine::Data::Module*) = 0;
 
 		/*!
-		@brief API to execute code once before the solver's update loop.
+		@brief To bring back every relevant data used in this solver to its
+				initial state.
+		*/
+		virtual void Reset() = 0;
+
+		/*!
+		@brief To execute code once before the solver's first update loop.
 		*/
 		virtual void Start() = 0;
 

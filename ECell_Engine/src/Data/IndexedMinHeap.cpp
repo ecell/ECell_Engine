@@ -18,6 +18,13 @@ void ECellEngine::Data::IndexedMinHeap::BubbleUp(const std::size_t& _nodeIdx)
 	}
 }
 
+void ECellEngine::Data::IndexedMinHeap::Clear()
+{
+	heap.clear();
+	indeces.clear();
+	heapSize = 0;
+}
+
 void ECellEngine::Data::IndexedMinHeap::Initialize(const std::vector<std::pair<std::size_t, float>> _heap)
 {
 	heap = _heap;

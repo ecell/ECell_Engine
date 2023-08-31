@@ -173,5 +173,20 @@ namespace ECellEngine::Solvers::ODE
 		{
 			return timer.elapsedTime+h > _t;
 		}
+
+		/*!
+		@brief Resets every member to its default value.
+		@details The default values are:
+					- ::h = 0.001f
+					- ::fac = 0.8f (actually const)
+					- ::facMin = 0.2f (actually const)
+					- ::facMax = 5.0f (actually const)
+					- ::error = 0.0f
+					- ::sc = 0.0f
+					- ::absoluteTolerance = 1e-6f
+					- ::relativeTolerance = 1e-6f
+					- ::computeTimeThetaTolerance = 0.05f
+		*/
+		void Reset() noexcept override;
 	};
 }

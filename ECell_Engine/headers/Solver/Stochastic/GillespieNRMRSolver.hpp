@@ -45,7 +45,11 @@ namespace ECellEngine::Solvers::Stochastic
 			return &stepper;
 		}
 
+		void Clear() override;
+
 		void Initialize(const ECellEngine::Data::Module*) override;
+
+		void Reset() override;
 
 		void Start() override;
 

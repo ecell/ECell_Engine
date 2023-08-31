@@ -22,12 +22,12 @@ float ECellEngine::Solvers::ODE::ExplicitRKCoefficients::ComputekSumForSolution(
 
 void ECellEngine::Solvers::ODE::ExplicitRKCoefficients::Delete() noexcept
 {
-	delete[] ks;
-	delete[] as;
-	delete[] bs;
-	delete[] bs2;
-	delete[] bsp;
-	delete[] cs;
+	delete[] ks; ks = nullptr;
+	delete[] as; as = nullptr;
+	delete[] bs; bs = nullptr;
+	delete[] bs2; bs2 = nullptr;
+	delete[] bsp; bsp = nullptr;
+	delete[] cs; cs = nullptr;
 }
 
 void ECellEngine::Solvers::ODE::ExplicitRKCoefficients::SetToClassicRK4(const unsigned short _systemSize) noexcept

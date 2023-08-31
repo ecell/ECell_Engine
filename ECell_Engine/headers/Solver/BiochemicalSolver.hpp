@@ -22,7 +22,11 @@ namespace ECellEngine::Solvers
 
 		}
 
+		virtual void Clear() override = 0;
+
 		virtual void Initialize(const ECellEngine::Data::Module* _module) override = 0;
+
+		virtual void Reset() override = 0;
 
 		virtual void Start() override = 0;
 

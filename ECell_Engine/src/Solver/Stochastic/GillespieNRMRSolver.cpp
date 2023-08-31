@@ -81,9 +81,27 @@ void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::BuildDependancyGraph
 	}
 }
 
+void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::Clear()
+{
+	stepper.Reset();
+	tauIMH.Clear();
+	trace.clear();
+	reactionsDependanceGraph.clear();
+}
+
 const float ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::ComputeReactionPropensity(const std::string& _reactionName)
 {
 	return dataState.GetReaction(_reactionName)->ComputeKineticLaw();
+}
+
+void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::Reset()
+{
+	stepper.Reset();
+
+	//reset all reactions, species and parameter, equations, and so on... to before simulation start
+
+	tauIMH.UpdateHeapFromRoot();
+	trace.clear();
 }
 
 void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::SolveBackward(const float& _targetTime)

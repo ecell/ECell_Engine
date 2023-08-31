@@ -30,6 +30,23 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::BuildEquationRHS(Operatio
 	}
 }
 
+void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Clear()
+{
+	system.clear();
+	systemSize = 0;
+	coeffs.Delete();
+	stepper.Reset();
+	triggersOnODE.clear();
+	triggersOnExtEq.clear();
+	externalEquations.clear();
+	triggerTriggerTime = 0.f;
+	errorControl = false;
+	delete[] yn; yn = nullptr;
+	delete[] ynp1; ynp1 = nullptr;
+	delete[] ynp12; ynp12 = nullptr;
+	delete[] yn_ext; yn_ext = nullptr;
+}
+
 void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEngine::Data::Module* _module)
 {
 	BiochemicalSolver::Initialize(_module);
@@ -49,7 +66,6 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 			//Get the kinetic law
 			allOutFlux[reactant].push_back(reaction->GetKineticLaw());
 		}
-
 
 		for (std::string product : *reaction->GetProducts())
 		{
@@ -118,6 +134,20 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 	//SetToClassicRK4();
 	SetToDormandPrince5();
 	//SetToMerson4();
+}
+
+void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Reset()
+{
+	//TODO 
+	//Reset the reactions, species, parameters, equations to their initial values
+
+	stepper.Reset();
+
+	//Assign the initial values to the system
+	for (unsigned short i = 0; i < systemSize; ++i)
+	{
+		ynp1[i] = system[i].Get();
+	}
 }
 
 void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::ScanForTriggersOnExtEq() noexcept

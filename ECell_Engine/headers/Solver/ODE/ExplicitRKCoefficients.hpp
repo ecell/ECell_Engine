@@ -108,7 +108,7 @@ namespace ECellEngine::Solvers::ODE
 
 		/*!
 		@brief Handles the clean up of the various arrays.
-		@details Includes ks, as, bs, bs2 and cs.
+		@details Includes ::ks, ::as, ::bs, ::bs2, ::bsp and cs.
 		*/
 		void Delete() noexcept;
 

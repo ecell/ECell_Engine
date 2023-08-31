@@ -51,5 +51,11 @@ namespace ECellEngine::Solvers
 		{
 			timer.SetStartTime();
 		}
+
+		/*!
+		@brief Reset the stepper.
+		@details Implementations is left to the derived classes.
+		*/
+		virtual void Reset() noexcept = 0;
 	};
 }

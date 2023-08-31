@@ -187,7 +187,11 @@ namespace ECellEngine::Solvers::ODE
 		*/
 		void SetToMerson4() noexcept;
 
+		void Clear() override;
+
 		void Initialize(const ECellEngine::Data::Module* _module) override;
+
+		void Reset() override;
 
 		void Start() override;
 

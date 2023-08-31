@@ -121,6 +121,8 @@ void ECellEngine::Core::Simulation::RemoveModule(std::vector<std::shared_ptr<Dat
 
 void ECellEngine::Core::Simulation::RemoveModuleSolverLink(std::vector<std::pair<std::size_t, std::size_t>>::iterator _linkIt)
 {
+	solvers[_linkIt->second]->Clear();
+
 	//Erase the link from the ::moduleSolverLinks list
 	moduleSolverLinks.erase(_linkIt);
 }

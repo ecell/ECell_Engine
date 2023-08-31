@@ -114,6 +114,12 @@ namespace ECellEngine::Data
 			heap[indeces[_positionIdx]].second = _value;
 		}
 
+		/*!
+		@brief Clears everything.
+		@details Clears ::heap, ::indeces and buffer to ::heapSize (set to 0).
+		*/
+		void Clear();
+
 		/*
 		@brief Initializes the Indexed MinHeap.
 		@param _heap The heap to be indexed Min-Heapified.

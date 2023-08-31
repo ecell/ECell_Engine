@@ -92,5 +92,18 @@ namespace ECellEngine::Solvers::Stochastic
 		{
 			return timer.elapsedTime + h > _t;
 		}
+
+		/*!
+		@brief Resets every member to its default value.
+		@details The default values are:
+					- ::a_old = 0.f
+					- ::a_new = 0.f
+					- ::tau_old = 0.f
+					- ::tau_new = 0.f
+					- ::muTau = { 0, 0.f }
+					- ::reactionName = ""
+					- ::h = 0.f
+		*/
+		void Reset() noexcept override;
 	};
 }
