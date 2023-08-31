@@ -13,7 +13,7 @@ float ECellEngine::Solvers::ODE::ODEStepper::ComputeDenseOutputIncrement(const f
 		{
 			uTheta += _bsp[s * _order + j] * pow(_theta, j+1);
 		}
-		res += uTheta * _ks[_eqIdx + s];
+		res += uTheta * _ks[_eqIdx * _stage + s];
 	}
 	return res;
 }

@@ -5,7 +5,7 @@ float ECellEngine::Solvers::ODE::ExplicitRKCoefficients::ComputekSumForStage(con
 	float res = 0;
 	for (unsigned short s = 0; s < _stage - 1; ++s)
 	{
-		res += as[NBAS_PER_STAGE[_stage - 2] + s] * ks[_eqIdx+s];
+		res += as[NBAS_PER_STAGE[_stage - 2] + s] * ks[_eqIdx * stages + s];
 	}
 	return res;
 }
@@ -15,7 +15,7 @@ float ECellEngine::Solvers::ODE::ExplicitRKCoefficients::ComputekSumForSolution(
 	float res = 0;
 	for (unsigned short s = 0; s < stages; ++s)
 	{
-		res += bs[s] * ks[_eqIdx+s];
+		res += bs[s] * ks[_eqIdx * stages + s];
 	}
 	return res;
 }

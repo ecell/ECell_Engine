@@ -263,8 +263,8 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 			yn[i] = system[i].Get();
 
 			//k1 = f(y_n)
-			coeffs.ks[i*systemSize] = system[i].GetOperation().Get();
-			//ECellEngine::Logging::Logger::LogDebug("k1[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize]));
+			coeffs.ks[i * coeffs.stages] = system[i].GetOperation().Get();
+			//ECellEngine::Logging::Logger::LogDebug("k1[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * coeffs.stages]));
 		}
 
 		//Storing the value of the external equations at the beginning of the step
@@ -278,7 +278,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 			//ECellEngine::Logging::Logger::LogDebug("---- s= " + std::to_string(s) + "; ");
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
-				system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForStage(i * systemSize, s));
+				system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForStage(i, s));
 			}
 			//updating the external equations with the intermediate value
 			for (unsigned short i = 0; i < extEqSize; ++i)
@@ -287,8 +287,8 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 			}
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
-				coeffs.ks[i * systemSize + s-1] = system[i].GetOperation().Get();
-				//ECellEngine::Logging::Logger::LogDebug("k" + std::to_string(s) + "[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize + s - 1]));
+				coeffs.ks[i * coeffs.stages + s-1] = system[i].GetOperation().Get();
+				//ECellEngine::Logging::Logger::LogDebug("k" + std::to_string(s) + "[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * coeffs.stages + s - 1]));
 			}
 		}
 
@@ -301,7 +301,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
 			//y_n+1 = y_n + h * (b1 * k1 + b2 * k2 + ... + bs * ks)
-			system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForSolution(i * systemSize, coeffs.bs));
+			system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForSolution(i, coeffs.bs));
 		}
 
 		//Finally, we update the external equations with the new value of the system at t=tn+1
@@ -322,7 +322,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 			log += "=" + std::to_string(system[i].Get());
 			for (unsigned short j = 0; j < coeffs.stages; ++j)
 			{
-				log += "; k" + std::to_string(j + 1) + "=" + std::to_string(coeffs.ks[i * systemSize + j]);
+				log += "; k" + std::to_string(j + 1) + "=" + std::to_string(coeffs.ks[i * coeffs.stages + j]);
 			}
 			ECellEngine::Logging::Logger::LogDebug(log.c_str());
 		}
@@ -352,8 +352,8 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			//that change the value of the system.
 			yn[i] = system[i].GetOperand()->Get();
 			//k1 = f(y_n)
-			coeffs.ks[i*systemSize] = system[i].GetOperation().Get();
-			//ECellEngine::Logging::Logger::LogDebug("k1[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize]));
+			coeffs.ks[i * coeffs.stages] = system[i].GetOperation().Get();
+			//ECellEngine::Logging::Logger::LogDebug("k1[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i]));
 		}
 
 		//Storing the value of the external equations at the beginning of the step
@@ -367,7 +367,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			//ECellEngine::Logging::Logger::LogDebug("---- s= " + std::to_string(s) + "; ");
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
-				system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForStage(i * systemSize, s));
+				system[i].GetOperand()->Set(yn[i] + stepper.h * coeffs.ComputekSumForStage(i, s));
 			}
 			//updating the external equations with the intermediate value
 			for (unsigned short i = 0; i < extEqSize; ++i)
@@ -376,8 +376,8 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			}
 			for (unsigned short i = 0; i < systemSize; ++i)
 			{
-				coeffs.ks[i * systemSize + s-1] = system[i].GetOperation().Get();
-				//ECellEngine::Logging::Logger::LogDebug("k" + std::to_string(s) + "[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * systemSize + s - 1]));
+				coeffs.ks[i * coeffs.stages + s-1] = system[i].GetOperation().Get();
+				//ECellEngine::Logging::Logger::LogDebug("k" + std::to_string(s) + "[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i * coeffs.stages + s - 1]));
 			}
 		}
 
@@ -392,8 +392,8 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
 			//y_n+1 = y_n + h * (b1 * k1 + b2 * k2 + ... + bs * ks)
-			ynp1[i] = yn[i] + stepper.h * coeffs.ComputekSumForSolution(i * systemSize, coeffs.bs);
-			ynp12[i] = yn[i] + stepper.h * coeffs.ComputekSumForSolution(i * systemSize, coeffs.bs2);
+			ynp1[i] = yn[i] + stepper.h * coeffs.ComputekSumForSolution(i, coeffs.bs);
+			ynp12[i] = yn[i] + stepper.h * coeffs.ComputekSumForSolution(i, coeffs.bs2);
 		}
 
 		//If the error is acceptable
@@ -415,7 +415,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 				{
 					triggerCandidateTime = stepper.ComputeTimeForValue(
 						it->first->GetThreshold()->Get(), yn[it->second], ynp1[it->second],
-						coeffs.bsp, coeffs.ks, it->second * systemSize, coeffs.order, coeffs.stages);
+						coeffs.bsp, coeffs.ks, it->second, coeffs.order, coeffs.stages);
 
 					/*ECellEngine::Logging::Logger::LogDebug("The trigger comparing " +
 						it->first->GetTarget()->name + " and " + it->first->GetThreshold()->name +
@@ -471,7 +471,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 					//of the dichotomy
 					for (unsigned short i = 0; i < systemSize; i++)
 					{
-						system[i].GetOperand()->Set(yn[i] + stepper.h * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks, i * systemSize, coeffs.order, coeffs.stages));
+						system[i].GetOperand()->Set(yn[i] + stepper.h * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks, i, coeffs.order, coeffs.stages));
 					}
 					//we compute the external equations with the value of
 					//of the system at theta = 0.5
@@ -497,7 +497,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 						//Interpolating the system at theta
 						for (unsigned short i = 0; i < systemSize; i++)
 						{
-							system[i].GetOperand()->Set(yn[i] + stepper.h * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks, i * systemSize, coeffs.order, coeffs.stages));
+							system[i].GetOperand()->Set(yn[i] + stepper.h * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks, i, coeffs.order, coeffs.stages));
 						}
 						//we compute the external equations with the value of
 						//of the system at theta
@@ -539,7 +539,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 				for (unsigned short i = 0; i < systemSize; ++i)
 				{
 					ynp1[i] = yn[i] + stepper.h * stepper.ComputeDenseOutputIncrement(coeffs.bsp, theta, coeffs.ks,
-						i * systemSize, coeffs.denseOutputOrder, coeffs.stages);
+						i, coeffs.denseOutputOrder, coeffs.stages);
 					system[i].GetOperand()->Set(ynp1[i]);
 					system[i].GetOperand()->onValueChange(yn[i], ynp1[i]);
 				}
@@ -631,7 +631,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			log += "=" + std::to_string(system[i].Get());
 			for (unsigned short j = 0; j < coeffs.stages; ++j)
 			{
-				log += "; k" + std::to_string(j + 1) + "=" + std::to_string(coeffs.ks[i * systemSize + j]);
+				log += "; k" + std::to_string(j + 1) + "=" + std::to_string(coeffs.ks[i * coeffs.stages + j]);
 			}
 			ECellEngine::Logging::Logger::LogDebug(log);
 		}
