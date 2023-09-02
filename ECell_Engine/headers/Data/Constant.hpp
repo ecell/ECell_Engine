@@ -27,7 +27,7 @@ namespace ECellEngine::Data
         need to identify a constant so the id is not important.
         */
         Constant(float _value) :
-            ECellEngine::Maths::Operand(""), value{ _value }
+            ECellEngine::Maths::Operand("", SIZE_MAX), value{ _value }
         {
         }
 

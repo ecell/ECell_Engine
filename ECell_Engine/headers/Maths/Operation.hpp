@@ -184,13 +184,17 @@ namespace ECellEngine::Maths
 		*/
 		ECellEngine::Core::Callback<const float, const float> onResultChange;
 
-		Operation() : Operand()
+		/*!
+		@brief This constructor is used when we want to add isolated operations
+				to the datastate.
+		*/
+		Operation(const std::size_t _id) : Operand(_id)
 		{
 			UpdateFunction();//initialize the function pointer to the start value of ::functionType
 		}
 
-		Operation(const std::string _name) : 
-			Operand (_name)
+		Operation(const std::string& _name, const std::size_t _id) : 
+			Operand (_name, _id)
 		{
 			constants.reserve(2);
 			operations.reserve(2);
@@ -208,7 +212,7 @@ namespace ECellEngine::Maths
 				 ::operands will lead to the previous location.
 		*/
 		Operation(const Operation& _op):
-			Operand{ _op.name }, structure{ _op.structure }, function{ _op.function },
+			Operand{ _op.name, _op.id }, structure{ _op.structure }, function{ _op.function },
 			constants{_op.constants}, operations{_op.operations}, operands{_op.operands}
 		{
 			if (Util::IsFlagSet(structure, OperationStructure_IsCompiled))
@@ -315,9 +319,9 @@ namespace ECellEngine::Maths
 		@details Also writes in ::structure to encode this new operand's
 				 information.
 		*/
-		inline Operation& AddNewOperation(const std::string _name)
+		inline Operation& AddNewOperation(const std::string& _name, const std::size_t _id)
 		{
-			operations.emplace_back(Operation(_name));
+			operations.emplace_back(Operation(_name, _id));
 
 			InformStructureOfAddOperation();
 

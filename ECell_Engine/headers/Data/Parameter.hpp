@@ -14,8 +14,8 @@ namespace ECellEngine::Data
 	public:
 		std::shared_ptr<std::function<void(const float, const float)>> updateValueSubToken = nullptr;
 
-		Parameter(const std::string _name, const float _value) :
-			ECellEngine::Maths::Operand{ _name }, value{ _value }, previousValue{ _value }, initialValue{ _value }
+		Parameter(const std::string& _name, const std::size_t _id, const float _value) :
+			ECellEngine::Maths::Operand{ _name, _id}, value{ _value }, previousValue{ _value }, initialValue{ _value }
 		{
 
 		}

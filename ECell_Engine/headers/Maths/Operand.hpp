@@ -23,6 +23,14 @@ namespace ECellEngine::Maths
 	*/
 	struct Operand
 	{
+		/*!
+		@brief The unique identifier of the operand.
+		*/
+		const std::size_t id;
+
+		/*!
+		@brief The name of the operand.
+		*/
 		std::string name;
 
 		/*!
@@ -30,10 +38,14 @@ namespace ECellEngine::Maths
 		*/
 		Core::Callback<const float, const float> onValueChange;
 
-		Operand() = default;
+		Operand(const std::size_t _id) :
+			id{ _id }
+		{
 
-		Operand(std::string _name) :
-			name{_name}
+		}
+
+		Operand(const std::string& _name, const std::size_t _id) :
+			name{_name}, id{_id}
 		{
 
 		}

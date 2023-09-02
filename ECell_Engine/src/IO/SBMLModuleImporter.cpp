@@ -7,7 +7,6 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeEquations(ECellEngine::Data:
     unsigned int nbRules = _model->getNumRules();
     const LIBSBML_CPP_NAMESPACE::Rule* rule;
     const LIBSBML_CPP_NAMESPACE::ASTNode* astNode;
-    Operation root;
     Operand* lhs;
     std::string variableId;
     std::string variableName;
@@ -15,40 +14,40 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeEquations(ECellEngine::Data:
     {
         //std::cout << std::endl;
         rule = _model->getRule(i);
-        astNode = rule->getMath();
         variableId = rule->getVariable();
         variableName = _docIdsToDataStateNames.find(variableId)->second;
+        if (rule->isParameter())
+        {
+            lhs = _dataState.GetParameter(variableName).get();
+        }
+        else if (rule->isSpeciesConcentration())
+        {
+            lhs = _dataState.GetSpecies(variableName).get();
+		}
+        else
+        {
+            ECellEngine::Logging::Logger::LogError("Rule %s is neither a parameter nor a species concentration. This rule was skipped. Please, check that the variable name of this rule matches a parameter or species name.", rule->getVariable());
+        }
+        
+        astNode = rule->getMath();
         //covers the case when we have a rule of the form 'a = b'
         //In this situation we do not do the tree parsing but we create the
         //operation directly with the root node.
         if (astNode->getType() == ASTNodeType_t::AST_NAME)
         {
-            root = Operation(variableId);
+            Operation root(variableId, ++_dataState.idProvider);
             root.Set(&functions.identity, FunctionType_Identity);
             root.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(astNode->getName())->second));
-        }
-        else
-        {
-            root = ASTNodeToOperation(astNode, variableId, _dataState, _docIdsToDataStateNames);
-        }
-
-        if (rule->isParameter())
-        {
-            lhs = _dataState.GetParameter(variableName).get();
             _sbmlModule.AddEquation(lhs, root);
             _dataState.GetEquation(variableName)->Compute();
             _docIdsToDataStateNames[variableId] = variableName;
         }
-        else if (rule->isSpeciesConcentration())
+        else
         {
-            lhs = _dataState.GetSpecies(variableName).get();
+            Operation root = ASTNodeToOperation(astNode, variableId, _dataState, _docIdsToDataStateNames);
             _sbmlModule.AddEquation(lhs, root);
             _dataState.GetEquation(variableName)->Compute();
             _docIdsToDataStateNames[variableId] = variableName;
-		}
-        else
-        {
-            ECellEngine::Logging::Logger::LogError("Rule %s is neither a parameter nor a species concentration. This rule was skipped. Please, check that the variable name of this rule matches a parameter or species name.", rule->getVariable());
         }
     }
 }
@@ -109,7 +108,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
         //operation directly with the root node.
         if (astNode->getType() == ASTNodeType_t::AST_NAME)
         {
-            Operation root = Operation(reaction->getId());
+            Operation root(reaction->getId(), ++_dataState.idProvider);
             root.Set(&functions.identity, FunctionType_Identity);
             root.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(astNode->getName())->second));
             _sbmlModule.AddReaction(reaction->getId(), products, reactants, root);
@@ -143,7 +142,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
                                         ECellEngine::Data::DataState& _dataState,
                                         std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
 {
-    Operation op = Operation(_rootName);
+    Operation op = Operation(_rootName, ++_dataState.idProvider);
     AssignOperationFunction(op, _rootAstNode);
 
     std::vector<Operation*> opsStack = { &op };
@@ -163,7 +162,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
             ASTNode* cNode = nodesStack.back(); //cNode stands for child Node
             if (IsASTNodeOperation(cNode))
             {
-                Operation* cOP = &pOP->AddNewOperation(_rootName);//cOP stands for child Operation
+                Operation* cOP = &pOP->AddNewOperation(_rootName, op.id);//cOP stands for child Operation
                 AssignOperationFunction(*cOP, cNode);
                 opsStack.push_back(cOP);
 

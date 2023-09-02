@@ -15,7 +15,8 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::BuildEquationRHS(Operatio
 		unsigned short halfSize = _fluxes.size() / 2;
 		for (unsigned short step = 1; step <= halfSize; step *= 2)
 		{
-			Operation couple;
+			//This is an internal operation so the ID is not important
+			Operation couple(SIZE_MAX);
 			couple.Set(&ECellEngine::Maths::functions.plus, FunctionType_Plus);
 			for (unsigned short i = 0; i < _fluxes.size(); i += step * 2)
 			{
@@ -89,7 +90,8 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 
 		if (hasIF || hasOF)
 		{
-			Operation rhs;
+			//This is an internal operation, so the id does not matter.
+			Operation rhs(SIZE_MAX);
 			if (hasIF && !hasOF)
 			{
 				rhs.Set(&ECellEngine::Maths::functions.identity, FunctionType_Identity);

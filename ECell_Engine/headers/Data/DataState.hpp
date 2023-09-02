@@ -126,17 +126,17 @@ namespace ECellEngine::Data
 
 		inline bool AddParameter(const std::string& _parameterName, const float _value)
 		{
-			return parameters.emplace(_parameterName, std::make_shared<Parameter>(_parameterName, _value)).second;
+			return parameters.emplace(_parameterName, std::make_shared<Parameter>(_parameterName, ++idProvider, _value)).second;
 		}
 		
 		inline bool AddSpecies(const std::string& _speciesName, const float _quantity)
 		{
-			return species.emplace(_speciesName, std::make_shared<Species>(_speciesName, _quantity)).second;
+			return species.emplace(_speciesName, std::make_shared<Species>(_speciesName, ++idProvider, _quantity)).second;
 		}
 
 		inline std::shared_ptr<Maths::Operation> AddOperation()
 		{
-			return operations.emplace_back(std::make_shared<Maths::Operation>());
+			return operations.emplace_back(std::make_shared<Maths::Operation>(++idProvider));
 		}
 
 		inline std::shared_ptr<Maths::LogicOperation> AddLogicOperation()
