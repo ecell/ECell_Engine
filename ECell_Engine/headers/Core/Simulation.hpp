@@ -147,9 +147,9 @@ namespace ECellEngine::Core
 		*/
 		std::shared_ptr<Solver> AddSolver(const std::string& _solverClassName);
 
-		inline ECellEngine::Data::DataState* GetDataState()
+		inline ECellEngine::Data::DataState& GetDataState()
 		{
-			return &dataState;
+			return dataState;
 		}
 
 		/*!
@@ -202,9 +202,9 @@ namespace ECellEngine::Core
 		/*
 		@brief Gets the timer of this simulation.
 		*/
-		inline Timer* GetTimer() noexcept
+		inline Timer& GetTimer() noexcept
 		{
-			return &timer;
+			return timer;
 		}
 
 		/*

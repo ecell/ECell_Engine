@@ -1679,8 +1679,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			collapsingHeadersIds[CollapsingHeader_KineticLaw] = Widget::MNBV::GetMNBVCtxtNextId();//Kinetic Law collapsing header
 			collapsingHeadersIds[CollapsingHeader_KineticLawOperands] = Widget::MNBV::GetMNBVCtxtNextId();//Kinetic Law Operands collapsing header
 
-			nlbsData[NodeListBoxString_Reactants] = { _data->GetReactants() , Widget::MNBV::GetMNBVCtxtNextId() };//Reactants section
-			nlbsData[NodeListBoxString_Products] = { data->GetProducts(), Widget::MNBV::GetMNBVCtxtNextId() };//Products section
+			nlbsData[NodeListBoxString_Reactants] = { &_data->GetReactants() , Widget::MNBV::GetMNBVCtxtNextId() };//Reactants section
+			nlbsData[NodeListBoxString_Products] = { &_data->GetProducts(), Widget::MNBV::GetMNBVCtxtNextId() };//Products section
 			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);
 			nlbsData[NodeListBoxString_SpeciesOperands] = { &speciesOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Species Operands from Kinetic Law
 			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::Parameter>(parametersOperands);

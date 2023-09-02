@@ -35,7 +35,7 @@ void ECellEngine::Data::DependenciesDatabase::RefreshEquationDependencies(const 
 void ECellEngine::Data::DependenciesDatabase::RefreshReactionDependencies(const DataState& dataState, std::shared_ptr<Reaction> reaction)  noexcept
 {
 	//Resolve species (as reactant) -> reaction dependencies
-	for (const std::string& reactant : *reaction->GetReactants())
+	for (const std::string& reactant : reaction->GetReactants())
 	{
 		//Might have duplicatas here, must use another datastructure to make sure we don't add duplicatas (std::unordered_set or ordered std::vector)
 		SpeciesDependencies& dependencies = speciesDependencies[dataState.GetSpecies(reactant)];
@@ -44,7 +44,7 @@ void ECellEngine::Data::DependenciesDatabase::RefreshReactionDependencies(const 
 	}
 
 	//Resolve species (as product) -> reaction dependencies
-	for (const std::string& product : *reaction->GetProducts())
+	for (const std::string& product : reaction->GetProducts())
 	{
 		//Might have duplicatas here, must use another datastructure to make sure we don't add duplicatas (std::unordered_set or ordered std::vector)
 		SpeciesDependencies& dependencies = speciesDependencies[dataState.GetSpecies(product)];

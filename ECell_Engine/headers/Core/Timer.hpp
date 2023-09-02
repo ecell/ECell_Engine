@@ -71,7 +71,7 @@ namespace ECellEngine::Core
 		@param _t2 The second time.
 		@returns @p _t2 - @p _t1.
 		*/
-		inline float GetDuration(float& _t1, float& _t2) const
+		inline float Duration(float& _t1, float& _t2) const
 		{
 			return _t2 - _t1;
 		}
