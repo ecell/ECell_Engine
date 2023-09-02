@@ -91,18 +91,6 @@ namespace ECellEngine::Editor::Utility::Plot
 
 		LinePlot() = default;
 
-		/*LinePlot(const LinePlot& _lp) :
-			X{ _lp.X }, lines{ _lp.lines },
-			plotSize{ _lp.plotSize[0], _lp.plotSize[1] },
-			plotFlags{ _lp.plotFlags },
-			xAxisScale{ _lp.xAxisScale }, yAxisScale{ _lp.yAxisScale },
-			xAxisFlags{ _lp.xAxisFlags }, yAxisFlags{ _lp.yAxisFlags }
-		{
-			std::memcpy(plotTitle, _lp.plotTitle, 64);
-			std::memcpy(xAxisLabel, _lp.xAxisLabel, 64);
-			std::memcpy(yAxisLabel, _lp.yAxisLabel, 64);
-		}*/
-
 		/*!
 		@brief Add a new line to the plot.
 		*/

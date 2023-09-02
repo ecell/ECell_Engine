@@ -160,6 +160,7 @@ namespace ECellEngine::Solvers::ODE
 
 		/*!
 		@brief Gets the stepper of this solver.
+		@remark Can only return a pointer because a Stepper is an abstract class.
 		*/
 		inline Stepper* GetStepper() noexcept override
 		{
