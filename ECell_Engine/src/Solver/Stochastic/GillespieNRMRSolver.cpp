@@ -98,9 +98,33 @@ void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::Reset()
 {
 	stepper.Reset();
 
-	//reset all reactions, species and parameter, equations, and so on... to before simulation start
+	//Reset all reactions
+	size_t idx = 0;
+	for (std::vector<std::string>::const_iterator itr = module->GetAllReaction().begin(); itr != module->GetAllReaction().end(); itr++)
+	{
+		Data::Reaction* r = dataState.GetReaction(*itr).get();
 
+		//Start by resetting all products
+		for (std::vector<std::string>::const_iterator its = r->GetProducts()->begin(); its != r->GetProducts()->end(); its++)
+		{
+			dataState.GetSpecies(*its)->Reset();
+		}
+
+		//Then reset all reactants
+		for (std::vector<std::string>::const_iterator its = r->GetReactants()->begin(); its != r->GetReactants()->end(); its++)
+		{
+			dataState.GetSpecies(*its)->Reset();
+		}
+
+		//Finally, compute the propensity of the reaction and update it to the heap
+		tauIMH.SetValueAtIndex(idx, rng.Exponential(r->ComputeKineticLaw()));
+
+		idx++;
+	}
+
+	//Update the heap now that every propensity has been reset
 	tauIMH.UpdateHeapFromRoot();
+
 	trace.clear();
 }
 

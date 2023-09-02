@@ -12,6 +12,7 @@ add_library(ECellEngine SHARED
 
     "src/Core/Events/ModifyDataStateValueEvent.cpp"
 
+    "src/Data/BiochemicalModule.cpp"
     "src/Data/Constant.cpp"
     "src/Data/DataState.cpp"
     "src/Data/DependenciesDatabase.cpp"

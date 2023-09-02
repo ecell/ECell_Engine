@@ -10,7 +10,7 @@ namespace ECellEngine::Data
 	{
 	private:
 		std::vector<std::pair<std::size_t, float>> heap;
-		std::size_t heapSize;
+		std::size_t heapSize = 0;
 		std::vector<std::size_t> indeces;
 
 		/*

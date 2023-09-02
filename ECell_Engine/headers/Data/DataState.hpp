@@ -149,17 +149,16 @@ namespace ECellEngine::Data
 			return triggers.emplace_back(std::make_shared<ECellEngine::Core::Trigger<Operand*, Operand*>>());
 		}
 
-		void ClearReactions(const std::vector<std::string>& _reactionNames);
-		
-		void ClearEquations(const std::vector<std::string>& _equations);
-		
-		void ClearParameters(const std::vector<std::string>& _parameterNames);
-		
-		void ClearSpecies(const std::vector<std::string>& _speciesNames);
-
 		inline void LinkOperandToOperation(const std::string& _operandName, const std::string& _operationName)
 		{
 			operandsToOperations.emplace(_operandName, _operationName);
 		}
+
+		/*!
+		@brief Resets the data that have an initial value.
+		@details Includes species, parameters and equations. Then, reactions'
+				 kinetic laws are re-evaluated.
+		*/
+		void Reset() noexcept;
 	};
 }

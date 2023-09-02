@@ -312,6 +312,15 @@ namespace ECellEngine::Core
 		void RemoveSolver(std::vector<std::shared_ptr<Solvers::Solver>>::iterator _solverIt);
 
 		/*!
+		@brief Resets all the data state and solvers of this simulation.
+		@details It is not necessary to reset the modules as the data encapsulated
+				 in them is reset at the same time the data state is. Solvers
+				 must be reset separately however as they may contain internal
+				 data based on the data state.
+		*/
+		void Reset() noexcept;
+
+		/*!
 		@brief API to execute code once before the simulation's update loop.
 		*/
 		void Start();

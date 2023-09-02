@@ -17,34 +17,25 @@ Operand* ECellEngine::Data::DataState::GetOperand(const std::string& _operandNam
 	return s3->second.get();//this is null
 }
 
-void ECellEngine::Data::DataState::ClearReactions(const std::vector<std::string>& _reactionNames)
+void ECellEngine::Data::DataState::Reset() noexcept
 {
-	for (auto it = _reactionNames.begin(); it != _reactionNames.end(); it++)
+	for (auto& [spName, _sp] : species)
 	{
-		reactions.erase(*it);
+		_sp->Reset();
 	}
-}
 
-void ECellEngine::Data::DataState::ClearParameters(const std::vector<std::string>& _parameterNames)
-{
-	for (auto it = _parameterNames.begin(); it != _parameterNames.end(); it++)
+	for (auto& [pName, _p] : parameters)
 	{
-		parameters.erase(*it);
+		_p->Reset();
 	}
-}
 
-void ECellEngine::Data::DataState::ClearEquations(const std::vector<std::string>& _equationNames)
-{
-	for (auto it = _equationNames.begin(); it != _equationNames.end(); it++)
+	for (auto& [eqName, eq] : equations)
 	{
-		equations.erase(*it);
+		eq->Reset();
 	}
-}
 
-void ECellEngine::Data::DataState::ClearSpecies(const std::vector<std::string>& _speciesNames)
-{
-	for (auto it = _speciesNames.begin(); it != _speciesNames.end(); it++)
+	for (auto& [rName, _r] : reactions)
 	{
-		species.erase(*it);
+		_r->ComputeKineticLaw();
 	}
 }

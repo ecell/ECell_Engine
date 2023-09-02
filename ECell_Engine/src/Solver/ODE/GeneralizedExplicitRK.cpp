@@ -138,8 +138,19 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 
 void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Reset()
 {
-	//TODO 
-	//Reset the reactions, species, parameters, equations to their initial values
+	//Reset the system's equations to their initial state.
+	//Reseting an equation means reseting the right-hand side
+	//first and assigning the result to the left-hand side
+	for (unsigned short i = 0; i < systemSize; ++i)
+	{
+		system[i].Reset();
+	}
+
+	//Reset the external equations to their initial state.
+	for (unsigned short i = 0; i < extEqSize; ++i)
+	{
+		externalEquations[i]->Reset();
+	}
 
 	stepper.Reset();
 

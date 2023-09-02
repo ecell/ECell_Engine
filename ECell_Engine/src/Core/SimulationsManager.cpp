@@ -56,8 +56,9 @@ bool ECellEngine::Core::SimulationsManager::PlaySimulation(std::vector<std::uniq
 
 bool ECellEngine::Core::SimulationsManager::StopSimulation(std::vector<Simulation*>::iterator _playingSimulation) noexcept
 {
+	//Reset Data in Simulation;
+	(*_playingSimulation)->Reset();
 	playingSimulations.erase(_playingSimulation);
-	//TODO: Reset Data in Simulation;
 	return true;
 }
 

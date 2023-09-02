@@ -7,7 +7,7 @@
 
 namespace ECellEngine::Data
 {
-	class BiochemicalModule : public Module
+	class BiochemicalModule final : public Module
 	{
 	protected:
 		std::vector<std::string> equations;
@@ -62,44 +62,29 @@ namespace ECellEngine::Data
 			return species[_idx];
 		}
 
-		inline void AddEquation(Operand* _lhs, Operation& _rhs)
-		{
-			if (dataState.AddEquation(_lhs, _rhs))
-			{
-				equations.push_back(_lhs->name);
-			}
-		}
+		void AddEquation(Operand* _lhs, Operation& _rhs);
 
-		inline void AddReaction(const std::string _reactionName,
-								const std::vector<std::string> _products,
-								const std::vector<std::string> _reactants,
-								const Operation _kineticLaw)
-		{
-			if (dataState.AddReaction(_reactionName, _products, _reactants, _kineticLaw))
-			{
-				reactions.push_back(_reactionName);
-			}
-		}
+		void AddReaction(const std::string _reactionName,
+			const std::vector<std::string> _products,
+			const std::vector<std::string> _reactants,
+			const Operation _kineticLaw);
 
-		inline void AddParameter(const std::string _parameterName, const float _value)
-		{
-			if (dataState.AddParameter(_parameterName, _value))
-			{
-				parameters.push_back(_parameterName);
-			}
-		}
+		void AddParameter(const std::string _parameterName, const float _value);
 
-		inline void AddSpecies(const std::string _speciesName, const float _quantity)
-		{
-			if (dataState.AddSpecies(_speciesName, _quantity))
-			{
-				species.push_back(_speciesName);
-			}
-		}
+		void AddSpecies(const std::string _speciesName, const float _quantity);
 
-		inline virtual bool IsValidSolverType(const ECellEngine::Solvers::Solver* _solver) noexcept override
-		{
-			return dynamic_cast<const ECellEngine::Solvers::BiochemicalSolver*>(_solver) != nullptr;
-		}
+		bool IsValidSolverType(const ECellEngine::Solvers::Solver* _solver) noexcept override;
+
+		/*!
+		@brief Resets the species, parameters, equations and reaction kinetic
+				law's cache values(in this order).
+		@remark It is likely that species and parameters will be reset several
+				times by also reseting the equations. It's a waste of resources,
+				but it's the only way to ensure that species or parameters that
+				are not part of any equation are reset without building an
+				additional data structure to keep track of them. We will see if
+				it becomes problem it in the future.
+		*/
+		void Reset() noexcept override;
 	};
 }

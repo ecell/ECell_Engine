@@ -85,6 +85,13 @@ namespace ECellEngine::Maths
 		virtual void Set(const float _value) noexcept = 0;
 
 		/*!
+		@brief Resets the operand's value.
+		@details The declaration of the value is left to the derived classes.
+		@return The new value of the operand.
+		*/
+		virtual float Reset() noexcept = 0;
+
+		/*!
 		@brief Generates the string representation of the operand.
 		*/
 		virtual const std::string ToString() const noexcept = 0;
