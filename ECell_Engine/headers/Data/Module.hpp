@@ -128,5 +128,10 @@ namespace ECellEngine::Data
 		*/
 		virtual bool IsValidSolverType(const ECellEngine::Solvers::Solver* _solver) noexcept = 0;
 
+		/*!
+		@brief Resets the module to an initial state.
+		*/
+		virtual void Reset() noexcept = 0;
+
 	};
 }
