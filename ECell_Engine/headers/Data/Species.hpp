@@ -17,7 +17,7 @@ namespace ECellEngine::Data
 		std::shared_ptr<std::function<void(const float, const float)>> updateQuantitySubToken = nullptr;
 
 		Species(const std::string _name, const float _quantity) :
-			ECellEngine::Maths::Operand{ _name }, quantity{_quantity}, previousQuantity{_quantity}
+			ECellEngine::Maths::Operand{ _name }, quantity{_quantity}, previousQuantity{_quantity}, initialQuantity{_quantity}
 		{
 
 		}
