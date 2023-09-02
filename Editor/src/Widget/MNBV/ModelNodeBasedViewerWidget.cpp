@@ -127,7 +127,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 
 	for (std::vector<Utility::MNBV::AssetNodeData>::iterator it = currentMNBVContext->assetNodes.begin(); it != currentMNBVContext->assetNodes.end(); it++)
 	{
-		Utility::MNBV::NodeEditorDraw::AssetNode(it->data->GetName(), *it);
+		Utility::MNBV::NodeEditorDraw::AssetNode(*it);
 
 		//If double click on species selectable in the list box, spawn the corresponding species node
 		if (it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Species].IsAnItemDoubleClicked())
@@ -174,7 +174,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 
 	for (std::vector< Utility::MNBV::EquationNodeData>::iterator it = currentMNBVContext->equationNodes.begin(); it != currentMNBVContext->equationNodes.end(); it++)
 	{
-		Utility::MNBV::NodeEditorDraw::EquationNode(it->data->GetOperand()->name.c_str(), *it);
+		Utility::MNBV::NodeEditorDraw::EquationNode(*it);
 
 		//------------------- Interaction with List Box for Is-Part-Of Dependencies
 
@@ -279,7 +279,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 
 	for (std::vector< Utility::MNBV::ReactionNodeData>::iterator it = currentMNBVContext->reactionNodes.begin(); it != currentMNBVContext->reactionNodes.end(); ++it)
 	{
-		Utility::MNBV::NodeEditorDraw::ReactionNode(it->data->name.c_str(), *it);
+		Utility::MNBV::NodeEditorDraw::ReactionNode(*it);
 
 		//------------------- Interaction with List Box for Contains Dependencies (Operands of the kinetic law)
 
@@ -343,7 +343,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 
 	for (std::vector< Utility::MNBV::ParameterNodeData>::iterator it = currentMNBVContext->parameterNodes.begin(); it != currentMNBVContext->parameterNodes.end(); it++)
 	{
-		Utility::MNBV::NodeEditorDraw::ParameterNode(it->data->name.c_str(), *it);
+		Utility::MNBV::NodeEditorDraw::ParameterNode(*it);
 
 		//------------------- Interaction with List Box for Is-Part-Of Dependencies
 
@@ -372,19 +372,14 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		it->ResetNLBSDUtilityStates();
 	}
 
-	for (std::vector< Utility::MNBV::TimeNodeData>::iterator it = currentMNBVContext->timeNodes.begin(); it != currentMNBVContext->timeNodes.end(); it++)
-	{
-		Utility::MNBV::NodeEditorDraw::TimeNode("Time", *it);
-	}
-
 	for (std::vector< Utility::MNBV::SolverNodeData>::iterator it = currentMNBVContext->solverNodes.begin(); it != currentMNBVContext->solverNodes.end(); it++)
 	{
-		Utility::MNBV::NodeEditorDraw::SolverNode(it->data->GetName().c_str(), *it);
+		Utility::MNBV::NodeEditorDraw::SolverNode(*it);
 	}
 
 	for (std::vector< Utility::MNBV::SpeciesNodeData>::iterator it = currentMNBVContext->speciesNodes.begin(); it != currentMNBVContext->speciesNodes.end(); it++)
 	{
-		Utility::MNBV::NodeEditorDraw::SpeciesNode(it->data->name.c_str(), *it);
+		Utility::MNBV::NodeEditorDraw::SpeciesNode(*it);
 
 		//If double click on Equation dependency selectable in the list box, spawn the corresponding computed parameter node.
 		if (it->nlbsDataEqDep.IsAnItemDoubleClicked())
@@ -433,14 +428,19 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		it->ResetNLBSDUtilityStates();
 	}
 
-	for (std::vector< Utility::MNBV::ValueFloatNodeData>::iterator it = currentMNBVContext->valueFloatNodes.begin(); it != currentMNBVContext->valueFloatNodes.end(); it++)
+	for (std::vector< Utility::MNBV::TimeNodeData>::iterator it = currentMNBVContext->timeNodes.begin(); it != currentMNBVContext->timeNodes.end(); it++)
 	{
-		Utility::MNBV::NodeEditorDraw::ValueFloatNode("Float", *it);
+		Utility::MNBV::NodeEditorDraw::TimeNode(*it);
 	}
 
 	for (std::vector< Utility::MNBV::TriggerNodeData>::iterator it = currentMNBVContext->triggerNodes.begin(); it != currentMNBVContext->triggerNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::TriggerNode(*it);
+	}
+
+	for (std::vector< Utility::MNBV::ValueFloatNodeData>::iterator it = currentMNBVContext->valueFloatNodes.begin(); it != currentMNBVContext->valueFloatNodes.end(); it++)
+	{
+		Utility::MNBV::NodeEditorDraw::ValueFloatNode(*it);
 	}
 
 	for (std::vector< Utility::MNBV::LinkData>::iterator it = currentMNBVContext->staticLinks.begin(); it != currentMNBVContext->staticLinks.end(); it++)

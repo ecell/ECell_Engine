@@ -85,12 +85,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode
 	Style::NodeEditorStyle::PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _name, AssetNodeData& _assetNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(AssetNodeData& _assetNodeInfo)
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Asset));
 	ax::NodeEditor::BeginNode(_assetNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Asset:", _name, Style::EditorStyle::GetNodeColors(NodeType_Asset));
+	const float headerWidth = NodeHeader("Asset:", _assetNodeInfo.data->GetName(), Style::EditorStyle::GetNodeColors(NodeType_Asset));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 	const float thisLabelWidth = ImGui::CalcTextSize("This").x;
@@ -143,14 +143,14 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(const char* _
 
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(const char* _name, EquationNodeData& _equationNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(EquationNodeData& _equationNodeInfo)
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Equation));
 	ax::NodeEditor::BeginNode(_equationNodeInfo.id);
 
 	_equationNodeInfo.Update();
 
-	const float headerWidth = NodeHeader("Equation:", _name, Style::EditorStyle::GetNodeColors(NodeType_Equation));
+	const float headerWidth = NodeHeader("Equation:", _equationNodeInfo.data->GetName().c_str(), Style::EditorStyle::GetNodeColors(NodeType_Equation));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
@@ -592,14 +592,14 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ModifyDataStateValueEve
 	Style::NodeEditorStyle::PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(ReactionNodeData& _reactionNodeInfo)
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Reaction));
 	ax::NodeEditor::BeginNode(_reactionNodeInfo.id);
 
 	_reactionNodeInfo.Update();
 
-	const float headerWidth = NodeHeader("Reaction:", _name, Style::EditorStyle::GetNodeColors(NodeType_Reaction));
+	const float headerWidth = NodeHeader("Reaction:", _reactionNodeInfo.data->name.c_str(), Style::EditorStyle::GetNodeColors(NodeType_Reaction));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
@@ -682,14 +682,14 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(const char
 	Style::NodeEditorStyle::PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const char* _name, ParameterNodeData& _parameterNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(ParameterNodeData& _parameterNodeInfo)
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Parameter));
 	ax::NodeEditor::BeginNode(_parameterNodeInfo.id);
 
 	_parameterNodeInfo.Update();
 
-	const float headerWidth = NodeHeader("Parameter:", _name, Style::EditorStyle::GetNodeColors(NodeType_Parameter));
+	const float headerWidth = NodeHeader("Parameter:", _parameterNodeInfo.data->name.c_str(), Style::EditorStyle::GetNodeColors(NodeType_Parameter));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 	const float thisWidth = ImGui::CalcTextSize("this").x;
@@ -759,12 +759,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(const cha
 	Style::NodeEditorStyle::PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SolverNode(const char* _name, SolverNodeData& _solverNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SolverNode(SolverNodeData& _solverNodeInfo)
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Solver));
 	ax::NodeEditor::BeginNode(_solverNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Solver:", _name, Style::EditorStyle::GetNodeColors(NodeType_Solver));
+	const float headerWidth = NodeHeader("Solver:", _solverNodeInfo.data->GetName().c_str(), Style::EditorStyle::GetNodeColors(NodeType_Solver));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
@@ -795,14 +795,14 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SolverNode(const char* 
 	Style::NodeEditorStyle::PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(SpeciesNodeData& _speciesNodeInfo)
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Species));
 	ax::NodeEditor::BeginNode(_speciesNodeInfo.id);
 
 	_speciesNodeInfo.Update();
 
-	const float headerWidth = NodeHeader("Species:", _name, Style::EditorStyle::GetNodeColors(NodeType_Species));
+	const float headerWidth = NodeHeader("Species:", _speciesNodeInfo.data->name.c_str(), Style::EditorStyle::GetNodeColors(NodeType_Species));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 	const float thisWidth = ImGui::CalcTextSize("this").x;
@@ -900,12 +900,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(const char*
 	Style::NodeEditorStyle::PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TimeNode(const char* _name, TimeNodeData& _timeNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TimeNode(TimeNodeData& _timeNodeInfo)
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Data));
 	ax::NodeEditor::BeginNode(_timeNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Time:", _name, Style::EditorStyle::GetNodeColors(NodeType_Data));
+	const float headerWidth = NodeHeader("Time", " ", Style::EditorStyle::GetNodeColors(NodeType_Data));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
@@ -997,12 +997,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::TriggerNode(TriggerNode
 	Style::NodeEditorStyle::PopNodeStyle();
 }
 
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo)
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ValueFloatNode(ValueFloatNodeData& _valueFloatNodeInfo)
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Data));
 	ax::NodeEditor::BeginNode(_valueFloatNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Value:", _name, Style::EditorStyle::GetNodeColors(NodeType_Data));
+	const float headerWidth = NodeHeader("Value:", "Float", Style::EditorStyle::GetNodeColors(NodeType_Data));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 

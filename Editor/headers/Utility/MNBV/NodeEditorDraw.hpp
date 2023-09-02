@@ -31,19 +31,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::AssetNodeData.
-		@param _name The name of the node. It will appear in the header of the
-				node in the editor.
 		@param _assetNodeInfo The struct with information about what to draw.
 		*/
-		static void AssetNode(const char* _name, AssetNodeData& _assetNodeInfo);
+		static void AssetNode(AssetNodeData& _assetNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::EquationNodeData.
-		@param _name The name of the node. It will appear in the header of the
-				node in the editor.
 		@param _equationNodeInfo The struct with information about what to draw.
 		*/
-		static void EquationNode(const char* _name, EquationNodeData& _equationNodeInfo);
+		static void EquationNode(EquationNodeData& _equationNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::LinePlotNodeData.
@@ -66,43 +62,33 @@ namespace ECellEngine::Editor::Utility::MNBV
 		
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ReactionNodeData.
-		@param _name The name of the node. It will appear in the header of the
-				node in the editor.
 		@param _reactionNodeInfo The struct with information about what to draw.
 		*/
-		static void ReactionNode(const char* _name, ReactionNodeData& _reactionNodeInfo);
+		static void ReactionNode(ReactionNodeData& _reactionNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ParameterNodeData.
-		@param _name The name of the node. It will appear in the header of the
-				node in the editor.
 		@param _parameterNodeInfo The struct with information about what to draw.
 		*/
-		static void ParameterNode(const char* _name, ParameterNodeData& _parameterNodeInfo);
+		static void ParameterNode(ParameterNodeData& _parameterNodeInfo);
 		
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SolverNodeData.
-		@param _name The name of the node. It will appear in the header of the
-				node in the editor.
 		@param _solverNodeInfo The struct with information about what to draw.
 		*/
-		static void SolverNode(const char* _name, SolverNodeData& _solverNodeInfo);
+		static void SolverNode(SolverNodeData& _solverNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::SpeciesNodeData.
-		@param _name The name of the node. It will appear in the header of the
-				node in the editor.
 		@param _speciesNodeInfo The struct with information about what to draw.
 		*/
-		static void SpeciesNode(const char* _name, SpeciesNodeData& _speciesNodeInfo);
+		static void SpeciesNode(SpeciesNodeData& _speciesNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::TimeNodeData.
-		@param _name The name of the node. It will appear in the header of the
-				node in the editor.
 		@param _timeNodeInfo The struct with information about what to draw.
 		*/
-		static void TimeNode(const char* _name, TimeNodeData& _timeNodeInfo);
+		static void TimeNode(TimeNodeData& _timeNodeInfo);
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::TriggerNodeData.
@@ -112,11 +98,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		/*!
 		@brief Draws a node to display the data stored in ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData.
-		@param _name The name of the node. It will appear in the header of the
-				node in the editor.
 		@param _valueFloatNodeInfo The struct with information about what to draw.
 		*/
-		static void ValueFloatNode(const char* _name, ValueFloatNodeData& _valueFloatNodeInfo);
+		static void ValueFloatNode(ValueFloatNodeData& _valueFloatNodeInfo);
 
 #pragma endregion
 
