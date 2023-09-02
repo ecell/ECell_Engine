@@ -36,9 +36,9 @@ namespace ECellEngine::Core
 		/*!
 		@brief Gets the pointer to ::commandsManager private member.
 		*/
-		inline CommandsManager* GetCommandsManager()
+		inline CommandsManager& GetCommandsManager()
 		{
-			return &commandsManager;
+			return commandsManager;
 		}
 
 #pragma endregion

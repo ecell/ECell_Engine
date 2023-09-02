@@ -24,7 +24,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Awake()
 	//we set the commands manager defined in the engine at startup by default.
 	if (currentMNBVContext->commandsManager == nullptr)
 	{
-		currentMNBVContext->SetCommandsManager(editor->engine.GetCommandsManager());
+		currentMNBVContext->SetCommandsManager(&editor->engine.GetCommandsManager());
 	}
 
 	//If the current MNBV context doesn't have any simulation at Awake time,
@@ -92,7 +92,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawImportAs
 			addModuleCommandArray[1] = std::to_string(GetCurrentMNBVContext()->simulation->id);
 			addModuleCommandArray[2] = assetPathBuffer;
 			addModuleCommandArray[3] = assetNameBuffer;
-			if (editor->engine.GetCommandsManager()->InterpretCommand(addModuleCommandArray))
+			if (editor->engine.GetCommandsManager().InterpretCommand(addModuleCommandArray))
 			{
 				//Spawn the corresponding asset node
 				currentMNBVContext->assetNodes.emplace_back(Utility::MNBV::AssetNodeData(
@@ -548,7 +548,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodesPop
 			
 			if (addsolver)
 			{
-				if (editor->engine.GetCommandsManager()->InterpretCommand(addSolverCommandArray))
+				if (editor->engine.GetCommandsManager().InterpretCommand(addSolverCommandArray))
 				{
 					//Spawn the corresponding asset node
 					currentMNBVContext->solverNodes.emplace_back(Utility::MNBV::SolverNodeData(
