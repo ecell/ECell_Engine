@@ -1,33 +1,29 @@
 #include "Solver/ODE/GeneralizedExplicitRK.hpp"
 #include "Core/Trigger.hpp"
 
-void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::BuildEquationRHS(Operation& _outRHS, std::vector<ECellEngine::Maths::Operation>& _fluxes)
+ECellEngine::Maths::Operation ECellEngine::Solvers::ODE::GeneralizedExplicitRK::SumOperations(std::vector<Maths::Operation>::iterator _start, std::vector<Maths::Operation>::iterator _end)
 {
-	//If only one in-flux, then there is no need to sum
-	if (_fluxes.size() == 1)
+	unsigned short size = std::distance(_start, _end);
+	//If only one operation, then there is no need to sum
+	if (size)
 	{
-		_outRHS.AddOperation(_fluxes[0]);
+		return *_start;
 	}
 	else
 	{
-		//We create the sum of all in-flux by summing by pairs
-		//of in-flux until there is only one left.
-		unsigned short halfSize = _fluxes.size() / 2;
-		for (unsigned short step = 1; step <= halfSize; step *= 2)
-		{
-			//This is an internal operation so the ID is not important
-			Operation couple(SIZE_MAX);
-			couple.Set(&ECellEngine::Maths::functions.plus, FunctionType_Plus);
-			for (unsigned short i = 0; i < _fluxes.size(); i += step * 2)
-			{
-				couple.AddOperation(_fluxes[i]);
-				couple.AddOperation(_fluxes[i + step]);
-				_fluxes[i] = couple;
-			}
-		}
-		//By the end of the for loop, the first element of _fluxes will be
-		//the sum of all the elements.
-		_outRHS.AddOperation(_fluxes[0]);
+		//This is an internal operation so the ID is not important
+		Operation sum(SIZE_MAX);
+		sum.Set(&ECellEngine::Maths::functions.plus, FunctionType_Plus);
+
+		//We split the range in two
+		unsigned short halfSize = 0.5f * size;
+		
+		//we recursively call the function on the two halves
+		sum.AddOperation(SumOperations(_start, _start + halfSize));
+		sum.AddOperation(SumOperations(_start + halfSize, _end));
+
+		//By the end of the recursion, we have a sum of all the operations
+		return sum;
 	}
 }
 
@@ -95,19 +91,19 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 			if (hasIF && !hasOF)
 			{
 				rhs.Set(&ECellEngine::Maths::functions.identity, FunctionType_Identity);
-				BuildEquationRHS(rhs, IFSearch->second);
+				rhs.AddOperation(SumOperations(IFSearch->second.begin(), IFSearch->second.end()));
 			}
 			else if (!hasIF && hasOF)
 			{
 				rhs.Set(&ECellEngine::Maths::functions.times, FunctionType_Times);
 				rhs.AddNewConstant(-1);
-				BuildEquationRHS(rhs, OFSearch->second);
+				rhs.AddOperation(SumOperations(OFSearch->second.begin(), OFSearch->second.end()));
 			}
 			else
 			{
 				rhs.Set(&ECellEngine::Maths::functions.minus, FunctionType_Minus);
-				BuildEquationRHS(rhs, IFSearch->second);
-				BuildEquationRHS(rhs, OFSearch->second);
+				rhs.AddOperation(SumOperations(IFSearch->second.begin(), IFSearch->second.end()));
+				rhs.AddOperation(SumOperations(OFSearch->second.begin(), OFSearch->second.end()));
 			}
 
 			rhs.LinkLocalOperands();

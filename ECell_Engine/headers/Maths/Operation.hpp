@@ -212,7 +212,7 @@ namespace ECellEngine::Maths
 				 ::operands will lead to the previous location.
 		*/
 		Operation(const Operation& _op):
-			Operand{ _op.name, _op.id }, structure{ _op.structure }, function{ _op.function },
+			Operand{ _op.name, _op.GetID() }, structure{_op.structure}, function{_op.function},
 			constants{_op.constants}, operations{_op.operations}, operands{_op.operands}
 		{
 			if (Util::IsFlagSet(structure, OperationStructure_IsCompiled))

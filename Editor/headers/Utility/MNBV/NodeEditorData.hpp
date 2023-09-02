@@ -585,8 +585,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		ArithmeticOperationNodeData(std::shared_ptr<Maths::Operation> _data, ImVec2& _position) :
 			NodeData(), data{ _data },
-			lhs{ "Operation[" + std::to_string((std::size_t)id) + "]::LHS", 0 },
-			rhs{ "Operation[" + std::to_string((std::size_t)id) + "]::RHS", 0 }
+			//we reuse the id of the node as the id of the parameter
+			//it may collide with other parameters but it is not a problem
+			//since those parameters are only local to the MNBV context.
+			lhs{ "Operation[" + std::to_string((std::size_t)id) + "]::LHS", (std::size_t)id, 0 },
+			rhs{ "Operation[" + std::to_string((std::size_t)id) + "]::RHS", (std::size_t)id, 0 }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
@@ -2486,8 +2489,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		TriggerNodeData(std::shared_ptr<ECellEngine::Core::Trigger<Operand*, Operand*>> _data, ImVec2& _position) :
 			NodeData(), data{ _data },
-			target{ "Trigger[" + std::to_string((std::size_t)id) + "]::Target", 0 },
-			threshold{ "Trigger[" + std::to_string((std::size_t)id) + "]::Threshold", 0 }
+			target{ "Trigger[" + std::to_string((std::size_t)id) + "]::Target", (std::size_t)id, 0 },
+			threshold{ "Trigger[" + std::to_string((std::size_t)id) + "]::Threshold", (std::size_t)id, 0 }
 		{
 			target.name = "Trigger[" + std::to_string((std::size_t)id) + "]::Target";
 			data->SetTarget(&target);
@@ -2567,7 +2570,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		ValueFloatNodeData(float _value, ImVec2& _position) :
 			NodeData(),
-			value{ "ValueFloatNode[" + std::to_string((std::size_t)id) + "]::Value", _value }
+			value{ "ValueFloatNode[" + std::to_string((std::size_t)id) + "]::Value", (std::size_t)id, _value }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 

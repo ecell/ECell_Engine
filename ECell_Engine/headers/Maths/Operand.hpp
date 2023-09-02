@@ -23,11 +23,17 @@ namespace ECellEngine::Maths
 	*/
 	struct Operand
 	{
+	private:
 		/*!
 		@brief The unique identifier of the operand.
+		@remarks Compared to other usage of the IDProvider, the ID here is private
+				to manage accessibility and constness rather than to declare it
+				const directly. This is mandatory to avoid issues with deletion
+				of assignement operators.
 		*/
-		const std::size_t id;
+		std::size_t id;
 
+	public:
 		/*!
 		@brief The name of the operand.
 		*/
@@ -89,6 +95,15 @@ namespace ECellEngine::Maths
 		@param clearOutVector Should the provided vector be cleared before filling.
 		*/
 		virtual void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept;
+
+		/*!
+		@brief Returns the unique identifier of the operand.
+		@returns The unique identifier of the operand.
+		*/
+		std::size_t GetID() const noexcept
+		{
+			return id;
+		}
 
 		/*!
 		@brief Sets the operand's value.

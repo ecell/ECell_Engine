@@ -162,7 +162,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
             ASTNode* cNode = nodesStack.back(); //cNode stands for child Node
             if (IsASTNodeOperation(cNode))
             {
-                Operation* cOP = &pOP->AddNewOperation(_rootName, op.id);//cOP stands for child Operation
+                Operation* cOP = &pOP->AddNewOperation(_rootName, op.GetID());//cOP stands for child Operation
                 AssignOperationFunction(*cOP, cNode);
                 opsStack.push_back(cOP);
 

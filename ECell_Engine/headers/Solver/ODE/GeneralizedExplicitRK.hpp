@@ -109,12 +109,14 @@ namespace ECellEngine::Solvers::ODE
 		float* yn_ext = nullptr;
 
 		/*!
-		@brief Helper function to build the right hand side of the differential
-				equation.
+		@brief Sums up the operations stored in the vector @p _ops.
+		@details In fact, this is a helper function to build the
+				right hand side of the differential equation.
+		@param _ops The vector of operations to sum up.
 		@todo This fuction is only working under the assumption that we are dealing
 				with a system of differential equations for a biochemical system.
 		*/
-		void BuildEquationRHS(Operation& _outRHS, std::vector<Maths::Operation>& _flux);
+		Maths::Operation SumOperations(std::vector<Maths::Operation>::iterator _start, std::vector<Maths::Operation>::iterator _end);
 
 		/*!
 		@bief loops through all triggers stored in the datastate and adds them
