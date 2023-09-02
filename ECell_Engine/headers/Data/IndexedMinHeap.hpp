@@ -23,7 +23,7 @@ namespace ECellEngine::Data
 		@brief Adjust position of the heap node _i if its value is
 				lower than its parent genealogy.
 		*/
-		void BubbleUp(const std::size_t& _nodeIdx);
+		void BubbleUp(const std::size_t _nodeIdx);
 		
 		/*
 		@brief Computes the index the left node.
@@ -31,7 +31,7 @@ namespace ECellEngine::Data
 				are looking for the left child).
 		@return The index in the heap of the left node.
 		*/
-		inline const std::size_t Left(const std::size_t& _parentNodeIdx) const
+		inline const std::size_t Left(const std::size_t _parentNodeIdx) const
 		{
 			return 2 * _parentNodeIdx + 1;
 		}
@@ -40,14 +40,14 @@ namespace ECellEngine::Data
 		@brief Recursively goes through the Heap starting with node _i
 			   to achieve the MinHeap structure.
 		*/
-		void MinHeapify(const std::size_t& _nodeIdx);
+		void MinHeapify(const std::size_t _nodeIdx);
 
 		/*
 		@brief Computes the index of the parent node.
 		@param _childNodeIndex Index of the current node.
 		@return The index in the heap of the parent node.
 		*/
-		inline const std::size_t Parent(const std::size_t& _childNodeIndex) const
+		inline const std::size_t Parent(const std::size_t _childNodeIndex) const
 		{
 			return (const std::size_t) std::floor(0.5f * (_childNodeIndex - 1));
 		}
@@ -58,7 +58,7 @@ namespace ECellEngine::Data
 				are looking for the right child).
 		@return The index in the heap of the right node.
 		*/
-		inline const std::size_t Right(const std::size_t& _parentNodeIdx) const
+		inline const std::size_t Right(const std::size_t _parentNodeIdx) const
 		{
 			return 2 * _parentNodeIdx + 2;
 		}
@@ -66,7 +66,7 @@ namespace ECellEngine::Data
 		/*
 		@brief Swaps nodes _nodeIdx1 and _nodeIdx2 of the heap.
 		*/
-		void Swap(const std::size_t& _nodeIdx1, const std::size_t& _nodeIdx2);
+		void Swap(const std::size_t _nodeIdx1, const std::size_t _nodeIdx2);
 
 	public:
 		IndexedMinHeap() = default;
@@ -88,7 +88,7 @@ namespace ECellEngine::Data
 		@param _positionIdx Position in ::indeces of the index of the node in the heap
 							 for which we want to get the value.
 		*/
-		inline const float GetValueAtIndex( const std::size_t& _positionIdx) const
+		inline const float GetValueAtIndex( const std::size_t _positionIdx) const
 		{
 			return heap[indeces[_positionIdx]].second;
 		}
@@ -109,7 +109,7 @@ namespace ECellEngine::Data
 							for which we want to change the value.
 		@param _value The new value to put in the node.
 		*/
-		inline void SetValueAtIndex(const std::size_t& _positionIdx, const float _value)
+		inline void SetValueAtIndex(const std::size_t _positionIdx, const float _value)
 		{
 			heap[indeces[_positionIdx]].second = _value;
 		}
@@ -143,7 +143,7 @@ namespace ECellEngine::Data
 							 bubbled up. Otherwise, it is min-heapified.
 		
 		*/
-		void UpdateHeapFrom(const std::size_t& _positionIdx, const float& _compareValue);
+		void UpdateHeapFrom(const std::size_t _positionIdx, const float _compareValue);
 
 	};
 }

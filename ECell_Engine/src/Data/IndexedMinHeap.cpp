@@ -8,7 +8,7 @@ void ECellEngine::Data::IndexedMinHeap::BuildMinHeap()
 	}
 }
 
-void ECellEngine::Data::IndexedMinHeap::BubbleUp(const std::size_t& _nodeIdx)
+void ECellEngine::Data::IndexedMinHeap::BubbleUp(const std::size_t _nodeIdx)
 {
 	int parent = Parent(_nodeIdx);
 	if (heap[_nodeIdx].second < heap[parent].second)
@@ -38,7 +38,7 @@ void ECellEngine::Data::IndexedMinHeap::Initialize(const std::vector<std::pair<s
 	BuildMinHeap();
 }
 
-void ECellEngine::Data::IndexedMinHeap::MinHeapify(const std::size_t& _nodeIdx)
+void ECellEngine::Data::IndexedMinHeap::MinHeapify(const std::size_t _nodeIdx)
 {
 	int r = Right(_nodeIdx);
 	int l = Left(_nodeIdx);
@@ -61,7 +61,7 @@ void ECellEngine::Data::IndexedMinHeap::MinHeapify(const std::size_t& _nodeIdx)
 	}
 }
 
-void ECellEngine::Data::IndexedMinHeap::Swap(const std::size_t& _nodeIdx1, const std::size_t& _nodeIdx2)
+void ECellEngine::Data::IndexedMinHeap::Swap(const std::size_t _nodeIdx1, const std::size_t _nodeIdx2)
 {
 	indeces[heap[_nodeIdx1].first] = _nodeIdx2;
 	indeces[heap[_nodeIdx2].first] = _nodeIdx1;
@@ -71,7 +71,7 @@ void ECellEngine::Data::IndexedMinHeap::Swap(const std::size_t& _nodeIdx1, const
 	heap[_nodeIdx2] = temp;
 }
 
-void ECellEngine::Data::IndexedMinHeap::UpdateHeapFrom(const std::size_t& _positionIdx, const float& _compareValue)
+void ECellEngine::Data::IndexedMinHeap::UpdateHeapFrom(const std::size_t _positionIdx, const float _compareValue)
 {
 	if (heap[indeces[_positionIdx]].second < _compareValue)
 	{
