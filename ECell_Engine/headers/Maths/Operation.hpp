@@ -368,6 +368,14 @@ namespace ECellEngine::Maths
 		*/
 		void LinkLocalOperands();
 
+		/*!
+		@brief Resets every operand in ::operands.
+		@details If the operand is an operation, it will also call Reset on
+				 this operation. So every operand of a root operation will 
+				 recursively be reset.
+		*/
+		float Reset() noexcept override;
+
 		inline const std::string ToString() const noexcept override
 		{
 			return function->ToString(operands);

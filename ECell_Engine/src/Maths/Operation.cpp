@@ -135,6 +135,16 @@ void ECellEngine::Maths::Operation::PushOperands()
 	Util::SetFlag(structure, OperationStructure_IsCompiled);// 000 1 XX XX --> The Operation has been compiled: PushOperands has been called
 }
 
+float ECellEngine::Maths::Operation::Reset() noexcept
+{
+	for (Operand* operand : operands)
+	{
+		operand->Reset();
+	}
+
+	return Get();
+}
+
 void ECellEngine::Maths::Operation::UpdateFunction() noexcept
 {
 	switch (functionType)

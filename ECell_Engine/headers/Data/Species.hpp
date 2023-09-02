@@ -9,6 +9,7 @@ namespace ECellEngine::Data
 	struct Species final : public ECellEngine::Maths::Operand
 	{
 	private:
+		float initialQuantity;
 		float previousQuantity;
 		float quantity;
 
@@ -26,13 +27,22 @@ namespace ECellEngine::Data
 			return quantity;
 		}
 
+		inline float GetInitialQuantity() const noexcept
+		{
+			return initialQuantity;
+		}
+
 		void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
-		
+
 		void Set(const float _val) noexcept override;
+
+		void SetInitialQuantity(const float _initialQuantity) noexcept;
 
 		void Increment(const float _inc);
 
 		void Decrement(const float _dec);
+
+		float Reset() noexcept override;
 
 		void UpdateQuantity(const float _previousValue, const float _newValue) noexcept;
 

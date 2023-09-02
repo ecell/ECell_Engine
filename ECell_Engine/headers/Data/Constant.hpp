@@ -45,6 +45,14 @@ namespace ECellEngine::Data
             ECellEngine::Logging::Logger::LogError("Operation::Set(const float _value) should not be used.");
 		}
 
+        /*!
+        @brief For a constant, this function does nothing and simply returns the value.
+        */
+        inline float Reset() noexcept override
+        {
+			return value;
+		}
+
         inline const std::string ToString() const noexcept override
         {
 			return std::to_string(value);

@@ -60,5 +60,14 @@ namespace ECellEngine::Maths
 			lhs->Set(rhs.Get());
 			return lhs->Get();
 		}
+
+		/*!
+		@brief Resets the right hand side of the equation and assigns the result
+				to the operand (left hand side).
+		*/
+		inline void Reset() noexcept
+		{
+			lhs->Set(rhs.Reset());
+		}
 	};
 }

@@ -7,6 +7,7 @@ namespace ECellEngine::Data
 	struct Parameter final : public ECellEngine::Maths::Operand
 	{
 	private:
+		float initialValue;
 		float previousValue;
 		float value;
 
@@ -14,19 +15,31 @@ namespace ECellEngine::Data
 		std::shared_ptr<std::function<void(const float, const float)>> updateValueSubToken = nullptr;
 
 		Parameter(const std::string _name, const float _value) :
-			ECellEngine::Maths::Operand{ _name }, value{ _value }, previousValue{ _value }
+			ECellEngine::Maths::Operand{ _name }, value{ _value }, previousValue{ _value }, initialValue{ _value }
 		{
 
 		}
 
-		inline virtual float Get() const noexcept override
+		inline float Get() const noexcept override
 		{
 			return value;
 		}
 
-		virtual void Set(const float _value) noexcept override;
+		inline float GetInitialValue() const noexcept
+		{
+			return initialValue;
+		}
 
 		void GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
+
+		void Set(const float _value) noexcept override;
+
+		inline void SetInitialValue(const float _value) noexcept
+		{
+			initialValue = _value;
+		}
+
+		float Reset() noexcept override;
 
 		void UpdateValue(const float _previousValue, const float _newValue) noexcept;
 

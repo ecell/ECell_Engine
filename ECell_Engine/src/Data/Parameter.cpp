@@ -18,6 +18,19 @@ void ECellEngine::Data::Parameter::Set(const float _value) noexcept
 	}
 }
 
+float ECellEngine::Data::Parameter::Reset() noexcept
+{
+	previousValue = value;
+	value = initialValue;
+
+	if (previousValue != value)
+	{
+		onValueChange(previousValue, value);
+	}
+
+	return value;
+}
+
 void ECellEngine::Data::Parameter::UpdateValue(const float _previousValue, const float _newValue) noexcept
 {
 	previousValue = _previousValue;

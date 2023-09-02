@@ -13,6 +13,11 @@ void ECellEngine::Data::Species::Set(const float _val) noexcept
 	quantity = _val;
 }
 
+void ECellEngine::Data::Species::SetInitialQuantity(const float _initialQuantity) noexcept
+{
+	initialQuantity = _initialQuantity;
+}
+
 void ECellEngine::Data::Species::Increment(const float _inc)
 {
 	previousQuantity = quantity;
@@ -25,6 +30,19 @@ void ECellEngine::Data::Species::Decrement(const float _dec)
 	previousQuantity = quantity;
 	quantity -= _dec;
 	onValueChange(previousQuantity, quantity);
+}
+
+float ECellEngine::Data::Species::Reset() noexcept
+{
+	previousQuantity = quantity;
+	quantity = initialQuantity;
+
+	if (previousQuantity != quantity)
+	{
+		onValueChange(previousQuantity, quantity);
+	}
+
+	return quantity;
 }
 
 void ECellEngine::Data::Species::UpdateQuantity(const float _previousValue, const float _newValue) noexcept
