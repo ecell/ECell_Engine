@@ -164,6 +164,16 @@ void ECellEngine::Core::Simulation::RemoveSolver(std::vector<std::shared_ptr<Sol
 	}
 }
 
+void ECellEngine::Core::Simulation::Reset() noexcept
+{
+	dataState.Reset();
+
+	for (std::vector<std::shared_ptr<Solvers::Solver>>::iterator it = solvers.begin(); it != solvers.end(); ++it)
+	{
+		(*it)->Reset();
+	}
+}
+
 void ECellEngine::Core::Simulation::Start()
 {
 	timer.SetStartTime();
