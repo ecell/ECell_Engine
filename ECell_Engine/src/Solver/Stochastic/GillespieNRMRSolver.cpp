@@ -5,13 +5,13 @@ void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::ApplyBackward(const 
 {
 	ECellEngine::Data::Reaction* reaction = dataState.GetReaction(_reactionName).get();
 	//Decrementing quantities of all Products by 1
-	for (std::vector<std::string>::const_iterator it = reaction->GetProducts()->begin(); it != reaction->GetProducts()->end(); it++)
+	for (std::vector<std::string>::const_iterator it = reaction->GetProducts().begin(); it != reaction->GetProducts().end(); it++)
 	{
 		dataState.GetSpecies(*it)->Decrement(1.f);
 	}
 
 	//Incrementing quantities of all reactants by 1
-	for (std::vector<std::string>::const_iterator it = reaction->GetReactants()->begin(); it != reaction->GetReactants()->end(); it++)
+	for (std::vector<std::string>::const_iterator it = reaction->GetReactants().begin(); it != reaction->GetReactants().end(); it++)
 	{
 		dataState.GetSpecies(*it)->Increment(1.f);
 	}
@@ -22,13 +22,13 @@ void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::ApplyForward(const s
 	ECellEngine::Data::Reaction* reaction = dataState.GetReaction(_reactionName).get();
 	
 	//Decrementing quantities of all reactants by 1
-	for (std::vector<std::string>::const_iterator it = reaction->GetReactants()->begin(); it != reaction->GetReactants()->end(); it++)
+	for (std::vector<std::string>::const_iterator it = reaction->GetReactants().begin(); it != reaction->GetReactants().end(); it++)
 	{
 		dataState.GetSpecies(*it)->Decrement(1.f);
 	}
 
 	//Incrementing quantities of all products by 1
-	for (std::vector<std::string>::const_iterator it = reaction->GetProducts()->begin(); it != reaction->GetProducts()->end(); it++)
+	for (std::vector<std::string>::const_iterator it = reaction->GetProducts().begin(); it != reaction->GetProducts().end(); it++)
 	{
 		dataState.GetSpecies(*it)->Increment(1.f);
 	}
@@ -49,7 +49,7 @@ void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::BuildDependancyGraph
 	const std::vector<std::string>* species;
 	for (std::vector<std::string>::const_iterator itReactions = _reactions.begin(); itReactions != _reactions.end(); itReactions++)
 	{
-		species = dataState.GetReaction(*itReactions)->GetProducts();
+		species = &dataState.GetReaction(*itReactions)->GetProducts();
 		for (std::vector<std::string>::const_iterator itSpecies = species->begin(); itSpecies != species->end(); itSpecies++)
 		{
 			auto reactionLinks = dataState.GetOperandsToOperations().equal_range(*itSpecies);
@@ -63,7 +63,7 @@ void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::BuildDependancyGraph
 			}
 		}
 		
-		species = dataState.GetReaction(*itReactions)->GetReactants();
+		species = &dataState.GetReaction(*itReactions)->GetReactants();
 		for (std::vector<std::string>::const_iterator itSpecies = species->begin(); itSpecies != species->end(); itSpecies++)
 		{
 			auto reactionLinks = dataState.GetOperandsToOperations().equal_range(*itSpecies);
@@ -105,13 +105,13 @@ void ECellEngine::Solvers::Stochastic::GillespieNRMRSolver::Reset()
 		Data::Reaction* r = dataState.GetReaction(*itr).get();
 
 		//Start by resetting all products
-		for (std::vector<std::string>::const_iterator its = r->GetProducts()->begin(); its != r->GetProducts()->end(); its++)
+		for (std::vector<std::string>::const_iterator its = r->GetProducts().begin(); its != r->GetProducts().end(); its++)
 		{
 			dataState.GetSpecies(*its)->Reset();
 		}
 
 		//Then reset all reactants
-		for (std::vector<std::string>::const_iterator its = r->GetReactants()->begin(); its != r->GetReactants()->end(); its++)
+		for (std::vector<std::string>::const_iterator its = r->GetReactants().begin(); its != r->GetReactants().end(); its++)
 		{
 			dataState.GetSpecies(*its)->Reset();
 		}

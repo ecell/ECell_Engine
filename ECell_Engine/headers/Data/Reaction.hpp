@@ -47,14 +47,14 @@ namespace ECellEngine::Data
 			return kineticLawValueCache;
 		}
 
-		inline const std::vector<std::string>* GetProducts() const noexcept
+		inline const std::vector<std::string>& GetProducts() const noexcept
 		{
-			return &products;
+			return products;
 		}
 		
-		inline const std::vector<std::string>* GetReactants() const noexcept
+		inline const std::vector<std::string>& GetReactants() const noexcept
 		{
-			return &reactants;
+			return reactants;
 		}
 	};
 }

@@ -61,13 +61,13 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 	std::unordered_map<std::string, std::vector<Operation>> allOutFlux;
 	for (auto [reactionName, reaction] : dataState.GetReactions())
 	{
-		for (std::string reactant : *reaction->GetReactants())
+		for (std::string reactant : reaction->GetReactants())
 		{
 			//Get the kinetic law
 			allOutFlux[reactant].push_back(reaction->GetKineticLaw());
 		}
 
-		for (std::string product : *reaction->GetProducts())
+		for (std::string product : reaction->GetProducts())
 		{
 			//Get the kinetic law
 			allInFlux[product].push_back(reaction->GetKineticLaw());
