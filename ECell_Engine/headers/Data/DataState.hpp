@@ -106,17 +106,17 @@ namespace ECellEngine::Data
 			return triggers;
 		}
 
-		inline bool AddReaction(const std::string& _reactionName,
+		inline std::shared_ptr<Reaction> AddReaction(const std::string& _reactionName,
 			const std::vector<std::string> _products,
 			const std::vector<std::string> _reactants,
 			const Operation _kineticLaw)
 		{
-			return reactions.emplace(_reactionName, std::make_shared<Reaction>(_reactionName, _products, _reactants, _kineticLaw)).second;
+			return reactions.emplace(_reactionName, std::make_shared<Reaction>(_reactionName, _products, _reactants, _kineticLaw)).first->second;
 		}
 
-		inline bool AddEquation(Operand* _lhs, Operation& _rhs)
+		inline std::shared_ptr<Maths::Equation> AddEquation(Operand* _lhs, Operation& _rhs)
 		{
-			return equations.emplace(_lhs->name, std::make_shared<Maths::Equation>(_lhs, _rhs)).second;
+			return equations.emplace(_lhs->name, std::make_shared<Maths::Equation>(_lhs, _rhs)).first->second;
 		}
 
 		inline std::shared_ptr<Core::Events::ModifyDataStateValueEvent> AddModifyDataStateValueEvent()
@@ -124,14 +124,14 @@ namespace ECellEngine::Data
 			return modifyDataStateValueEvents.emplace_back(std::make_shared<Core::Events::ModifyDataStateValueEvent>());
 		}
 
-		inline bool AddParameter(const std::string& _parameterName, const float _value)
+		inline std::shared_ptr<Parameter> AddParameter(const std::string& _parameterName, const float _value)
 		{
-			return parameters.emplace(_parameterName, std::make_shared<Parameter>(_parameterName, ++idProvider, _value)).second;
+			return parameters.emplace(_parameterName, std::make_shared<Parameter>(_parameterName, ++idProvider, _value)).first->second;
 		}
 		
-		inline bool AddSpecies(const std::string& _speciesName, const float _quantity)
+		inline std::shared_ptr<Species> AddSpecies(const std::string& _speciesName, const float _quantity)
 		{
-			return species.emplace(_speciesName, std::make_shared<Species>(_speciesName, ++idProvider, _quantity)).second;
+			return species.emplace(_speciesName, std::make_shared<Species>(_speciesName, ++idProvider, _quantity)).first->second;
 		}
 
 		inline std::shared_ptr<Maths::Operation> AddOperation()

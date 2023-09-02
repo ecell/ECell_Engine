@@ -18,8 +18,7 @@ namespace ECellEngine::Solvers
 		BiochemicalSolver(ECellEngine::Data::DataState& _dataState, const std::string& _name) :
 			Solver(_dataState, _name), module{ nullptr }
 		{
-			//ECellEngine::Logging::Logger::GetSingleton().LogError(std::to_string(dataState.GetElapsedTime()));
-
+			
 		}
 
 		virtual void Clear() override = 0;

@@ -2,10 +2,8 @@
 
 void ECellEngine::Data::BiochemicalModule::AddEquation(Operand* _lhs, Operation& _rhs)
 {
-	if (dataState.AddEquation(_lhs, _rhs))
-	{
-		equations.push_back(_lhs->name);
-	}
+	dataState.AddEquation(_lhs, _rhs);
+	equations.push_back(_lhs->name);
 }
 
 void ECellEngine::Data::BiochemicalModule::AddReaction(const std::string _reactionName,
@@ -13,26 +11,20 @@ void ECellEngine::Data::BiochemicalModule::AddReaction(const std::string _reacti
 	const std::vector<std::string> _reactants,
 	const Operation _kineticLaw)
 {
-	if (dataState.AddReaction(_reactionName, _products, _reactants, _kineticLaw))
-	{
-		reactions.push_back(_reactionName);
-	}
+	dataState.AddReaction(_reactionName, _products, _reactants, _kineticLaw);
+	reactions.push_back(_reactionName);
 }
 
 void ECellEngine::Data::BiochemicalModule::AddParameter(const std::string _parameterName, const float _value)
 {
-	if (dataState.AddParameter(_parameterName, _value))
-	{
-		parameters.push_back(_parameterName);
-	}
+	dataState.AddParameter(_parameterName, _value);
+	parameters.push_back(_parameterName);
 }
 
 void ECellEngine::Data::BiochemicalModule::AddSpecies(const std::string _speciesName, const float _quantity)
 {
-	if (dataState.AddSpecies(_speciesName, _quantity))
-	{
-		species.push_back(_speciesName);
-	}
+	dataState.AddSpecies(_speciesName, _quantity);
+	species.push_back(_speciesName);
 }
 
 bool ECellEngine::Data::BiochemicalModule::IsValidSolverType(const ECellEngine::Solvers::Solver* _solver) noexcept
