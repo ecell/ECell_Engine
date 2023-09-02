@@ -46,5 +46,5 @@ void ECellEngine::Editor::Utility::Plot::UpdateStrategyEveryXSeconds::Set(void* 
 bool ECellEngine::Editor::Utility::Plot::UpdateStrategyEveryXSeconds::TestUpdate() noexcept
 {
 	currentTime = timer.ReadHighResTimer();
-	return timer.GetDuration(previousTime, currentTime) >= timeInterval;
+	return timer.Duration(previousTime, currentTime) >= timeInterval;
 }
