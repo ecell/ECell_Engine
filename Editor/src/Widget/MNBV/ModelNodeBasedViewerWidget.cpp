@@ -132,7 +132,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		//If double click on species selectable in the list box, spawn the corresponding species node
 		if (it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Species].IsAnItemDoubleClicked())
 		{
-			std::shared_ptr<ECellEngine::Data::Species> species = currentMNBVContext->simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Species].GetDoubleClickedItem());
+			std::shared_ptr<ECellEngine::Data::Species> species = currentMNBVContext->simulation->GetDataState().GetSpecies(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Species].GetDoubleClickedItem());
 			currentMNBVContext->speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, &currentMNBVContext->simulation->GetDependenciesDatabase()));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::AssetNodeData::OutputPin_CollHdrSpecies], &currentMNBVContext->speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_Asset]));
@@ -142,7 +142,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		//If double click on simple parameter selectable in the list box, spawn the corresponding simple parameter node
 		if (it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Parameters].IsAnItemDoubleClicked())
 		{
-			std::shared_ptr<ECellEngine::Data::Parameter> parameter = currentMNBVContext->simulation->GetDataState()->GetParameter(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Parameters].GetDoubleClickedItem());
+			std::shared_ptr<ECellEngine::Data::Parameter> parameter = currentMNBVContext->simulation->GetDataState().GetParameter(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Parameters].GetDoubleClickedItem());
 			currentMNBVContext->parameterNodes.emplace_back(Utility::MNBV::ParameterNodeData(parameter, &currentMNBVContext->simulation->GetDependenciesDatabase()));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::AssetNodeData::OutputPin_CollHdrParameters], &currentMNBVContext->parameterNodes.back().inputPins[Utility::MNBV::ParameterNodeData::InputPin_Asset]));
@@ -152,7 +152,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		//If double click on computed parameter selectable in the list box, spawn the corresponding computed parameter node
 		if (it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Equations].IsAnItemDoubleClicked())
 		{
-			std::shared_ptr<ECellEngine::Maths::Equation> equation = currentMNBVContext->simulation->GetDataState()->GetEquation(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Equations].GetDoubleClickedItem());
+			std::shared_ptr<ECellEngine::Maths::Equation> equation = currentMNBVContext->simulation->GetDataState().GetEquation(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Equations].GetDoubleClickedItem());
 			currentMNBVContext->equationNodes.emplace_back(Utility::MNBV::EquationNodeData(equation, &currentMNBVContext->simulation->GetDependenciesDatabase()));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::AssetNodeData::OutputPin_CollHdrEquations], &currentMNBVContext->equationNodes.back().inputPins[Utility::MNBV::EquationNodeData::InputPin_Asset]));
@@ -163,7 +163,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		if (it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Reactions].IsAnItemDoubleClicked())
 		{
 			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(
-				currentMNBVContext->simulation->GetDataState()->GetReaction(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Reactions].GetDoubleClickedItem()).get()));
+				currentMNBVContext->simulation->GetDataState().GetReaction(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Reactions].GetDoubleClickedItem()).get()));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::AssetNodeData::OutputPin_CollHdrReactions], &currentMNBVContext->reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_Asset]));
 			currentMNBVContext->staticLinks.back().OverrideEndFallbackPin(currentMNBVContext->reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_ModelLinks].id, 1);
@@ -225,7 +225,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 			//there won't be another doubleclick within this frame so we skip the rest of the loop and
 			//set it to currentMNBVContext->equationNodes.end() (it is valid again).
 
-			std::shared_ptr<ECellEngine::Maths::Equation> equation = currentMNBVContext->simulation->GetDataState()->GetEquation(it->nlbsData[Utility::MNBV::EquationNodeData::NodeListBoxString_EquationOperands].GetDoubleClickedItem());
+			std::shared_ptr<ECellEngine::Maths::Equation> equation = currentMNBVContext->simulation->GetDataState().GetEquation(it->nlbsData[Utility::MNBV::EquationNodeData::NodeListBoxString_EquationOperands].GetDoubleClickedItem());
 			Utility::MNBV::EquationNodeData equationNodeData = Utility::MNBV::EquationNodeData(equation, &currentMNBVContext->simulation->GetDependenciesDatabase());
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::EquationNodeData::OutputPin_NLBSEquations], &equationNodeData.inputPins[Utility::MNBV::EquationNodeData::InputPin_CollHdrEquations]));
@@ -240,7 +240,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		//If double click on Parameter operand selectable in the list box, spawn the corresponding simple parameter node.
 		if (it->nlbsData[Utility::MNBV::EquationNodeData::NodeListBoxString_ParameterOperands].IsAnItemDoubleClicked())
 		{
-			std::shared_ptr<ECellEngine::Data::Parameter> parameter = currentMNBVContext->simulation->GetDataState()->GetParameter(it->nlbsData[Utility::MNBV::EquationNodeData::NodeListBoxString_ParameterOperands].GetDoubleClickedItem());
+			std::shared_ptr<ECellEngine::Data::Parameter> parameter = currentMNBVContext->simulation->GetDataState().GetParameter(it->nlbsData[Utility::MNBV::EquationNodeData::NodeListBoxString_ParameterOperands].GetDoubleClickedItem());
 			currentMNBVContext->parameterNodes.emplace_back(Utility::MNBV::ParameterNodeData(parameter, &currentMNBVContext->simulation->GetDependenciesDatabase()));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::EquationNodeData::OutputPin_NLBSParameters], &currentMNBVContext->parameterNodes.back().inputPins[Utility::MNBV::ParameterNodeData::InputPin_CollHdrEquations]));
@@ -251,7 +251,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		//If double click on Species operand selectable in the list box, spawn the corresponding species node.
 		if (it->nlbsData[Utility::MNBV::EquationNodeData::NodeListBoxString_SpeciesOperands].IsAnItemDoubleClicked())
 		{
-			std::shared_ptr<ECellEngine::Data::Species> species = currentMNBVContext->simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::EquationNodeData::NodeListBoxString_SpeciesOperands].GetDoubleClickedItem());
+			std::shared_ptr<ECellEngine::Data::Species> species = currentMNBVContext->simulation->GetDataState().GetSpecies(it->nlbsData[Utility::MNBV::EquationNodeData::NodeListBoxString_SpeciesOperands].GetDoubleClickedItem());
 			currentMNBVContext->speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, &currentMNBVContext->simulation->GetDependenciesDatabase()));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::EquationNodeData::OutputPin_NLBSSpecies], &currentMNBVContext->speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_CollHdrInEquation]));
@@ -286,7 +286,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		//If double click on Species operand selectable in the list box of products, spawn the corresponding species node.
 		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Products].IsAnItemDoubleClicked())
 		{
-			std::shared_ptr<ECellEngine::Data::Species> species = currentMNBVContext->simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Products].GetDoubleClickedItem());
+			std::shared_ptr<ECellEngine::Data::Species> species = currentMNBVContext->simulation->GetDataState().GetSpecies(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Products].GetDoubleClickedItem());
 			currentMNBVContext->speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, &currentMNBVContext->simulation->GetDependenciesDatabase()));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_CollHdrProducts], &currentMNBVContext->speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_CollHdrAsProduct]));
@@ -297,7 +297,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		//If double click on Species operand selectable in the list box of reactants, spawn the corresponding species node.
 		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Reactants].IsAnItemDoubleClicked())
 		{
-			std::shared_ptr<ECellEngine::Data::Species> species = currentMNBVContext->simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Reactants].GetDoubleClickedItem());
+			std::shared_ptr<ECellEngine::Data::Species> species = currentMNBVContext->simulation->GetDataState().GetSpecies(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_Reactants].GetDoubleClickedItem());
 			currentMNBVContext->speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, &currentMNBVContext->simulation->GetDependenciesDatabase()));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_CollHdrReactants], &currentMNBVContext->speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_CollHdrAsReactant]));
@@ -308,7 +308,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		//If double click on Equation operand selectable in the list box, spawn the corresponding computed parameter node.
 		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_EquationOperands].IsAnItemDoubleClicked())
 		{
-			std::shared_ptr<ECellEngine::Maths::Equation> equation = currentMNBVContext->simulation->GetDataState()->GetEquation(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_EquationOperands].GetDoubleClickedItem());
+			std::shared_ptr<ECellEngine::Maths::Equation> equation = currentMNBVContext->simulation->GetDataState().GetEquation(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_EquationOperands].GetDoubleClickedItem());
 			currentMNBVContext->equationNodes.emplace_back(Utility::MNBV::EquationNodeData(equation, &currentMNBVContext->simulation->GetDependenciesDatabase()));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_NLBSEquations], &currentMNBVContext->equationNodes.back().inputPins[Utility::MNBV::EquationNodeData::InputPin_CollHdrKineticLaws]));
@@ -319,7 +319,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		//If double click on Parameter operand selectable in the list box, spawn the corresponding simple parameter node.
 		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_ParameterOperands].IsAnItemDoubleClicked())
 		{
-			std::shared_ptr<ECellEngine::Data::Parameter> parameter = currentMNBVContext->simulation->GetDataState()->GetParameter(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_ParameterOperands].GetDoubleClickedItem());
+			std::shared_ptr<ECellEngine::Data::Parameter> parameter = currentMNBVContext->simulation->GetDataState().GetParameter(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_ParameterOperands].GetDoubleClickedItem());
 			currentMNBVContext->parameterNodes.emplace_back(Utility::MNBV::ParameterNodeData(parameter, &currentMNBVContext->simulation->GetDependenciesDatabase()));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_NLBSParameters], &currentMNBVContext->parameterNodes.back().inputPins[Utility::MNBV::ParameterNodeData::InputPin_CollHdrKineticLaws]));
@@ -330,7 +330,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		//If double click on Species operand selectable in the list box, spawn the corresponding species node.
 		if (it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_SpeciesOperands].IsAnItemDoubleClicked())
 		{
-			std::shared_ptr<ECellEngine::Data::Species> species = currentMNBVContext->simulation->GetDataState()->GetSpecies(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_SpeciesOperands].GetDoubleClickedItem());
+			std::shared_ptr<ECellEngine::Data::Species> species = currentMNBVContext->simulation->GetDataState().GetSpecies(it->nlbsData[Utility::MNBV::ReactionNodeData::NodeListBoxString_SpeciesOperands].GetDoubleClickedItem());
 			currentMNBVContext->speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(species, &currentMNBVContext->simulation->GetDependenciesDatabase()));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ReactionNodeData::OutputPin_NLBSSpecies], &currentMNBVContext->speciesNodes.back().inputPins[Utility::MNBV::SpeciesNodeData::InputPin_CollHdrInKineticLaw]));
@@ -488,14 +488,14 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodesPop
 			if (ImGui::MenuItem("Modify Value in DataState Event Node"))
 			{
 				//TODO: Use a command to add th event
-				currentMNBVContext->modifyDataStateValueEventNodes.emplace_back(Utility::MNBV::ModifyDataStateValueEventNodeData(currentMNBVContext->simulation->GetDataState()->AddModifyDataStateValueEvent(), mousePos));
+				currentMNBVContext->modifyDataStateValueEventNodes.emplace_back(Utility::MNBV::ModifyDataStateValueEventNodeData(currentMNBVContext->simulation->GetDataState().AddModifyDataStateValueEvent(), mousePos));
 				currentMNBVContext->ConserveLinkDataIntegrity();
 			}
 
 			if (ImGui::MenuItem("Trigger Node"))
 			{
 				//TODO: Use a command to add a trigger
-				currentMNBVContext->triggerNodes.emplace_back(Utility::MNBV::TriggerNodeData(currentMNBVContext->simulation->GetDataState()->AddTrigger(), mousePos));
+				currentMNBVContext->triggerNodes.emplace_back(Utility::MNBV::TriggerNodeData(currentMNBVContext->simulation->GetDataState().AddTrigger(), mousePos));
 				currentMNBVContext->ConserveLinkDataIntegrity();
 			}
 			ImGui::EndMenu();
@@ -506,14 +506,14 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodesPop
 			if (ImGui::MenuItem("Arithmetic Operation"))
 			{
 				//TODO: Use a command to add an Operation
-				currentMNBVContext->arithmeticOperationNodes.emplace_back(Utility::MNBV::ArithmeticOperationNodeData(currentMNBVContext->simulation->GetDataState()->AddOperation(), mousePos));
+				currentMNBVContext->arithmeticOperationNodes.emplace_back(Utility::MNBV::ArithmeticOperationNodeData(currentMNBVContext->simulation->GetDataState().AddOperation(), mousePos));
 				currentMNBVContext->ConserveLinkDataIntegrity();
 			}
 
 			if (ImGui::MenuItem("Logic Operation"))
 			{
 				//TODO: Use a command to add a LogicOperation
-				currentMNBVContext->logicOperationNodes.emplace_back(Utility::MNBV::LogicOperationNodeData(currentMNBVContext->simulation->GetDataState()->AddLogicOperation(), mousePos));
+				currentMNBVContext->logicOperationNodes.emplace_back(Utility::MNBV::LogicOperationNodeData(currentMNBVContext->simulation->GetDataState().AddLogicOperation(), mousePos));
 				currentMNBVContext->ConserveLinkDataIntegrity();
 			}
 			ImGui::EndMenu();
@@ -564,7 +564,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodesPop
 		{
 			if (ImGui::MenuItem("Simulation Time"))
 			{
-				currentMNBVContext->timeNodes.emplace_back(Utility::MNBV::TimeNodeData(currentMNBVContext->simulation->GetTimer(), mousePos));
+				currentMNBVContext->timeNodes.emplace_back(Utility::MNBV::TimeNodeData(&currentMNBVContext->simulation->GetTimer(), mousePos));
 				currentMNBVContext->ConserveLinkDataIntegrity();
 			}
 			ImGui::EndMenu();
