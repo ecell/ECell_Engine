@@ -220,7 +220,8 @@ namespace ECellEngine::Data
 			const std::vector<std::size_t> _reactants,
 			const Operation _kineticLaw)
 		{
-			return reactions.emplace(++idProvider, std::make_shared<Reaction>(_reactionName, idProvider(), _products, _reactants, _kineticLaw)).first->second;
+			++idProvider;
+			return reactions.emplace(idProvider(), std::make_shared<Reaction>(_reactionName, idProvider(), _products, _reactants, _kineticLaw)).first->second;
 		}
 
 		inline std::shared_ptr<Maths::Equation> AddEquation(Operand* _lhs, Operation& _rhs)
@@ -235,12 +236,14 @@ namespace ECellEngine::Data
 
 		inline std::shared_ptr<Parameter> AddParameter(const std::string& _parameterName, const float _value)
 		{
-			return parameters.emplace(++idProvider, std::make_shared<Parameter>(_parameterName, idProvider(), _value)).first->second;
+			++idProvider;
+			return parameters.emplace(idProvider(), std::make_shared<Parameter>(_parameterName, idProvider(), _value)).first->second;
 		}
 		
 		inline std::shared_ptr<Species> AddSpecies(const std::string& _speciesName, const float _quantity)
 		{
-			return species.emplace(++idProvider, std::make_shared<Species>(_speciesName, idProvider(), _quantity)).first->second;
+			++idProvider;
+			return species.emplace(idProvider(), std::make_shared<Species>(_speciesName, idProvider(), _quantity)).first->second;
 		}
 
 		inline std::shared_ptr<Maths::Operation> AddOperation()

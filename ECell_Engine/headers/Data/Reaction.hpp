@@ -28,7 +28,7 @@ namespace ECellEngine::Data
 				 const std::vector<std::size_t> _products,
 				 const std::vector<std::size_t> _reactants,
 				 const Operation _kineticLaw):
-			name{_name}, products{_products}, reactants{_reactants}, kineticLaw{_kineticLaw}
+			name{_name}, id{_id}, products{_products}, reactants{_reactants}, kineticLaw{_kineticLaw}
 		{
 
 		}
