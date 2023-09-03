@@ -32,7 +32,7 @@ namespace ECellEngine::Data
 			return initialQuantity;
 		}
 
-		void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
+		void GetInvolvedSpecies(std::vector<std::size_t>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
 
 		void Set(const float _val) noexcept override;
 

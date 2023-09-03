@@ -1,28 +1,28 @@
 #include "IO/SBMLModuleImporter.hpp"
 
 void ECellEngine::IO::SBMLModuleImporter::InitializeEquations(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule,
-    const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
+    const Model* _model, std::unordered_map<std::string, std::size_t>& _SBMLIDsToDSIDs)
 {
     //Processes the parameters defined through rules
     unsigned int nbRules = _model->getNumRules();
     const LIBSBML_CPP_NAMESPACE::Rule* rule;
     const LIBSBML_CPP_NAMESPACE::ASTNode* astNode;
     Operand* lhs;
-    std::string variableId;
-    std::string variableName;
+    std::string sbmlID;
+    std::size_t dsID;
     for (unsigned int i = 0; i < nbRules; i++)
     {
         //std::cout << std::endl;
         rule = _model->getRule(i);
-        variableId = rule->getVariable();
-        variableName = _docIdsToDataStateNames.find(variableId)->second;
+        sbmlID = rule->getVariable();
+        dsID = _SBMLIDsToDSIDs.find(sbmlID)->second;
         if (rule->isParameter())
         {
-            lhs = _dataState.GetParameter(variableName).get();
+            lhs = _dataState.GetParameter(dsID).get();
         }
         else if (rule->isSpeciesConcentration())
         {
-            lhs = _dataState.GetSpecies(variableName).get();
+            lhs = _dataState.GetSpecies(dsID).get();
 		}
         else
         {
@@ -35,54 +35,52 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeEquations(ECellEngine::Data:
         //operation directly with the root node.
         if (astNode->getType() == ASTNodeType_t::AST_NAME)
         {
-            Operation root(variableId, ++_dataState.idProvider);
+            Operation root(sbmlID, ++_dataState.idProvider);
             root.Set(&functions.identity, FunctionType_Identity);
-            root.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(astNode->getName())->second));
+            root.AddOperand(_dataState.GetOperand(_SBMLIDsToDSIDs.find(astNode->getName())->second));
             _sbmlModule.AddEquation(lhs, root);
-            _dataState.GetEquation(variableName)->Compute();
-            _docIdsToDataStateNames[variableId] = variableName;
+            _dataState.GetEquation(lhs->GetID())->Compute();
+            _SBMLIDsToDSIDs[sbmlID] = dsID;
         }
         else
         {
-            Operation root = ASTNodeToOperation(astNode, variableId, _dataState, _docIdsToDataStateNames);
+            Operation root = ASTNodeToOperation(astNode, sbmlID, _dataState, _SBMLIDsToDSIDs);
             _sbmlModule.AddEquation(lhs, root);
-            _dataState.GetEquation(variableName)->Compute();
-            _docIdsToDataStateNames[variableId] = variableName;
+            _dataState.GetEquation(lhs->GetID())->Compute();
+            _SBMLIDsToDSIDs[sbmlID] = dsID;
         }
     }
 }
 
 void ECellEngine::IO::SBMLModuleImporter::InitializeParameters(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule,
-    const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
+    const Model* _model, std::unordered_map<std::string, std::size_t>& _SBMLIDsToDSIDs)
 {
     unsigned int nbParameters = _model->getNumParameters();
     const LIBSBML_CPP_NAMESPACE::Parameter* param;
-
+    float value = 0.0f;
+    std::size_t id;
     for (unsigned int i = 0; i < nbParameters; i++)
     {
         param = _model->getParameter(i);
         if (param->isSetValue())
         {
-			_sbmlModule.AddParameter(param->getId(), (const float)param->getValue());
+            value = param->getValue();
         }
-		else
-        {
-            _sbmlModule.AddParameter(param->getId(), 0.0f);
-        }
-        _docIdsToDataStateNames[param->getId()] = param->getId();
+        id = _sbmlModule.AddParameter(param->getId(), value);
+        _SBMLIDsToDSIDs[param->getId()] = id;
     }
 }
 
 void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model,
-    std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
+    std::unordered_map<std::string, std::size_t>& _SBMLIDsToDSIDs)
 {
     unsigned int nbReactions = _model->getNumReactions();
     const LIBSBML_CPP_NAMESPACE::Reaction* reaction;
 
     unsigned int nbReactants;
     unsigned int nbProducts;
-    std::vector<std::string> reactants;
-    std::vector<std::string> products;
+    std::vector<std::size_t> reactants;
+    std::vector<std::size_t> products;
     const LIBSBML_CPP_NAMESPACE::ASTNode* astNode;
     for (unsigned int i = 0; i < nbReactions; i++)
     {
@@ -93,13 +91,13 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
         reactants.reserve(nbReactants);
         for (unsigned int j = 0; j < nbReactants; j++)
         {
-            reactants.push_back(_docIdsToDataStateNames[reaction->getReactant(j)->getSpecies()]);
+            reactants.push_back(_SBMLIDsToDSIDs[reaction->getReactant(j)->getSpecies()]);
         }
 
         products.reserve(nbProducts);
         for (unsigned int j = 0; j < nbProducts; j++)
         {
-            products.push_back(_docIdsToDataStateNames[reaction->getProduct(j)->getSpecies()]);
+            products.push_back(_SBMLIDsToDSIDs[reaction->getProduct(j)->getSpecies()]);
         }
 
         astNode = reaction->getKineticLaw()->getMath();
@@ -110,12 +108,12 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
         {
             Operation root(reaction->getId(), ++_dataState.idProvider);
             root.Set(&functions.identity, FunctionType_Identity);
-            root.AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(astNode->getName())->second));
+            root.AddOperand(_dataState.GetOperand(_SBMLIDsToDSIDs.find(astNode->getName())->second));
             _sbmlModule.AddReaction(reaction->getId(), products, reactants, root);
         }
         else
         {
-            Operation root = ASTNodeToOperation(astNode, reaction->getId(), _dataState, _docIdsToDataStateNames);
+            Operation root = ASTNodeToOperation(astNode, reaction->getId(), _dataState, _SBMLIDsToDSIDs);
             _sbmlModule.AddReaction(reaction->getId(), products, reactants, root);
         }
 
@@ -125,22 +123,23 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
 }
 
 void ECellEngine::IO::SBMLModuleImporter::InitializeSpecies(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model,
-    std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
+    std::unordered_map<std::string, std::size_t>& _SBMLIDsToDSIDs)
 {
     unsigned int nbSpecies = _model->getNumSpecies();
     const LIBSBML_CPP_NAMESPACE::Species* sp;
+    std::size_t id;
     for (unsigned int i = 0; i < nbSpecies; ++i)
     {
         sp = _model->getSpecies(i);
-        _sbmlModule.AddSpecies(sp->getName(), (float)sp->getInitialAmount());
-        _docIdsToDataStateNames[sp->getId()] = sp->getName();
+        id = _sbmlModule.AddSpecies(sp->getName(), (float)sp->getInitialAmount());
+        _SBMLIDsToDSIDs[sp->getId()] = id;
     }
 }
 
 Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
                                         const ASTNode* _rootAstNode,const std::string _rootName,
                                         ECellEngine::Data::DataState& _dataState,
-                                        std::unordered_map<std::string, std::string>& _docIdsToDataStateNames)
+                                        std::unordered_map<std::string, std::size_t>& _SBMLIDsToDSIDs)
 {
     Operation op = Operation(_rootName, ++_dataState.idProvider);
     AssignOperationFunction(op, _rootAstNode);
@@ -162,7 +161,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
             ASTNode* cNode = nodesStack.back(); //cNode stands for child Node
             if (IsASTNodeOperation(cNode))
             {
-                Operation* cOP = &pOP->AddNewOperation(_rootName, op.GetID());//cOP stands for child Operation
+                Operation* cOP = &pOP->AddNewOperation(pOP->name, pOP->GetID());//cOP stands for child Operation
                 AssignOperationFunction(*cOP, cNode);
                 opsStack.push_back(cOP);
 
@@ -183,8 +182,8 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
                 //Here the cNode corresponds to a variable (species or parameter)
                 //that has already been added to the data state. So we add an Operand
                 //directly in the pOP and we find the reference in the data state.
-                pOP->AddOperand(_dataState.GetOperand(_docIdsToDataStateNames.find(cNode->getName())->second));
-                _dataState.LinkOperandToOperation(_docIdsToDataStateNames.find(cNode->getName())->second, _rootName);
+                pOP->AddOperand(_dataState.GetOperand(_SBMLIDsToDSIDs.find(cNode->getName())->second));
+                _dataState.LinkOperandToOperation(_SBMLIDsToDSIDs.find(cNode->getName())->second, pOP->GetID());
                 nodesStack.pop_back();
             }            
         }
@@ -351,7 +350,7 @@ const std::shared_ptr<ECellEngine::Data::Module> ECellEngine::IO::SBMLModuleImpo
     ECellEngine::Logging::Logger::LogTrace("Trying to read SBML file: %s", _filePath.string().c_str());
     SBMLDocument* sbmlDoc = readSBMLFromFile(_filePath.string().c_str());
 
-    std::unordered_map<std::string, std::string> docIdsToDataStateNames;
+    std::unordered_map<std::string, std::size_t> SBMLIDsToDSIDs;
 
     // if so, then parse the file, build an SBMLModule and return it as a shared pointer
     if (ValidateSBML(sbmlDoc))
@@ -363,19 +362,19 @@ const std::shared_ptr<ECellEngine::Data::Module> ECellEngine::IO::SBMLModuleImpo
 
         //Build species
         ECellEngine::Logging::Logger::LogTrace("Building species...");
-        InitializeSpecies(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
+        InitializeSpecies(_dataState, *sbmlModule.get(), sbmlModel, SBMLIDsToDSIDs);
 
         //Build parameters
         ECellEngine::Logging::Logger::LogTrace("Building parameters...");
-        InitializeParameters(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
+        InitializeParameters(_dataState, *sbmlModule.get(), sbmlModel, SBMLIDsToDSIDs);
 
         //Build equations
         ECellEngine::Logging::Logger::LogTrace("Building equations...");
-        InitializeEquations(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
+        InitializeEquations(_dataState, *sbmlModule.get(), sbmlModel, SBMLIDsToDSIDs);
 
         //Build reactions
         ECellEngine::Logging::Logger::LogTrace("Building reactions...");
-        InitializeReactions(_dataState, *sbmlModule.get(), sbmlModel, docIdsToDataStateNames);
+        InitializeReactions(_dataState, *sbmlModule.get(), sbmlModel, SBMLIDsToDSIDs);
         
         return sbmlModule;
     }

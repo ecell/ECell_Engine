@@ -2,11 +2,11 @@
 
 void ECellEngine::Data::DependenciesDatabase::RefreshEquationDependencies(const DataState& dataState, std::shared_ptr<Maths::Equation> _equation) noexcept
 {
-	std::vector<std::string> dependencies;
+	std::vector<std::size_t> dependencies;
 
 	//Resolve species -> equation dependencies
 	_equation->GetOperation().GetInvolvedSpecies(dependencies, true);
-	for (const std::string& species : dependencies)
+	for (const std::size_t species : dependencies)
 	{
 		SpeciesDependencies& dependencies = speciesDependencies[dataState.GetSpecies(species)];
 
@@ -15,7 +15,7 @@ void ECellEngine::Data::DependenciesDatabase::RefreshEquationDependencies(const 
 
 	//Resolve parameter -> equation dependencies
 	_equation->GetOperation().GetInvolvedParameters(dependencies, true);
-	for (const std::string& dependentParam : dependencies)
+	for (const std::size_t dependentParam : dependencies)
 	{
 		ParameterDependencies& dependencies = parameterDependencies[dataState.GetParameter(dependentParam)];
 
@@ -24,7 +24,7 @@ void ECellEngine::Data::DependenciesDatabase::RefreshEquationDependencies(const 
 
 	//Resolve equation -> equation dependencies
 	_equation->GetOperation().GetInvolvedEquations(dependencies, true);
-	for (const std::string& dependentEquation : dependencies)
+	for (const std::size_t dependentEquation : dependencies)
 	{
 		ParameterDependencies& dependencies = equationDependencies[dataState.GetEquation(dependentEquation)];
 
@@ -35,7 +35,7 @@ void ECellEngine::Data::DependenciesDatabase::RefreshEquationDependencies(const 
 void ECellEngine::Data::DependenciesDatabase::RefreshReactionDependencies(const DataState& dataState, std::shared_ptr<Reaction> reaction)  noexcept
 {
 	//Resolve species (as reactant) -> reaction dependencies
-	for (const std::string& reactant : reaction->GetReactants())
+	for (const std::size_t reactant : reaction->GetReactants())
 	{
 		//Might have duplicatas here, must use another datastructure to make sure we don't add duplicatas (std::unordered_set or ordered std::vector)
 		SpeciesDependencies& dependencies = speciesDependencies[dataState.GetSpecies(reactant)];
@@ -44,7 +44,7 @@ void ECellEngine::Data::DependenciesDatabase::RefreshReactionDependencies(const 
 	}
 
 	//Resolve species (as product) -> reaction dependencies
-	for (const std::string& product : reaction->GetProducts())
+	for (const std::size_t product : reaction->GetProducts())
 	{
 		//Might have duplicatas here, must use another datastructure to make sure we don't add duplicatas (std::unordered_set or ordered std::vector)
 		SpeciesDependencies& dependencies = speciesDependencies[dataState.GetSpecies(product)];
@@ -53,10 +53,10 @@ void ECellEngine::Data::DependenciesDatabase::RefreshReactionDependencies(const 
 	}
 
 	//Resolve species -> kinetic law dependencies
-	std::vector<std::string> kineticLawDependencies;
+	std::vector<std::size_t> kineticLawDependencies;
 
 	reaction->GetKineticLaw().GetInvolvedSpecies(kineticLawDependencies, true);
-	for (const std::string& species : kineticLawDependencies)
+	for (const std::size_t species : kineticLawDependencies)
 	{
 		SpeciesDependencies& dependencies = speciesDependencies[dataState.GetSpecies(species)];
 
@@ -65,7 +65,7 @@ void ECellEngine::Data::DependenciesDatabase::RefreshReactionDependencies(const 
 
 	//Resolve parameter -> kinetic law dependencies
 	reaction->GetKineticLaw().GetInvolvedParameters(kineticLawDependencies, true);
-	for (const std::string& dependentParam : kineticLawDependencies)
+	for (const std::size_t dependentParam : kineticLawDependencies)
 	{
 		ParameterDependencies& dependencies = parameterDependencies[dataState.GetParameter(dependentParam)];
 
@@ -74,7 +74,7 @@ void ECellEngine::Data::DependenciesDatabase::RefreshReactionDependencies(const 
 
 	//Resolve equation -> kinetic law dependencies
 	reaction->GetKineticLaw().GetInvolvedEquations(kineticLawDependencies, true);
-	for (const std::string& dependentEquation : kineticLawDependencies)
+	for (const std::size_t dependentEquation : kineticLawDependencies)
 	{
 		ParameterDependencies& dependencies = equationDependencies[dataState.GetEquation(dependentEquation)];
 

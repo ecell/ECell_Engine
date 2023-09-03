@@ -30,7 +30,7 @@ namespace ECellEngine::Data
 			return initialValue;
 		}
 
-		void GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
+		void GetInvolvedParameters(std::vector<std::size_t>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
 
 		void Set(const float _value) noexcept override;
 

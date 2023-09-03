@@ -27,16 +27,15 @@ namespace ECellEngine::IO
 		@param _rootName The name we want to associate to the operation.
 		@param _dataState Reference to a datastate containing named variables that
 				may be used in the operation.
-		@param _docIdsToDataStateNames Reference to a local unordered map between the
-				names used as IDs in SBML and the names we use in the data state.
-				They may be identical. This object is instantiated in ::TryImport and
-				survives only during import.
+		@param _SBMLIDsToDSIDs Reference to a local unordered map between the
+				names used as IDs in SBML and the integer IDs we use in the data state.
+				This object is instantiated in ::TryImport and survives only during import.
 		@returns The root ECellEngine::Maths::Operation that represents the equation.
 		*/
 		Operation ASTNodeToOperation(
 			const ASTNode* _rootAstNode, const std::string _rootName,
 			ECellEngine::Data::DataState& _dataState,
-			std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
+			std::unordered_map<std::string, std::size_t>& _SBMLIDsToDSIDs);
 
 		/*!
 		@brief Assigns a ECellEngine::Maths::Function to @p _op depending on the
@@ -50,22 +49,22 @@ namespace ECellEngine::IO
 		/*!
 		@brief Parses the list of assignement rules encoded in the sbml file.
 		*/
-		void InitializeEquations(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
+		void InitializeEquations(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::size_t>& _SBMLIDsToDSIDs);
 
 		/*!
 		@brief Parses the list of parameters encoded in the sbml file.
 		*/
-		void InitializeParameters(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
+		void InitializeParameters(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::size_t>& _SBMLIDsToDSIDs);
 
 		/*!
 		@brief Parses the list of reactions encoded in the sbml file.
 		*/
-		void InitializeReactions(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
+		void InitializeReactions(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::size_t>& _SBMLIDsToDSIDs);
 
 		/*!
 		@brief Parses the list of species encoded in the sbml file.
 		*/
-		void InitializeSpecies(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::string>& _docIdsToDataStateNames);
+		void InitializeSpecies(ECellEngine::Data::DataState& _dataState, ECellEngine::Data::BiochemicalModule& _sbmlModule, const Model* _model, std::unordered_map<std::string, std::size_t>& _SBMLIDsToDSIDs);
 
 		/*!
 		@brief Tests if the ASTNode has a type that is considered as an operation.

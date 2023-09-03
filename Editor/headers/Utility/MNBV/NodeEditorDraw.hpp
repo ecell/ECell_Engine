@@ -574,8 +574,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@param _itemViewHeight The number of items to display in the list box.
 		@see It is using ::NodeScrollBar to control the scrolling of the items.
 		*/
-		template<typename DataType>
-		static void NodeStringListBox(NodeListBoxStringData<DataType>& _nslbData,
+		template<typename DataType, typename AccessorType>
+		static void NodeStringListBox(NodeListBoxStringData<DataType>& _nslbData, AccessorType& _accessor,
 			const float _startX, const float _drawLength, const float _widgetWidth = 200.f,
 			const unsigned short _itemViewHeight = 7);
 

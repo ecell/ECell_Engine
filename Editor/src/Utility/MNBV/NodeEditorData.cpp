@@ -2,24 +2,35 @@
 #include "Utility/MNBV/NodeEditorData.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 
-#pragma region NodeListBoxStringData<DataType>
-
-const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::string>::At(std::size_t _idx) const noexcept
+const char* ECellEngine::Editor::Utility::MNBV::NLBSDSpeciesNameAccessorFromID::operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept
 {
-	return data->at(_idx).c_str();
+	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetSpecies(_nlbsData.At(_idx))->name.c_str();
 }
 
-const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::weak_ptr<ECellEngine::Maths::Equation>>::At(std::size_t _idx) const noexcept
+const char* ECellEngine::Editor::Utility::MNBV::NLBSDParameterNameAccessorFromID::operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept
 {
-	return data->at(_idx).lock()->GetOperand()->name.c_str();
+	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetParameter(_nlbsData.At(_idx))->name.c_str();
 }
 
-const char* ECellEngine::Editor::Utility::MNBV::NodeListBoxStringData<std::weak_ptr<ECellEngine::Data::Reaction>>::At(std::size_t _idx) const noexcept
+const char* ECellEngine::Editor::Utility::MNBV::NLBSDReactionNameAccessorFromID::operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept
 {
-	return data->at(_idx).lock()->name.c_str();
+	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetReaction(_nlbsData.At(_idx))->name.c_str();
 }
 
-#pragma endregion
+const char* ECellEngine::Editor::Utility::MNBV::NLBSDReactionNameAccessorFromWPTR::operator ()(std::size_t _idx, NodeListBoxStringData<std::weak_ptr<ECellEngine::Data::Reaction>>& _nlbsData) const noexcept
+{
+	return _nlbsData.At(_idx).lock()->name.c_str();
+}
+
+const char* ECellEngine::Editor::Utility::MNBV::NLBSDEquationNameAccessorFromID::operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept
+{
+	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetEquation(_nlbsData.At(_idx))->GetName().c_str();
+}
+
+const char* ECellEngine::Editor::Utility::MNBV::NLBSDEquationNameAccessorFromWPTR::operator ()(std::size_t _idx, NodeListBoxStringData<std::weak_ptr<ECellEngine::Maths::Equation>>& _nlbsData) const noexcept
+{
+	return _nlbsData.At(_idx).lock()->GetName().c_str();
+}
 
 #pragma region LinkData
 void ECellEngine::Editor::Utility::MNBV::LinkData::Refresh()

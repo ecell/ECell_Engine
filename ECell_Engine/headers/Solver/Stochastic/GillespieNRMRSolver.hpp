@@ -25,9 +25,9 @@ namespace ECellEngine::Solvers::Stochastic
 
 		void ApplyForward(const std::string& _reactionName);
 
-		void BuildDependancyGraph(const std::vector<std::string>& _reactions);
+		void BuildDependancyGraph(const std::vector<std::size_t>& _reactions);
 
-		const float ComputeReactionPropensity(const std::string& _reactionName);
+		const float ComputeReactionPropensity(const std::size_t _reactionID);
 
 		void SolveBackward(const float& targetTime);
 

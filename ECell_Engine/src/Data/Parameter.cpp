@@ -1,10 +1,10 @@
 #include "Data/Parameter.hpp"
 
-void ECellEngine::Data::Parameter::GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector) const noexcept
+void ECellEngine::Data::Parameter::GetInvolvedParameters(std::vector<std::size_t>& out_involvedParameters, bool clearOutVector) const noexcept
 {
 	Operand::GetInvolvedParameters(out_involvedParameters, clearOutVector);
 
-	out_involvedParameters.emplace_back(name);
+	out_involvedParameters.emplace_back(id);
 }
 
 void ECellEngine::Data::Parameter::Set(const float _value) noexcept

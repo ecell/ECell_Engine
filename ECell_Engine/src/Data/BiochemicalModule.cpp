@@ -3,28 +3,31 @@
 void ECellEngine::Data::BiochemicalModule::AddEquation(Operand* _lhs, Operation& _rhs)
 {
 	dataState.AddEquation(_lhs, _rhs);
-	equations.push_back(_lhs->name);
+	equations.push_back(_lhs->GetID());
 }
 
-void ECellEngine::Data::BiochemicalModule::AddReaction(const std::string _reactionName,
-	const std::vector<std::string> _products,
-	const std::vector<std::string> _reactants,
+std::size_t ECellEngine::Data::BiochemicalModule::AddReaction(const std::string _reactionName,
+	const std::vector<std::size_t> _products,
+	const std::vector<std::size_t> _reactants,
 	const Operation _kineticLaw)
 {
-	dataState.AddReaction(_reactionName, _products, _reactants, _kineticLaw);
-	reactions.push_back(_reactionName);
+	std::shared_ptr<ECellEngine::Data::Reaction> reaction = dataState.AddReaction(_reactionName, _products, _reactants, _kineticLaw);
+	reactions.push_back(reaction->GetID());
+	return reaction->GetID();
 }
 
-void ECellEngine::Data::BiochemicalModule::AddParameter(const std::string _parameterName, const float _value)
+std::size_t ECellEngine::Data::BiochemicalModule::AddParameter(const std::string _parameterName, const float _value)
 {
-	dataState.AddParameter(_parameterName, _value);
-	parameters.push_back(_parameterName);
+	std::shared_ptr<ECellEngine::Data::Parameter> param = dataState.AddParameter(_parameterName, _value);
+	parameters.push_back(param->GetID());
+	return param->GetID();
 }
 
-void ECellEngine::Data::BiochemicalModule::AddSpecies(const std::string _speciesName, const float _quantity)
+std::size_t ECellEngine::Data::BiochemicalModule::AddSpecies(const std::string _speciesName, const float _quantity)
 {
-	dataState.AddSpecies(_speciesName, _quantity);
-	species.push_back(_speciesName);
+	std::shared_ptr<ECellEngine::Data::Species> sp = dataState.AddSpecies(_speciesName, _quantity);
+	species.push_back(sp->GetID());
+	return sp->GetID();
 }
 
 bool ECellEngine::Data::BiochemicalModule::IsValidSolverType(const ECellEngine::Solvers::Solver* _solver) noexcept

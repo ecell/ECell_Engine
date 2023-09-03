@@ -1,7 +1,7 @@
 #include <cassert>
 #include "Maths/Operation.hpp"
 
-void ECellEngine::Maths::Operation::GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector) const noexcept
+void ECellEngine::Maths::Operation::GetInvolvedSpecies(std::vector<std::size_t>& out_involvedSpecies, bool clearOutVector) const noexcept
 {
 	Operand::GetInvolvedSpecies(out_involvedSpecies, clearOutVector);
 
@@ -11,7 +11,7 @@ void ECellEngine::Maths::Operation::GetInvolvedSpecies(std::vector<std::string>&
 	}
 }
 
-void ECellEngine::Maths::Operation::GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector) const noexcept
+void ECellEngine::Maths::Operation::GetInvolvedParameters(std::vector<std::size_t>& out_involvedParameters, bool clearOutVector) const noexcept
 {
 	Operand::GetInvolvedParameters(out_involvedParameters, clearOutVector);
 
@@ -21,7 +21,7 @@ void ECellEngine::Maths::Operation::GetInvolvedParameters(std::vector<std::strin
 	}
 }
 
-void ECellEngine::Maths::Operation::GetInvolvedEquations(std::vector<std::string>& out_involvedEquations, bool clearOutVector) const noexcept
+void ECellEngine::Maths::Operation::GetInvolvedEquations(std::vector<std::size_t>& out_involvedEquations, bool clearOutVector) const noexcept
 {
 	Operand::GetInvolvedEquations(out_involvedEquations, clearOutVector);
 

@@ -61,13 +61,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		NodeListBoxStringData() = default;
 
-		NodeListBoxStringData(const std::vector<DataType>* _data,  std::size_t _scrollBarId) :
-			data{_data}, cursor{ _data->size()}, scrollBarID{_scrollBarId}
+		NodeListBoxStringData(const std::vector<DataType>* _data, std::size_t _scrollBarId) :
+			data{ _data }, cursor{ _data->size() }, scrollBarID { _scrollBarId }
 		{
 
 		}
 
-		const char* At(std::size_t _idx) const noexcept;
+		inline const DataType At(std::size_t _idx) const noexcept
+		{
+			return data->at(_idx);
+		}
 
 		inline bool IsAnItemHovered() noexcept
 		{
@@ -139,6 +142,64 @@ namespace ECellEngine::Editor::Utility::MNBV
 			utilityState = 0;
 		}
 	};
+#pragma endregion
+
+#pragma region Accessors for NodeListBoxStringData<DataType, AccessorType>
+
+	template <typename DataType>
+	struct NLBSDAccessor
+	{
+		const char* operator ()(std::size_t _idx, NodeListBoxStringData<DataType>& _nlbsData) const noexcept;
+	};
+
+	struct NLBSDSpeciesNameAccessorFromID final : public NLBSDAccessor<std::size_t>
+	{
+		const char* operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept;
+		/*{
+			return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetSpecies(_nlbsData.At(_idx))->name.c_str();
+		}*/
+	};
+
+	struct NLBSDParameterNameAccessorFromID final : public NLBSDAccessor<std::size_t>
+	{
+		const char* operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept;
+		/*{
+			return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetParameter(_nlbsData.At(_idx))->name.c_str();
+		}*/
+	};
+
+	struct NLBSDReactionNameAccessorFromID final : public NLBSDAccessor<std::size_t>
+	{
+		const char* operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept;
+		/*{
+			return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetReaction(_nlbsData.At(_idx))->name.c_str();
+		}*/
+	};
+
+	struct NLBSDReactionNameAccessorFromWPTR final : public NLBSDAccessor<std::weak_ptr<ECellEngine::Data::Reaction>>
+	{
+		const char* operator ()(std::size_t _idx, NodeListBoxStringData<std::weak_ptr<ECellEngine::Data::Reaction>>& _nlbsData) const noexcept;
+		/*{
+			return _nlbsData.At(_idx).lock()->name.c_str();
+		}*/
+	};
+
+	struct NLBSDEquationNameAccessorFromID final : public NLBSDAccessor<std::size_t>
+	{
+		const char* operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept;
+		/*{
+			return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetEquation(_nlbsData.At(_idx))->GetName().c_str();
+		}*/
+	};
+
+	struct NLBSDEquationNameAccessorFromWPTR final : public NLBSDAccessor<std::weak_ptr<ECellEngine::Maths::Equation>>
+	{
+		const char* operator ()(std::size_t _idx, NodeListBoxStringData<std::weak_ptr<ECellEngine::Maths::Equation>>& _nlbsData) const noexcept;
+		/*{
+			return _nlbsData.At(_idx).lock()->GetName().c_str();
+		}*/
+	};
+
 #pragma endregion
 
 #pragma region Base Node, Pin
@@ -744,7 +805,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief All the list boxes to store/display strings.
 		@details Access the pins with the enum values NodeListBoxString_XXX
 		*/
-		NodeListBoxStringData<std::string> nlbsData[NodeListBoxString_Count];
+		NodeListBoxStringData<std::size_t> nlbsData[NodeListBoxString_Count];
 
 		AssetNodeData(const AssetNodeData& _and) :
 			NodeData(_and), data{ _and.data },
@@ -790,7 +851,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_Reactions] = { &data->GetAllReaction(), Widget::MNBV::GetMNBVCtxtNextId() };
 			nlbsData[NodeListBoxString_Parameters] = { &data->GetAllParameter(), Widget::MNBV::GetMNBVCtxtNextId() };
 			nlbsData[NodeListBoxString_Species] = { &data->GetAllSpecies(), Widget::MNBV::GetMNBVCtxtNextId() };
-
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {}; //not used in asset node data
@@ -948,14 +1008,14 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief All the list boxes to store/display strings.
 		@details Access the pins with the enum values NodeListBoxString_XXX
 		*/
-		NodeListBoxStringData<std::string> nlbsData[NodeListBoxString_Count];
+		NodeListBoxStringData<std::size_t> nlbsData[NodeListBoxString_Count];
 		NodeListBoxStringData<std::weak_ptr<ECellEngine::Maths::Equation>> nlbsDataEqDep;
 		NodeListBoxStringData<std::weak_ptr<ECellEngine::Data::Reaction>> nlbsDataRKLDep;
 		std::vector<std::weak_ptr<ECellEngine::Maths::Equation>> equationDep;
 		std::vector<std::weak_ptr<ECellEngine::Data::Reaction>> reactionKLDep;
-		std::vector<std::string> speciesOperands;
-		std::vector<std::string> parametersOperands;
-		std::vector<std::string> equationsOperands;
+		std::vector<std::size_t> speciesOperands;
+		std::vector<std::size_t> parametersOperands;
+		std::vector<std::size_t> equationsOperands;
 
 		EquationNodeData(const EquationNodeData& _cpnd) :
 			NodeData(_cpnd), data{ _cpnd.data }, depDB{ _cpnd.depDB },
@@ -1036,13 +1096,17 @@ namespace ECellEngine::Editor::Utility::MNBV
 				equationDep = {};
 				reactionKLDep = {};
 			}
+
 			nlbsDataEqDep = { &equationDep , Widget::MNBV::GetMNBVCtxtNextId() };
 			nlbsDataRKLDep = { &reactionKLDep , Widget::MNBV::GetMNBVCtxtNextId() };
-			_data->GetOperation().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);//Node String List Box for Species Operands
+			
+			_data->GetOperation().GetOperandIDs<ECellEngine::Data::Species*>(speciesOperands);//Node String List Box for Species Operands
 			nlbsData[NodeListBoxString_SpeciesOperands] = { &speciesOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Node String List Box for Species Operands
-			_data->GetOperation().GetOperandsNames<ECellEngine::Data::Parameter>(parametersOperands);//Node String List Box for Simple Parameter Operands
+			
+			_data->GetOperation().GetOperandIDs<ECellEngine::Data::Parameter*>(parametersOperands);//Node String List Box for Simple Parameter Operands
 			nlbsData[NodeListBoxString_ParameterOperands] = { &parametersOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Node String List Box for Simple Parameter Operands
-			_data->GetOperation().GetOperandsNames<ECellEngine::Maths::Equation>(equationsOperands);//Node String List Box for Computed Parameter Operands
+			
+			_data->GetOperation().GetOperandIDs<ECellEngine::Maths::Equation*>(equationsOperands);//Node String List Box for Computed Parameter Operands
 			nlbsData[NodeListBoxString_EquationOperands] = { &equationsOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Node String List Box for Computed Parameter Operands
 		}
 
@@ -1613,10 +1677,10 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief All the list boxes to store/display strings.
 		@details Access the pins with the enum values NodeListBoxString_XXX
 		*/
-		NodeListBoxStringData<std::string> nlbsData[NodeListBoxString_Count];
-		std::vector<std::string> speciesOperands;
-		std::vector<std::string> parametersOperands;
-		std::vector<std::string> equationsOperands;
+		NodeListBoxStringData<std::size_t> nlbsData[NodeListBoxString_Count];
+		std::vector<std::size_t> speciesOperands;
+		std::vector<std::size_t> parametersOperands;
+		std::vector<std::size_t> equationsOperands;
 
 		ReactionNodeData(const ReactionNodeData& _rnd) :
 			NodeData(_rnd), data{ _rnd.data },
@@ -1684,11 +1748,14 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 			nlbsData[NodeListBoxString_Reactants] = { &_data->GetReactants() , Widget::MNBV::GetMNBVCtxtNextId() };//Reactants section
 			nlbsData[NodeListBoxString_Products] = { &_data->GetProducts(), Widget::MNBV::GetMNBVCtxtNextId() };//Products section
-			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::Species>(speciesOperands);
+			
+			_data->GetKineticLaw().GetOperandIDs<ECellEngine::Data::Species*>(speciesOperands);
 			nlbsData[NodeListBoxString_SpeciesOperands] = { &speciesOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Species Operands from Kinetic Law
-			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Data::Parameter>(parametersOperands);
+			
+			_data->GetKineticLaw().GetOperandIDs<ECellEngine::Data::Parameter*>(parametersOperands);
 			nlbsData[NodeListBoxString_ParameterOperands] = { &parametersOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Simple Parameter Operands from Kinetic Law
-			_data->GetKineticLaw().GetOperandsNames<ECellEngine::Maths::Equation>(equationsOperands);
+			
+			_data->GetKineticLaw().GetOperandIDs<ECellEngine::Maths::Equation*>(equationsOperands);
 			nlbsData[NodeListBoxString_EquationOperands] = { &equationsOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Computed Parameter Operands from Kinetic Law
 		}
 

@@ -222,27 +222,28 @@ namespace ECellEngine::Maths
 		}
 
 		/*!
-		@brief Retrieves and fills the list @p _operandsNames with the names of
-			   all the operands' names of this operation (and the whole tree).
+		@brief Retrieves and fills the list @p _operandsIDs with the IDs of
+			   all the operands' IDs of this operation (and the whole tree).
 		@paramt OperandType A specific type of operand to chose from. It MUST
-				derivates from ECellEngine::Maths::Operand.
-		@param _operandsNames The reference to the vector where to store the
-				names of the target operands.
+				be a pointer of a class derivated from ECellEngine::Maths::Operand.
+		@param _operands The reference to the vector where to store the
+				the target operands.
 		*/
 		template<typename OperandType>//, typename = std::enable_if_t<std::is_base_of_v<Operand, OperandType>>>
-		void GetOperandsNames(std::vector<std::string>& _operandsNames) const noexcept
+		void GetOperandIDs(std::vector<std::size_t>& _operands) const noexcept
 		{
 			for (std::vector<Operand*>::const_iterator it = operands.begin(); it != operands.end(); it++)
 			{
-				if (dynamic_cast<OperandType*>(*it) != nullptr)
+				OperandType operand = dynamic_cast<OperandType>(*it);
+				if (operand != nullptr)
 				{
-					_operandsNames.push_back((*it)->name);
+					_operands.push_back(operand->GetID());
 				}
 			}
 
 			for (std::vector<Operation>::const_iterator it = operations.begin(); it != operations.end(); it++)
 			{
-				it->GetOperandsNames<OperandType>(_operandsNames);
+				it->GetOperandIDs<OperandType>(_operands);
 			}
 		}
 
@@ -264,11 +265,11 @@ namespace ECellEngine::Maths
 			return functionType;
 		}
 
-		void GetInvolvedEquations(std::vector<std::string>& out_involvedEquations, bool clearOutVector = true) const noexcept override;
+		void GetInvolvedEquations(std::vector<std::size_t>& out_involvedEquations, bool clearOutVector = true) const noexcept override;
 		
-		void GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
+		void GetInvolvedParameters(std::vector<std::size_t>& out_involvedParameters, bool clearOutVector = true) const noexcept override;
 		
-		void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
+		void GetInvolvedSpecies(std::vector<std::size_t>& out_involvedSpecies, bool clearOutVector = true) const noexcept override;
 
 		/*!
 		@brief DO NOT USE for this class.

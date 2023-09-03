@@ -95,6 +95,11 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(AssetNodeData
 	const float startX = ImGui::GetCursorPosX();
 	const float thisLabelWidth = ImGui::CalcTextSize("This").x;
 
+	static NLBSDSpeciesNameAccessorFromID speciesNameAccessor;
+	static NLBSDParameterNameAccessorFromID parameterNameAccessor;
+	static NLBSDEquationNameAccessorFromID equationNameAccessor;
+	static NLBSDReactionNameAccessorFromID reactionNameAccessor;
+
 	// ----- Pin and Text to connect the solver to the asset -----
 	NodeText_Out("This", thisLabelWidth, startX, headerWidth, _assetNodeInfo.outputPins[AssetNodeData::OutputPin_ThisData]);
 
@@ -105,7 +110,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(AssetNodeData
 		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrSpecies],
 		ImVec2(itemsWidth, 0), false))
 	{
-		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Species], startX, headerWidth, itemsWidth);
+		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Species], speciesNameAccessor, startX, headerWidth, itemsWidth);
 	}
 
 	// ----- String List Box and Pin to access the parameters of the asset -----
@@ -115,7 +120,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(AssetNodeData
 		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrParameters],
 		ImVec2(itemsWidth, 0), false))
 	{
-		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Parameters], startX, headerWidth, itemsWidth);
+		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Parameters], parameterNameAccessor, startX, headerWidth, itemsWidth);
 	}
 
 	// ----- String List Box and Pin to access the equations of the asset -----
@@ -125,7 +130,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(AssetNodeData
 		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrEquations],
 		ImVec2(itemsWidth, 0), false))
 	{
-		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Equations], startX, headerWidth, itemsWidth);
+		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Equations], equationNameAccessor, startX, headerWidth, itemsWidth);
 	}
 
 	// ----- String List Box and Pin to access the reactions of the asset -----
@@ -135,7 +140,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::AssetNode(AssetNodeData
 		_assetNodeInfo.outputPins[AssetNodeData::OutputPin_CollHdrReactions],
 		ImVec2(itemsWidth, 0), false))
 	{
-		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Reactions], startX, headerWidth, itemsWidth);
+		NodeStringListBox(_assetNodeInfo.nlbsData[AssetNodeData::NodeListBoxString_Reactions], reactionNameAccessor, startX, headerWidth, itemsWidth);
 	}
 
 	ax::NodeEditor::EndNode();
@@ -154,6 +159,13 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(EquationNo
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
+	static NLBSDSpeciesNameAccessorFromID speciesNameAccessor;
+	static NLBSDParameterNameAccessorFromID parameterNameAccessor;
+	static NLBSDEquationNameAccessorFromID equationNameAccessorID;
+	static NLBSDEquationNameAccessorFromWPTR equationNameAccessorWPTR;
+	static NLBSDReactionNameAccessorFromWPTR reactionNameAccessorWPTR;
+
+
 	if (NodeCollapsingHeader_InOut("Model Links", _equationNodeInfo.collapsingHeadersIds[EquationNodeData::CollapsingHeader_ModelLinks],
 		_equationNodeInfo.utilityState, EquationNodeData::State_CollHdrModelLinks,
 		startX, headerWidth,
@@ -171,7 +183,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(EquationNo
 				_equationNodeInfo.inputPins[EquationNodeData::InputPin_CollHdrEquations], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_CollHdrEquations],
 				ImVec2(itemsWidth, 0.f), false))
 			{
-				NodeStringListBox(_equationNodeInfo.nlbsDataEqDep, startX, headerWidth, itemsWidth);
+				NodeStringListBox(_equationNodeInfo.nlbsDataEqDep, equationNameAccessorWPTR, startX, headerWidth, itemsWidth);
 			}
 		}
 
@@ -183,7 +195,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(EquationNo
 				_equationNodeInfo.inputPins[EquationNodeData::InputPin_CollHdrKineticLaws], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_CollHdrKineticLaws],
 				ImVec2(itemsWidth, 0.f), false))
 			{
-				NodeStringListBox(_equationNodeInfo.nlbsDataRKLDep, startX, headerWidth, itemsWidth);
+				NodeStringListBox(_equationNodeInfo.nlbsDataRKLDep, reactionNameAccessorWPTR, startX, headerWidth, itemsWidth);
 			}
 		}
 	}
@@ -208,7 +220,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(EquationNo
 				const float spTextWidth = ImGui::CalcTextSize("Species").x;
 				NodeText_InOut("Species", spTextWidth, startX, headerWidth,
 					_equationNodeInfo.inputPins[EquationNodeData::InputPin_NLBSSpecies], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_NLBSSpecies]);
-				NodeStringListBox(_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_SpeciesOperands], startX, headerWidth, itemsWidth);
+				NodeStringListBox(_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_SpeciesOperands], speciesNameAccessor, startX, headerWidth, itemsWidth);
 			}
 
 			if (_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_ParameterOperands].data->size())
@@ -216,7 +228,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(EquationNo
 				const float sparamTextWidth = ImGui::CalcTextSize("Parameters").x;
 				NodeText_InOut("Parameters", sparamTextWidth, startX, headerWidth,
 					_equationNodeInfo.inputPins[EquationNodeData::InputPin_NLBSParameters], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_NLBSParameters]);
-				NodeStringListBox(_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_ParameterOperands], startX, headerWidth, itemsWidth);
+				NodeStringListBox(_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_ParameterOperands], parameterNameAccessor, startX, headerWidth, itemsWidth);
 			}
 
 			if (_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_EquationOperands].data->size())
@@ -224,7 +236,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(EquationNo
 				const float cparaTextWidth = ImGui::CalcTextSize("Equations").x;
 				NodeText_InOut("Equations", cparaTextWidth, startX, headerWidth,
 					_equationNodeInfo.inputPins[EquationNodeData::InputPin_NLBSEquations], _equationNodeInfo.outputPins[EquationNodeData::OutputPin_NLBSEquations]);
-				NodeStringListBox(_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_EquationOperands], startX, headerWidth, itemsWidth);
+				NodeStringListBox(_equationNodeInfo.nlbsData[EquationNodeData::NodeListBoxString_EquationOperands], equationNameAccessorID, startX, headerWidth, itemsWidth);
 			}
 		}
 
@@ -603,6 +615,10 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(ReactionNo
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
+	static NLBSDEquationNameAccessorFromID equationNameAccessor;
+	static NLBSDSpeciesNameAccessorFromID speciesNameAccessor;
+	static NLBSDParameterNameAccessorFromID parameterNameAccessor;
+
 	if (NodeCollapsingHeader_InOut("Model Links", _reactionNodeInfo.collapsingHeadersIds[ReactionNodeData::CollapsingHeader_ModelLinks],
 		_reactionNodeInfo.utilityState, ReactionNodeData::State_CollHdrModelLinks,
 		startX, headerWidth,
@@ -618,7 +634,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(ReactionNo
 			_reactionNodeInfo.inputPins[ReactionNodeData::InputPin_CollHdrReactants], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_CollHdrReactants],
 			ImVec2(itemsWidth, 0.f), false))
 		{
-			NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_Reactants], startX, headerWidth, itemsWidth);
+			NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_Reactants], speciesNameAccessor, startX, headerWidth, itemsWidth);
 		}
 
 		if (NodeCollapsingHeader_InOut("Products", _reactionNodeInfo.collapsingHeadersIds[ReactionNodeData::CollapsingHeader_Products],
@@ -627,7 +643,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(ReactionNo
 			_reactionNodeInfo.inputPins[ReactionNodeData::InputPin_CollHdrProducts], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_CollHdrProducts],
 			ImVec2(itemsWidth, 0.f), false))
 		{
-			NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_Products], startX, headerWidth, itemsWidth);
+			NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_Products], speciesNameAccessor, startX, headerWidth, itemsWidth);
 		}
 	}
 
@@ -651,7 +667,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(ReactionNo
 				const float spTextWidth = ImGui::CalcTextSize("Species").x;
 				NodeText_InOut("Species", spTextWidth, startX, headerWidth,
 					_reactionNodeInfo.inputPins[ReactionNodeData::InputPin_NLBSSpecies], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_NLBSSpecies]);
-				NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_SpeciesOperands], startX, headerWidth, itemsWidth);
+				NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_SpeciesOperands], speciesNameAccessor, startX, headerWidth, itemsWidth);
 			}
 
 			if (_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_ParameterOperands].data->size())
@@ -659,7 +675,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(ReactionNo
 				const float sparamTextWidth = ImGui::CalcTextSize("Parameters").x;
 				NodeText_InOut("Parameters", sparamTextWidth, startX, headerWidth,
 					_reactionNodeInfo.inputPins[ReactionNodeData::InputPin_NLBSParameters], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_NLBSParameters]);
-				NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_ParameterOperands], startX, headerWidth, itemsWidth);
+				NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_ParameterOperands], parameterNameAccessor, startX, headerWidth, itemsWidth);
 			}
 
 			if (_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_EquationOperands].data->size())
@@ -667,7 +683,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(ReactionNo
 				const float cparaTextWidth = ImGui::CalcTextSize("Equations").x;
 				NodeText_InOut("Equations", cparaTextWidth, startX, headerWidth,
 					_reactionNodeInfo.inputPins[ReactionNodeData::InputPin_NLBSEquations], _reactionNodeInfo.outputPins[ReactionNodeData::OutputPin_NLBSEquations]);
-				NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_EquationOperands], startX, headerWidth, itemsWidth);
+				NodeStringListBox(_reactionNodeInfo.nlbsData[ReactionNodeData::NodeListBoxString_EquationOperands], equationNameAccessor, startX, headerWidth, itemsWidth);
 			}
 		}
 
@@ -694,6 +710,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(Parameter
 	const float startX = ImGui::GetCursorPosX();
 	const float thisWidth = ImGui::CalcTextSize("this").x;
 
+	static NLBSDEquationNameAccessorFromWPTR equationNameAccessor;
+	static NLBSDReactionNameAccessorFromWPTR reactionNameAccessor;
+
 	if (NodeCollapsingHeader_InOut("Model Links", _parameterNodeInfo.collapsingHeadersIds[ParameterNodeData::CollapsingHeader_ModelLinks],
 		_parameterNodeInfo.utilityState, ParameterNodeData::State_CollHdrModelLinks,
 		startX, headerWidth,
@@ -716,7 +735,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(Parameter
 				_parameterNodeInfo.inputPins[ParameterNodeData::InputPin_CollHdrEquations], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_CollHdrEquations],
 				ImVec2(itemsWidth, 0.f), false))
 			{
-				NodeStringListBox(_parameterNodeInfo.nlbsDataEqDep, startX, headerWidth, itemsWidth);
+				NodeStringListBox(_parameterNodeInfo.nlbsDataEqDep, equationNameAccessor, startX, headerWidth, itemsWidth);
 			}
 		}
 		if (_parameterNodeInfo.reactionKLDep.size())
@@ -727,7 +746,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(Parameter
 				_parameterNodeInfo.inputPins[ParameterNodeData::InputPin_CollHdrKineticLaws], _parameterNodeInfo.outputPins[ParameterNodeData::OutputPin_CollHdrKineticLaws],
 				ImVec2(itemsWidth, 0.f), false))
 			{
-				NodeStringListBox(_parameterNodeInfo.nlbsDataRKLDep, startX, headerWidth, itemsWidth);
+				NodeStringListBox(_parameterNodeInfo.nlbsDataRKLDep, reactionNameAccessor, startX, headerWidth, itemsWidth);
 			}
 		}
 	}
@@ -807,6 +826,9 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(SpeciesNode
 	const float startX = ImGui::GetCursorPosX();
 	const float thisWidth = ImGui::CalcTextSize("this").x;
 
+	static NLBSDEquationNameAccessorFromWPTR equationNameAccessor;
+	static NLBSDReactionNameAccessorFromWPTR reactionNameAccessor;
+
 	if (NodeCollapsingHeader_InOut("Model Links", _speciesNodeInfo.collapsingHeadersIds[SpeciesNodeData::CollapsingHeader_ModelLinks],
 		_speciesNodeInfo.utilityState, SpeciesNodeData::State_CollHdrModelLinks,
 		startX, headerWidth,
@@ -828,8 +850,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(SpeciesNode
 				_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrInEquation], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrInEquation],
 				ImVec2(itemsWidth, 0.f), false))
 			{
-
-				NodeStringListBox(_speciesNodeInfo.nlbsDataEqDep, startX, headerWidth, itemsWidth);
+				NodeStringListBox(_speciesNodeInfo.nlbsDataEqDep, equationNameAccessor, startX, headerWidth, itemsWidth);
 			}
 		}
 		
@@ -841,8 +862,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(SpeciesNode
 				_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrAsReactant], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrAsReactant],
 				ImVec2(itemsWidth, 0.f), false))
 			{
-
-				NodeStringListBox(_speciesNodeInfo.nlbsDataRRDep, startX, headerWidth, itemsWidth);
+				NodeStringListBox(_speciesNodeInfo.nlbsDataRRDep, reactionNameAccessor, startX, headerWidth, itemsWidth);
 			}
 		}
 		
@@ -854,8 +874,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(SpeciesNode
 				_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrAsProduct], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrAsProduct],
 				ImVec2(itemsWidth, 0.f), false))
 			{
-
-				NodeStringListBox(_speciesNodeInfo.nlbsDataRPDep, startX, headerWidth, itemsWidth);
+				NodeStringListBox(_speciesNodeInfo.nlbsDataRPDep, reactionNameAccessor, startX, headerWidth, itemsWidth);
 			}
 		}
 		
@@ -867,8 +886,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(SpeciesNode
 				_speciesNodeInfo.inputPins[SpeciesNodeData::InputPin_CollHdrInKineticLaw], _speciesNodeInfo.outputPins[SpeciesNodeData::OutputPin_CollHdrInKineticLaw],
 				ImVec2(itemsWidth, 0.f), false))
 			{
-
-				NodeStringListBox(_speciesNodeInfo.nlbsDataRKLDep, startX, headerWidth, itemsWidth);
+				NodeStringListBox(_speciesNodeInfo.nlbsDataRKLDep, reactionNameAccessor, startX, headerWidth, itemsWidth);
 			}
 		}
 	}
@@ -1659,8 +1677,8 @@ bool ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeInputText(const cha
 	return false;
 }
 
-template<typename DataType>
-void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData<DataType>& _nlbsData,
+template<typename DataType, typename AccessorType>
+void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeStringListBox(NodeListBoxStringData<DataType>& _nlbsData, AccessorType& _accessor,
 	const float _startX, const float _drawLength,
 	const float _widgetWidth, const unsigned short _itemViewHeight)
 {
@@ -1693,7 +1711,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeStringListBox(NodeL
 	{
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + NodeFramePadding.x);//Left Padding
 
-		itemString = _nlbsData.At(nbItems - n);
+		itemString = _accessor(nbItems - n, _nlbsData);
 		if (ImGui::Selectable(itemString, false, ImGuiSelectableFlags_None, ImVec2(itemWidth, 0)))
 		{
 			_nlbsData.selectedItem = nbItems - n;

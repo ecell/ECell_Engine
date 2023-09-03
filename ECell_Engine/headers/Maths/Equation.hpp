@@ -34,6 +34,14 @@ namespace ECellEngine::Maths
 			return lhs->name;
 		}
 
+		/*!
+		@brief Returns the ID of the operand (left hand side) of the equation.
+		*/
+		inline const std::size_t GetID() const noexcept
+		{
+			return lhs->GetID();
+		}
+
 		/*
 		@brief Returns the operand (left hand side) of the equation.
 		@details This is the operand that is being assigned to.

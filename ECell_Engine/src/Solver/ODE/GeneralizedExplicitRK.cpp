@@ -54,17 +54,17 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 	//Retrieve all the kinetic laws affecting species and differentiating
 	//in-flux (when species is produced) from out-flux (when species is
 	//consumed)
-	std::unordered_map<std::string, std::vector<Operation>> allInFlux;
-	std::unordered_map<std::string, std::vector<Operation>> allOutFlux;
+	std::unordered_map<std::size_t, std::vector<Operation>> allInFlux;
+	std::unordered_map<std::size_t, std::vector<Operation>> allOutFlux;
 	for (auto [reactionName, reaction] : dataState.GetReactions())
 	{
-		for (std::string reactant : reaction->GetReactants())
+		for (std::size_t reactant : reaction->GetReactants())
 		{
 			//Get the kinetic law
 			allOutFlux[reactant].push_back(reaction->GetKineticLaw());
 		}
 
-		for (std::string product : reaction->GetProducts())
+		for (std::size_t product : reaction->GetProducts())
 		{
 			//Get the kinetic law
 			allInFlux[product].push_back(reaction->GetKineticLaw());
@@ -74,12 +74,11 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::Initialize(const ECellEng
 	//Loop over all species and create the differential equation
 	//as the sum of all in-flux minus the sum of all out-flux if
 	//the species was indeed affected by a reaction (cf. above)
-	for (auto [speciesName, species] : dataState.GetAllSpecies())
+	for (auto [speciesID, species] : dataState.GetAllSpecies())
 	{
-		ECellEngine::Logging::Logger::LogDebug(speciesName.c_str());
 		//Initialize the operation in-flux minus out-flux
-		auto IFSearch = allInFlux.find(speciesName);
-		auto OFSearch = allOutFlux.find(speciesName);
+		auto IFSearch = allInFlux.find(speciesID);
+		auto OFSearch = allOutFlux.find(speciesID);
 
 		bool hasIF = IFSearch != allInFlux.end();
 		bool hasOF = OFSearch != allOutFlux.end();

@@ -23,7 +23,7 @@ namespace ECellEngine::Maths
 	*/
 	struct Operand
 	{
-	private:
+	protected:
 		/*!
 		@brief The unique identifier of the operand.
 		@remarks Compared to other usage of the IDProvider, the ID here is private
@@ -78,7 +78,7 @@ namespace ECellEngine::Maths
 		@param out_involvedEquations The equations vector filled by the function call.
 		@param clearOutVector Should the provided vector be cleared before filling.
 		*/
-		virtual void GetInvolvedEquations(std::vector<std::string>& out_involvedEquations, bool clearOutVector = true) const noexcept;
+		virtual void GetInvolvedEquations(std::vector<std::size_t>& out_involvedEquations, bool clearOutVector = true) const noexcept;
 		
 		/*!
 		@brief Retrieve all the parameters involved in this operand.
@@ -86,7 +86,7 @@ namespace ECellEngine::Maths
 		@param out_involvedParameters The parameters vector filled by the function call.
 		@param clearOutVector Should the provided vector be cleared before filling.
 		*/
-		virtual void GetInvolvedParameters(std::vector<std::string>& out_involvedParameters, bool clearOutVector = true) const noexcept;
+		virtual void GetInvolvedParameters(std::vector<std::size_t>& out_involvedParameters, bool clearOutVector = true) const noexcept;
 
 		/*!
 		@brief Retrieve all the species involved in this operand.
@@ -94,13 +94,13 @@ namespace ECellEngine::Maths
 		@param out_involvedSpecies The species vector filled by the function call.
 		@param clearOutVector Should the provided vector be cleared before filling.
 		*/
-		virtual void GetInvolvedSpecies(std::vector<std::string>& out_involvedSpecies, bool clearOutVector = true) const noexcept;
+		virtual void GetInvolvedSpecies(std::vector<std::size_t>& out_involvedSpecies, bool clearOutVector = true) const noexcept;
 
 		/*!
 		@brief Returns the unique identifier of the operand.
 		@returns The unique identifier of the operand.
 		*/
-		std::size_t GetID() const noexcept
+		inline std::size_t GetID() const noexcept
 		{
 			return id;
 		}
