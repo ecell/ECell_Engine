@@ -24,14 +24,29 @@ namespace ECellEngine::IO
 		CommandsManager() = default;
 
 		/*
-		@brief Searches for a command matching @p _cmdSplit and calls executes
-				it if found.
+		@brief Searches for a command matching the command name stored at index
+				0 in @p _cmdSplit and lets the command decode and execute if found.
 		@param _cmdSplit The command content. The first element should be the
 					command's name.
 		@return True if the interpretation and execution of the command succeeds.
 				False, otherwise.
 		*/
-		bool InterpretCommand(std::vector<std::string> const& _cmdSplit);
+		bool ProcessCommand(std::vector<std::string> const& _cmdSplit);
+
+		template<typename CommandArgsType>
+		bool ProcessCommand(const std::string& _commandName, const CommandArgsType& _args)
+		{
+			std::shared_ptr<AbstractCommand> matchingCommand = TryGetRegisteredCommand(_commandName);
+			if (matchingCommand.get() != nullptr)
+			{
+				//Execute the command
+				Command<CommandArgsType&>* command = dynamic_cast<Command<CommandArgsType&>*>(matchingCommand.get());
+				command->SetArgs(_args);
+				return command->Execute();
+			}
+
+			return false;
+		}
 
 		/*
 		@brief Adds @p _command to the register.

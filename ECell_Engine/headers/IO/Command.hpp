@@ -65,18 +65,26 @@ namespace ECellEngine::IO
 		*/
 		virtual bool DecodeParameters(const std::vector<std::string>& _args) = 0;
 
+		/*!
+		@brief Public interface to execute the command disregarding any arguments.
+		@details This method is meant to be called after DecodeParameters() has
+				 been called. We make it public to allow the user to call it
+				 directly in case the command doesn't require any arguments;
+				 or the arguments hav
+		@return True if the execution succeeds. False, otherwise.
+		*/
+		virtual bool Execute() = 0;
+
 		/*
-		@brief Public interface to execute the action/code associated to the command
-				and its arguments.
+		@brief Decodes the command and executes it.
 		@param _args The arguments of the command. By default _args[0] is the
 					 name of the command. So the actual arguments are store from index
 					 1 onward.
-		@return True if the execution succeeds. False, otherwise.
+		@return True if the decoding and execution succeeds. False, otherwise.
 		*/
-		virtual bool Execute(const std::vector<std::string>& _args) = 0;
+		bool ProcessCommand(const std::vector<std::string>& _args);
 
 	};
-
 
 	/*!
 	@brief Intermediate class to translate a command written as a string into
@@ -85,7 +93,7 @@ namespace ECellEngine::IO
 			 the an Execute() method. This method will be called when the command
 			 is executed with a string input.
 	*/
-	template<typename CommandType, typename ArgsType>
+	template<typename ArgsType>
 	struct Command : public AbstractCommand
 	{
 		/*!
@@ -113,22 +121,6 @@ namespace ECellEngine::IO
 
 		virtual bool DecodeParameters(const std::vector<std::string>& _args) override = 0;
 
-		/*!
-		@brief Public interface to defer execution of the command to the derived
-				class when the input is a string.
-		@param _args The arguments of the command. By default _args[0] is the
-					 name of the command. So the actual arguments are store from
-					 index 1 onward.
-		*/
-		bool Execute(const std::vector<std::string>& _args) override
-		{
-			if (!DecodeParameters(_args))
-			{
-				ECellEngine::Logging::Logger::LogError(GetHelpMessage());
-				return false;
-			}
-
-			return static_cast<CommandType*>(this)->Execute();
-		}
+		virtual bool Execute() override = 0;
 	};
 }

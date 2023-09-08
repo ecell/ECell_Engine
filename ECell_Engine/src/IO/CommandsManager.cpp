@@ -1,9 +1,9 @@
 #include "IO/CommandsManager.hpp"
 
-bool ECellEngine::IO::CommandsManager::InterpretCommand(std::vector<std::string> const& _cmdSplit)
+bool ECellEngine::IO::CommandsManager::ProcessCommand(std::vector<std::string> const& _cmdSplit)
 {
 	std::shared_ptr<AbstractCommand> matchingCommand = TryGetRegisteredCommand(_cmdSplit[0]);
-	std::string msg = "Command: ";
+	std::string msg = "Processing command: ";
 	if (matchingCommand.get() != nullptr)
 	{
 		//Execute the command
@@ -12,7 +12,7 @@ bool ECellEngine::IO::CommandsManager::InterpretCommand(std::vector<std::string>
 			msg += " " + _cmdSplit[i];
 		}
 		ECellEngine::Logging::Logger::LogTrace(msg.c_str());
-		return matchingCommand->Execute(_cmdSplit);
+		return matchingCommand->ProcessCommand(_cmdSplit);
 	}
 	else
 	{

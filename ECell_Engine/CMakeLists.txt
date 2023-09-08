@@ -20,6 +20,7 @@ add_library(ECellEngine SHARED
     "src/Data/Species.cpp"
     "src/Data/IndexedMinHeap.cpp"
 
+    "src/IO/Command.cpp"
     "src/IO/Commands.cpp"
     "src/IO/CommandsManager.cpp"
     "src/IO/ModuleImporterManager.cpp"
