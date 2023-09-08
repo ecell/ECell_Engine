@@ -36,6 +36,16 @@ namespace ECellEngine::Editor::Widget
 			ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus |
 			ImGuiWindowFlags_NoDocking;
 
+		/*!
+		@brief Bool to control the visibility of the ImGui demo window.
+		*/
+		bool showImGuiDemoWindow = false;
+		
+		/*!
+		@brief Bool to control the visibility of the ImPlot demo window.
+		*/
+		bool showImPlotDemoWindow = false;
+
 	public:
 		MainWindow(Editor* _editor) :
 			Widget(_editor)

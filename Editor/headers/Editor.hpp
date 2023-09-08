@@ -62,8 +62,6 @@ namespace ECellEngine::Editor
 
 	public:
 		ECellEngine::Core::Engine engine; /*!< ECellEngine instance. The heart of the simulation.*/
-		
-		bool showDemoWindow; /*!< For debug & dev. Shows the demo windows of ImGui and ImPlot.*/
 
 		Editor();
 
