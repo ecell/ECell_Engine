@@ -75,22 +75,6 @@ namespace ECellEngine::Core
 		static SimulationsManager& GetSingleton() noexcept;
 
 		/*!
-		@brief Gets the number of simulation in ::simulations.
-		*/
-		/*inline std::size_t CountSimulations() const noexcept
-		{
-			return simulations.size();
-		}*/
-
-		/*!
-		@brief Gets the number of playing simulation in ::playingSimulations.
-		*/
-		/*inline std::size_t CountPlayingSimulations() const noexcept
-		{
-			return playingSimulations.size();
-		}*/
-
-		/*!
 		@brief Gets the simulation at position @p _idx in ::simulations.
 		@param _idx The position of the simulation to retrieve from ::simulations.
 		@returns The pointer to the target simulation.

@@ -1,6 +1,11 @@
 #pragma once
 
-//partial definitions:
+/*!
+@file Command.hpp
+@brief All the commands used in the engine.
+*/
+
+//Forward declaration
 namespace ECellEngine::Core
 {
 	class Engine;
@@ -30,7 +35,7 @@ namespace ECellEngine::IO
 		AddModuleCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			Command("addModule", 4), receiver(_receiver)
 		{
-
+			args.simulationID = 0;
 		}
 
 		inline const char* GetHelpMessage() const override
@@ -74,6 +79,7 @@ namespace ECellEngine::IO
 		AddSolverCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			Command("addSolver", 3), receiver(_receiver)
 		{
+			args.simulationID = 0;
 		}
 
 		inline const char* GetHelpMessage() const override
@@ -117,6 +123,9 @@ namespace ECellEngine::IO
 		ModuleSolverConnectionCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			Command("moduleSolverConnection", 4), receiver(_receiver)
 		{
+			args.simulationID = 0;
+			args.moduleID = 0;
+			args.solverID = 0;
 		}
 
 		inline const char* GetHelpMessage() const override
@@ -203,6 +212,7 @@ namespace ECellEngine::IO
 		PauseSimulationCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			Command("pauseSimulation", 2), receiver(_receiver)
 		{
+			args.simulationID = 0;
 		}
 
 		inline const char* GetHelpMessage() const override
@@ -243,6 +253,7 @@ namespace ECellEngine::IO
 		PlaySimulationCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			Command("playSimulation", 2), receiver(_receiver)
 		{
+			args.simulationID = 0;
 		}
 
 		inline const char* GetHelpMessage() const override
@@ -284,6 +295,8 @@ namespace ECellEngine::IO
 		StepSimulationBackwardCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			Command("stepSimulationBackward", 3), receiver(_receiver)
 		{
+			args.simulationID = 0;
+			args.deltaTime = 0.01;
 		}
 
 		inline const char* GetHelpMessage() const override
@@ -326,6 +339,8 @@ namespace ECellEngine::IO
 		StepSimulationForwardCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			Command("stepSimulationForward", 3), receiver(_receiver)
 		{
+			args.simulationID = 0;
+			args.deltaTime = 0.01;
 		}
 
 		inline const char* GetHelpMessage() const override
@@ -367,6 +382,7 @@ namespace ECellEngine::IO
 		StopSimulationCommand(ECellEngine::Core::SimulationsManager& _receiver) :
 			Command("stopSimulation", 2), receiver(_receiver)
 		{
+			args.simulationID = 0;
 		}
 
 		inline const char* GetHelpMessage() const override

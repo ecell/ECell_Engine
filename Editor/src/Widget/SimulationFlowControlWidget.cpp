@@ -21,7 +21,7 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationCon
 
     if (ImGui::Button("Play"))
     {
-        if (editor->engine.GetCommandsManager().ProcessCommand(playCommandArray))
+        if (editor->engine.GetCommandsManager().ProcessCommand("playSimulation", playCommandArgs))
         {
             simuStateColor = ImVec4(0.902f, 0.272f, 0.070f, 1.000f);
             isPlaying = true;
@@ -37,20 +37,20 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationCon
         {
             if (ImGui::Button("Backward"))
             {
-                editor->engine->GetCommandsManager().ProcessCommand(goBackwardCommandArray);
+                editor->engine->GetCommandsManager().ProcessCommand(goBackwardCommandArgs);
             }
         }
         else
         {
             if (ImGui::Button("Forward"))
             {
-                editor->engine->GetCommandsManager().ProcessCommand(goForwardCommandArray);
+                editor->engine->GetCommandsManager().ProcessCommand(goForwardCommandArgs);
             }
         }*/
 
         if (ImGui::Button("Pause"))
         {
-            if (editor->engine.GetCommandsManager().ProcessCommand(pauseCommandArray))
+            if (editor->engine.GetCommandsManager().ProcessCommand("pauseSimulation", pauseCommandArgs))
             {
                 isPlaying = false;
                 simuStateColor = ImVec4(1.000f, 0.794f, 0.000f, 1.000f);
@@ -61,7 +61,7 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationCon
 
         if (ImGui::Button("Stop"))
         {
-            if (editor->engine.GetCommandsManager().ProcessCommand(stopCommandArray))
+            if (editor->engine.GetCommandsManager().ProcessCommand("stopSimulation", stopCommandArgs))
             {
                 isPlaying = false;
                 simuStateColor = ImVec4(0.191f, 0.845f, 0.249f, 1.000f);
@@ -77,14 +77,14 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationCon
         //ImGui::SameLine();
         /*if (ImGui::Button("Step Backward"))
         {
-            stepBackwardCommandArray[1] = std::to_string(stepTime);
-            engineCmdsManager->ProcessCommand(stepBackwardCommandArray);
+            stepBackwardCommandArgs[1] = std::to_string(stepTime);
+            engineCmdsManager->ProcessCommand(stepBackwardCommandArgs);
         }*/
         ImGui::SameLine();
         if (ImGui::Button("Step Forward"))
         {
-            stepForwardCommandArray[2] = std::to_string(stepTime);
-            editor->engine.GetCommandsManager().ProcessCommand(stepForwardCommandArray);
+            stepForwardCommandArgs.deltaTime = stepTime;
+            editor->engine.GetCommandsManager().ProcessCommand("stepSimulationForward", stepForwardCommandArgs);
         }
     }
 
@@ -104,8 +104,12 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::Draw()
     ImGui::End();
 }
 
-void ECellEngine::Editor::Widget::SimulationFlowControlWidget::SetSimulation(std::size_t _simuIdx)
+void ECellEngine::Editor::Widget::SimulationFlowControlWidget::SetSimulation(Core::Simulation* _simulation)
 {
-    std::to_chars(simuIdxAsChar, simuIdxAsChar + 8, _simuIdx);
-    simulation = ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(_simuIdx);
+    simulation = _simulation;
+
+    pauseCommandArgs.simulationID = _simulation->id;
+    playCommandArgs.simulationID = _simulation->id;
+    stopCommandArgs.simulationID = _simulation->id;
+    stepForwardCommandArgs.simulationID = _simulation->id;
 }

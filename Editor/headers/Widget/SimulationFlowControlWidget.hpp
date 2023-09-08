@@ -2,10 +2,10 @@
 
 #include <charconv>
 #include <vector>
-#include <string>
 
 #include "imgui_internal.h"
 
+#include "IO/CommandArgs.hpp"
 #include "Widget.hpp"
 
 namespace ECellEngine::Core
@@ -44,19 +44,18 @@ namespace ECellEngine::Editor::Widget
 		const ImGuiDockNodeFlags dockFlags =
 			ImGuiDockNodeFlags_NoDockingOverMe | ImGuiDockNodeFlags_NoDockingSplitMe;
 
-		char simuIdxAsChar[8] = "0";
 		ECellEngine::Core::Simulation* simulation = nullptr;
 		//short* simuDirection;
 		float stepTime = 0.01;
 
-		const std::vector<std::string> pauseCommandArray = { "pauseSimulation" , simuIdxAsChar };
-		const std::vector<std::string> playCommandArray = { "playSimulation", simuIdxAsChar };
-		const std::vector<std::string> stopCommandArray = { "stopSimulation", simuIdxAsChar };
+		IO::SimulationCommandArgs pauseCommandArgs;
+		IO::SimulationCommandArgs playCommandArgs;
+		IO::SimulationCommandArgs stopCommandArgs;
 
-		//const std::vector<std::string> goBackwardCommandArray = { "goBackward" };
-		//const std::vector<std::string> goForwardCommandArray = { "goForward" };
-		//std::vector<std::string> stepBackwardCommandArray = { "stepSimulationBackward", "0.0000001"};
-		std::vector<std::string> stepForwardCommandArray = { "stepSimulationForward", simuIdxAsChar, std::to_string(stepTime)};
+		//std::vector<std::string> goBackwardCommandArgs = { "goBackward" };
+		//std::vector<std::string> goForwardCommandArgs = { "goForward" };
+		//std::vector<std::string> stepBackwardCommandArgs = { "stepSimulationBackward", "0.0000001"};
+		IO::StepSimulationCommandArgs stepForwardCommandArgs;
 
 		void DrawSimulationControls();
 
@@ -64,10 +63,15 @@ namespace ECellEngine::Editor::Widget
 		SimulationFlowControlWidget(Editor* _editor) :
 			Widget(_editor)
 		{
-			
+			pauseCommandArgs.simulationID = 0;
+			playCommandArgs.simulationID = 0;
+			stopCommandArgs.simulationID = 0;
+
+			stepForwardCommandArgs.simulationID = 0;
+			stepForwardCommandArgs.deltaTime = 0.01;
 		}
 
-		void SetSimulation(std::size_t _simuIdx);
+		void SetSimulation(Core::Simulation* _simulation);
 
 		inline void Awake() override {};
 
