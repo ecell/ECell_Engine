@@ -89,10 +89,10 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawImportAs
 
 		if (ImGui::Button("Import"))
 		{
-			addModuleCommandArray[1] = std::to_string(GetCurrentMNBVContext()->simulation->id);
-			addModuleCommandArray[2] = assetPathBuffer;
-			addModuleCommandArray[3] = assetNameBuffer;
-			if (editor->engine.GetCommandsManager().ProcessCommand(addModuleCommandArray))
+			addModuleCommandArgs.simulationID = GetCurrentMNBVContext()->simulation->id;
+			addModuleCommandArgs.modulePath = assetPathBuffer;
+			addModuleCommandArgs.moduleName = assetNameBuffer;
+			if (editor->engine.GetCommandsManager().ProcessCommand("addModule", addModuleCommandArgs))
 			{
 				//Spawn the corresponding asset node
 				currentMNBVContext->assetNodes.emplace_back(Utility::MNBV::AssetNodeData(
@@ -534,21 +534,21 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodesPop
 			bool addsolver = false;
 			if (ImGui::MenuItem("Gillespie Next Reaction Method"))
 			{
-				addSolverCommandArray[1] = std::to_string(GetCurrentMNBVContext()->simulation->id);
-				addSolverCommandArray[2] = "GillespieNRMRSolver";
+				addSolverCommandArgs.simulationID = GetCurrentMNBVContext()->simulation->id;
+				addSolverCommandArgs.solverName = "GillespieNRMRSolver";
 				addsolver = true;
 			}
 
 			if (ImGui::MenuItem("ODE Runge-Kutta 4"))
 			{
-				addSolverCommandArray[1] = std::to_string(GetCurrentMNBVContext()->simulation->id);
-				addSolverCommandArray[2] = "GeneralizedExplicitRK";
+				addSolverCommandArgs.simulationID = GetCurrentMNBVContext()->simulation->id;
+				addSolverCommandArgs.solverName = "GeneralizedExplicitRK";
 				addsolver = true;
 			}
 			
 			if (addsolver)
 			{
-				if (editor->engine.GetCommandsManager().ProcessCommand(addSolverCommandArray))
+				if (editor->engine.GetCommandsManager().ProcessCommand("addSolver", addSolverCommandArgs))
 				{
 					//Spawn the corresponding asset node
 					currentMNBVContext->solverNodes.emplace_back(Utility::MNBV::SolverNodeData(

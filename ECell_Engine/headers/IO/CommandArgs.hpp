@@ -4,22 +4,22 @@ namespace ECellEngine::IO
 {
 	struct AddModuleCommandArgs
 	{
-		unsigned long long simulationID;
-		char* modulePath;
-		char* moduleName;
+		unsigned long long simulationID = 0;
+		char* modulePath = nullptr;
+		char* moduleName = nullptr;
 	};
 
 	struct AddSolverCommandArgs
 	{
-		unsigned long long simulationID;
+		unsigned long long simulationID = 0;
 		char* solverName;
 	};
 
 	struct ModuleSolverLinkCommandArgs
 	{
-		unsigned long long simulationID;
-		unsigned long long moduleID;
-		unsigned long long solverID;
+		unsigned long long simulationID = 0;
+		unsigned long long moduleID = 0;
+		unsigned long long solverID = 0;
 
 		ModuleSolverLinkCommandArgs() = default;
 
@@ -31,12 +31,12 @@ namespace ECellEngine::IO
 
 	struct SimulationCommandArgs
 	{
-		unsigned long long simulationID;
+		unsigned long long simulationID = 0;
 	};
 
 	struct StepSimulationCommandArgs
 	{
-		unsigned long long simulationID;
-		float deltaTime;
+		unsigned long long simulationID = 0;
+		float deltaTime = 0.01f;
 	};
 }

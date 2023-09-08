@@ -14,6 +14,7 @@ namespace ECellEngine::Editor::Widget
 	class ModelExplorerWidget;
 }
 
+#include "IO/CommandArgs.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 #include "Utility/MNBV/NodeEditorDraw.hpp"
 
@@ -58,14 +59,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 		char assetNameBuffer[64] = "FissionYeast_CellCycle_L3V2.xml";
 
 		/*!
-		@brief The vector that contains the arguments for the ECellEngine::IO::AddModuleCommand
+		@brief The structure containing the arguments for the ECellEngine::IO::AddModuleCommand
 		*/
-		std::vector<std::string> addModuleCommandArray = { "addModule", "simulationID", "path", "name"};
+		AddModuleCommandArgs addModuleCommandArgs;
 
 		/*!
-		@brief The vector that contains the arguments for the ECellEngine::IO::AddSolverCommand
+		@brief The structure containing the arguments for the ECellEngine::IO::AddSolverCommand
 		*/
-		std::vector<std::string> addSolverCommandArray = { "addSolver", "simulationID", "name" };
+		AddSolverCommandArgs addSolverCommandArgs;
 
 		/*!
 		@brief A buffer for the mouse position since we use it a few times.
