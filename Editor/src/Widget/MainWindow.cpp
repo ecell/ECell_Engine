@@ -8,20 +8,15 @@ void ECellEngine::Editor::Widget::MainWindow::Awake()
     ImGuiID rootNode = ImGui::DockBuilderAddNode(ImGui::GetID("MainWindow"));
     ImGui::DockBuilderSetNodeSize(rootNode, viewport->Size);
 
-    ImGuiID dock_id_top = ImGui::DockBuilderSplitNode(rootNode, ImGuiDir_Up, 0.05f, nullptr, &rootNode);
-    ImGuiID dock_id_down = ImGui::DockBuilderSplitNode(rootNode, ImGuiDir_Down, 0.95f, nullptr, &rootNode);
-    ImGuiDockNode* topNode = ImGui::DockBuilderGetNode(dock_id_top);
-    topNode->LocalFlags |= ImGuiDockNodeFlags_NoResize;
+    ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(rootNode, ImGuiDir_Left, 0.2f, nullptr, &rootNode);
+    ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(rootNode, ImGuiDir_Right, 0.8f, nullptr, &rootNode);
 
-    ImGuiID dock_id_DR = ImGui::DockBuilderSplitNode(dock_id_down, ImGuiDir_Right, 0.8f, nullptr, &dock_id_down);
-    ImGuiID dock_id_DL = ImGui::DockBuilderSplitNode(dock_id_down, ImGuiDir_Left, 0.2f, nullptr, &dock_id_down);
-    ImGuiID dock_id_DLU = ImGui::DockBuilderSplitNode(dock_id_DL, ImGuiDir_Up, 0.5f, nullptr, &dock_id_DL);
-    ImGuiID dock_id_DLD = ImGui::DockBuilderSplitNode(dock_id_DL, ImGuiDir_Down, 0.5f, nullptr, &dock_id_DL);
+    ImGuiID dock_id_LU = ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Up, 0.5f, nullptr, &dock_id_left);
+    ImGuiID dock_id_LD = ImGui::DockBuilderSplitNode(dock_id_left, ImGuiDir_Down, 0.5f, nullptr, &dock_id_left);
 
-    ImGui::DockBuilderDockWindow("Simulation Flow Control", dock_id_top);
-    ImGui::DockBuilderDockWindow("Model Explorer", dock_id_DR);
-    ImGui::DockBuilderDockWindow("Options", dock_id_DLU);
-    ImGui::DockBuilderDockWindow("Console", dock_id_DLD);
+    ImGui::DockBuilderDockWindow("Model Explorer", dock_id_right);
+    ImGui::DockBuilderDockWindow("Model Hierarchy", dock_id_LU);
+    ImGui::DockBuilderDockWindow("Console", dock_id_LD);
 
     ImGui::DockBuilderFinish(ImGui::GetID("MainWindow"));
 

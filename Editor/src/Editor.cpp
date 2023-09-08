@@ -12,8 +12,6 @@ ECellEngine::Editor::Editor::Editor()
 
     AddWidget<Widget::MainWindow>();
     AddWidget<Widget::ConsoleWidget>();
-    AddWidget<Widget::OptionsWidget>();
-    AddWidget<Widget::SimulationFlowControlWidget>();
     AddWidget<Widget::ModelExplorerWidget>();
 
     showDemoWindow = false;

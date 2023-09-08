@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "Widget/ModelHierarchyWidget.hpp"
+#include "Widget/SimulationFlowControlWidget.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerWidget.hpp"
 
@@ -75,6 +76,11 @@ namespace ECellEngine::Editor::Widget
 		std::vector<unsigned short> ctxtsPerViewer;
 
 		/*!
+		@brief The widget to control the flow of time of the simulation.
+		*/
+		SimulationFlowControlWidget simuFlowControl;
+
+		/*!
 		@brief Draws the popup window used to consult and change the preference
 				values related to the Model Explorer.
 		*/
@@ -99,7 +105,7 @@ namespace ECellEngine::Editor::Widget
 
 	public:
 		ModelExplorerWidget(Editor* _editor) :
-			Widget(_editor), modelHierarchy(_editor)
+			Widget(_editor), modelHierarchy(_editor), simuFlowControl(_editor)
 		{
 			//By default when opening a new explorer widget:
 			

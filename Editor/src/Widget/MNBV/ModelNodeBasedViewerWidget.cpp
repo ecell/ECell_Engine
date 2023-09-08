@@ -36,8 +36,8 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Awake()
 }
 
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
-{
-    if (ImGui::Begin("Model Viewer"))
+{	
+	if (ImGui::Begin("Model Viewer"))
     {
         ImGuiIO& io = ImGui::GetIO();
         ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
