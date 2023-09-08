@@ -1,4 +1,5 @@
 #include "Util/BinarySearch.hpp"
+#include "IO/CommandArgs.hpp"
 #include "Utility/MNBV/NodeEditorData.hpp"
 #include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 
@@ -525,12 +526,13 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputConnect(NodeInputP
 	//There is only one input pin for the solver node so we don't need to check the id at this time.
 
 	//Get access to commands manager to call the command that attaches the solver to the asset data.
-	Widget::MNBV::GetCurrentMNBVContext()->commandsManager->ProcessCommand({
+	Widget::MNBV::GetCurrentMNBVContext()->commandsManager->ProcessCommand(
 		"moduleSolverConnection",
-		std::to_string(Widget::MNBV::GetCurrentMNBVContext()->simulation->id),//simulation id
-		std::to_string(((Data::Module*)_data)->id),//module id
-		std::to_string(data->id),//solver id
-		});
+		IO::ModuleSolverLinkCommandArgs(
+			Widget::MNBV::GetCurrentMNBVContext()->simulation->id,//simulation id
+			((Data::Module*)_data)->id,//module id
+			data->id)//solver id
+		);
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData, void* _data)
@@ -538,12 +540,13 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputDisconnect(NodeInp
 	//There is only one input pin for the solver node so we don't need to check the id at this time.
 	
 	//Get access to commands manager to call the command that detaches the solver from the asset data.
-	Widget::MNBV::GetCurrentMNBVContext()->commandsManager->ProcessCommand({
+	Widget::MNBV::GetCurrentMNBVContext()->commandsManager->ProcessCommand(
 		"moduleSolverDisconnection",
-		std::to_string(Widget::MNBV::GetCurrentMNBVContext()->simulation->id),//simulation id
-		std::to_string(((Data::Module*)_data)->id),//module id
-		std::to_string(data->id)//solver id
-		});
+		IO::ModuleSolverLinkCommandArgs(
+			Widget::MNBV::GetCurrentMNBVContext()->simulation->id,//simulation id
+			((Data::Module*)_data)->id,//module id
+			data->id)//solver id
+		);
 }
 
 void ECellEngine::Editor::Utility::MNBV::SolverNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
