@@ -42,7 +42,7 @@ namespace ECellEngine::Editor::Widget
 					theintegratity and visibility of these important controls.
 		*/
 		const ImGuiDockNodeFlags dockFlags =
-			ImGuiDockNodeFlags_NoDockingOverMe | ImGuiDockNodeFlags_NoDockingSplitMe;
+			ImGuiDockNodeFlags_NoDockingOverMe | ImGuiDockNodeFlags_NoDockingSplitMe | ImGuiDockNodeFlags_NoTabBar;
 
 		ECellEngine::Core::Simulation* simulation = nullptr;
 		//short* simuDirection;
