@@ -27,6 +27,19 @@ namespace ECellEngine::Editor::Widget
 	class ModelHierarchyWidget : public Widget
 	{
 	private:
+		enum HierarchyContext
+		{
+			HierarchyContext_None = 0,
+			HierarchyContext_RenamingInProgress = 1 << 0,
+			HierarchyContext_RightClickOnBackground = 1 << 1,
+			HierarchyContext_RightClickOnSimulationNode = 1 << 2,
+			HierarchyContext_RightClickOnMNBVCtxtNode = 1 << 3,
+
+			//to continue as needed
+
+		};
+
+	private:
 
 		/*!
 		@brief A buffer to ID the node currently being drawn.
@@ -54,6 +67,11 @@ namespace ECellEngine::Editor::Widget
 		char renamingBuffer[64] = { 0 };
 
 		/*!
+		@brief The binary flags to store the context of the hierarchy.
+		*/
+		unsigned char hierarchyCtxt = HierarchyContext_None;
+
+		/*!
 		@brief The pointer to the simulationManager to display all simulations.
 		@details Simulations manager is a singleton but this widget will use a 
 				 pointer to it to avoid calling the singleton every frame.
@@ -78,10 +96,25 @@ namespace ECellEngine::Editor::Widget
 
 		void Draw() override;
 
-		//void DrawMNBVCtxtHierarchy();
+		/*!
+		@brief Draws the context menu upon right clicking on the hierarchy.
+		*/
+		void DrawContextMenu();
+
+		/*!
+		@brief Draws the whole tree making the hierarchy
+		*/
+		void DrawHierarchy();
+
+		/*!
+		@brief Draws the subparts of the hierarchy corresponding to the MNBV
+				context/
+		*/
+		void DrawMNBVCtxtHierarchy();
 		
 		/*!
-		
+		@brief Draws the subparts of the hierarchy corresponding to the
+				simulation.
 		*/
 		void DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation);
 		

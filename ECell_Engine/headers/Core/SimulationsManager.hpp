@@ -115,10 +115,11 @@ namespace ECellEngine::Core
 
 		/*!
 		@brief Instantiates a new simulation and adds it to ::simulations.
+		@returns The raw pointer to the newly created simulation.
 		*/
-		inline void NewSimulation() noexcept
+		inline Simulation* NewSimulation() noexcept
 		{
-			simulations.push_back(std::make_unique<Simulation>(++simulationIDProvider));
+			return simulations.emplace_back(std::make_unique<Simulation>(++simulationIDProvider)).get();
 		}
 
 		/*!
