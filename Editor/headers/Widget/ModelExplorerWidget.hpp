@@ -70,8 +70,8 @@ namespace ECellEngine::Editor::Widget
 		@brief The list of the indeces of the contexts that are currently
 				being displayed in the viewers.
 		@details The size of this vector is equal to the size of ::mnbViewers.
-				 The value at index i is the index of the context displayed in
-				 the viewer at index i.
+				 The value at index i is the index of the context in ::mnbvCtxts
+				 displayed by the viewer at index i in ::mnbViewers.
 		*/
 		std::vector<unsigned short> ctxtsPerViewer;
 

@@ -1,3 +1,4 @@
+#include "Util/BitwiseOperationsUtility.hpp"
 #include "Widget/ModelExplorerWidget.hpp"
 #include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"
 
@@ -10,62 +11,86 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::Draw()
 {
 	if (ImGui::Begin("Model Hierarchy"))
 	{
-		nodeID = 0;
-		for (std::vector<std::unique_ptr<Core::Simulation>>::iterator it = simuManager.GetSimulations().begin(); it != simuManager.GetSimulations().end(); it++)
+		hierarchyCtxt = HierarchyContext_None;
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 		{
-			ImGui::PushID(nodeID);
-			//If users is trying to rename this asset.
-			if (renamingInProgress && renamingIdx == nodeID)
-			{
-				std::strcpy(renamingBuffer, it->get()->GetName());
-				if (TreeNodeRename(renamingBuffer))
-				{
-					it->get()->SetName(renamingBuffer);
-				}
-
-				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-				DrawSimulationHierarchy(it->get());
-
-			}
-			else
-			{
-				bool nodeOpen = ImGui::TreeNodeEx(it->get()->GetName(), ImGuiTreeNodeFlags_OpenOnArrow);
-
-				//If user performs the action to rename this asset.
-				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-				{
-					renamingInProgress = true;
-					renamingIdx = nodeID;
-				}
-
-				if (nodeOpen)
-				{
-					DrawSimulationHierarchy(it->get());
-					ImGui::TreePop();
-				}
-
-			}
-
-			ImGui::PopID();
-			nodeID++;
+			hierarchyCtxt = HierarchyContext_RightClickOnBackground;
+			ImGui::OpenPopup("HierarchyContext");
 		}
+
+		DrawHierarchy();
+
+		DrawContextMenu();
+
+
 	}
 	ImGui::End();
 }
 
-//void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext* _ctxt)
-//{
-//
-//}
-
-void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation)
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 {
-	
+	if (ImGui::BeginPopup("HierarchyContext"))
+	{
+		if (ImGui::MenuItem("Add Simulation"))
+		{
+			simuManager.NewSimulation();
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
+{
+	nodeID = 0;
+	for (std::vector<std::unique_ptr<Core::Simulation>>::iterator it = simuManager.GetSimulations().begin(); it != simuManager.GetSimulations().end(); it++)
+	{
+		ImGui::PushID(nodeID);
+		//If users is trying to rename this asset.
+		if (renamingInProgress && renamingIdx == nodeID)
+		{
+			std::strcpy(renamingBuffer, it->get()->GetName());
+			if (TreeNodeRename(renamingBuffer))
+			{
+				it->get()->SetName(renamingBuffer);
+			}
+
+			ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+			DrawSimulationHierarchy(it->get());
+			ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+
+		}
+		else
+		{
+			bool nodeOpen = ImGui::TreeNodeEx(it->get()->GetName(), ImGuiTreeNodeFlags_OpenOnArrow);
+
+			//If user performs the action to rename this asset.
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{
+				renamingInProgress = true;
+				renamingIdx = nodeID;
+			}
+
+			if (nodeOpen)
+			{
+				DrawSimulationHierarchy(it->get());
+				ImGui::TreePop();
+			}
+
+		}
+
+		ImGui::PopID();
+		nodeID++;
+	}
+}
+
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy()
+{
 	if (ImGui::TreeNode("Assets"))
 	{
 		//Display the list of loaded assets
-		for (std::size_t idx = 0; idx < _simulation->GetModules().size(); idx++)
-		{
+		//for (std::size_t idx = 0; idx < _simulation->GetModules().size(); idx++)
+		//{
 			//Id from Drag & Drop
 			//ImGui::PushID(nodeID++);
 			////If users is trying to rename this asset.
@@ -100,16 +125,22 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 
 			//Pop Id of the Drag & Drop Item
 			//ImGui::PopID();
-		}
+		//}
 
 		ImGui::TreePop();
-	}	
+	}
 }
 
-//void ECellEngine::Editor::Widget::ModelHierarchyWidget::SetSimulation(std::size_t _simulationIndex)
-//{
-//	simulation = ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(_simulationIndex);
-//}
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation)
+{
+	//TODO: draw all the contexts associated to this simulation
+
+	//TODO: the contexts must be retrieved from the Model Explorer Widget
+
+	//temporary
+	DrawMNBVCtxtHierarchy();
+	
+}
 
 bool ECellEngine::Editor::Widget::ModelHierarchyWidget::TreeNodeRename(char* _nameBuffer)
 {
