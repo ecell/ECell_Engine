@@ -31,9 +31,10 @@ namespace ECellEngine::Editor::Widget
 		{
 			HierarchyContext_None = 0,
 			HierarchyContext_RenamingInProgress = 1 << 0,
-			HierarchyContext_RightClickOnBackground = 1 << 1,
-			HierarchyContext_RightClickOnSimulationNode = 1 << 2,
-			HierarchyContext_RightClickOnMNBVCtxtNode = 1 << 3,
+			HierarchyContext_RightClick = 1 << 1,
+			HierarchyContext_RightClickOnBackground = 1 << 2,
+			HierarchyContext_RightClickOnSimulationNode = 1 << 3,
+			HierarchyContext_RightClickOnMNBVCtxtNode = 1 << 4,
 
 			//to continue as needed
 
@@ -49,17 +50,11 @@ namespace ECellEngine::Editor::Widget
 		short nodeID = 0;
 
 		/*!
-		@brief A boolean to detect whether an item in the hirearchy is currently
-				being renamed.
-		*/
-		bool renamingInProgress = false;
-
-		/*!
-		@brief The index of the item currently being renamed.
+		@brief The index of the item currently being acted upon.
 		@details This index is the position of the item within every items draw
 				in this hierarchy.
 		*/
-		short renamingIdx = 0;
+		short contextNodeIdx = 0;
 
 		/*!
 		@brief The buffer to store the new name of the item being renamed.
