@@ -36,7 +36,7 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::Awake()
 
 	for (unsigned char i = 0; i < mnbViewers.size(); i++)
 	{
-		MNBV::SetCurrentMNBVContext(&mnbvCtxts[i]);
+		MNBV::SetCurrentMNBVContext(&mnbvCtxts[ctxtsPerViewer[i]]);
 		mnbViewers[i].Awake();
 		MNBV::SetCurrentMNBVContext(nullptr);
 	}
