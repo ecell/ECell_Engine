@@ -11,7 +11,7 @@ namespace ECellEngine::Editor
 	class ModelExplorerWidget;
 }
 
-#include "Core/Simulation.hpp"
+#include "Core/SimulationsManager.hpp"
 #include "Widget.hpp"
 
 namespace ECellEngine::Editor::Widget
@@ -29,6 +29,13 @@ namespace ECellEngine::Editor::Widget
 	private:
 
 		/*!
+		@brief A buffer to ID the node currently being drawn.
+		@details Effectively, it follows the number of nodes. Therefore, it is also
+				 the index of the node in the hierarchy tree (depth first).
+		*/
+		short nodeID = 0;
+
+		/*!
 		@brief A boolean to detect whether an item in the hirearchy is currently
 				being renamed.
 		*/
@@ -42,10 +49,16 @@ namespace ECellEngine::Editor::Widget
 		short renamingIdx = 0;
 
 		/*!
-		@brief The pointer to the simulation for which we want to display the assets
-				(SBML Module and Solvers).
+		@brief The buffer to store the new name of the item being renamed.
 		*/
-		ECellEngine::Core::Simulation* simulation = nullptr;
+		char renamingBuffer[64] = { 0 };
+
+		/*!
+		@brief The pointer to the simulationManager to display all simulations.
+		@details Simulations manager is a singleton but this widget will use a 
+				 pointer to it to avoid calling the singleton every frame.
+		*/
+		ECellEngine::Core::SimulationsManager& simuManager;
 
 		/*!
 		@brief The flags to transform normal tree nodes into leafs in the
@@ -56,22 +69,33 @@ namespace ECellEngine::Editor::Widget
 
 	public:
 		ModelHierarchyWidget(Editor* _editor) :
-			Widget(_editor)
+			Widget(_editor), simuManager(ECellEngine::Core::SimulationsManager::GetSingleton())
 		{
 
 		}
 
-		/*!
-		@brief Sets the value for ::simulation.
-		@details Gets the simulation from the simulation manager of the engine.
-		@param _simulationIndex The index of the target simulation in the list 
-				of all simulations in ECellEngine::Core::SimulationsManager::simulations.
-		*/
-		void SetSimulation(std::size_t _simulationIndex);
-
 		void Awake() override;
 
 		void Draw() override;
+
+		//void DrawMNBVCtxtHierarchy();
+		
+		/*!
+		
+		*/
+		void DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation);
+		
+		/*!
+		@brief Logic to handle the renaming of a node in the hierarchy.
+		@details This is called when the user double clicks on a node in the
+				 hierarchy. It will display a text field to enter the new name
+				 of the node. The user can then press enter to validate the
+				 change or click ouside to cancel it.
+		@param _nameBuffer The buffer to store the new name of the node.
+		@return @a True if the user has validated the change by pressing enter;
+				@a false otherwise.
+		*/
+		bool TreeNodeRename(char* _nameBuffer);
 	};
 
 }

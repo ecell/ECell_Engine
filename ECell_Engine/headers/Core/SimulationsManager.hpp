@@ -85,6 +85,15 @@ namespace ECellEngine::Core
 		}
 
 		/*!
+		@brief Gets the list of all simulations.
+		@returns A reference to ::simulations.
+		*/
+		inline std::vector<std::unique_ptr<Simulation>>& GetSimulations() noexcept
+		{
+			return simulations;
+		}
+
+		/*!
 		@brief Finds the simulation with ID @p _id in ::playingSimulations.
 		@details Performs a binary search.
 		@param _id The ID of the simulation to retrieve from ::playingSimulations.

@@ -3,6 +3,7 @@
 #include <filesystem> //for std::filesystem::path
 #include <memory> //for std::shared_ptr
 #include <vector> //for std::vector<>
+#include <stdio.h> 
 
 #include "Data/DependenciesDatabase.hpp"
 #include "IO/ModuleImporterManager.hpp"
@@ -121,10 +122,17 @@ namespace ECellEngine::Core
 		*/
 		const std::size_t id;
 
+		/*!
+		@brief The name of this simulation.
+		@details Starts with the string "Simulation_" followed by the unique ID
+				 of this simulation. Limited to 64 characters.
+		*/
+		char name[64];
+
 		Simulation(const std::size_t _id) :
 			id(_id)
 		{
-
+			sprintf(name, "Simulation_%llu", id);
 		}
 
 		/*!
@@ -181,6 +189,14 @@ namespace ECellEngine::Core
 		}
 
 		/*!
+		@brief Gets the name of this simulation.
+		*/
+		inline char* GetName() noexcept
+		{
+			return name;
+		}
+
+		/*!
 		@brief Gets the solver at position @p _idx in ::solvers.
 		@param _idx The position of the solver to retrieve from ::solvers.
 		@returns The reference to the shared pointer encapsulating the target solver.
@@ -205,6 +221,17 @@ namespace ECellEngine::Core
 		inline Timer& GetTimer() noexcept
 		{
 			return timer;
+		}
+
+		/*!
+		@brief Sets the name of this simulation.
+		@details Uses sprintf to copy the string @p _name in ::name.
+				 Does not check whether the length of @p _name is less than 64.
+		@param _name The new name of this simulation.
+		*/
+		inline void SetName(const char* _name) noexcept
+		{
+			sprintf(name, "%s", _name);
 		}
 
 		/*
