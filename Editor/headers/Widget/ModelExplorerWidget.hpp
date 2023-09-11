@@ -127,11 +127,9 @@ namespace ECellEngine::Editor::Widget
 		@brief Adds a new ECellEngine::Editor::Utility::ModelNodeBasedViewerContext to
 				::mnbvCtxts.
 		@param _simulation The simulation the new context will be based on.
-		@param _commandsManager The commands manager the new context will give access to
-				in order for low level object to register commands.
 		@see ECellEngine::Editor::Utility::ModelNodeBasedViewerContext::simulation
 		*/
-		void AddModelNodeBasedViewerContext(Core::Simulation* _simulation, IO::CommandsManager* _commandsManager);
+		void AddModelNodeBasedViewerContext(Core::Simulation* _simulation);
 
 		/*!
 		@brief Gets the size of ::mnbvCtxts

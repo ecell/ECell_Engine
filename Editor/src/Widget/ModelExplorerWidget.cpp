@@ -9,11 +9,11 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::AddModelNodeBasedViewerWi
 	ctxtsPerViewer.emplace_back(0);//By default we display the context at index 0.
 }
 
-void ECellEngine::Editor::Widget::ModelExplorerWidget::AddModelNodeBasedViewerContext(Core::Simulation* _simulation, IO::CommandsManager* _commandsManager)
+void ECellEngine::Editor::Widget::ModelExplorerWidget::AddModelNodeBasedViewerContext(Core::Simulation* _simulation)
 {
 	mnbvCtxts.push_back(MNBV::ModelNodeBasedViewerContext());
 	mnbvCtxts.back().SetSimulation(_simulation);
-	mnbvCtxts.back().SetCommandsManager(_commandsManager);
+	mnbvCtxts.back().SetEngineCommandsManager(&editor->engine.GetCommandsManager());
 }
 
 void ECellEngine::Editor::Widget::ModelExplorerWidget::Awake()

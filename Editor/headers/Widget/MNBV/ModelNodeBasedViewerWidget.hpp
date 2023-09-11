@@ -61,12 +61,12 @@ namespace ECellEngine::Editor::Widget::MNBV
 		/*!
 		@brief The structure containing the arguments for the ECellEngine::IO::AddModuleCommand
 		*/
-		AddModuleCommandArgs addModuleCommandArgs;
+		ECellEngine::IO::AddModuleCommandArgs addModuleCommandArgs;
 
 		/*!
 		@brief The structure containing the arguments for the ECellEngine::IO::AddSolverCommand
 		*/
-		AddSolverCommandArgs addSolverCommandArgs;
+		ECellEngine::IO::AddSolverCommandArgs addSolverCommandArgs;
 
 		/*!
 		@brief A buffer for the mouse position since we use it a few times.

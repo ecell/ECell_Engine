@@ -526,9 +526,9 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputConnect(NodeInputP
 	//There is only one input pin for the solver node so we don't need to check the id at this time.
 
 	//Get access to commands manager to call the command that attaches the solver to the asset data.
-	Widget::MNBV::GetCurrentMNBVContext()->commandsManager->ProcessCommand(
+	Widget::MNBV::GetCurrentMNBVContext()->engineCommandsManager->ProcessCommand(
 		"moduleSolverConnection",
-		IO::ModuleSolverLinkCommandArgs(
+		ECellEngine::IO::ModuleSolverLinkCommandArgs(
 			Widget::MNBV::GetCurrentMNBVContext()->simulation->id,//simulation id
 			((Data::Module*)_data)->id,//module id
 			data->id)//solver id
@@ -540,9 +540,9 @@ void ECellEngine::Editor::Utility::MNBV::SolverNodeData::InputDisconnect(NodeInp
 	//There is only one input pin for the solver node so we don't need to check the id at this time.
 	
 	//Get access to commands manager to call the command that detaches the solver from the asset data.
-	Widget::MNBV::GetCurrentMNBVContext()->commandsManager->ProcessCommand(
+	Widget::MNBV::GetCurrentMNBVContext()->engineCommandsManager->ProcessCommand(
 		"moduleSolverDisconnection",
-		IO::ModuleSolverLinkCommandArgs(
+		ECellEngine::IO::ModuleSolverLinkCommandArgs(
 			Widget::MNBV::GetCurrentMNBVContext()->simulation->id,//simulation id
 			((Data::Module*)_data)->id,//module id
 			data->id)//solver id

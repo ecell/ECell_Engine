@@ -9,6 +9,8 @@
 
 #include "Core/Engine.hpp"
 #include "Core/IDProvider.hpp"
+#include "IO/CommandsManager.hpp"
+#include "IO/CommandsEditor.hpp"
 #include "Logging/ExeConsoleLoggerSink.hpp"
 #include "Utility/BackendUtility.hpp"
 #include "Widget/Widget.hpp"
@@ -30,6 +32,11 @@ namespace ECellEngine::Editor
 		@brief Instance of the utility to handle start and clean up of Vulkan and GLFW.
 		*/
 		Utility::BackendUtility backend;
+
+		/*!
+		@brief The commands manager to handle the commands of the editor.
+		*/
+		ECellEngine::IO::CommandsManager commandsManager;
 
 		/*!
 		@brief The Logger to print information in the console of the executable.
@@ -67,6 +74,11 @@ namespace ECellEngine::Editor
 		@brief The ID provider to generate unique IDs for the widgets.
 		*/
 		ECellEngine::Core::IDProvider idProvider;
+
+		/*!
+		@brief The ECellEngine instance.
+		*/
+		ECellEngine::Core::Engine engine;
 
 		Editor();
 
