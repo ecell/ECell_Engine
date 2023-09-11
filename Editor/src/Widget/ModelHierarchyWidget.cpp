@@ -1,3 +1,4 @@
+#include "IO/CommandArgs.hpp"
 #include "Util/BitwiseOperationsUtility.hpp"
 #include "Widget/ModelExplorerWidget.hpp"
 #include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"
@@ -50,7 +51,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 
 		if (ImGui::MenuItem("Add Simulation"))
 		{
-			simuManager.NewSimulation();
+			editor->engine.GetCommandsManager().ProcessCommand("addSimulation", ECellEngine::IO::EmptyCommandArgs());
 		}
 
 		if (ImGui::MenuItem("Delete Simulation"))

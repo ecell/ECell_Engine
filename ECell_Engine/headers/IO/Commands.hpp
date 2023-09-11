@@ -65,6 +65,45 @@ namespace ECellEngine::IO
 	};
 
 	/*
+	@brief The command to let the user add a new simulation.
+	@details At position [0] is the name of the command ("addSimulation").
+			 This command has no parameters.
+	*/
+	class AddSimulationCommand final : public Command<EmptyCommandArgs>
+	{
+		ECellEngine::Core::SimulationsManager& receiver;
+
+	public:
+		AddSimulationCommand(ECellEngine::Core::SimulationsManager& _receiver) :
+			Command("addSimulation", 1), receiver(_receiver)
+		{
+			
+		}
+
+		inline const char* GetHelpMessage() const override
+		{
+			return "---- Add a simulation to the engine.\n"
+					"Usage: addSimulation <NO_ARGUMENTS>\n";
+		}
+
+		/*!
+		@brief Decodes the parameters, and stores them in ::args.
+		@details Performs checks on @p _args to guarentee that the string command
+				 is well formed.
+		*/
+		bool DecodeParameters(const std::vector<std::string>& _args) override;
+
+		/*
+		@brief Executes the code to add a module to a simulation.
+		@details Uses the parameters defined in ::args. If you want use this
+				 interface to execute the command rather than the one based on
+				 the string, make sure to call ::DecodeParameters(const std::vector<std::string>& _args)
+				 or to set the parameters manually with ::SetArgs(const EmptyCommandArgs& _params).
+		*/
+		bool Execute() override;
+	};
+
+	/*
 	@brief The command to let the user add a solver in a simulation.
 	@details At position [0] is always the name of the command ("addSolver").
 			 Then, for this command, come [1] the index of the target

@@ -8,6 +8,7 @@ void ECellEngine::Core::Engine::Start()
 	//SimulationManager Commands
 	SimulationsManager& simulationManager = SimulationsManager::GetSingleton();
 	commandsManager.RegisterCommand(std::make_shared<AddModuleCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<AddSimulationCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<AddSolverCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<ModuleSolverConnectionCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<ModuleSolverDisconnectionCommand>(simulationManager));
@@ -18,7 +19,7 @@ void ECellEngine::Core::Engine::Start()
 	commandsManager.RegisterCommand(std::make_shared<StopSimulationCommand>(simulationManager));
 
 	//Creates a new simulation by default.
-	simulationManager.NewSimulation();
+	simulationManager.AddSimulation();
 
 	isRunning = true;
 }

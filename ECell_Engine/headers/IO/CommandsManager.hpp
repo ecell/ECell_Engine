@@ -40,6 +40,7 @@ namespace ECellEngine::IO
 			if (matchingCommand.get() != nullptr)
 			{
 				//Execute the command
+				ECellEngine::Logging::Logger::LogTrace("Internal execution of command: \"%s\" with preset arguments.", _commandName.c_str());
 				Command<CommandArgsType>* command = dynamic_cast<Command<CommandArgsType>*>(matchingCommand.get());
 				command->SetArgs(_args);
 				return command->Execute();

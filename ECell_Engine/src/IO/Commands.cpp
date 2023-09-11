@@ -48,6 +48,27 @@ bool ECellEngine::IO::AddModuleCommand::Execute()
 	return true;
 }
 
+bool ECellEngine::IO::AddSimulationCommand::DecodeParameters(const std::vector<std::string>& _args)
+{
+	if ((unsigned char)_args.size() != nbArgs)
+	{
+		ECellEngine::Logging::Logger::LogError("AddSimulationCommand Failed: Wrong number of arguments. Expected %llu, got %u.", nbArgs, _args.size());
+		return false;
+	}
+
+	return true;
+}
+
+bool ECellEngine::IO::AddSimulationCommand::Execute()
+{
+	if (receiver.AddSimulation() == nullptr)
+	{
+		return false;
+	}
+	
+	return true;
+}
+
 bool ECellEngine::IO::AddSolverCommand::DecodeParameters(const std::vector<std::string>& _args)
 {
 	if ((unsigned char)_args.size() != nbArgs)
