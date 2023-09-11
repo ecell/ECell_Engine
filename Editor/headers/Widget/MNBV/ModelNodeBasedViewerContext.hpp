@@ -19,6 +19,11 @@ namespace ECellEngine::Editor::Widget::MNBV
 	struct ModelNodeBasedViewerContext
 	{
 		/*!
+		@brief The name of this context.
+		*/
+		char name[64] = { 0 };
+
+		/*!
 		@brief The unique Id to be used by any newly created data that will be
 				part of this context.
 		@see ECellEngine::Editor::Widget::MNBV::GetMNBVCtxtNextId()
@@ -172,6 +177,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 
 		ModelNodeBasedViewerContext()
 		{
+			sprintf(name, "%s", "Default Context");
+
 			//It seems there is an ID collision between the node editor context and the 
 			//nodes spawn inside for ID=0. What happens is that the first node spawned
 			//will react to user inputs as well as the node editor. For example, a left
@@ -201,15 +208,26 @@ namespace ECellEngine::Editor::Widget::MNBV
 		/*!
 		@brief Sets the ::engineCommandsManager pointer of this context.
 		*/
-		void SetEngineCommandsManager(ECellEngine::IO::CommandsManager* _engineCommandsManager)
+		inline void SetEngineCommandsManager(ECellEngine::IO::CommandsManager* _engineCommandsManager) noexcept
 		{
 			engineCommandsManager = _engineCommandsManager;
 		}
 
 		/*!
+		@brief Sets the name of this context.
+		@details Uses sprintf to copy the string @p _name in ::name.
+				 Does not check whether the length of @p _name is less than 64.
+		@param _name The new name of this context.
+		*/
+		inline void SetName(const char* _name) noexcept
+		{
+			sprintf(name, "%s", _name);
+		}
+
+		/*!
 		@brief Sets the ::simulation pointer of this context.
 		*/
-		void SetSimulation(Core::Simulation* _simulation)
+		inline void SetSimulation(Core::Simulation* _simulation) noexcept
 		{
 			simulation = _simulation;
 		}

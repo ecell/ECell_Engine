@@ -1,6 +1,7 @@
 #include "imgui_internal.h"
-#include "Widget/ModelExplorerWidget.hpp"
 #include "Style/EditorStyle.hpp"
+#include "Util/BinarySearch.hpp"
+#include "Widget/ModelExplorerWidget.hpp"
 #include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"
 
 void ECellEngine::Editor::Widget::ModelExplorerWidget::AddModelNodeBasedViewerWidget()
@@ -11,9 +12,25 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::AddModelNodeBasedViewerWi
 
 void ECellEngine::Editor::Widget::ModelExplorerWidget::AddModelNodeBasedViewerContext(Core::Simulation* _simulation)
 {
-	mnbvCtxts.push_back(MNBV::ModelNodeBasedViewerContext());
-	mnbvCtxts.back().SetSimulation(_simulation);
-	mnbvCtxts.back().SetEngineCommandsManager(&editor->engine.GetCommandsManager());
+	CompareMNBVCtxtBySimulation cmp;
+	std::vector<MNBV::ModelNodeBasedViewerContext>::iterator it = Util::BinarySearch::LowerBound(mnbvCtxts.begin(), mnbvCtxts.end(), _simulation->id, cmp);
+	
+	it = mnbvCtxts.insert(it, MNBV::ModelNodeBasedViewerContext());
+
+	it->SetSimulation(_simulation);
+	it->SetEngineCommandsManager(&editor->engine.GetCommandsManager());
+
+	for (std::size_t i = 0; i < mnbViewers.size(); i++)
+	{
+		if (ctxtsPerViewer[i] >= it - mnbvCtxts.begin())
+		{
+			ctxtsPerViewer[i]++;
+		}
+	}
+
+	//It's low cost to set the pointer every time we add a context so we do it
+	// by default even if there hasn't been any resize of the vector during the insert.
+	modelHierarchy.SetMNBVCtxts(&mnbvCtxts);
 }
 
 void ECellEngine::Editor::Widget::ModelExplorerWidget::Awake()
