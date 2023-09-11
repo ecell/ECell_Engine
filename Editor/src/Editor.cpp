@@ -10,7 +10,9 @@ ECellEngine::Editor::Editor::Editor()
 
 	AddWidget<Widget::MainWindow>();
 	AddWidget<Widget::ConsoleWidget>();
-	AddWidget<Widget::ModelExplorerWidget>();
+	Widget::ModelExplorerWidget* modelExplorerWidget = AddWidget<Widget::ModelExplorerWidget>();
+
+	commandsManager.RegisterCommand(std::make_shared<IO::AddMNBVContextCommand>(*modelExplorerWidget));
 }
 
 void ECellEngine::Editor::Editor::InitializeImGui()

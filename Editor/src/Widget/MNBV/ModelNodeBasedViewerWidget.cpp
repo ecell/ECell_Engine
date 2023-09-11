@@ -22,9 +22,9 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Awake()
 
 	//If the current MNBV context doesn't have any commands manager at Awake time,
 	//we set the commands manager defined in the engine at startup by default.
-	if (currentMNBVContext->commandsManager == nullptr)
+	if (currentMNBVContext->engineCommandsManager == nullptr)
 	{
-		currentMNBVContext->SetCommandsManager(&editor->engine.GetCommandsManager());
+		currentMNBVContext->SetEngineCommandsManager(&editor->engine.GetCommandsManager());
 	}
 
 	//If the current MNBV context doesn't have any simulation at Awake time,

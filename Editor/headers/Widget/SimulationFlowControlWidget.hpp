@@ -8,6 +8,7 @@
 #include "IO/CommandArgs.hpp"
 #include "Widget.hpp"
 
+//Forward declaration to avoid including the header here for just pointers.
 namespace ECellEngine::Core
 {
 	class Simulation;
@@ -48,14 +49,14 @@ namespace ECellEngine::Editor::Widget
 		//short* simuDirection;
 		float stepTime = 0.01;
 
-		IO::SimulationCommandArgs pauseCommandArgs;
-		IO::SimulationCommandArgs playCommandArgs;
-		IO::SimulationCommandArgs stopCommandArgs;
+		ECellEngine::IO::SimulationCommandArgs pauseCommandArgs;
+		ECellEngine::IO::SimulationCommandArgs playCommandArgs;
+		ECellEngine::IO::SimulationCommandArgs stopCommandArgs;
 
 		//std::vector<std::string> goBackwardCommandArgs = { "goBackward" };
 		//std::vector<std::string> goForwardCommandArgs = { "goForward" };
 		//std::vector<std::string> stepBackwardCommandArgs = { "stepSimulationBackward", "0.0000001"};
-		IO::StepSimulationCommandArgs stepForwardCommandArgs;
+		ECellEngine::IO::StepSimulationCommandArgs stepForwardCommandArgs;
 
 		void DrawSimulationControls();
 

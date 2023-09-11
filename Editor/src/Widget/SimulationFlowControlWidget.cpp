@@ -1,3 +1,4 @@
+#include "Core/Simulation.hpp"
 #include "Widget/SimulationFlowControlWidget.hpp"
 #include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"
 

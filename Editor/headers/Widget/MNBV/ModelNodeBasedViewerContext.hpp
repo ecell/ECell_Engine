@@ -43,7 +43,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		@remarks The value of this pointer should only change if a context has a need
 				 for a different set of commands than the one defined in the engine.
 		*/
-		IO::CommandsManager* commandsManager = nullptr;
+		ECellEngine::IO::CommandsManager* engineCommandsManager = nullptr;
 
 #pragma region Nodes Lists
 
@@ -199,11 +199,11 @@ namespace ECellEngine::Editor::Widget::MNBV
 		}
 
 		/*!
-		@brief Sets the ::commandsManager pointer of this context.
+		@brief Sets the ::engineCommandsManager pointer of this context.
 		*/
-		void SetCommandsManager(IO::CommandsManager* _commandsManager)
+		void SetEngineCommandsManager(ECellEngine::IO::CommandsManager* _engineCommandsManager)
 		{
-			commandsManager = _commandsManager;
+			engineCommandsManager = _engineCommandsManager;
 		}
 
 		/*!
