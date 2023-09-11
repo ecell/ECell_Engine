@@ -8,6 +8,7 @@
 #include "implot.h"
 
 #include "Core/Engine.hpp"
+#include "Core/IDProvider.hpp"
 #include "Logging/ExeConsoleLoggerSink.hpp"
 #include "Utility/BackendUtility.hpp"
 #include "Widget/Widget.hpp"
@@ -61,7 +62,11 @@ namespace ECellEngine::Editor
 		void RecreateFontAtlas();
 
 	public:
-		ECellEngine::Core::Engine engine; /*!< ECellEngine instance. The heart of the simulation.*/
+
+		/*!
+		@brief The ID provider to generate unique IDs for the widgets.
+		*/
+		ECellEngine::Core::IDProvider idProvider;
 
 		Editor();
 

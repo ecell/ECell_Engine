@@ -43,6 +43,7 @@ add_executable( ECellEngineEditor
 "src/Widget/MainWindow.cpp"
 "src/Widget/ModelExplorerWidget.cpp"
 "src/Widget/ModelHierarchyWidget.cpp"
+"src/Widget/Widget.cpp"
 
 "src/Widget/SimulationFlowControlWidget.cpp"
 "src/Widget/MNBV/ModelNodeBasedViewerContext.cpp"
