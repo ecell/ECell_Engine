@@ -11,6 +11,11 @@ namespace ECellEngine::Editor
 	class ModelExplorerWidget;
 }
 
+namespace ECellEngine::Editor::Widget::MNBV
+{
+	class ModelNodeBasedViewerContext;
+}
+
 #include "Core/SimulationsManager.hpp"
 #include "Widget.hpp"
 
@@ -31,10 +36,12 @@ namespace ECellEngine::Editor::Widget
 		{
 			HierarchyContext_None = 0,
 			HierarchyContext_RenamingInProgress = 1 << 0,
-			HierarchyContext_RightClick = 1 << 1,
-			HierarchyContext_RightClickOnBackground = 1 << 2,
-			HierarchyContext_RightClickOnSimulationNode = 1 << 3,
-			HierarchyContext_RightClickOnMNBVCtxtNode = 1 << 4,
+			HierarchyContext_RenamingDone = 1 << 1,
+			HierarchyContext_RenamedNodeWasOpen = 1 << 2,
+			HierarchyContext_RightClick = 1 << 3,
+			HierarchyContext_RightClickOnBackground = 1 << 4,
+			HierarchyContext_RightClickOnSimulationNode = 1 << 5,
+			HierarchyContext_RightClickOnMNBVCtxtNode = 1 << 6,
 
 			//to continue as needed
 
@@ -67,11 +74,25 @@ namespace ECellEngine::Editor::Widget
 		unsigned char hierarchyCtxt = HierarchyContext_None;
 
 		/*!
+		@brief The open/close state of the nodes in the hierarchy (except the
+				leafs, of course).
+		*/
+		std::vector<bool> openedNodes;
+
+		/*!
 		@brief The pointer to the simulationManager to display all simulations.
 		@details Simulations manager is a singleton but this widget will use a 
 				 pointer to it to avoid calling the singleton every frame.
 		*/
 		ECellEngine::Core::SimulationsManager& simuManager;
+
+		/*!
+		@brief The pointer to the list of contexts loaded in the model explorer
+				containing this hierarchy.
+		@details This pointer is kept valid by the model explorer widget.
+		@see ECellEngine::Editor::ModelExplorerWidget::mnbvCtxts
+		*/
+		std::vector<MNBV::ModelNodeBasedViewerContext>* mnbvCtxts = nullptr;
 
 		/*!
 		@brief The flags to transform normal tree nodes into leafs in the
@@ -85,6 +106,11 @@ namespace ECellEngine::Editor::Widget
 			Widget(_editor), simuManager(ECellEngine::Core::SimulationsManager::GetSingleton())
 		{
 
+		}
+
+		inline void SetMNBVCtxts(std::vector<MNBV::ModelNodeBasedViewerContext>* _mnbvCtxts) noexcept
+		{
+			mnbvCtxts = _mnbvCtxts;
 		}
 
 		void Awake() override;
@@ -111,7 +137,7 @@ namespace ECellEngine::Editor::Widget
 		@brief Draws the subparts of the hierarchy corresponding to the
 				simulation.
 		*/
-		void DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation);
+		void DrawSimulationHierarchy(int& _out_mnbvCtxtStartIdx, ECellEngine::Core::Simulation* _simulation);
 		
 		/*!
 		@brief Logic to handle the renaming of a node in the hierarchy.

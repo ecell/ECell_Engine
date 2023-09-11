@@ -23,6 +23,27 @@ namespace ECellEngine::Editor::Widget
 	class ModelExplorerWidget : public Widget
 	{
 	private:
+
+		/*!
+		@brief The comparator used to sort the contexts in ::mnbvCtxts by the id
+				of the simulation they are based on.
+		*/
+		struct CompareMNBVCtxtBySimulation
+		{
+			bool operator()(const MNBV::ModelNodeBasedViewerContext& _lhs,
+							const MNBV::ModelNodeBasedViewerContext& _rhs) const
+			{
+				return _lhs.simulation->id < _rhs.simulation->id;
+			}
+
+			bool operator()(const MNBV::ModelNodeBasedViewerContext& _lhs,
+							const std::size_t _id) const
+			{
+				return _lhs.simulation->id < _id;
+			}
+		};
+
+	private:
 		/*!
 		@brief 1-byte char to encode states of the widget
 		@details Bit 0 encodes the open/close status of the popup to import an asset
@@ -56,6 +77,8 @@ namespace ECellEngine::Editor::Widget
 		/*!
 		@brief The list of model node-based viewer contexts used in this
 				Model Explorer.
+		@details The contexts are sorted by the id of the simulation they are
+				 based on.
 		@see ECellEngine::Editor::Utility::ModelNodeBasedViewerContext
 		*/
 		std::vector<MNBV::ModelNodeBasedViewerContext> mnbvCtxts;
@@ -115,6 +138,8 @@ namespace ECellEngine::Editor::Widget
 
 			// - The viewer will display the context at index 0.
 			ctxtsPerViewer.emplace_back(0);
+			modelHierarchy.SetMNBVCtxts(&mnbvCtxts);
+
 		}
 
 		/*!

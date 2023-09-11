@@ -1,6 +1,6 @@
 #include "IO/CommandArgs.hpp"
 #include "Util/BitwiseOperationsUtility.hpp"
-#include "Widget/ModelExplorerWidget.hpp"
+#include "Widget/ModelExplorerWidget.hpp" //includes MNBVContext as well
 #include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::Awake()
@@ -52,11 +52,15 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 		if (ImGui::MenuItem("Add Simulation"))
 		{
 			editor->engine.GetCommandsManager().ProcessCommand("addSimulation", ECellEngine::IO::EmptyCommandArgs());
+			openedNodes.push_back(0);
 		}
 
 		if (ImGui::MenuItem("Delete Simulation"))
 		{
 			ECellEngine::Logging::Logger::LogDebug("Clicked on Delete Simulation");
+
+			//TODO: Delete Simulation
+			//TODO: Delete MNBVContexts
 		}
 		Util::ClearFlag(hierarchyCtxt, HierarchyContext_RightClickOnBackground);
 		ImGui::EndPopup();
@@ -84,8 +88,10 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 {
 	nodeID = 0;
+	int mnbvCtxtCount = 0;
 	for (std::vector<std::unique_ptr<Core::Simulation>>::iterator it = simuManager.GetSimulations().begin(); it != simuManager.GetSimulations().end(); it++)
 	{
+		nodeID++;
 		ImGui::PushID(nodeID);
 		//If users is trying to rename this asset.
 		if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingInProgress) && contextNodeIdx == nodeID)
@@ -94,15 +100,25 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 			if (TreeNodeRename(renamingBuffer))
 			{
 				it->get()->SetName(renamingBuffer);
+				Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingDone);
 			}
 
 			ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-			DrawSimulationHierarchy(it->get());
+			DrawSimulationHierarchy(mnbvCtxtCount, it->get());
 			ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 
 		}
 		else
 		{
+			//Retrieves the correct open state of the node that might have been just renamed
+			//By default, a renamed node will be closed because chaging the name changes it's ID
+			//in ImGui and breaks the internal tracking of it's open state 
+			if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingDone) && contextNodeIdx == nodeID)
+			{
+				Util::ClearFlag(hierarchyCtxt, HierarchyContext_RenamingDone);
+				ImGui::SetNextItemOpen(Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen));
+				Util::ClearFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
+			}
 			bool nodeOpen = ImGui::TreeNodeEx(it->get()->GetName(), ImGuiTreeNodeFlags_OpenOnArrow);
 
 			if (ImGui::IsItemHovered())
@@ -111,6 +127,11 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 				if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 				{
 					Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
+					if (nodeOpen)
+					{
+						//Save the open state of the node before renaming it
+						Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
+					}
 					contextNodeIdx = nodeID;
 				}
 
@@ -118,25 +139,27 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 				if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 				{
 					Util::SetFlag(hierarchyCtxt, HierarchyContext_RightClickOnSimulationNode);
+					Util::ClearFlag(hierarchyCtxt, HierarchyContext_RightClickOnMNBVCtxtNode);
 					Util::ClearFlag(hierarchyCtxt, HierarchyContext_RightClickOnBackground);
 				}
 			}
 
 			if (nodeOpen)
 			{
-				DrawSimulationHierarchy(it->get());
+				DrawSimulationHierarchy(mnbvCtxtCount, it->get());
 				ImGui::TreePop();
 			}
 
 		}
 
 		ImGui::PopID();
-		nodeID++;
 	}
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy()
 {
+	nodeID++;
+	ImGui::PushID(nodeID);
 	if (ImGui::TreeNode("Assets"))
 	{
 		//Display the list of loaded assets
@@ -180,25 +203,76 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy()
 
 		ImGui::TreePop();
 	}
+	ImGui::PopID();
 }
 
-void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation)
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(int& _out_mnbvCtxtStartIdx, ECellEngine::Core::Simulation* _simulation)
 {
-	//TODO: draw all the contexts associated to this simulation
+	while (_out_mnbvCtxtStartIdx < mnbvCtxts->size() && mnbvCtxts->at(_out_mnbvCtxtStartIdx).simulation->id == _simulation->id)
+	{
+		nodeID++;
+		ImGui::PushID(nodeID);
+		//If users is trying to rename this asset.
+		if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingInProgress) && contextNodeIdx == nodeID)
+		{
+			std::strcpy(renamingBuffer, mnbvCtxts->at(_out_mnbvCtxtStartIdx).name);
+			if (TreeNodeRename(renamingBuffer))
+			{
+				mnbvCtxts->at(_out_mnbvCtxtStartIdx).SetName(renamingBuffer);
+				Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingDone);
+			}
 
-	//TODO: the contexts must be retrieved from the Model Explorer Widget
+			ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+			DrawMNBVCtxtHierarchy();
+			ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 
-	//The API in the Model Explorer Widget needs rework. I suggest to order the
-	//contexts by simulation in the MEW. This way we can easily retrieve the contexts
-	//associated to a simulation.
-	//When inserting/ermoving a context, make sure to update the MEW's ctxtsPerViewer accordingly:
-	// - When inserting a context, any value in the ::ctxtsPerViewer map with a key greater than the inserted context's index must be incremented by 1.
-	// - When removing a context, any value in the ::ctxtsPerViewer map with a key greater than the removed context's index must be decremented by 1.
+		}
+		else
+		{
+			//Retrieves the correct open state of the node that might have been just renamed
+			//By default, a renamed node will be closed because chaging the name changes it's ID
+			//in ImGui and breaks the internal tracking of it's open state 
+			if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingDone) && contextNodeIdx == nodeID)
+			{
+				Util::ClearFlag(hierarchyCtxt, HierarchyContext_RenamingDone);
+				ImGui::SetNextItemOpen(Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen));
+				Util::ClearFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
+			}
+			bool nodeOpen = ImGui::TreeNodeEx(mnbvCtxts->at(_out_mnbvCtxtStartIdx).name, ImGuiTreeNodeFlags_OpenOnArrow);
 
-	//There is no guarentee the above instructions are exhaustive.
+			if (ImGui::IsItemHovered())
+			{
+				//If user performs the action to rename this node.
+				if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+				{
+					Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
+					contextNodeIdx = nodeID;
+					if (nodeOpen)
+					{
+						//Save the open state of the node before renaming it
+						Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
+					}
+				}
 
-	//temporary
-	DrawMNBVCtxtHierarchy();
+				//If user performs the action to open the context menu of this node.
+				if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+				{
+					Util::SetFlag(hierarchyCtxt, HierarchyContext_RightClickOnMNBVCtxtNode);
+					Util::ClearFlag(hierarchyCtxt, HierarchyContext_RightClickOnSimulationNode);
+					Util::ClearFlag(hierarchyCtxt, HierarchyContext_RightClickOnBackground);
+				}
+			}
+
+			if (nodeOpen)
+			{
+				DrawMNBVCtxtHierarchy();
+				ImGui::TreePop();
+			}
+
+		}		
+		_out_mnbvCtxtStartIdx++;
+		ImGui::PopID();
+	}
 	
 }
 

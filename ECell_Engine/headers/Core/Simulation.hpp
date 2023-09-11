@@ -127,7 +127,7 @@ namespace ECellEngine::Core
 		@details Starts with the string "Simulation_" followed by the unique ID
 				 of this simulation. Limited to 64 characters.
 		*/
-		char name[64];
+		char name[64] = { 0 };
 
 		Simulation(const std::size_t _id) :
 			id(_id)
