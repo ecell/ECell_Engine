@@ -1,5 +1,11 @@
 #pragma once
 
+/*!
+@file Widget.h
+@brief The base class to write any widget of the editor.
+*/
+
+#include <cstddef>
 #include "imgui.h"
 
 //forward declaration
@@ -16,13 +22,23 @@ namespace ECellEngine::Editor::Widget
 	class Widget
 	{
 	protected:
-		Editor* editor;
+
+		std::size_t id = SIZE_MAX;
+
+		ECellEngine::Editor::Editor* editor = nullptr;
 
 	public:
 
-		Widget(Editor* _editor) : editor(_editor)
-		{
+		Widget(ECellEngine::Editor::Editor* _editor);
 
+		virtual ~Widget() = default;
+
+		/*!
+		@brief Get the id of the widget.
+		*/
+		inline std::size_t GetId() const noexcept
+		{
+			return id;
 		}
 
 		/*!
