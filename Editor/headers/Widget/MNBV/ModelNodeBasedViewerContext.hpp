@@ -23,7 +23,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 				part of this context.
 		@see ECellEngine::Editor::Widget::MNBV::GetMNBVCtxtNextId()
 		*/
-		ECellEngine::Core::IDProvider uniqueId;
+		ECellEngine::Core::IDProvider idProvider;
 
 		/*!
 		@brief The buffer pointer to the simulation this context is associated to.
@@ -180,7 +180,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 			//the ID at 1, the input collision disappears. The cause is not understood but
 			//it can be easily fixed by starting the ID at 1. (I am very frustrated to not
 			//know what's happening here, though!).
-			++uniqueId;
+			++idProvider;
 
 			authorizedDynamicLinks[Utility::MNBV::PinType_Asset][Utility::MNBV::PinType_Asset] = true;
 			
