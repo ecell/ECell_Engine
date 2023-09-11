@@ -94,6 +94,7 @@ void ECellEngine::Editor::Widget::SimulationFlowControlWidget::DrawSimulationCon
 
 void ECellEngine::Editor::Widget::SimulationFlowControlWidget::Draw()
 {
+    ImGui::SetNextWindowSize(ImVec2(0.f, 75.f), ImGuiCond_Once);
     ImGui::Begin("Simulation Flow Control", NULL, windowFlags);
 
     ImGui::GetWindowDockNode()->LocalFlags |= dockFlags;

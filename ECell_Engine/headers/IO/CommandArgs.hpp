@@ -1,7 +1,18 @@
 #pragma once
 
+/*!
+@file CommandArgs.h
+@brief Defines convenience data structures to be used as arguments for commands.
+@see ECellEngine::IO::Command
+*/
+
 namespace ECellEngine::IO
 {
+	struct EmptyCommandArgs
+	{
+
+	};
+
 	struct AddModuleCommandArgs
 	{
 		unsigned long long simulationID = 0;
