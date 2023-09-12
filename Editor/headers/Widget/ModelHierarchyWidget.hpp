@@ -47,6 +47,34 @@ namespace ECellEngine::Editor::Widget
 
 		};
 
+		/*!
+		@brief A function object to access the name of an element encapsulated
+				in a shared pointer in a list.
+		@details The element MUST implement a <em>char* GetName()</em> method.
+		*/
+		struct NameAccessorBySPtr
+		{
+			template<typename T>
+			char* operator()(std::shared_ptr<T> _ptr) const noexcept
+			{
+				return _ptr->GetName();
+			}
+		};
+
+		/*!
+		@brief A function object to access the name of an element in a list
+				by reference.
+		@details The element MUST implement a <em>char* GetName()</em> method.
+		*/
+		struct NameAccessorByRef
+		{
+			template<typename T>
+			char* operator()(T& _ref) const noexcept
+			{
+				return _ref.GetName();
+			}
+		};
+
 	private:
 
 		/*!
@@ -120,9 +148,12 @@ namespace ECellEngine::Editor::Widget
 		@param _mnbvCtxt The MNBV context to draw the hierarchy of.
 		@param _leafs The list of elements to display.
 		@paramt LeafType The type of the elements in the list.
+		@paramt NameAccessorType The type of the function object to access the name
+								 of the elements in the list.
+		@see NameAccessorBySPtr and NameAccessorByRef
 		*/
-		template<typename LeafType>
-		void DrawHierarchyLeafsList(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::vector<LeafType>& _leafs);
+		template<typename LeafType, typename NameAccessorType>
+		void DrawHierarchyLeafsList(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::vector<LeafType>& _leafs, NameAccessorType& _nameAccessor);
 		
 		/*!
 		@brief Uses the content of an unordered_map to draw tree nodes behaving as leafs.
@@ -134,9 +165,12 @@ namespace ECellEngine::Editor::Widget
 		@param _leafs The unordered_map of elements to display.
 		@paramt LeafKeyType The type of the keys of the unordered_map.
 		@paramt LeafType The type of the elements in the unordered_map.
+		@paramt NameAccessorType The type of the function object to access the name
+								 of the elements in the unordered_map.
+		@see NameAccessorBySPtr and NameAccessorByRef
 		*/
-		template<typename LeafKeyType, typename LeafType>
-		void DrawHierarchyLeafsUMap(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::unordered_map<LeafKeyType, LeafType>& _leafs);
+		template<typename LeafKeyType, typename LeafType, typename NameAccessorType>
+		void DrawHierarchyLeafsUMap(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::unordered_map<LeafKeyType, LeafType>& _leafs, NameAccessorType& _nameAccessor);
 
 		/*!
 		@brief Draws the subparts of the hierarchy corresponding to the MNBV
