@@ -207,6 +207,9 @@ namespace ECellEngine::Editor::Widget::MNBV
 
 		/*!
 		@brief Gets the name of this context.
+		@remark The name is public and can be accessed directly but we keep this
+				method to be consistent with the other widgets and also to unify
+				name access in several other places.
 		*/
 		inline char* GetName() noexcept
 		{

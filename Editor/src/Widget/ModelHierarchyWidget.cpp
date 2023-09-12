@@ -163,107 +163,67 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 	}
 }
 
+template<typename LeafType>
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsList(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::vector<LeafType>& _leafs)
+{
+	if (_mnbvCtxt.simulation->GetModules().size() > 0)
+	{
+		nodeID++;
+		ImGui::PushID(nodeID);
+		if (ImGui::TreeNodeEx(_leafsListName, ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		{
+			for (auto _leaf : _leafs)
+			{
+				nodeID++;
+				ImGui::PushID(nodeID);
+				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+				ImGui::TreeNodeEx(_leaf->GetName(), leafNodeFlags);
+				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+				ImGui::PopID();
+			}
+		}
+		ImGui::PopID();
+	}
+}
+
+template<typename LeafKeyType, typename LeafType>
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsUMap(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::unordered_map<LeafKeyType, LeafType>& _leafs)
+{
+	if (_mnbvCtxt.simulation->GetModules().size() > 0)
+	{
+		nodeID++;
+		ImGui::PushID(nodeID);
+		if (ImGui::TreeNodeEx(_leafsListName, ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		{
+			for (auto [_leafKey, _leaf] : _leafs)
+			{
+				nodeID++;
+				ImGui::PushID(nodeID);
+				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+				ImGui::TreeNodeEx(_leaf->GetName(), leafNodeFlags);
+				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+				ImGui::PopID();
+			}
+		}
+		ImGui::PopID();
+	}
+}
+
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MNBV::ModelNodeBasedViewerContext& _mnbvCtxt)
 {
 	//nodeID++;
 	ImGui::PushID(nodeID);
 	if (ImGui::TreeNodeEx("Data Nodes", ImGuiTreeNodeFlags_OpenOnArrow))
 	{
-		if (_mnbvCtxt.simulation->GetModules().size() > 0)
-		{
-			nodeID++;
-			ImGui::PushID(nodeID);
-			if (ImGui::TreeNodeEx("Module Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
-			{
-				for (auto _module : _mnbvCtxt.simulation->GetModules())
-				{
-					nodeID++;
-					ImGui::PushID(nodeID);
-					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-					ImGui::TreeNodeEx(_module->GetName(), leafNodeFlags);
-					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
-					ImGui::PopID();
-				}
-			}
-			ImGui::PopID();
-		}
-		
-		if (_mnbvCtxt.simulation->GetDataState().GetEquations().size() > 0)
-		{
-			nodeID++;
-			ImGui::PushID(nodeID);
-			if (ImGui::TreeNodeEx("Equation Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
-			{
-				for (auto [eqID, eq]: _mnbvCtxt.simulation->GetDataState().GetEquations())
-				{
-					nodeID++;
-					ImGui::PushID(nodeID);
-					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-					ImGui::TreeNodeEx(eq->GetName(), leafNodeFlags);
-					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
-					ImGui::PopID();
-				}
-			}
-			ImGui::PopID();
-		}
+		DrawHierarchyLeafsList("Module Nodes", _mnbvCtxt, _mnbvCtxt.simulation->GetModules());
 
-		if (_mnbvCtxt.simulation->GetDataState().GetParameters().size() > 0)
-		{
-			nodeID++;
-			ImGui::PushID(nodeID);
-			if (ImGui::TreeNodeEx("Parameter Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
-			{
-				for (auto [paramID, param]: _mnbvCtxt.simulation->GetDataState().GetParameters())
-				{
-					nodeID++;
-					ImGui::PushID(nodeID);
-					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-					ImGui::TreeNodeEx(param->GetName(), leafNodeFlags);
-					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
-					ImGui::PopID();
-				}
-			}
-			ImGui::PopID();
-		}
+		DrawHierarchyLeafsUMap("Equation Nodes", _mnbvCtxt, _mnbvCtxt.simulation->GetDataState().GetEquations());
 
+		DrawHierarchyLeafsUMap("Parameter Nodes", _mnbvCtxt, _mnbvCtxt.simulation->GetDataState().GetParameters());
 
-		if (_mnbvCtxt.simulation->GetDataState().GetReactions().size() > 0)
-		{
-			nodeID++;
-			ImGui::PushID(nodeID);
-			if (ImGui::TreeNodeEx("Reaction Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
-			{
-				for (auto [reacID, reac]: _mnbvCtxt.simulation->GetDataState().GetReactions())
-				{
-					nodeID++;
-					ImGui::PushID(nodeID);
-					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-					ImGui::TreeNodeEx(reac->GetName(), leafNodeFlags);
-					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
-					ImGui::PopID();
-				}
-			}
-			ImGui::PopID();
-		}
+		DrawHierarchyLeafsUMap("Reaction Nodes", _mnbvCtxt, _mnbvCtxt.simulation->GetDataState().GetReactions());
 
-		if (_mnbvCtxt.simulation->GetDataState().GetAllSpecies().size() > 0)
-		{
-			nodeID++;
-			ImGui::PushID(nodeID);
-			if (ImGui::TreeNodeEx("Species Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
-			{
-				for (auto [spID, sp] : _mnbvCtxt.simulation->GetDataState().GetAllSpecies())
-				{
-					nodeID++;
-					ImGui::PushID(nodeID);
-					ImGui::Indent(ImGui::GetStyle().IndentSpacing); 
-					ImGui::TreeNodeEx(sp->GetName(), leafNodeFlags);
-					ImGui::Unindent(ImGui::GetStyle().IndentSpacing); 
-					ImGui::PopID();
-				}
-			}
-			ImGui::PopID();
-		}
+		DrawHierarchyLeafsUMap("Species Nodes", _mnbvCtxt, _mnbvCtxt.simulation->GetDataState().GetAllSpecies());
 
 		ImGui::TreePop();
 	}
@@ -328,7 +288,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 				ImGui::SetNextItemOpen(Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen));
 				Util::ClearFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
 			}
-			bool nodeOpen = ImGui::TreeNodeEx(mnbvCtxts->at(_out_mnbvCtxtStartIdx).name, ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+			bool nodeOpen = ImGui::TreeNodeEx(mnbvCtxts->at(_out_mnbvCtxtStartIdx).GetName(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen);
 
 			if (ImGui::IsItemHovered())
 			{
