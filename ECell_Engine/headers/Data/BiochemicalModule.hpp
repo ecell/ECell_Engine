@@ -62,24 +62,24 @@ namespace ECellEngine::Data
 			return species[_idx];
 		}
 
-		inline const std::string& GetEquationName(const std::size_t _idx) const noexcept
+		inline const char* GetEquationName(const std::size_t _idx) const noexcept
 		{
 			return dataState.GetEquation(_idx)->GetName();
 		}
 
-		inline const std::string& GetReactionName(const std::size_t _idx) const noexcept
+		inline const char* GetReactionName(const std::size_t _idx) const noexcept
 		{
-			return dataState.GetReaction(_idx)->name;
+			return dataState.GetReaction(_idx)->GetName();
 		}
 
-		inline const std::string& GetParameterName(const std::size_t _idx) const noexcept
+		inline const char* GetParameterName(const std::size_t _idx) const noexcept
 		{
-			return dataState.GetParameter(_idx)->name;
+			return dataState.GetParameter(_idx)->GetName();
 		}
 
-		inline const std::string& GetSpeciesName(const std::size_t _idx) const noexcept
+		inline const char* GetSpeciesName(const std::size_t _idx) const noexcept
 		{
-			return dataState.GetSpecies(_idx)->name;
+			return dataState.GetSpecies(_idx)->GetName();
 		}
 
 		void AddEquation(Operand* _lhs, Operation& _rhs);

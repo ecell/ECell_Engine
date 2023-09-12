@@ -649,12 +649,15 @@ namespace ECellEngine::Editor::Utility::MNBV
 			//we reuse the id of the node as the id of the parameter
 			//it may collide with other parameters but it is not a problem
 			//since those parameters are only local to the MNBV context.
-			lhs{ "Operation[" + std::to_string((std::size_t)id) + "]::LHS", (std::size_t)id, 0 },
-			rhs{ "Operation[" + std::to_string((std::size_t)id) + "]::RHS", (std::size_t)id, 0 }
+			lhs{ '\0', (std::size_t)id, 0},
+			rhs{ '\0', (std::size_t)id, 0 }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			data->name = "Operation[" + std::to_string((std::size_t)id) + "]";
+			sprintf(lhs.GetName(), "Operation[%llu]:LHS", (std::size_t)id);
+			sprintf(rhs.GetName(), "Operation[%llu]:RHS", (std::size_t)id);
+
+			sprintf(data->GetName(), "Operation[%llu]", (std::size_t)id);
 			data->AddOperand(&lhs);
 			data->AddOperand(&rhs);
 
@@ -2556,13 +2559,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		TriggerNodeData(std::shared_ptr<ECellEngine::Core::Trigger<Operand*, Operand*>> _data, ImVec2& _position) :
 			NodeData(), data{ _data },
-			target{ "Trigger[" + std::to_string((std::size_t)id) + "]::Target", (std::size_t)id, 0 },
-			threshold{ "Trigger[" + std::to_string((std::size_t)id) + "]::Threshold", (std::size_t)id, 0 }
+			target{ '\0', (std::size_t)id, 0},
+			threshold{ '\0', (std::size_t)id, 0}
 		{
-			target.name = "Trigger[" + std::to_string((std::size_t)id) + "]::Target";
+			sprintf(target.GetName(), "Trigger[%llu]::Target", (std::size_t)id);
 			data->SetTarget(&target);
 
-			threshold.name = "Trigger[" + std::to_string((std::size_t)id) + "]::Threshold";
+			sprintf(threshold.GetName(), "Trigger[%llu]::Threshold", (std::size_t)id);
 			data->SetThreshold(&threshold);
 
 			ax::NodeEditor::SetNodePosition(id, _position);
@@ -2637,11 +2640,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		ValueFloatNodeData(float _value, ImVec2& _position) :
 			NodeData(),
-			value{ "ValueFloatNode[" + std::to_string((std::size_t)id) + "]::Value", (std::size_t)id, _value }
+			value{ '\0', (std::size_t)id, _value}
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			value.name = "ValueFloatNode[" + std::to_string((std::size_t)id) + "]::Value";
+			sprintf(value.GetName(), "ValueFloatNode[%s]::Value", (std::size_t)id);
 
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
 			outputPins[OutputPin_Value] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //Value

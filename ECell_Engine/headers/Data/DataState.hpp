@@ -215,7 +215,7 @@ namespace ECellEngine::Data
 			return triggers;
 		}
 
-		inline std::shared_ptr<Reaction> AddReaction(const std::string& _reactionName,
+		inline std::shared_ptr<Reaction> AddReaction(const char* _reactionName,
 			const std::vector<std::size_t> _products,
 			const std::vector<std::size_t> _reactants,
 			const Operation _kineticLaw)
@@ -234,13 +234,13 @@ namespace ECellEngine::Data
 			return modifyDataStateValueEvents.emplace_back(std::make_shared<Core::Events::ModifyDataStateValueEvent>());
 		}
 
-		inline std::shared_ptr<Parameter> AddParameter(const std::string& _parameterName, const float _value)
+		inline std::shared_ptr<Parameter> AddParameter(const char* _parameterName, const float _value)
 		{
 			++idProvider;
 			return parameters.emplace(idProvider(), std::make_shared<Parameter>(_parameterName, idProvider(), _value)).first->second;
 		}
 		
-		inline std::shared_ptr<Species> AddSpecies(const std::string& _speciesName, const float _quantity)
+		inline std::shared_ptr<Species> AddSpecies(const char* _speciesName, const float _quantity)
 		{
 			++idProvider;
 			return species.emplace(idProvider(), std::make_shared<Species>(_speciesName, idProvider(), _quantity)).first->second;

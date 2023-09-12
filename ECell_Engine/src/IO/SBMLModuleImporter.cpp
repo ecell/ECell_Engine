@@ -36,7 +36,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeEquations(ECellEngine::Data:
 		//operation directly with the root node.
 		if (astNode->getType() == ASTNodeType_t::AST_NAME)
 		{
-			Operation root(sbmlID, ++_dataState.idProvider);
+			Operation root(sbmlID.c_str(), ++_dataState.idProvider);
 			root.Set(&functions.identity, FunctionType_Identity);
 			root.AddOperand(_dataState.GetOperand(_SBMLIDsToDSIDs.find(astNode->getName())->second));
 			_sbmlModule.AddEquation(lhs, root);
@@ -107,7 +107,7 @@ void ECellEngine::IO::SBMLModuleImporter::InitializeReactions(ECellEngine::Data:
 		//operation directly with the root node.
 		if (astNode->getType() == ASTNodeType_t::AST_NAME)
 		{
-			Operation root(reaction->getId(), ++_dataState.idProvider);
+			Operation root(reaction->getId().c_str(), ++_dataState.idProvider);
 			root.Set(&functions.identity, FunctionType_Identity);
 			root.AddOperand(_dataState.GetOperand(_SBMLIDsToDSIDs.find(astNode->getName())->second));
 			_sbmlModule.AddReaction(reaction->getId(), products, reactants, root);
@@ -142,7 +142,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
 										ECellEngine::Data::DataState& _dataState,
 										std::unordered_map<std::string, std::size_t>& _SBMLIDsToDSIDs)
 {
-	Operation op = Operation(_rootName, ++_dataState.idProvider);
+	Operation op = Operation(_rootName.c_str(), ++_dataState.idProvider);
 	AssignOperationFunction(op, _rootAstNode);
 
 	std::vector<Operation*> opsStack = { &op };
@@ -162,7 +162,7 @@ Operation ECellEngine::IO::SBMLModuleImporter::ASTNodeToOperation(
 			ASTNode* cNode = nodesStack.back(); //cNode stands for child Node
 			if (IsASTNodeOperation(cNode))
 			{
-				Operation* cOP = &pOP->AddNewOperation(pOP->name, pOP->GetID());//cOP stands for child Operation
+				Operation* cOP = &pOP->AddNewOperation(pOP->GetName(), pOP->GetID());//cOP stands for child Operation
 				AssignOperationFunction(*cOP, cNode);
 				opsStack.push_back(cOP);
 

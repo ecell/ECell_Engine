@@ -11,21 +11,21 @@ std::size_t ECellEngine::Data::BiochemicalModule::AddReaction(const std::string 
 	const std::vector<std::size_t> _reactants,
 	const Operation _kineticLaw)
 {
-	std::shared_ptr<ECellEngine::Data::Reaction> reaction = dataState.AddReaction(_reactionName, _products, _reactants, _kineticLaw);
+	std::shared_ptr<ECellEngine::Data::Reaction> reaction = dataState.AddReaction(_reactionName.c_str(), _products, _reactants, _kineticLaw);
 	reactions.push_back(reaction->GetID());
 	return reaction->GetID();
 }
 
 std::size_t ECellEngine::Data::BiochemicalModule::AddParameter(const std::string _parameterName, const float _value)
 {
-	std::shared_ptr<ECellEngine::Data::Parameter> param = dataState.AddParameter(_parameterName, _value);
+	std::shared_ptr<ECellEngine::Data::Parameter> param = dataState.AddParameter(_parameterName.c_str(), _value);
 	parameters.push_back(param->GetID());
 	return param->GetID();
 }
 
 std::size_t ECellEngine::Data::BiochemicalModule::AddSpecies(const std::string _speciesName, const float _quantity)
 {
-	std::shared_ptr<ECellEngine::Data::Species> sp = dataState.AddSpecies(_speciesName, _quantity);
+	std::shared_ptr<ECellEngine::Data::Species> sp = dataState.AddSpecies(_speciesName.c_str(), _quantity);
 	species.push_back(sp->GetID());
 	return sp->GetID();
 }

@@ -10,6 +10,7 @@
 #include <string>
 
 #include "Core/Callback.hpp"
+#include "Util/StrUtil.hpp"
 
 namespace ECellEngine::Maths
 {
@@ -33,11 +34,13 @@ namespace ECellEngine::Maths
 		*/
 		std::size_t id;
 
-	public:
 		/*!
 		@brief The name of the operand.
+		@details The name is 64 characters long.
 		*/
-		std::string name;
+		char name[64] = { '0' };
+	
+	public:
 
 		/*!
 		@brief The callback called when the operand's value changes.
@@ -50,10 +53,10 @@ namespace ECellEngine::Maths
 
 		}
 
-		Operand(const std::string& _name, const std::size_t _id) :
-			name{_name}, id{_id}
+		Operand(const char* _name, const std::size_t _id) :
+			id{_id}
 		{
-
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		virtual ~Operand() noexcept = default;
@@ -106,10 +109,26 @@ namespace ECellEngine::Maths
 		}
 
 		/*!
+		@brief Returns the name of the operand.
+		*/
+		inline char* GetName() noexcept
+		{
+			return name;
+		}
+
+		/*!
 		@brief Sets the operand's value.
 		@details The declaration of the value is left to the derived classes.
 		*/
 		virtual void Set(const float _value) noexcept = 0;
+
+		/*!
+		@brief Sets the operand's name.
+		*/
+		inline void SetName(const char* _name) noexcept
+		{
+			Util::StrCopy(name, _name, sizeof(name));
+		}
 
 		/*!
 		@brief Resets the operand's value.

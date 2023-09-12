@@ -193,7 +193,7 @@ namespace ECellEngine::Maths
 			UpdateFunction();//initialize the function pointer to the start value of ::functionType
 		}
 
-		Operation(const std::string& _name, const std::size_t _id) : 
+		Operation(const char* _name, const std::size_t _id) : 
 			Operand (_name, _id)
 		{
 			constants.reserve(2);
@@ -320,7 +320,7 @@ namespace ECellEngine::Maths
 		@details Also writes in ::structure to encode this new operand's
 				 information.
 		*/
-		inline Operation& AddNewOperation(const std::string& _name, const std::size_t _id)
+		inline Operation& AddNewOperation(const char* _name, const std::size_t _id)
 		{
 			operations.emplace_back(Operation(_name, _id));
 
@@ -388,7 +388,7 @@ namespace ECellEngine::Maths
 		
 		inline const std::string ToStringValue() const noexcept override
 		{
-			return '\n' + name + ":" + function->ToStringValue(operands) + "=" + std::to_string((*function)(operands));
+			return '\n' + std::string(name) + ":" + function->ToStringValue(operands) + "=" + std::to_string((*function)(operands));
 		}
 
 		/*!
