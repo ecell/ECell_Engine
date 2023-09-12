@@ -119,7 +119,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 				ImGui::SetNextItemOpen(Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen));
 				Util::ClearFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
 			}
-			bool nodeOpen = ImGui::TreeNodeEx(it->get()->GetName(), ImGuiTreeNodeFlags_OpenOnArrow);
+			bool nodeOpen = ImGui::TreeNodeEx(it->get()->GetName(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen);
 
 			if (ImGui::IsItemHovered())
 			{
@@ -127,12 +127,12 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 				if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 				{
 					Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
+					contextNodeIdx = nodeID;
 					if (nodeOpen)
 					{
 						//Save the open state of the node before renaming it
 						Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
 					}
-					contextNodeIdx = nodeID;
 				}
 
 				//If user performs the action to open the context menu of this node.
@@ -146,8 +146,13 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 
 			if (nodeOpen)
 			{
+				//We manage indentation ourselves because we use ImGuiTreeNodeFlags_NoTreePushOnOpen
+				//The reason we use this flag is to avoid disrupting the internal tracking of the open state of the node
+				//The open state can only be tracked if the same tree structure stays between frames which
+				//is not the case when we rename the tree node (replaced by an input field temporarily)
+				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 				DrawSimulationHierarchy(mnbvCtxtCount, it->get());
-				ImGui::TreePop();
+				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 			}
 
 		}
@@ -238,7 +243,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 				ImGui::SetNextItemOpen(Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen));
 				Util::ClearFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
 			}
-			bool nodeOpen = ImGui::TreeNodeEx(mnbvCtxts->at(_out_mnbvCtxtStartIdx).name, ImGuiTreeNodeFlags_OpenOnArrow);
+			bool nodeOpen = ImGui::TreeNodeEx(mnbvCtxts->at(_out_mnbvCtxtStartIdx).name, ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen);
 
 			if (ImGui::IsItemHovered())
 			{
@@ -265,8 +270,10 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 
 			if (nodeOpen)
 			{
+				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 				DrawMNBVCtxtHierarchy();
-				ImGui::TreePop();
+				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+				//ImGui::TreePop();
 			}
 
 		}		
