@@ -34,7 +34,7 @@ namespace ECellEngine::Solvers::Stochastic
 		void SolveForward(const float& targetTime);
 	
 	public:
-		GillespieNRMRSolver(ECellEngine::Data::DataState& _dataState, const std::string& _name) :
+		GillespieNRMRSolver(ECellEngine::Data::DataState& _dataState, const char* _name) :
 			BiochemicalSolver(_dataState, _name)
 		{
 			

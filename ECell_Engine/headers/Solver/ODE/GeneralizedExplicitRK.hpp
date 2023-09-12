@@ -146,7 +146,7 @@ namespace ECellEngine::Solvers::ODE
 
 	public:
 		
-		GeneralizedExplicitRK(ECellEngine::Data::DataState& _dataState, const std::string& _name) :
+		GeneralizedExplicitRK(ECellEngine::Data::DataState& _dataState, const char* _name) :
 			BiochemicalSolver(_dataState, _name)
 		{
 

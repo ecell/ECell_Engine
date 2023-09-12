@@ -229,31 +229,34 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 	}
 	ImGui::PopID();
 	
-	//ImGui::PushID(nodeID);
-	//if (ImGui::TreeNodeEx("Transform Nodes", ImGuiTreeNodeFlags_OpenOnArrow))
-	//{
-	//	if (_mnbvCtxt.simulation->GetModules().size() > 0)
-	//	{
-	//		nodeID++;
-	//		ImGui::PushID(nodeID);
-	//		if (ImGui::TreeNodeEx("Module Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
-	//		{
-	//			for (auto _module : _mnbvCtxt.simulation->GetModules())
-	//			{
-	//				//nodeID++;
-	//				ImGui::PushID(nodeID);
-	//				ImGui::TreeNodeEx(_module->GetName(), leafNodeFlags);
-	//				//ImGui::TreePop();
-	//				ImGui::PopID();
-	//			}
+	ImGui::PushID(nodeID);
+	if (ImGui::TreeNodeEx("Transform Nodes", ImGuiTreeNodeFlags_OpenOnArrow))
+	{
+		//if (_mnbvCtxt.simulation->GetModules().size() > 0)
+		//{
+		//	nodeID++;
+		//	ImGui::PushID(nodeID);
+		//	if (ImGui::TreeNodeEx("Module Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		//	{
+		//		for (auto _module : _mnbvCtxt.simulation->GetModules())
+		//		{
+		//			//nodeID++;
+		//			ImGui::PushID(nodeID);
+		//			ImGui::TreeNodeEx(_module->GetName(), leafNodeFlags);
+		//			//ImGui::TreePop();
+		//			ImGui::PopID();
+		//		}
 
-	//			//ImGui::TreePop();
-	//		}
-	//		ImGui::PopID();
-	//	}
-	//	ImGui::TreePop();
-	//}
-	//ImGui::PopID();
+		//		//ImGui::TreePop();
+		//	}
+		//	ImGui::PopID();
+		//}
+
+		//DrawHierarchyLeafsList("Module Nodes", _mnbvCtxt, _mnbvCtxt.simulation->GetModules());
+
+		ImGui::TreePop();
+	}
+	ImGui::PopID();
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(int& _out_mnbvCtxtStartIdx, ECellEngine::Core::Simulation* _simulation)

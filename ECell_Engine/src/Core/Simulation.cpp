@@ -15,12 +15,12 @@ std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::stri
 {
 	if (_solverClassName == "GillespieNRMRSolver")
 	{
-		return solvers.emplace_back(std::make_shared<Stochastic::GillespieNRMRSolver>(dataState, _solverClassName));
+		return solvers.emplace_back(std::make_shared<Stochastic::GillespieNRMRSolver>(dataState, "GillespieNRMRSolver"));
 	}
 
 	if (_solverClassName == "GeneralizedExplicitRK")
 	{
-		return solvers.emplace_back(std::make_shared<ODE::GeneralizedExplicitRK>(dataState, _solverClassName));
+		return solvers.emplace_back(std::make_shared<ODE::GeneralizedExplicitRK>(dataState, "GeneralizedExplicitRK"));
 	}
 
 	return nullptr;

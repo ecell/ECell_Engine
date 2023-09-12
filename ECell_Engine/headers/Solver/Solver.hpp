@@ -26,7 +26,7 @@ namespace ECellEngine::Solvers
 		/*!
 		@brief The name of the solver.
 		*/
-		std::string name;
+		char name[64] = { '0' };
 
 	protected:
 		ECellEngine::Data::DataState& dataState;
@@ -91,10 +91,10 @@ namespace ECellEngine::Solvers
 		*/
 		const std::size_t id;
 
-		Solver(ECellEngine::Data::DataState& _dataState, const std::string& _name) :
-			dataState{ _dataState }, id{ ++_dataState.idProvider }, name{_name}
+		Solver(ECellEngine::Data::DataState& _dataState, const char* _name) :
+			dataState{ _dataState }, id{ ++_dataState.idProvider }
 		{
-
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		virtual ~Solver() = default;
@@ -103,7 +103,7 @@ namespace ECellEngine::Solvers
 		@brief Gets the name of the solver.
 		@returns ::name.
 		*/
-		inline std::string& GetName() noexcept
+		inline char* GetName() noexcept
 		{
 			return name;
 		}
@@ -117,9 +117,9 @@ namespace ECellEngine::Solvers
 		/*!
 		@brief Sets the name of the solver (::name).
 		*/
-		inline void SetName(std::string& _name) noexcept
+		inline void SetName(const char* _name)	
 		{
-			name = _name;
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		/*!

@@ -227,6 +227,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 
 		}
+		
+		virtual ~NodeData() = default;
 
 		inline operator std::size_t() { return (std::size_t)id; }
 
@@ -237,6 +239,19 @@ namespace ECellEngine::Editor::Utility::MNBV
 		friend inline bool operator> (const NodeData& lhs, const NodeData& rhs) { return rhs < lhs; }
 		friend inline bool operator<=(const NodeData& lhs, const NodeData& rhs) { return !(lhs > rhs); }
 		friend inline bool operator>=(const NodeData& lhs, const NodeData& rhs) { return !(lhs < rhs); }
+
+		/*!
+		@brief Gets the name of this node.
+		@details Implementation is left to the derived class.
+		*/
+		virtual char* GetName() noexcept = 0;
+
+		/*!
+		@brief Sets the name of this node.
+		@details Implementation is left to the derived class.
+		@param _name The new name of this node.
+		*/
+		virtual void SetName(const char* _name) noexcept = 0;
 
 		/*!
 		@brief Method to implement what to do when a pin (@p _nodeInput) receives
@@ -649,8 +664,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			//we reuse the id of the node as the id of the parameter
 			//it may collide with other parameters but it is not a problem
 			//since those parameters are only local to the MNBV context.
-			lhs{ '\0', (std::size_t)id, 0},
-			rhs{ '\0', (std::size_t)id, 0 }
+			lhs{ "0", (std::size_t)id, 0},
+			rhs{ "0", (std::size_t)id, 0 }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
@@ -685,6 +700,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			{
 				outputPins[i].node = this;
 			}
+		}
+
+		inline char* GetName() noexcept override
+		{
+			return data->GetName();
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			data->SetName(_name);
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
@@ -854,6 +879,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_Reactions] = { &data->GetAllReaction(), Widget::MNBV::GetMNBVCtxtNextId() };
 			nlbsData[NodeListBoxString_Parameters] = { &data->GetAllParameter(), Widget::MNBV::GetMNBVCtxtNextId() };
 			nlbsData[NodeListBoxString_Species] = { &data->GetAllSpecies(), Widget::MNBV::GetMNBVCtxtNextId() };
+		}
+
+		inline char* GetName() noexcept override
+		{
+			return data->GetName();
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			data->SetName(_name);
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {}; //not used in asset node data
@@ -1113,6 +1148,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_EquationOperands] = { &equationsOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Node String List Box for Computed Parameter Operands
 		}
 
+		inline char* GetName() noexcept override
+		{
+			return data->GetName();
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			data->SetName(_name);
+		}
+
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in equation data
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in equation data
@@ -1269,6 +1314,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 				outputPins[i].node = this;
 			}
 		}
+		
+		inline char* GetName() noexcept override
+		{
+			return linePlot->GetName();
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			linePlot->SetName(_name);
+		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
@@ -1329,6 +1384,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			OutputPin_Count
 		};
 
+		char name[64] = { '0' };
+
 		/*!
 		@brief The display list of the logical operators.
 		*/
@@ -1372,6 +1429,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
+			Util::StrCopy(name, "Logic Operator", sizeof(name));
+
 			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackSubscriber, this); //Left hand side
 			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackSubscriber, this); //Right hand side
 			outputPins[OutputPin_OnOperandChange] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackPublisher, this); //Callback output pin when an input value (operand) changes
@@ -1384,6 +1443,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins{ _lond.inputPins[0], _lond.inputPins[1] },
 			outputPins{ _lond.outputPins[0], _lond.outputPins[1]}
 		{
+			Util::StrCopy(name, _lond.name, sizeof(name));
+
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
@@ -1393,6 +1454,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			{
 				outputPins[i].node = this;
 			}
+		}
+
+		inline char* GetName() noexcept override
+		{
+			return name;
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
@@ -1462,6 +1533,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			State_Count
 		};
 
+		char name[64] = { '0' };
+
 		/*!
 		@brief Pointer to the event represented by this node.
 		*/
@@ -1509,6 +1582,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins{ _mdstvend.outputPins[0], _mdstvend.outputPins[1] },
 			collapsingHeadersIds{ _mdstvend.collapsingHeadersIds[0] }
 		{
+			Util::StrCopy(name, _mdstvend.name, sizeof(name));
+
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
@@ -1525,6 +1600,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
+			Util::StrCopy(name, "Modify Data State Value", sizeof(name));
+
 			inputPins[InputPin_FloatValue] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackSubscriber, this);//the new value we will use to modify the data state
 			inputPins[InputPin_Condition] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackSubscriber, this);//the watchers that will trigger this event
 			inputPins[InputPin_CollHdrExecution] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
@@ -1533,6 +1610,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins[OutputPin_CollHdrExecution] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//the Execution Collapsing Header
 
 			collapsingHeadersIds[CollapsingHeader_Execution] = Widget::MNBV::GetMNBVCtxtNextId();
+		}
+
+		inline char* GetName() noexcept override
+		{
+			return name;
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
@@ -1762,6 +1849,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsData[NodeListBoxString_EquationOperands] = { &equationsOperands, Widget::MNBV::GetMNBVCtxtNextId() };//Computed Parameter Operands from Kinetic Law
 		}
 
+		inline char* GetName() noexcept override
+		{
+			return data->GetName();
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			data->SetName(_name);
+		}
+
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Reaction Node Data
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Reaction Node Data
@@ -1970,6 +2067,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };//Kinetic Laws section
 		}
 
+		inline char* GetName() noexcept override
+		{
+			return data->GetName();
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			data->SetName(_name);
+		}
+
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override ;
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override ;
@@ -2108,6 +2215,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins[OutputPin_StartTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this);//the start time of this solver
 
 			collapsingHeadersIds[CollapsingHeader_Time] = Widget::MNBV::GetMNBVCtxtNextId();
+		}
+
+		inline char* GetName() noexcept override
+		{
+			return data->GetName();
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			data->SetName(_name);
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
@@ -2336,6 +2453,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataRKLDep = { &reactionKLDep, Widget::MNBV::GetMNBVCtxtNextId() };
 		}
 
+		inline char* GetName() noexcept override
+		{
+			return data->GetName();
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			data->SetName(_name);
+		}
+
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
@@ -2391,6 +2518,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 		};
 
 		/*!
+		@brief The name of this node.
+		*/
+		char name[64] = { '0' };
+
+		/*!
 		@brief Pointer to the timer partially represented by this node.
 		*/
 		ECellEngine::Core::Timer* timer;
@@ -2412,6 +2544,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
+			Util::StrCopy(name, "Timer", sizeof(name));
+
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
 			outputPins[OutputPin_DeltaTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //delta Time
 			outputPins[OutputPin_ElapsedTime] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //elapsed Time
@@ -2423,6 +2557,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins{ _stnd.inputPins[0] },
 			outputPins{ _stnd.outputPins[0], _stnd.outputPins[1], _stnd.outputPins[2] }
 		{
+			Util::StrCopy(name, _stnd.name, sizeof(name));
+
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
@@ -2432,6 +2568,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			{
 				outputPins[i].node = this;
 			}
+		}
+
+		inline char* GetName() noexcept override
+		{
+			return name;
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
@@ -2477,6 +2623,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 			OutputPin_Count
 		};
+
+		/*!
+		@brief The name of this node.
+		*/
+		char name[64] = { '0' };
 
 		/*!
 		@brief Pointer to the watcher represented by this node.
@@ -2528,6 +2679,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			target{ _wtnd.target },
 			threshold{ _wtnd.threshold }
 		{
+			Util::StrCopy(name, _wtnd.name, sizeof(name));
+
 			if (*_wtnd.data->GetTarget() == _wtnd.target)
 			{
 				data->SetTarget(&target);
@@ -2559,9 +2712,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		TriggerNodeData(std::shared_ptr<ECellEngine::Core::Trigger<Operand*, Operand*>> _data, ImVec2& _position) :
 			NodeData(), data{ _data },
-			target{ '\0', (std::size_t)id, 0},
-			threshold{ '\0', (std::size_t)id, 0}
+			target{ "0", (std::size_t)id, 0 },
+			threshold{ "0", (std::size_t)id, 0 }
 		{
+			Util::StrCopy(name, "Trigger", sizeof(name));
+
 			sprintf(target.GetName(), "Trigger[%llu]::Target", (std::size_t)id);
 			data->SetTarget(&target);
 
@@ -2575,6 +2730,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			outputPins[OutputPin_OnTriggerEnter] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackPublisher, this);//To all the event to trigger
 			outputPins[OutputPin_OnTriggerStay] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackPublisher, this);//To all the event to trigger
 			outputPins[OutputPin_OnTriggerExit] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackPublisher, this);//To all the event to trigger
+		}
+
+		inline char* GetName() noexcept override
+		{
+			return name;
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
@@ -2619,6 +2784,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 		};
 
 		/*!
+		@brief The name of this node.
+		*/
+		char name[64] = { '0' };
+
+		/*!
 		@brief Stores the float value.
 		@details We chose to store the value in a parameter to access
 				 callback compliant datastructure and because it is the
@@ -2640,11 +2810,13 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		ValueFloatNodeData(float _value, ImVec2& _position) :
 			NodeData(),
-			value{ '\0', (std::size_t)id, _value}
+			value{ "0", (std::size_t)id, _value}
 		{
+			Util::StrCopy(name, "Float", sizeof(name));
+
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			sprintf(value.GetName(), "ValueFloatNode[%s]::Value", (std::size_t)id);
+			sprintf(value.GetName(), "ValueFloatNode[%llu]::Value", (std::size_t)id);
 
 			inputPins[InputPin_None] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this); //not used
 			outputPins[OutputPin_Value] = NodeOutputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_FloatCallBackPublisher, this); //Value
@@ -2655,6 +2827,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			inputPins{ _vfnd.inputPins[0] },
 			outputPins{ _vfnd.outputPins[0] }
 		{
+			Util::StrCopy(name, _vfnd.name, sizeof(name));
+
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
@@ -2664,6 +2838,16 @@ namespace ECellEngine::Editor::Utility::MNBV
 			{
 				outputPins[i].node = this;
 			}
+		}
+
+		inline char* GetName() noexcept override
+		{
+			return name;
+		}
+
+		inline void SetName(const char* _name) noexcept override
+		{
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data

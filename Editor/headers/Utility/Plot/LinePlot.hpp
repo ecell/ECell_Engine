@@ -3,6 +3,7 @@
 #include "implot.h"
 
 #include "Core/Callback.hpp"
+#include "Util/StrUtil.hpp"
 #include "Utility/Plot/Line.hpp"
 
 namespace ECellEngine::Editor::Utility::Plot
@@ -90,6 +91,22 @@ namespace ECellEngine::Editor::Utility::Plot
 		ImPlotAxisFlags yAxisFlags = ImPlotAxisFlags_AutoFit;
 
 		LinePlot() = default;
+
+		/*!
+		@brief Gets the name of this type of plot.
+		*/
+		inline char* GetName() noexcept
+		{
+			return name;
+		}
+
+		/*!
+		@brief Sets the name of this type of plot.
+		*/
+		inline void SetName(const char* _name) noexcept
+		{
+			Util::StrCopy(name, _name, sizeof(name));
+		}
 
 		/*!
 		@brief Add a new line to the plot.

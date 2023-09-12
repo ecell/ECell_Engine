@@ -29,7 +29,7 @@ namespace ECellEngine::Maths
 		/*!
 		@brief Returns the name of the operand (left hand side) of the equation.
 		*/
-		inline const char* GetName() const noexcept
+		inline char* GetName() noexcept
 		{
 			return lhs->GetName();
 		}
@@ -57,6 +57,15 @@ namespace ECellEngine::Maths
 		inline Operation& GetOperation() noexcept
 		{
 			return rhs;
+		}
+
+		/*!
+		@brief Sets the name of the operand (left hand side) of the equation.
+		@param _name The new name of the operand.
+		*/
+		inline void SetName(const char* _name) noexcept
+		{
+			lhs->SetName(_name);
 		}
 
 		/*

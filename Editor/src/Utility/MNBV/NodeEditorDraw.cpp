@@ -783,7 +783,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SolverNode(SolverNodeDa
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Solver));
 	ax::NodeEditor::BeginNode(_solverNodeInfo.id);
 
-	const float headerWidth = NodeHeader("Solver:", _solverNodeInfo.data->GetName().c_str(), Style::EditorStyle::GetNodeColors(NodeType_Solver));
+	const float headerWidth = NodeHeader("Solver:", _solverNodeInfo.data->GetName(), Style::EditorStyle::GetNodeColors(NodeType_Solver));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 

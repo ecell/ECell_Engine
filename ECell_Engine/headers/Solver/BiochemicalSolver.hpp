@@ -15,7 +15,7 @@ namespace ECellEngine::Solvers
 		const ECellEngine::Data::BiochemicalModule* module;
 
 	public:
-		BiochemicalSolver(ECellEngine::Data::DataState& _dataState, const std::string& _name) :
+		BiochemicalSolver(ECellEngine::Data::DataState& _dataState, const char* _name) :
 			Solver(_dataState, _name), module{ nullptr }
 		{
 			
