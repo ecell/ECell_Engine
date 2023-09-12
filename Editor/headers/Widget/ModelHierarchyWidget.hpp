@@ -108,6 +108,11 @@ namespace ECellEngine::Editor::Widget
 
 		}
 
+		/*!
+		@brief Sets the pointer to the list of contexts loaded in the model
+				explorer containing this hierarchy.
+		@see ::mnbvCtxts
+		*/
 		inline void SetMNBVCtxts(std::vector<MNBV::ModelNodeBasedViewerContext>* _mnbvCtxts) noexcept
 		{
 			mnbvCtxts = _mnbvCtxts;
@@ -130,12 +135,18 @@ namespace ECellEngine::Editor::Widget
 		/*!
 		@brief Draws the subparts of the hierarchy corresponding to the MNBV
 				context/
+		@param _mnbvCtxt The MNBV context to draw the hierarchy of.
 		*/
-		void DrawMNBVCtxtHierarchy();
+		void DrawMNBVCtxtHierarchy(MNBV::ModelNodeBasedViewerContext& _mnbvCtxt);
 		
 		/*!
 		@brief Draws the subparts of the hierarchy corresponding to the
 				simulation.
+		@param _out_mnbvCtxtStartIdx The index of the current MNBV context in the
+									 list of MNBV contexts of ::simuManager. This
+									 used to count the number of context that have
+									 been drawn in between simulation nodes.
+		@param _simulation The simulation to draw the hierarchy of.
 		*/
 		void DrawSimulationHierarchy(int& _out_mnbvCtxtStartIdx, ECellEngine::Core::Simulation* _simulation);
 		

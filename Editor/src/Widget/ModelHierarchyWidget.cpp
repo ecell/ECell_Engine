@@ -163,54 +163,137 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 	}
 }
 
-void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy()
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MNBV::ModelNodeBasedViewerContext& _mnbvCtxt)
 {
-	nodeID++;
+	//nodeID++;
 	ImGui::PushID(nodeID);
-	if (ImGui::TreeNode("Assets"))
+	if (ImGui::TreeNodeEx("Data Nodes", ImGuiTreeNodeFlags_OpenOnArrow))
 	{
-		//Display the list of loaded assets
-		//for (std::size_t idx = 0; idx < _simulation->GetModules().size(); idx++)
-		//{
-			//Id from Drag & Drop
-			//ImGui::PushID(nodeID++);
-			////If users is trying to rename this asset.
-			//if (renamingInProgress && contextNodeIdx == nodeID)
-			//{
-			//	std::strcpy(renamingBuffer, _simulation->GetModule(idx)->GetName());
-			//	TreeNodeRenaming(renamingBuffer);
-			//}
+		if (_mnbvCtxt.simulation->GetModules().size() > 0)
+		{
+			nodeID++;
+			ImGui::PushID(nodeID);
+			if (ImGui::TreeNodeEx("Module Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+			{
+				for (auto _module : _mnbvCtxt.simulation->GetModules())
+				{
+					nodeID++;
+					ImGui::PushID(nodeID);
+					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+					ImGui::TreeNodeEx(_module->GetName(), leafNodeFlags);
+					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+					ImGui::PopID();
+				}
+			}
+			ImGui::PopID();
+		}
+		
+		if (_mnbvCtxt.simulation->GetDataState().GetEquations().size() > 0)
+		{
+			nodeID++;
+			ImGui::PushID(nodeID);
+			if (ImGui::TreeNodeEx("Equation Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+			{
+				for (auto [eqID, eq]: _mnbvCtxt.simulation->GetDataState().GetEquations())
+				{
+					nodeID++;
+					ImGui::PushID(nodeID);
+					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+					ImGui::TreeNodeEx(eq->GetName().c_str(), leafNodeFlags);
+					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+					ImGui::PopID();
+				}
+			}
+			ImGui::PopID();
+		}
 
-			//else//no renaming in progress for this item.
-			//{
-			//	//Leaf Node to display the name of the asset.
-			//	ImGui::TreeNodeEx(_simulation->GetName(), leafNodeFlags);
-			//	if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-			//	{
-			//		renamingInProgress = true;
-			//		contextNodeIdx = nodeID;
-			//	}
-			//}
+		if (_mnbvCtxt.simulation->GetDataState().GetParameters().size() > 0)
+		{
+			nodeID++;
+			ImGui::PushID(nodeID);
+			if (ImGui::TreeNodeEx("Parameter Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+			{
+				for (auto [paramID, param]: _mnbvCtxt.simulation->GetDataState().GetParameters())
+				{
+					nodeID++;
+					ImGui::PushID(nodeID);
+					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+					ImGui::TreeNodeEx(param->name.c_str(), leafNodeFlags);
+					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+					ImGui::PopID();
+				}
+			}
+			ImGui::PopID();
+		}
 
-			// The Asset name can be draged.
-			//if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
-			//{
-			//	// Set payload to carry the index of our item (could be anything)
-			//	ImGui::SetDragDropPayload("DND_ASSET", &idx, sizeof(std::size_t));
 
-			//	// Display preview (could be anything, e.g. when dragging an image we could decide to display
-			//	// the filename and a small preview of the image, etc.)
-			//	ImGui::Text(_simulation->GetModule(idx)->GetName());
-			//	ImGui::EndDragDropSource();
-			//}
+		if (_mnbvCtxt.simulation->GetDataState().GetReactions().size() > 0)
+		{
+			nodeID++;
+			ImGui::PushID(nodeID);
+			if (ImGui::TreeNodeEx("Reaction Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+			{
+				for (auto [reacID, reac]: _mnbvCtxt.simulation->GetDataState().GetReactions())
+				{
+					nodeID++;
+					ImGui::PushID(nodeID);
+					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
+					ImGui::TreeNodeEx(reac->name.c_str(), leafNodeFlags);
+					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+					ImGui::PopID();
+				}
+			}
+			ImGui::PopID();
+		}
 
-			//Pop Id of the Drag & Drop Item
-			//ImGui::PopID();
-		//}
+		if (_mnbvCtxt.simulation->GetDataState().GetAllSpecies().size() > 0)
+		{
+			nodeID++;
+			ImGui::PushID(nodeID);
+			if (ImGui::TreeNodeEx("Species Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+			{
+				for (auto [spID, sp] : _mnbvCtxt.simulation->GetDataState().GetAllSpecies())
+				{
+					nodeID++;
+					ImGui::PushID(nodeID);
+					ImGui::Indent(ImGui::GetStyle().IndentSpacing); 
+					ImGui::TreeNodeEx(sp->name.c_str(), leafNodeFlags);
+					ImGui::Unindent(ImGui::GetStyle().IndentSpacing); 
+					ImGui::PopID();
+				}
+			}
+			ImGui::PopID();
+		}
 
 		ImGui::TreePop();
 	}
 	ImGui::PopID();
+	
+	//ImGui::PushID(nodeID);
+	//if (ImGui::TreeNodeEx("Transform Nodes", ImGuiTreeNodeFlags_OpenOnArrow))
+	//{
+	//	if (_mnbvCtxt.simulation->GetModules().size() > 0)
+	//	{
+	//		nodeID++;
+	//		ImGui::PushID(nodeID);
+	//		if (ImGui::TreeNodeEx("Module Nodes", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+	//		{
+	//			for (auto _module : _mnbvCtxt.simulation->GetModules())
+	//			{
+	//				//nodeID++;
+	//				ImGui::PushID(nodeID);
+	//				ImGui::TreeNodeEx(_module->GetName(), leafNodeFlags);
+	//				//ImGui::TreePop();
+	//				ImGui::PopID();
+	//			}
+
+	//			//ImGui::TreePop();
+	//		}
+	//		ImGui::PopID();
+	//	}
+	//	ImGui::TreePop();
+	//}
+	//ImGui::PopID();
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(int& _out_mnbvCtxtStartIdx, ECellEngine::Core::Simulation* _simulation)
@@ -230,7 +313,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 			}
 
 			ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-			DrawMNBVCtxtHierarchy();
+			DrawMNBVCtxtHierarchy(mnbvCtxts->at(_out_mnbvCtxtStartIdx));
 			ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 
 		}
@@ -274,7 +357,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 			if (nodeOpen)
 			{
 				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-				DrawMNBVCtxtHierarchy();
+				DrawMNBVCtxtHierarchy(mnbvCtxts->at(_out_mnbvCtxtStartIdx));
 				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 				//ImGui::TreePop();
 			}
