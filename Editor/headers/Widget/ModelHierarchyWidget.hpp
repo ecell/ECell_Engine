@@ -127,7 +127,7 @@ namespace ECellEngine::Editor::Widget
 				hierarchy.
 		*/
 		const ImGuiTreeNodeFlags leafNodeFlags =
-			ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Bullet;
+			ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_Bullet;
 		
 		/*!
 		@brief Draws the context menu upon right clicking on the hierarchy.

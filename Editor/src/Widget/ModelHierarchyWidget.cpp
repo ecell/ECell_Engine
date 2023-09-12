@@ -93,7 +93,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 	for (std::vector<std::unique_ptr<Core::Simulation>>::iterator it = simuManager.GetSimulations().begin(); it != simuManager.GetSimulations().end(); it++)
 	{
 		nodeID++;
-		ImGui::PushID(nodeID);
+		ImGui::PushID(it->get());
 		//If users is trying to rename this asset.
 		if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingInProgress) && contextNodeIdx == nodeID)
 		{
@@ -101,26 +101,18 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 			if (TreeNodeRename(renamingBuffer))
 			{
 				it->get()->SetName(renamingBuffer);
-				Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingDone);
 			}
 
+			ImGui::PushID(it->get()->GetName());
 			ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 			DrawSimulationHierarchy(mnbvCtxtCount, it->get());
 			ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+			ImGui::PopID();
 
 		}
 		else
 		{
-			//Retrieves the correct open state of the node that might have been just renamed
-			//By default, a renamed node will be closed because chaging the name changes it's ID
-			//in ImGui and breaks the internal tracking of it's open state 
-			if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingDone) && contextNodeIdx == nodeID)
-			{
-				Util::ClearFlag(hierarchyCtxt, HierarchyContext_RenamingDone);
-				ImGui::SetNextItemOpen(Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen));
-				Util::ClearFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
-			}
-			bool nodeOpen = ImGui::TreeNodeEx(it->get()->GetName(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+			bool nodeOpen = ImGui::TreeNodeEx(it->get()->GetName(), ImGuiTreeNodeFlags_OpenOnArrow);
 
 			if (ImGui::IsItemHovered())
 			{
@@ -129,11 +121,6 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 				{
 					Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
 					contextNodeIdx = nodeID;
-					if (nodeOpen)
-					{
-						//Save the open state of the node before renaming it
-						Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
-					}
 				}
 
 				//If user performs the action to open the context menu of this node.
@@ -148,13 +135,8 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 
 			if (nodeOpen)
 			{
-				//We manage indentation ourselves because we use ImGuiTreeNodeFlags_NoTreePushOnOpen
-				//The reason we use this flag is to avoid disrupting the internal tracking of the open state of the node
-				//The open state can only be tracked if the same tree structure stays between frames which
-				//is not the case when we rename the tree node (replaced by an input field temporarily)
-				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 				DrawSimulationHierarchy(mnbvCtxtCount, it->get());
-				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+				ImGui::TreePop();
 			}
 
 		}
@@ -166,54 +148,45 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 template<typename LeafType, typename NameAccessorType>
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsList(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::vector<LeafType>& _leafs, NameAccessorType& _nameAccessor)
 {
+	nodeID++;
 	if (_leafs.size() > 0)
 	{
-		nodeID++;
-		ImGui::PushID(nodeID);
-		if (ImGui::TreeNodeEx(_leafsListName, ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		if (ImGui::TreeNodeEx(_leafsListName, ImGuiTreeNodeFlags_OpenOnArrow))
 		{
 			for (auto _leaf : _leafs)
 			{
 				nodeID++;
-				ImGui::PushID(nodeID);
-				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 				ImGui::TreeNodeEx(_nameAccessor(_leaf), leafNodeFlags);
-				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
-				ImGui::PopID();
+				ImGui::TreePop();
 			}
+			ImGui::TreePop();
 		}
-		ImGui::PopID();
 	}
 }
 
 template<typename LeafKeyType, typename LeafType, typename NameAccessorType>
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsUMap(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::unordered_map<LeafKeyType, LeafType>& _leafs, NameAccessorType& _nameAccessor)
 {
+	nodeID++;
 	if (_leafs.size() > 0)
 	{
-		nodeID++;
-		ImGui::PushID(nodeID);
-		if (ImGui::TreeNodeEx(_leafsListName, ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen))
+		if (ImGui::TreeNodeEx(_leafsListName, ImGuiTreeNodeFlags_OpenOnArrow))
 		{
 			for (auto [_leafKey, _leaf] : _leafs)
 			{
 				nodeID++;
-				ImGui::PushID(nodeID);
-				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 				ImGui::TreeNodeEx(_nameAccessor(_leaf), leafNodeFlags);
-				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
-				ImGui::PopID();
+				ImGui::TreePop();
 			}
+			ImGui::TreePop();
 		}
-		ImGui::PopID();
 	}
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MNBV::ModelNodeBasedViewerContext& _mnbvCtxt)
 {
 	static NameAccessorBySPtr nameAccessorBySPtr;
-	//nodeID++;
-	ImGui::PushID(nodeID);
+	nodeID++;
 	if (ImGui::TreeNodeEx("Data Nodes", ImGuiTreeNodeFlags_OpenOnArrow))
 	{
 		DrawHierarchyLeafsList("Module Nodes", _mnbvCtxt, _mnbvCtxt.simulation->GetModules(), nameAccessorBySPtr);
@@ -230,10 +203,9 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 
 		ImGui::TreePop();
 	}
-	ImGui::PopID();
 	
 	static NameAccessorByRef nameAccessorByRef;
-	ImGui::PushID(nodeID);
+	nodeID++;
 	if (ImGui::TreeNodeEx("Transform Nodes", ImGuiTreeNodeFlags_OpenOnArrow))
 	{
 		DrawHierarchyLeafsList("Arithmetic Nodes", _mnbvCtxt, _mnbvCtxt.arithmeticOperationNodes, nameAccessorByRef);
@@ -250,10 +222,8 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 
 		DrawHierarchyLeafsList("Value Nodes", _mnbvCtxt, _mnbvCtxt.valueFloatNodes, nameAccessorByRef);
 
-
 		ImGui::TreePop();
 	}
-	ImGui::PopID();
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(int& _out_mnbvCtxtStartIdx, ECellEngine::Core::Simulation* _simulation)
@@ -261,7 +231,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 	while (_out_mnbvCtxtStartIdx < mnbvCtxts->size() && mnbvCtxts->at(_out_mnbvCtxtStartIdx).simulation->id == _simulation->id)
 	{
 		nodeID++;
-		ImGui::PushID(nodeID);
+		ImGui::PushID(_out_mnbvCtxtStartIdx);
 		//If users is trying to rename this asset.
 		if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingInProgress) && contextNodeIdx == nodeID)
 		{
@@ -269,26 +239,18 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 			if (TreeNodeRename(renamingBuffer))
 			{
 				mnbvCtxts->at(_out_mnbvCtxtStartIdx).SetName(renamingBuffer);
-				Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingDone);
 			}
 
+			ImGui::PushID(mnbvCtxts->at(_out_mnbvCtxtStartIdx).GetName());
 			ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 			DrawMNBVCtxtHierarchy(mnbvCtxts->at(_out_mnbvCtxtStartIdx));
 			ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
+			ImGui::PopID();
 
 		}
 		else
 		{
-			//Retrieves the correct open state of the node that might have been just renamed
-			//By default, a renamed node will be closed because chaging the name changes it's ID
-			//in ImGui and breaks the internal tracking of it's open state 
-			if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingDone) && contextNodeIdx == nodeID)
-			{
-				Util::ClearFlag(hierarchyCtxt, HierarchyContext_RenamingDone);
-				ImGui::SetNextItemOpen(Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen));
-				Util::ClearFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
-			}
-			bool nodeOpen = ImGui::TreeNodeEx(mnbvCtxts->at(_out_mnbvCtxtStartIdx).GetName(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+			bool nodeOpen = ImGui::TreeNodeEx(mnbvCtxts->at(_out_mnbvCtxtStartIdx).GetName(), ImGuiTreeNodeFlags_OpenOnArrow);
 
 			if (ImGui::IsItemHovered())
 			{
@@ -297,11 +259,6 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 				{
 					Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
 					contextNodeIdx = nodeID;
-					if (nodeOpen)
-					{
-						//Save the open state of the node before renaming it
-						Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamedNodeWasOpen);
-					}
 				}
 
 				//If user performs the action to open the context menu of this node.
@@ -316,10 +273,8 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 
 			if (nodeOpen)
 			{
-				ImGui::Indent(ImGui::GetStyle().IndentSpacing);
 				DrawMNBVCtxtHierarchy(mnbvCtxts->at(_out_mnbvCtxtStartIdx));
-				ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
-				//ImGui::TreePop();
+				ImGui::TreePop();
 			}
 
 		}		
