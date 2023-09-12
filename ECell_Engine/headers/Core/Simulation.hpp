@@ -231,7 +231,7 @@ namespace ECellEngine::Core
 		*/
 		inline void SetName(const char* _name) noexcept
 		{
-			sprintf(name, "%s", _name);
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		/*

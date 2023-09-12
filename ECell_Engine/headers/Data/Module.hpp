@@ -95,10 +95,10 @@ namespace ECellEngine::Data
 		*/
 		const std::size_t id;
 		
-		Module(DataState& _dataState, char* _name) :
-			dataState{_dataState}, id{ ++_dataState.idProvider }, name{*_name}
+		Module(DataState& _dataState, const char* _name) :
+			dataState{_dataState}, id{ ++_dataState.idProvider }
 		{
-
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		/*!
@@ -113,10 +113,9 @@ namespace ECellEngine::Data
 		/*!
 		@brief Sets the name of the module.
 		*/
-		inline void SetName(char* _name) noexcept
+		inline void SetName(const char* _name) noexcept
 		{
-			std::memset(name, '\0', std::max(std::strlen(name), std::strlen(_name)));
-			std::memcpy(name, _name, std::strlen(_name));
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		/*!
