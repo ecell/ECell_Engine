@@ -73,7 +73,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 
 		if (ImGui::MenuItem("Add Context"))
 		{
-			ECellEngine::Logging::Logger::LogDebug("Clicked on Add Context");
+			editor->GetCommandsManager().ProcessCommand("addMNBVCtxt", ECellEngine::Editor::IO::AddMNBVContextCommandArgs({ simuManager.GetSimulation(contextNodeIdx)->id }));
 		}
 
 		if (ImGui::MenuItem("Delete Context"))
@@ -89,6 +89,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 {
 	nodeID = 0;
 	int mnbvCtxtCount = 0;
+	int simuCount = 0;
 	for (std::vector<std::unique_ptr<Core::Simulation>>::iterator it = simuManager.GetSimulations().begin(); it != simuManager.GetSimulations().end(); it++)
 	{
 		nodeID++;
@@ -138,6 +139,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 				//If user performs the action to open the context menu of this node.
 				if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 				{
+					contextNodeIdx = simuCount;
 					Util::SetFlag(hierarchyCtxt, HierarchyContext_RightClickOnSimulationNode);
 					Util::ClearFlag(hierarchyCtxt, HierarchyContext_RightClickOnMNBVCtxtNode);
 					Util::ClearFlag(hierarchyCtxt, HierarchyContext_RightClickOnBackground);
@@ -156,7 +158,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 			}
 
 		}
-
+		simuCount++;
 		ImGui::PopID();
 	}
 }
@@ -262,6 +264,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 				//If user performs the action to open the context menu of this node.
 				if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 				{
+					contextNodeIdx = _out_mnbvCtxtStartIdx;
 					Util::SetFlag(hierarchyCtxt, HierarchyContext_RightClickOnMNBVCtxtNode);
 					Util::ClearFlag(hierarchyCtxt, HierarchyContext_RightClickOnSimulationNode);
 					Util::ClearFlag(hierarchyCtxt, HierarchyContext_RightClickOnBackground);

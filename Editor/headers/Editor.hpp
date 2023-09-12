@@ -83,6 +83,14 @@ namespace ECellEngine::Editor
 		Editor();
 
 		/*!
+		@brief Returns the commands manager of the editor.
+		*/
+		inline ECellEngine::IO::CommandsManager& GetCommandsManager()
+		{
+			return commandsManager;
+		}
+
+		/*!
 		@brief Opens a new window in the editor.
 		@details Instantiates a new widget of type @p WidgetType and adds it to
 				 widgets as well as newWidgets.
