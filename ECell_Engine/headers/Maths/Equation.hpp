@@ -29,9 +29,9 @@ namespace ECellEngine::Maths
 		/*!
 		@brief Returns the name of the operand (left hand side) of the equation.
 		*/
-		inline const std::string& GetName() const noexcept
+		inline const char* GetName() const noexcept
 		{
-			return lhs->name;
+			return lhs->GetName();
 		}
 
 		/*!

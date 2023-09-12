@@ -21,7 +21,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		/*!
 		@brief The name of this context.
 		*/
-		char name[64] = { 0 };
+		char name[64] = { '0'};
 
 		/*!
 		@brief The unique Id to be used by any newly created data that will be
@@ -206,6 +206,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 		}
 
 		/*!
+		@brief Gets the name of this context.
+		*/
+		inline char* GetName() noexcept
+		{
+			return name;
+		}
+
+		/*!
 		@brief Sets the ::engineCommandsManager pointer of this context.
 		*/
 		inline void SetEngineCommandsManager(ECellEngine::IO::CommandsManager* _engineCommandsManager) noexcept
@@ -221,7 +229,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		*/
 		inline void SetName(const char* _name) noexcept
 		{
-			sprintf(name, "%s", _name);
+			Util::StrCopy(name, _name, sizeof(name));
 		}
 
 		/*!

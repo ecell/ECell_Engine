@@ -155,7 +155,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(EquationNo
 
 	_equationNodeInfo.Update();
 
-	const float headerWidth = NodeHeader("Equation:", _equationNodeInfo.data->GetName().c_str(), Style::EditorStyle::GetNodeColors(NodeType_Equation));
+	const float headerWidth = NodeHeader("Equation:", _equationNodeInfo.data->GetName(), Style::EditorStyle::GetNodeColors(NodeType_Equation));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
@@ -611,7 +611,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(ReactionNo
 
 	_reactionNodeInfo.Update();
 
-	const float headerWidth = NodeHeader("Reaction:", _reactionNodeInfo.data->name.c_str(), Style::EditorStyle::GetNodeColors(NodeType_Reaction));
+	const float headerWidth = NodeHeader("Reaction:", _reactionNodeInfo.data->GetName(), Style::EditorStyle::GetNodeColors(NodeType_Reaction));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 
@@ -705,7 +705,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(Parameter
 
 	_parameterNodeInfo.Update();
 
-	const float headerWidth = NodeHeader("Parameter:", _parameterNodeInfo.data->name.c_str(), Style::EditorStyle::GetNodeColors(NodeType_Parameter));
+	const float headerWidth = NodeHeader("Parameter:", _parameterNodeInfo.data->GetName(), Style::EditorStyle::GetNodeColors(NodeType_Parameter));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 	const float thisWidth = ImGui::CalcTextSize("this").x;
@@ -821,7 +821,7 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(SpeciesNode
 
 	_speciesNodeInfo.Update();
 
-	const float headerWidth = NodeHeader("Species:", _speciesNodeInfo.data->name.c_str(), Style::EditorStyle::GetNodeColors(NodeType_Species));
+	const float headerWidth = NodeHeader("Species:", _speciesNodeInfo.data->GetName(), Style::EditorStyle::GetNodeColors(NodeType_Species));
 	const float itemsWidth = GetNodeCenterAreaWidth(headerWidth);
 	const float startX = ImGui::GetCursorPosX();
 	const float thisWidth = ImGui::CalcTextSize("this").x;

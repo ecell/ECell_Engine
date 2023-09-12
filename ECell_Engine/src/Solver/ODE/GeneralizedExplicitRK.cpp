@@ -168,8 +168,8 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::ScanForTriggersOnExtEq() 
 	for (std::vector<std::shared_ptr<Core::Trigger<Operand*, Operand*>>>::const_iterator it = dataState.GetTriggers().begin();
 		it != dataState.GetTriggers().end(); ++it)
 	{
-		triggerTargetName = it->get()->GetTarget()->name;
-		triggerThresholdName = it->get()->GetThreshold()->name;
+		triggerTargetName = it->get()->GetTarget()->GetName();
+		triggerThresholdName = it->get()->GetThreshold()->GetName();
 		for (unsigned short i = 0; i < extEqSize; i++)
 		{
 			equationName = externalEquations[i]->GetName();
@@ -193,11 +193,11 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::ScanForTriggersOnODE() no
 	for (std::vector<std::shared_ptr<Core::Trigger<Operand*, Operand*>>>::const_iterator it = dataState.GetTriggers().begin();
 		it != dataState.GetTriggers().end(); ++it)
 	{
-		triggerTargetName = it->get()->GetTarget()->name;
-		triggerThresholdName = it->get()->GetThreshold()->name;
+		triggerTargetName = it->get()->GetTarget()->GetName();
+		triggerThresholdName = it->get()->GetThreshold()->GetName();
 		for (unsigned short i = 0; i < systemSize; i++)
 		{
-			systemVariableName = system[i].GetOperand()->name;
+			systemVariableName = system[i].GetOperand()->GetName();
 			if (triggerTargetName == systemVariableName || triggerThresholdName == systemVariableName)
 			{
 				ECellEngine::Logging::Logger::LogDebug("Trigger involving target %s and %s was found to match variable %s in the ODEs.", triggerTargetName, triggerThresholdName, systemVariableName);
@@ -352,11 +352,11 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 		stepper.Next();
 
 		//Value Debugging
-		ECellEngine::Logging::Logger::LogDebug("------ t= %f", stepper.timer.elapsedTime);
+		/*ECellEngine::Logging::Logger::LogDebug("------ t= %f", stepper.timer.elapsedTime);
 		std::string log;
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
-			log = "System; " + system[i].GetOperand()->name;
+			log = "System; " + system[i].GetOperand()->GetName();
 			log += "=" + std::to_string(system[i].Get());
 			for (unsigned short j = 0; j < coeffs.stages; ++j)
 			{
@@ -369,7 +369,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateClassic(const ECell
 			ECellEngine::Logging::Logger::LogDebug("Extern; %s=%f", equationName, equation->Get());
 		}
 
-		ECellEngine::Logging::Logger::LogDebug("------");
+		ECellEngine::Logging::Logger::LogDebug("------");*/
 	}
 }
 
@@ -456,7 +456,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 						coeffs.bsp, coeffs.ks, it->second, coeffs.order, coeffs.stages);
 
 					/*ECellEngine::Logging::Logger::LogDebug("The trigger comparing " +
-						it->first->GetTarget()->name + " and " + it->first->GetThreshold()->name +
+						it->first->GetTarget()->GetName() + " and " + it->first->GetThreshold()->GetName() +
 						" should be triggered at time: " + std::to_string(triggerCandidateTime));*/
 
 					//update the value of triggerTriggerTime & trigger
@@ -549,7 +549,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 					triggerCandidateTime = stepper.timer.elapsedTime + theta * stepper.h;
 
 					/*ECellEngine::Logging::Logger::LogDebug("The trigger comparing " +
-						(*it)->GetTarget()->name + " and " + (*it)->GetThreshold()->name +
+						(*it)->GetTarget()->GetName() + " and " + (*it)->GetThreshold()->GetName() +
 						" should be triggered at time: " + std::to_string(triggerCandidateTime));*/
 
 					//update the value of triggerTriggerTime & trigger
@@ -569,7 +569,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			{
 				/*ECellEngine::Logging::Logger::LogDebug("--- TRIGGERING WATCHER ---");
 				ECellEngine::Logging::Logger::LogDebug(" Processing trigger of target: " +
-					trigger->GetTarget()->name + " at time: " + std::to_string(triggerTriggerTime));*/
+					trigger->GetTarget()->GetName() + " at time: " + std::to_string(triggerTriggerTime));*/
 
 				//Then, we need to update the system to the time at which
 				//the trigger must be triggered (by interpolation)
@@ -665,7 +665,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 		std::string log;
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
-			log = "System; " + system[i].GetOperand()->name;
+			log = "System; " + system[i].GetOperand()->GetName();
 			log += "=" + std::to_string(system[i].Get());
 			for (unsigned short j = 0; j < coeffs.stages; ++j)
 			{

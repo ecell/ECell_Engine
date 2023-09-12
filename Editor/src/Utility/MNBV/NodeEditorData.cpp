@@ -5,32 +5,32 @@
 
 const char* ECellEngine::Editor::Utility::MNBV::NLBSDSpeciesNameAccessorFromID::operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept
 {
-	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetSpecies(_nlbsData.At(_idx))->name.c_str();
+	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetSpecies(_nlbsData.At(_idx))->GetName();
 }
 
 const char* ECellEngine::Editor::Utility::MNBV::NLBSDParameterNameAccessorFromID::operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept
 {
-	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetParameter(_nlbsData.At(_idx))->name.c_str();
+	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetParameter(_nlbsData.At(_idx))->GetName();
 }
 
 const char* ECellEngine::Editor::Utility::MNBV::NLBSDReactionNameAccessorFromID::operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept
 {
-	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetReaction(_nlbsData.At(_idx))->name.c_str();
+	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetReaction(_nlbsData.At(_idx))->GetName();
 }
 
 const char* ECellEngine::Editor::Utility::MNBV::NLBSDReactionNameAccessorFromWPTR::operator ()(std::size_t _idx, NodeListBoxStringData<std::weak_ptr<ECellEngine::Data::Reaction>>& _nlbsData) const noexcept
 {
-	return _nlbsData.At(_idx).lock()->name.c_str();
+	return _nlbsData.At(_idx).lock()->GetName();
 }
 
 const char* ECellEngine::Editor::Utility::MNBV::NLBSDEquationNameAccessorFromID::operator ()(std::size_t _idx, NodeListBoxStringData<std::size_t>& _nlbsData) const noexcept
 {
-	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetEquation(_nlbsData.At(_idx))->GetName().c_str();
+	return Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().GetEquation(_nlbsData.At(_idx))->GetName();
 }
 
 const char* ECellEngine::Editor::Utility::MNBV::NLBSDEquationNameAccessorFromWPTR::operator ()(std::size_t _idx, NodeListBoxStringData<std::weak_ptr<ECellEngine::Maths::Equation>>& _nlbsData) const noexcept
 {
-	return _nlbsData.At(_idx).lock()->GetName().c_str();
+	return _nlbsData.At(_idx).lock()->GetName();
 }
 
 #pragma region LinkData
@@ -215,26 +215,26 @@ void ECellEngine::Editor::Utility::MNBV::LinePlotNodeData::InputConnect(NodeInpu
 		EquationNodeData* end = dynamic_cast<EquationNodeData*>(_nodeOutputPinData->node);
 		if (end)
 		{
-			std::memcpy(line->lineLegend, end->data->GetOperand()->name.c_str(), 64);
+			std::memcpy(line->lineLegend, end->data->GetOperand()->GetName(), 64);
 		}
 
 		ParameterNodeData* pnd = dynamic_cast<ParameterNodeData*>(_nodeOutputPinData->node);
 		if (pnd)
 		{
-			std::memcpy(line->lineLegend, pnd->data->name.c_str(), 64);
+			std::memcpy(line->lineLegend, pnd->data->GetName(), 64);
 		}
 
 		ReactionNodeData* rnd = dynamic_cast<ReactionNodeData*>(_nodeOutputPinData->node);
 		if (rnd)
 		{
-			std::memcpy(line->lineLegend, rnd->data->name.c_str(), 64);
+			std::memcpy(line->lineLegend, rnd->data->GetName(), 64);
 			std::strcat(line->lineLegend, " (rate)");
 		}
 
 		SpeciesNodeData* snd = dynamic_cast<SpeciesNodeData*>(_nodeOutputPinData->node);
 		if (snd)
 		{
-			std::memcpy(line->lineLegend, snd->data->name.c_str(), 64);
+			std::memcpy(line->lineLegend, snd->data->GetName(), 64);
 		}
 
 		//we set the input pin of the collapsing header as the fallback
@@ -372,14 +372,14 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 	SpeciesNodeData* speciesNodeData = dynamic_cast<SpeciesNodeData*>(_nodeInputPinData->node);
 	if (speciesNodeData != nullptr)
 	{
-		data->dataStateValueId = speciesNodeData->data.get()->name;
+		data->dataStateValueId = speciesNodeData->data.get()->GetName();
 		data->valueType = ECellEngine::Core::Events::ModifyDataStateValueEvent::DataStateValueType::Species;
 	}
 
 	ParameterNodeData* parameterNodeData = dynamic_cast<ParameterNodeData*>(_nodeInputPinData->node);
 	if (parameterNodeData != nullptr)
 	{
-		data->dataStateValueId = parameterNodeData->data.get()->name;
+		data->dataStateValueId = parameterNodeData->data.get()->GetName();
 		data->valueType = ECellEngine::Core::Events::ModifyDataStateValueEvent::DataStateValueType::Parameter;
 	}
 

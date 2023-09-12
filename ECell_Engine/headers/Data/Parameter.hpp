@@ -14,7 +14,7 @@ namespace ECellEngine::Data
 	public:
 		std::shared_ptr<std::function<void(const float, const float)>> updateValueSubToken = nullptr;
 
-		Parameter(const std::string& _name, const std::size_t _id, const float _value) :
+		Parameter(const char* _name, const std::size_t _id, const float _value) :
 			ECellEngine::Maths::Operand{ _name, _id}, value{ _value }, previousValue{ _value }, initialValue{ _value }
 		{
 
@@ -45,12 +45,12 @@ namespace ECellEngine::Data
 
 		inline const std::string ToString() const noexcept override
 		{
-			return "P:"+name;
+			return "P:"+std::string(name);
 		}
 		
 		inline const std::string ToStringValue() const noexcept override
 		{
-			return "P:"+name+":"+std::to_string(value);
+			return "P:"+std::string(name)+":"+std::to_string(value);
 		}
 	};
 }

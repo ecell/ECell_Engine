@@ -199,7 +199,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 					nodeID++;
 					ImGui::PushID(nodeID);
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-					ImGui::TreeNodeEx(eq->GetName().c_str(), leafNodeFlags);
+					ImGui::TreeNodeEx(eq->GetName(), leafNodeFlags);
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 					ImGui::PopID();
 				}
@@ -218,7 +218,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 					nodeID++;
 					ImGui::PushID(nodeID);
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-					ImGui::TreeNodeEx(param->name.c_str(), leafNodeFlags);
+					ImGui::TreeNodeEx(param->GetName(), leafNodeFlags);
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 					ImGui::PopID();
 				}
@@ -238,7 +238,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 					nodeID++;
 					ImGui::PushID(nodeID);
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing);
-					ImGui::TreeNodeEx(reac->name.c_str(), leafNodeFlags);
+					ImGui::TreeNodeEx(reac->GetName(), leafNodeFlags);
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing);
 					ImGui::PopID();
 				}
@@ -257,7 +257,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 					nodeID++;
 					ImGui::PushID(nodeID);
 					ImGui::Indent(ImGui::GetStyle().IndentSpacing); 
-					ImGui::TreeNodeEx(sp->name.c_str(), leafNodeFlags);
+					ImGui::TreeNodeEx(sp->GetName(), leafNodeFlags);
 					ImGui::Unindent(ImGui::GetStyle().IndentSpacing); 
 					ImGui::PopID();
 				}
