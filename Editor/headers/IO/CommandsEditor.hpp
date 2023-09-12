@@ -22,7 +22,7 @@ namespace ECellEngine::Editor::IO
 
 	public:
 		AddMNBVContextCommand(Widget::ModelExplorerWidget& _receiver) :
-			Command("addMNBVCtxt", 1), receiver(_receiver)
+			Command("addMNBVCtxt", 2), receiver(_receiver)
 		{
 			//fill in the args
 		}
