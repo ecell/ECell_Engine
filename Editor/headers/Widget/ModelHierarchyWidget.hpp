@@ -100,28 +100,7 @@ namespace ECellEngine::Editor::Widget
 		*/
 		const ImGuiTreeNodeFlags leafNodeFlags =
 			ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Bullet;
-
-	public:
-		ModelHierarchyWidget(Editor* _editor) :
-			Widget(_editor), simuManager(ECellEngine::Core::SimulationsManager::GetSingleton())
-		{
-
-		}
-
-		/*!
-		@brief Sets the pointer to the list of contexts loaded in the model
-				explorer containing this hierarchy.
-		@see ::mnbvCtxts
-		*/
-		inline void SetMNBVCtxts(std::vector<MNBV::ModelNodeBasedViewerContext>* _mnbvCtxts) noexcept
-		{
-			mnbvCtxts = _mnbvCtxts;
-		}
-
-		void Awake() override;
-
-		void Draw() override;
-
+		
 		/*!
 		@brief Draws the context menu upon right clicking on the hierarchy.
 		*/
@@ -131,6 +110,33 @@ namespace ECellEngine::Editor::Widget
 		@brief Draws the whole tree making the hierarchy
 		*/
 		void DrawHierarchy();
+
+		/*!
+		@brief Uses the content of a list to draw tree nodes behaving as leafs.
+		@details The elements in the list MUST implement a <em>char* GetName()</em>
+				 method
+		@param _leafsListName The name of the list to display. This will be used as
+								the name of the tree node containing every leaf node.
+		@param _mnbvCtxt The MNBV context to draw the hierarchy of.
+		@param _leafs The list of elements to display.
+		@paramt LeafType The type of the elements in the list.
+		*/
+		template<typename LeafType>
+		void DrawHierarchyLeafsList(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::vector<LeafType>& _leafs);
+		
+		/*!
+		@brief Uses the content of an unordered_map to draw tree nodes behaving as leafs.
+		@details The elements in the unordered_map MUST implement a <em>char* GetName()</em>
+				 method
+		@param _leafsListName The name of the list to display. This will be used as
+								the name of the tree node containing every leaf node.
+		@param _mnbvCtxt The MNBV context to draw the hierarchy of.
+		@param _leafs The unordered_map of elements to display.
+		@paramt LeafKeyType The type of the keys of the unordered_map.
+		@paramt LeafType The type of the elements in the unordered_map.
+		*/
+		template<typename LeafKeyType, typename LeafType>
+		void DrawHierarchyLeafsUMap(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::unordered_map<LeafKeyType, LeafType>& _leafs);
 
 		/*!
 		@brief Draws the subparts of the hierarchy corresponding to the MNBV
@@ -161,6 +167,28 @@ namespace ECellEngine::Editor::Widget
 				@a false otherwise.
 		*/
 		bool TreeNodeRename(char* _nameBuffer);
+
+
+	public:
+		ModelHierarchyWidget(Editor* _editor) :
+			Widget(_editor), simuManager(ECellEngine::Core::SimulationsManager::GetSingleton())
+		{
+
+		}
+
+		/*!
+		@brief Sets the pointer to the list of contexts loaded in the model
+				explorer containing this hierarchy.
+		@see ::mnbvCtxts
+		*/
+		inline void SetMNBVCtxts(std::vector<MNBV::ModelNodeBasedViewerContext>* _mnbvCtxts) noexcept
+		{
+			mnbvCtxts = _mnbvCtxts;
+		}
+
+		void Awake() override;
+
+		void Draw() override;
 	};
 
 }
