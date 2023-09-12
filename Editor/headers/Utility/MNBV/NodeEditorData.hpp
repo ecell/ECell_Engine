@@ -668,11 +668,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 			rhs{ "0", (std::size_t)id, 0 }
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
+			
+			data->SetName("Arithmetic");
 
 			sprintf(lhs.GetName(), "Operation[%llu]:LHS", (std::size_t)id);
 			sprintf(rhs.GetName(), "Operation[%llu]:RHS", (std::size_t)id);
 
-			sprintf(data->GetName(), "Operation[%llu]", (std::size_t)id);
 			data->AddOperand(&lhs);
 			data->AddOperand(&rhs);
 
@@ -1429,7 +1430,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		{
 			ax::NodeEditor::SetNodePosition(id, _position);
 
-			Util::StrCopy(name, "Logic Operator", sizeof(name));
+			Util::StrCopy(name, "Logic", sizeof(name));
 
 			inputPins[InputPin_LHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackSubscriber, this); //Left hand side
 			inputPins[InputPin_RHS] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_BooleanCallBackSubscriber, this); //Right hand side
