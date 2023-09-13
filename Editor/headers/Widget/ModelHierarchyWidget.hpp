@@ -65,10 +65,10 @@ namespace ECellEngine::Editor::Widget
 
 		/*!
 		@brief A function object to access the name of an element encapsulated
-				in a shared pointer in a list.
+				in a shared pointer.
 		@details The element MUST implement a <em>char* GetName()</em> method.
 		*/
-		struct NameAccessorBySPtr
+		struct NameGetterBySPtr
 		{
 			template<typename T>
 			char* operator()(std::shared_ptr<T> _ptr) const noexcept
@@ -78,18 +78,47 @@ namespace ECellEngine::Editor::Widget
 		};
 
 		/*!
-		@brief A function object to access the name of an element in a list
-				by reference.
-		@details The element MUST implement a <em>char* GetName()</em> method.
+		@brief A function object to set the name of an element encapsulated in a
+				shared pointer.
+		@details The element MUST implement a <em>void SetName(const char*)</em>
+				 method.
 		*/
-		struct NameAccessorByRef
+		struct NameSetterBySPtr
 		{
 			template<typename T>
-			char* operator()(T& _ref) const noexcept
+			void operator()(std::shared_ptr<T> _ptr, const char* _newName) noexcept
 			{
-				return _ref.GetName();
+				_ptr->SetName(_newName);
 			}
 		};
+
+		/*!
+		@brief A function object to access the name of an element by iterator (or raw pointer).
+		@details The element MUST implement a <em>char* GetName()</em> method.
+		*/
+		struct NameGetterByIt
+		{
+			template<typename T>
+			char* operator()(T _it) const noexcept
+			{
+				return _it->GetName();
+			}
+		};
+
+		/*!
+		@brief A function object to set the name of an element by iterator (or raw pointer).
+		@details The element MUST implement a <em>void SetName(const char*)</em>
+				 method.
+		*/
+		struct NameSetterByIt
+		{
+			template<typename T>
+			void operator()(T _it, const char* _newName) noexcept
+			{
+				_it->SetName(_newName);
+			}
+		};
+
 
 	private:
 
@@ -199,12 +228,15 @@ namespace ECellEngine::Editor::Widget
 		@param _mnbvCtxt The MNBV context to draw the hierarchy of.
 		@param _leafs The list of elements to display.
 		@paramt LeafType The type of the elements in the list.
-		@paramt NameAccessorType The type of the function object to access the name
+		@paramt NameGetterType The type of the function object to access the name
 								 of the elements in the list.
-		@see NameAccessorBySPtr and NameAccessorByRef
+		@paramt NameSetterType The type of the function object to set the name
+								 of the elements in the list.
+		@see NameGetterBySPtr and NameGetterByRef, NameSetterBySPtr and NameSetterByRef
 		*/
-		template<typename LeafType, typename NameAccessorType>
-		void DrawHierarchyLeafsList(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::vector<LeafType>& _leafs, NameAccessorType& _nameAccessor);
+		template<typename LeafType, typename NameGetterType, typename NameSetterType>
+		void DrawHierarchyLeafsList(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, std::vector<LeafType>& _leafs,
+			NameGetterType& _nameGetter, NameSetterType& _nameSetter);
 		
 		/*!
 		@brief Uses the content of an unordered_map to draw tree nodes behaving as leafs.
@@ -216,12 +248,15 @@ namespace ECellEngine::Editor::Widget
 		@param _leafs The unordered_map of elements to display.
 		@paramt LeafKeyType The type of the keys of the unordered_map.
 		@paramt LeafType The type of the elements in the unordered_map.
-		@paramt NameAccessorType The type of the function object to access the name
+		@paramt NameGetterType The type of the function object to access the name
 								 of the elements in the unordered_map.
-		@see NameAccessorBySPtr and NameAccessorByRef
+		@paramt NameSetterType The type of the function object to set the name
+								 of the elements in the unordered_map.
+		@see ::NameGetterBySPtr, ::NameGetterByRef, ::NameSetterBySPtr and ::NameSetterByRef
 		*/
-		template<typename LeafKeyType, typename LeafType, typename NameAccessorType>
-		void DrawHierarchyLeafsUMap(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::unordered_map<LeafKeyType, LeafType>& _leafs, NameAccessorType& _nameAccessor);
+		template<typename LeafKeyType, typename LeafType, typename NameGetterType, typename NameSetterType>
+		void DrawHierarchyLeafsUMap(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::unordered_map<LeafKeyType, LeafType>& _leafs,
+			NameGetterType& _nameGetter, NameSetterType& _nameSetter);
 
 		/*!
 		@brief Draws the subparts of the hierarchy corresponding to the MNBV
