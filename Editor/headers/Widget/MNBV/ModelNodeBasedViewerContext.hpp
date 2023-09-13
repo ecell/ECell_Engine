@@ -114,13 +114,6 @@ namespace ECellEngine::Editor::Widget::MNBV
 				 simulation space.
 		*/
 		std::vector<Utility::MNBV::ParameterNodeData> parameterNodes;
-		
-		/*!
-		@brief The list of time nodes.
-		@details It contains the information used to draw the nodes corresponding
-				 to display and use the various time information.
-		*/
-		std::vector<Utility::MNBV::TimeNodeData> timeNodes;
 
 		/*!
 		@brief The list of solver nodes.
@@ -136,13 +129,13 @@ namespace ECellEngine::Editor::Widget::MNBV
 				 simulation space.
 		*/
 		std::vector<Utility::MNBV::SpeciesNodeData> speciesNodes;
-		
+
 		/*!
-		@brief The list of value float nodes in this context.
-		@details It contains the information used to draw the nodes to display, set
-				and use custom float values.
+		@brief The list of time nodes.
+		@details It contains the information used to draw the nodes corresponding
+				 to display and use the various time information.
 		*/
-		std::vector<Utility::MNBV::ValueFloatNodeData> valueFloatNodes;
+		std::vector<Utility::MNBV::TimeNodeData> timeNodes;
 
 		/*!
 		@brief The list of triggers in this context.
@@ -150,6 +143,13 @@ namespace ECellEngine::Editor::Widget::MNBV
 				 the triggers of this simulation space.
 		*/
 		std::vector<Utility::MNBV::TriggerNodeData> triggerNodes;
+
+		/*!
+		@brief The list of value float nodes in this context.
+		@details It contains the information used to draw the nodes to display, set
+				and use custom float values.
+		*/
+		std::vector<Utility::MNBV::ValueFloatNodeData> valueFloatNodes;
 #pragma endregion
 
 #pragma region Links Data
