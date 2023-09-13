@@ -32,7 +32,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::Draw()
 
 		case (ContextItem_Simulation):
 		{
-			ImGui::OpenPopup("HierarchySimuContext");
+			ImGui::OpenPopup("HierarchySimulation");
 			break;
 		}
 
@@ -69,7 +69,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 		ImGui::EndPopup();
 	}
 
-	if (ImGui::BeginPopup("HierarchySimuContext"))
+	if (ImGui::BeginPopup("HierarchySimulation"))
 	{
 		if (ImGui::MenuItem("Delete Simulation"))
 		{
@@ -78,6 +78,11 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 			//TODO: Delete Simulation
 			//TODO: Delete MNBVContexts
 		}
+
+		if (ImGui::MenuItem("Rename"))
+		{
+			Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
+		}
 		ImGui::EndPopup();
 	}
 	
@@ -85,7 +90,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 	{
 		if (ImGui::MenuItem("Add Context"))
 		{
-			editor->GetCommandsManager().ProcessCommand("addMNBVCtxt", ECellEngine::Editor::IO::AddMNBVContextCommandArgs({ simuManager.GetSimulation(contextNodeIdx)->id }));
+			editor->GetCommandsManager().ProcessCommand("addMNBVCtxt", ECellEngine::Editor::IO::AddMNBVContextCommandArgs({ simuManager.GetSimulation(simuIdx)->id }));
 		}
 		ImGui::EndPopup();
 	}
@@ -96,6 +101,12 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 		{
 			ECellEngine::Logging::Logger::LogDebug("Clicked on Delete Context");
 		}
+
+		if (ImGui::MenuItem("Rename"))
+		{
+			Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
+		}
+
 		ImGui::EndPopup();
 	}
 	contextItemType = ContextItem_None;
@@ -103,15 +114,15 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 {
-	nodeID = 0;
+	globalNodeCount = 0;
 	mnbvCtxtCount = 0;
 	simuCount = 0;
 	for (std::vector<std::unique_ptr<Core::Simulation>>::iterator it = simuManager.GetSimulations().begin(); it != simuManager.GetSimulations().end(); it++)
 	{
-		nodeID++;
+		globalNodeCount++;
 		ImGui::PushID(it->get());
 		//If users is trying to rename this asset.
-		if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingInProgress) && contextNodeIdx == nodeID)
+		if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingInProgress) && globalNodeIdx == globalNodeCount)
 		{
 			std::strcpy(renamingBuffer, it->get()->GetName());
 			if (TreeNodeRename(renamingBuffer))
@@ -133,14 +144,14 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 			//If user performs the action to rename this node.
 			if (ImGui::IsItemFocused() && ImGui::IsKeyDown(ImGuiKey_F2))
 			{
+				TrackContextItem();
 				Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
-				contextNodeIdx = nodeID;
 			}
 
 			//If user performs the action to open the context menu of this node.
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
-				contextNodeIdx = simuCount;
+				TrackContextItem();
 				contextItemType = ContextItem_Simulation;
 			}
 
@@ -159,14 +170,14 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 template<typename LeafType, typename NameAccessorType>
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsList(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::vector<LeafType>& _leafs, NameAccessorType& _nameAccessor)
 {
-	nodeID++;
+	globalNodeCount++;
 	if (_leafs.size() > 0)
 	{
 		if (ImGui::TreeNodeEx(_leafsListName))
 		{
 			for (auto _leaf : _leafs)
 			{
-				nodeID++;
+				globalNodeCount++;
 				ImGui::TreeNodeEx(_nameAccessor(_leaf), leafNodeFlags);
 				ImGui::TreePop();
 			}
@@ -178,14 +189,14 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsList(c
 template<typename LeafKeyType, typename LeafType, typename NameAccessorType>
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsUMap(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::unordered_map<LeafKeyType, LeafType>& _leafs, NameAccessorType& _nameAccessor)
 {
-	nodeID++;
+	globalNodeCount++;
 	if (_leafs.size() > 0)
 	{
 		if (ImGui::TreeNodeEx(_leafsListName))
 		{
 			for (auto [_leafKey, _leaf] : _leafs)
 			{
-				nodeID++;
+				globalNodeCount++;
 				ImGui::TreeNodeEx(_nameAccessor(_leaf), leafNodeFlags);
 				ImGui::TreePop();
 			}
@@ -229,7 +240,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 {
 	static NameAccessorBySPtr nameAccessorBySPtr;
 	MNBV::ModelNodeBasedViewerContext& mnbvCtxt = mnbvCtxts->at(mnbvCtxtCount);
-	nodeID++;
+	globalNodeCount++;
 	if (ImGui::TreeNodeEx("Data State"))
 	{
 		DrawHierarchyLeafsUMap("Equations", mnbvCtxt, mnbvCtxt.simulation->GetDataState().GetEquations(), nameAccessorBySPtr);
@@ -243,27 +254,24 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 		ImGui::TreePop();
 	}
 
-	nodeID++;
+	globalNodeCount++;
 
 	bool nodeOpen = ImGui::TreeNodeEx("Contexts");
-	if (ImGui::IsItemHovered())
+	//If user performs the action to open the context menu of this node.
+	if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 	{
-		//If user performs the action to open the context menu of this node.
-		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-		{
-			contextNodeIdx = simuCount;
-			contextItemType = ContextItem_MNBVCtxts;
-		}
+		TrackContextItem();
+		contextItemType = ContextItem_MNBVCtxts;
 	}
 
 	if (nodeOpen)
 	{
 		while (mnbvCtxtCount < mnbvCtxts->size() && mnbvCtxt.simulation->id == _simulation->id)
 		{
-			nodeID++;
+			globalNodeCount++;
 			ImGui::PushID(mnbvCtxtCount);
 			//If users is trying to rename this asset.
-			if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingInProgress) && contextNodeIdx == nodeID)
+			if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingInProgress) && globalNodeIdx == globalNodeCount)
 			{
 				std::strcpy(renamingBuffer, mnbvCtxt.name);
 				if (TreeNodeRename(renamingBuffer))
@@ -285,14 +293,14 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 				//If user performs the action to rename this node.
 				if (ImGui::IsItemFocused() && ImGui::IsKeyDown(ImGuiKey_F2))
 				{
+					TrackContextItem();
 					Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
-					contextNodeIdx = nodeID;
 				}
 
 				//If user performs the action to open the context menu of this node.
 				if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 				{
-					contextNodeIdx = mnbvCtxtCount;
+					TrackContextItem();
 					contextItemType = ContextItem_MNBVCtxt;
 				}
 
@@ -309,6 +317,13 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 		ImGui::TreePop();
 	}
 	
+}
+
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::TrackContextItem() noexcept
+{
+	globalNodeIdx = globalNodeCount;
+	simuIdx = simuCount;
+	mnbvCtxtIdx = mnbvCtxtCount;
 }
 
 bool ECellEngine::Editor::Widget::ModelHierarchyWidget::TreeNodeRename(char* _nameBuffer)
