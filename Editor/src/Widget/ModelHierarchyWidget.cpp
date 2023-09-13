@@ -12,104 +12,118 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::Draw()
 {
 	if (ImGui::Begin("Model Hierarchy"))
 	{
+		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Background);
+
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 		{
 			if (ImGui::IsWindowHovered())
 			{
-				contextItemType = ContextItem_Background;
+				ImGui::OpenPopup("HierarchyContextMenu");
+				hierarchyLevel = hierarchyLevelAccumulator;
 			}
 		}
 
 		DrawHierarchy();
 
-		switch (contextItemType)
-		{
-		case (ContextItem_Background):
-		{
-			ImGui::OpenPopup("HierarchyBgContext");
-			break;
-		}
-
-		case (ContextItem_Simulation):
-		{
-			ImGui::OpenPopup("HierarchySimulation");
-			break;
-		}
-
-		//All the MNBVContexts in a simulation
-		case (ContextItem_MNBVCtxts):
-		{
-			ImGui::OpenPopup("HierarchyMNBVCtxts");
-			break;
-		}
-
-		//A single MNBVContext
-		case (ContextItem_MNBVCtxt):
-		{
-			ImGui::OpenPopup("HierarchyMNBVCtxt");
-			break;
-		}
-
-		}
-
 		DrawContextMenu();
+
+		Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Background);
 	}
 	ImGui::End();
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
-{	
-	if (ImGui::BeginPopup("HierarchyBgContext"))
+{
+	if (ImGui::BeginPopup("HierarchyContextMenu"))
 	{
-		if (ImGui::MenuItem("Add Simulation"))
+		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Background))
 		{
-			editor->engine.GetCommandsManager().ProcessCommand("addSimulation", ECellEngine::IO::EmptyCommandArgs());
-			openedNodes.push_back(0);
+			if (ImGui::MenuItem("Add Simulation"))
+			{
+				editor->engine.GetCommandsManager().ProcessCommand("addSimulation", ECellEngine::IO::EmptyCommandArgs());
+				openedNodes.push_back(0);
+
+				hierarchyLevel = HierarchyLevel_None;
+			}
 		}
-		ImGui::EndPopup();
+
+		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Simulation))
+		{
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Delete Simulation"))
+			{
+				ECellEngine::Logging::Logger::LogDebug("Clicked on Delete Simulation");
+
+				//TODO: Delete Simulation
+				//TODO: Delete MNBVContexts
+
+				hierarchyLevel = HierarchyLevel_None;
+			}
+		}
+
+		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_MNBVCtxts))
+		{
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Add Context"))
+			{
+				editor->GetCommandsManager().ProcessCommand("addMNBVCtxt", ECellEngine::Editor::IO::AddMNBVContextCommandArgs({ simuManager.GetSimulation(simuIdx)->id }));
+
+				hierarchyLevel = HierarchyLevel_None;
+			}
+		}
+
+		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_MNBVCtxt))
+		{
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Delete Context"))
+			{
+				ECellEngine::Logging::Logger::LogDebug("Clicked on Delete Context");
+
+				hierarchyLevel = HierarchyLevel_None;
+			}
+
+			/*if (ImGui::MenuItem("Rename Context"))
+			{
+				Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
+				globalNodeIdx = simuIdx;
+
+				hierarchyLevel = HierarchyLevel_None;
+			}*/
+		}
+		
+		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Leafs))
+		{
+			ImGui::Separator();
+			ImGui::Text("This is the context menu of the leafs");
+
+			hierarchyLevel = HierarchyLevel_None;
+		}
+
+		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Leaf))
+		{
+			ImGui::Separator();
+			ImGui::Text("This is the context menu of the leaf");
+
+			hierarchyLevel = HierarchyLevel_None;
+		}
+
+
+		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_MNBVCtxt) ||
+			Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Simulation))
+		{
+			ImGui::Separator();
+			if (ImGui::MenuItem("Rename"))
+			{
+				Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
+
+				hierarchyLevel = HierarchyLevel_None;
+			}
+		}
+		ImGui::EndPopup();		
 	}
-
-	if (ImGui::BeginPopup("HierarchySimulation"))
-	{
-		if (ImGui::MenuItem("Delete Simulation"))
-		{
-			ECellEngine::Logging::Logger::LogDebug("Clicked on Delete Simulation");
-
-			//TODO: Delete Simulation
-			//TODO: Delete MNBVContexts
-		}
-
-		if (ImGui::MenuItem("Rename"))
-		{
-			Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
-		}
-		ImGui::EndPopup();
-	}
-	
-	if(ImGui::BeginPopup("HierarchyMNBVCtxts"))
-	{
-		if (ImGui::MenuItem("Add Context"))
-		{
-			editor->GetCommandsManager().ProcessCommand("addMNBVCtxt", ECellEngine::Editor::IO::AddMNBVContextCommandArgs({ simuManager.GetSimulation(simuIdx)->id }));
-		}
-		ImGui::EndPopup();
-	}
-
-	if(ImGui::BeginPopup("HierarchyMNBVCtxt"))
-	{
-		if (ImGui::MenuItem("Delete Context"))
-		{
-			ECellEngine::Logging::Logger::LogDebug("Clicked on Delete Context");
-		}
-
-		if (ImGui::MenuItem("Rename"))
-		{
-			Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
-		}
-
-		ImGui::EndPopup();
-	}
-	contextItemType = ContextItem_None;
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
@@ -117,6 +131,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 	globalNodeCount = 0;
 	mnbvCtxtCount = 0;
 	simuCount = 0;
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Simulation);
 	for (std::vector<std::unique_ptr<Core::Simulation>>::iterator it = simuManager.GetSimulations().begin(); it != simuManager.GetSimulations().end(); it++)
 	{
 		globalNodeCount++;
@@ -140,7 +155,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 		else
 		{
 			bool nodeOpen = ImGui::TreeNodeEx(it->get()->GetName());
-			
+
 			//If user performs the action to rename this node.
 			if (ImGui::IsItemFocused() && ImGui::IsKeyDown(ImGuiKey_F2))
 			{
@@ -152,7 +167,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
 				TrackContextItem();
-				contextItemType = ContextItem_Simulation;
+				hierarchyLevel = hierarchyLevelAccumulator;
 			}
 
 			if (nodeOpen)
@@ -165,6 +180,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 		simuCount++;
 		ImGui::PopID();
 	}
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Simulation);
 }
 
 template<typename LeafType, typename NameAccessorType>
@@ -173,16 +189,20 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsList(c
 	globalNodeCount++;
 	if (_leafs.size() > 0)
 	{
+		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Leafs);
 		if (ImGui::TreeNodeEx(_leafsListName))
 		{
+			Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Leaf);
 			for (auto _leaf : _leafs)
 			{
 				globalNodeCount++;
 				ImGui::TreeNodeEx(_nameAccessor(_leaf), leafNodeFlags);
 				ImGui::TreePop();
 			}
+			Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Leaf);
 			ImGui::TreePop();
 		}
+		Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Leafs);
 	}
 }
 
@@ -192,21 +212,25 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsUMap(c
 	globalNodeCount++;
 	if (_leafs.size() > 0)
 	{
+		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Leafs);
 		if (ImGui::TreeNodeEx(_leafsListName))
 		{
+			Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Leaf);
 			for (auto [_leafKey, _leaf] : _leafs)
 			{
 				globalNodeCount++;
 				ImGui::TreeNodeEx(_nameAccessor(_leaf), leafNodeFlags);
 				ImGui::TreePop();
 			}
+			Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Leaf);
 			ImGui::TreePop();
 		}
+		Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Leafs);
 	}
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MNBV::ModelNodeBasedViewerContext& _mnbvCtxt)
-{	
+{
 	static NameAccessorByRef nameAccessorByRef;
 
 	DrawHierarchyLeafsList("Arithmetic Nodes", _mnbvCtxt, _mnbvCtxt.arithmeticOperationNodes, nameAccessorByRef);
@@ -214,7 +238,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 	DrawHierarchyLeafsList("Asset Nodes", _mnbvCtxt, _mnbvCtxt.assetNodes, nameAccessorByRef);
 
 	DrawHierarchyLeafsList("Equation Nodes", _mnbvCtxt, _mnbvCtxt.equationNodes, nameAccessorByRef);
-		
+
 	DrawHierarchyLeafsList("Line Plot Nodes", _mnbvCtxt, _mnbvCtxt.linePlotNodes, nameAccessorByRef);
 
 	DrawHierarchyLeafsList("Logic Nodes", _mnbvCtxt, _mnbvCtxt.logicOperationNodes, nameAccessorByRef);
@@ -228,9 +252,9 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 	DrawHierarchyLeafsList("Solver Nodes", _mnbvCtxt, _mnbvCtxt.solverNodes, nameAccessorByRef);
 
 	DrawHierarchyLeafsList("Species Nodes", _mnbvCtxt, _mnbvCtxt.speciesNodes, nameAccessorByRef);
-		
+
 	DrawHierarchyLeafsList("Time Nodes", _mnbvCtxt, _mnbvCtxt.timeNodes, nameAccessorByRef);
-		
+
 	DrawHierarchyLeafsList("Trigger Nodes", _mnbvCtxt, _mnbvCtxt.triggerNodes, nameAccessorByRef);
 
 	DrawHierarchyLeafsList("Value Nodes", _mnbvCtxt, _mnbvCtxt.valueFloatNodes, nameAccessorByRef);
@@ -256,16 +280,18 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 
 	globalNodeCount++;
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_MNBVCtxts);
 	bool nodeOpen = ImGui::TreeNodeEx("Contexts");
 	//If user performs the action to open the context menu of this node.
 	if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 	{
 		TrackContextItem();
-		contextItemType = ContextItem_MNBVCtxts;
+		hierarchyLevel = hierarchyLevelAccumulator;
 	}
 
 	if (nodeOpen)
 	{
+		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_MNBVCtxt);
 		while (mnbvCtxtCount < mnbvCtxts->size() && mnbvCtxt.simulation->id == _simulation->id)
 		{
 			globalNodeCount++;
@@ -301,7 +327,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 				if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 				{
 					TrackContextItem();
-					contextItemType = ContextItem_MNBVCtxt;
+					hierarchyLevel = hierarchyLevelAccumulator;
 				}
 
 				if (nodeOpen)
@@ -314,9 +340,10 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 			mnbvCtxtCount++;
 			ImGui::PopID();
 		}
+		Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_MNBVCtxt);
 		ImGui::TreePop();
 	}
-	
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_MNBVCtxts);	
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::TrackContextItem() noexcept
