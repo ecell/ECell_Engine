@@ -36,15 +36,29 @@ namespace ECellEngine::Editor::Widget
 		{
 			HierarchyContext_None = 0,
 			HierarchyContext_RenamingInProgress = 1 << 0,
-			HierarchyContext_RenamingDone = 1 << 1,
-			HierarchyContext_RenamedNodeWasOpen = 1 << 2,
+			//HierarchyContext_RenamingDone = 1 << 1,
+			//HierarchyContext_RenamedNodeWasOpen = 1 << 2,
 			HierarchyContext_RightClick = 1 << 3,
-			HierarchyContext_RightClickOnBackground = 1 << 4,
-			HierarchyContext_RightClickOnSimulationNode = 1 << 5,
-			HierarchyContext_RightClickOnMNBVCtxtNode = 1 << 6,
+			//HierarchyContext_RightClickOnBackground = 1 << 4,
+			//HierarchyContext_RightClickOnSimulationNode = 1 << 5,
+			//HierarchyContext_RightClickOnMNBVCtxtNode = 1 << 6,
 
 			//to continue as needed
 
+		};
+
+		enum ContextItem
+		{
+			ContextItem_None = 0,
+			ContextItem_Background = 1 << 0, //right click on background
+			ContextItem_Simulation = 1 << 1, //right click on a simulation node
+			ContextItem_DataState = 1 << 2, //right click on the data state node of a simulation node
+			ContextItem_DataStateLeaf = 1 << 3, //right click on a data state leaf node
+			ContextItem_DataStateLeafs = 1 << 4, //right click on the node containing the leafs of data state elements
+			ContextItem_MNBVCtxt = 1 << 5, //right click on a MNBVContext node
+			ContextItem_MNBVCtxts = 1 << 6, //right click on the node containing the MNBVContext nodes
+			ContextItem_MNBVCtxtNodeLeaf = 1 << 7, //right click on a leaf node in a MNBVContext node
+			ContextItem_MNBVCtxtNodeLeafs = 1 << 8, //right click on the node containing the leafs of MNBVContext nodes
 		};
 
 		/*!
@@ -89,7 +103,13 @@ namespace ECellEngine::Editor::Widget
 		@details This index is the position of the item within every items draw
 				in this hierarchy.
 		*/
-		short contextNodeIdx = 0;
+		unsigned short contextNodeIdx = 0;
+
+		unsigned char simuCount = 0;
+
+		unsigned int mnbvCtxtCount = 0;
+
+		ContextItem contextItemType = ContextItem_None;
 
 		/*!
 		@brief The buffer to store the new name of the item being renamed.
@@ -182,13 +202,9 @@ namespace ECellEngine::Editor::Widget
 		/*!
 		@brief Draws the subparts of the hierarchy corresponding to the
 				simulation.
-		@param _out_mnbvCtxtStartIdx The index of the current MNBV context in the
-									 list of MNBV contexts of ::simuManager. This
-									 used to count the number of context that have
-									 been drawn in between simulation nodes.
 		@param _simulation The simulation to draw the hierarchy of.
 		*/
-		void DrawSimulationHierarchy(int& _out_mnbvCtxtStartIdx, ECellEngine::Core::Simulation* _simulation);
+		void DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation);
 		
 		/*!
 		@brief Logic to handle the renaming of a node in the hierarchy.
