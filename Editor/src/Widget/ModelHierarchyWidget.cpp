@@ -129,22 +129,19 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 		else
 		{
 			bool nodeOpen = ImGui::TreeNodeEx(it->get()->GetName());
-
-			if (ImGui::IsItemHovered())
+			
+			//If user performs the action to rename this node.
+			if (ImGui::IsItemFocused() && ImGui::IsKeyDown(ImGuiKey_F2))
 			{
-				//If user performs the action to rename this node.
-				if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-				{
-					Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
-					contextNodeIdx = nodeID;
-				}
+				Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
+				contextNodeIdx = nodeID;
+			}
 
-				//If user performs the action to open the context menu of this node.
-				if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-				{
-					contextNodeIdx = simuCount;
-					contextItemType = ContextItem_Simulation;
-				}
+			//If user performs the action to open the context menu of this node.
+			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+			{
+				contextNodeIdx = simuCount;
+				contextItemType = ContextItem_Simulation;
 			}
 
 			if (nodeOpen)
@@ -285,21 +282,18 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 			{
 				bool nodeOpen = ImGui::TreeNodeEx(mnbvCtxt.GetName());
 
-				if (ImGui::IsItemHovered())
+				//If user performs the action to rename this node.
+				if (ImGui::IsItemFocused() && ImGui::IsKeyDown(ImGuiKey_F2))
 				{
-					//If user performs the action to rename this node.
-					if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-					{
-						Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
-						contextNodeIdx = nodeID;
-					}
+					Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
+					contextNodeIdx = nodeID;
+				}
 
-					//If user performs the action to open the context menu of this node.
-					if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-					{
-						contextNodeIdx = mnbvCtxtCount;
-						contextItemType = ContextItem_MNBVCtxt;
-					}
+				//If user performs the action to open the context menu of this node.
+				if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+				{
+					contextNodeIdx = mnbvCtxtCount;
+					contextItemType = ContextItem_MNBVCtxt;
 				}
 
 				if (nodeOpen)
