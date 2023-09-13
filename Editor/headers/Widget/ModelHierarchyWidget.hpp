@@ -47,6 +47,10 @@ namespace ECellEngine::Editor::Widget
 
 		};
 
+		/*!
+		@brief The binary flags to indicate the type of the item currently being
+				acted upon.
+		*/
 		enum ContextItem
 		{
 			ContextItem_None = 0,
@@ -92,23 +96,51 @@ namespace ECellEngine::Editor::Widget
 	private:
 
 		/*!
-		@brief A buffer to ID the node currently being drawn.
+		@brief A tracker to the index of the node currently being drawn.
 		@details Effectively, it follows the number of nodes. Therefore, it is also
 				 the index of the node in the hierarchy tree (depth first).
 		*/
-		short nodeID = 0;
+		unsigned short globalNodeCount = 0;
 
 		/*!
-		@brief The index of the item currently being acted upon.
+		@brief A buffer of the index of the node currently being acted upon.
 		@details This index is the position of the item within every items draw
-				in this hierarchy.
+				in this hierarchy. In effect, when the user interacts with a node
+				in the hierarchy, it is set equal to ::globalNodeCount.
 		*/
-		unsigned short contextNodeIdx = 0;
+		unsigned short globalNodeIdx = 0;
 
+		/*!
+		@brief A tracker to the index of the simulation currently being drawn.
+		@details It follows the index of the simulation in ::simuManager.simulations.
+		*/
 		unsigned char simuCount = 0;
 
+		/*!
+		@brief A buffer of the index of the simulation currently being acted upon or
+				for which a child node is being acted upon.
+		@details When the user interacts with a simulation node in the hierarchy, or
+				 one of its children nodes,it is set equal to ::simuCount.
+		*/
+		unsigned char simuIdx = 0;
+
+		/*!
+		@brief A tracker to the index of the MNBV context currently being drawn.
+		@details It follows the index of the MNBV context in ::mnbvCtxts.
+		*/
 		unsigned int mnbvCtxtCount = 0;
 
+		/*!
+		@brief A buffer of the index of the MNBV context currently being acted upon or
+				for which a child node is being acted upon.
+		@details When the user interacts with a MNBV context node in the hierarchy, or
+				 one of its children nodes,it is set equal to ::mnbvCtxtCount.
+		*/
+		unsigned int mnbvCtxtIdx = 0;
+
+		/*!
+		@brief A buffer for the type of the item currently being acted upon.
+		*/
 		ContextItem contextItemType = ContextItem_None;
 
 		/*!
@@ -206,6 +238,13 @@ namespace ECellEngine::Editor::Widget
 		*/
 		void DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation);
 		
+		/*!
+		@brief A convenience function to assign the values of ::globalNodeIdx,
+					::simuIdx and ::mnbvCtxtIdx to the value of ::globalNodeCount,
+					::simuCount and ::mnbvCtxtCount respectively.
+		*/
+		void TrackContextItem() noexcept;
+
 		/*!
 		@brief Logic to handle the renaming of a node in the hierarchy.
 		@details This is called when the user double clicks on a node in the
