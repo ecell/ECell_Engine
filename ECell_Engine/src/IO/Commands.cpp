@@ -290,7 +290,7 @@ bool ECellEngine::IO::ModuleSolverDisconnectionCommand::Execute()
 		return false;
 	}
 
-	(*simuSearch.second)->RemoveModuleSolverLink(linkSearch.second);
+	(*simuSearch.second)->EraseModuleSolverLink(linkSearch.second);
 	return true;
 }
 

@@ -76,8 +76,8 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 		{
 			if (ImGui::MenuItem("Delete Context"))
 			{
-				editor->GetCommandsManager().ProcessCommand("removeMNBVCtxt",
-					ECellEngine::Editor::IO::RemoveMNBVContextCommandArgs({ mnbvCtxtIdx }));
+				editor->GetCommandsManager().ProcessCommand("eraseMNBVCtxt",
+					ECellEngine::Editor::IO::EraseMNBVContextCommandArgs({ mnbvCtxtIdx }));
 
 				hierarchyLevel = HierarchyLevel_None;
 			}

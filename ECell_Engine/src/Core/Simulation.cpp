@@ -26,6 +26,84 @@ std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::stri
 	return nullptr;
 }
 
+void ECellEngine::Core::Simulation::EraseModule(std::vector<std::shared_ptr<Data::Module>>::iterator _moduleIt)
+{
+	// -- Erase the module from the ::modules list --
+	// 
+	//Erase the module from the ::modules list
+	modules.erase(_moduleIt);
+
+	// -- Erase the pairs with the module index from the ::moduleSolverLinks list --
+
+	//Make a pair with the module index (and a dummy value for the solver index)
+	std::pair<std::size_t, std::size_t> value(std::distance(modules.begin(), _moduleIt), 0);
+
+	//Find the Range of the module in the ::moduleSolverLinks list
+	static CompareLinksFirst compareLinksFirst;
+	std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = Util::BinarySearch::LowerBound(moduleSolverLinks.begin(), moduleSolverLinks.end(), value, compareLinksFirst);
+
+	//if at least one pair was found with the module index
+	if (lowerBound->first == value.first)
+	{
+		//Search for the upper bound of the links that have the same module index
+		std::vector<std::pair<std::size_t, std::size_t>>::iterator upperBound = Util::BinarySearch::UpperBound(lowerBound, moduleSolverLinks.end(), value, compareLinksFirst);
+
+		//Erase the all pairs with the moduleIdx from the ::moduleSolverLinks list
+		moduleSolverLinks.erase(lowerBound, upperBound);
+
+		//decrement the module index of the links that have a module index greater than the deleted module index
+		for (std::vector<std::pair<std::size_t, std::size_t>>::iterator it = upperBound; it != moduleSolverLinks.end(); ++it)
+		{
+			(*it).first--;
+		}
+	}
+}
+
+void ECellEngine::Core::Simulation::EraseModuleSolverLink(std::vector<std::pair<std::size_t, std::size_t>>::iterator _linkIt)
+{
+	solvers[_linkIt->second]->Clear();
+
+	//Erase the link from the ::moduleSolverLinks list
+	moduleSolverLinks.erase(_linkIt);
+}
+
+void ECellEngine::Core::Simulation::EraseSolver(std::vector<std::shared_ptr<Solvers::Solver>>::iterator _solverIt)
+{
+	//Erase the solver from the ::solvers list
+	solvers.erase(_solverIt);
+
+	// -- Erase the pairs with the solver index from the ::moduleSolverLinks list --
+	static CompareLinksFirst compareLinksFirst;
+	static CompareLinksSecond compareLinksSecond;
+
+	//Make a pair with the solver index (and a dummy value for the module index)
+	std::pair<std::size_t, std::size_t> value(0, std::distance(solvers.begin(), _solverIt));
+	std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = moduleSolverLinks.begin();
+
+	//Iterate on all ranges starting with an identical module index and delete the links that have the target solver index
+	for (std::size_t currentModuleidx = 0; currentModuleidx < modules.size(); ++currentModuleidx)
+	{
+		//Find the range of the links that have the same module index (and therefore where the solver index might be)
+		value.first = currentModuleidx;
+		std::vector<std::pair<std::size_t, std::size_t>>::iterator upperBound = Util::BinarySearch::UpperBound(lowerBound, moduleSolverLinks.end(), value, compareLinksFirst);
+
+		//Find the lower bound of the links relatively to the solver index in the range found above
+		std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = Util::BinarySearch::LowerBound(lowerBound, upperBound, value, compareLinksSecond);
+
+		//If the lower bound has the same solver index as the one we are looking for, delete it
+		if (lowerBound->second == value.second)
+		{
+			lowerBound = moduleSolverLinks.erase(lowerBound);
+		}
+
+		//In any case, decrement the solver index of the links which have a solver index greater than the target solver index
+		for (std::vector<std::pair<std::size_t, std::size_t>>::iterator it = lowerBound; it != upperBound; ++it)
+		{
+			(*it).second--;
+		}
+	}
+}
+
 std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Data::Module>>::iterator> ECellEngine::Core::Simulation::FindModule(const std::size_t _moduleID)
 {
 	static Data::Module::CompareID compareID;
@@ -84,84 +162,6 @@ std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iter
 		return std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator>(true, it);
 	}
 	return std::pair<bool, std::vector<std::shared_ptr<ECellEngine::Solvers::Solver>>::iterator>(false, it);
-}
-
-void ECellEngine::Core::Simulation::RemoveModule(std::vector<std::shared_ptr<Data::Module>>::iterator _moduleIt)
-{
-	// -- Remove the module from the ::modules list --
-	// 
-	//Erase the module from the ::modules list
-	modules.erase(_moduleIt);
-
-	// -- Remove the pairs with the module index from the ::moduleSolverLinks list --
-
-	//Make a pair with the module index (and a dummy value for the solver index)
-	std::pair<std::size_t, std::size_t> value(std::distance(modules.begin(), _moduleIt), 0);
-
-	//Find the Range of the module in the ::moduleSolverLinks list
-	static CompareLinksFirst compareLinksFirst;
-	std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = Util::BinarySearch::LowerBound(moduleSolverLinks.begin(), moduleSolverLinks.end(), value, compareLinksFirst);
-	
-	//if at least one pair was found with the module index
-	if (lowerBound->first == value.first)
-	{
-		//Search for the upper bound of the links that have the same module index
-		std::vector<std::pair<std::size_t, std::size_t>>::iterator upperBound = Util::BinarySearch::UpperBound(lowerBound, moduleSolverLinks.end(), value, compareLinksFirst);
-		
-		//Erase the all pairs with the moduleIdx from the ::moduleSolverLinks list
-		moduleSolverLinks.erase(lowerBound, upperBound);
-
-		//decrement the module index of the links that have a module index greater than the deleted module index
-		for (std::vector<std::pair<std::size_t, std::size_t>>::iterator it = upperBound; it != moduleSolverLinks.end(); ++it)
-		{
-			(*it).first--;
-		}
-	}
-}
-
-void ECellEngine::Core::Simulation::RemoveModuleSolverLink(std::vector<std::pair<std::size_t, std::size_t>>::iterator _linkIt)
-{
-	solvers[_linkIt->second]->Clear();
-
-	//Erase the link from the ::moduleSolverLinks list
-	moduleSolverLinks.erase(_linkIt);
-}
-
-void ECellEngine::Core::Simulation::RemoveSolver(std::vector<std::shared_ptr<Solvers::Solver>>::iterator _solverIt)
-{
-	//Erase the solver from the ::solvers list
-	solvers.erase(_solverIt);
-
-	// -- Remove the pairs with the solver index from the ::moduleSolverLinks list --
-	static CompareLinksFirst compareLinksFirst;
-	static CompareLinksSecond compareLinksSecond;
-
-	//Make a pair with the solver index (and a dummy value for the module index)
-	std::pair<std::size_t, std::size_t> value(0, std::distance(solvers.begin(), _solverIt));
-	std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = moduleSolverLinks.begin();
-
-	//Iterate on all ranges starting with an identical module index and delete the links that have the target solver index
-	for (std::size_t currentModuleidx = 0; currentModuleidx < modules.size(); ++currentModuleidx)
-	{
-		//Find the range of the links that have the same module index (and therefore where the solver index might be)
-		value.first = currentModuleidx;
-		std::vector<std::pair<std::size_t, std::size_t>>::iterator upperBound = Util::BinarySearch::UpperBound(lowerBound, moduleSolverLinks.end(), value, compareLinksFirst);
-
-		//Find the lower bound of the links relatively to the solver index in the range found above
-		std::vector<std::pair<std::size_t, std::size_t>>::iterator lowerBound = Util::BinarySearch::LowerBound(lowerBound, upperBound, value, compareLinksSecond);
-
-		//If the lower bound has the same solver index as the one we are looking for, delete it
-		if (lowerBound->second == value.second)
-		{
-			lowerBound = moduleSolverLinks.erase(lowerBound);
-		}
-
-		//In any case, decrement the solver index of the links which have a solver index greater than the target solver index
-		for (std::vector<std::pair<std::size_t, std::size_t>>::iterator it = lowerBound; it != upperBound; ++it)
-		{
-			(*it).second--;
-		}
-	}
 }
 
 void ECellEngine::Core::Simulation::Reset() noexcept

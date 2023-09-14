@@ -38,6 +38,41 @@ bool ECellEngine::Editor::IO::AddMNBVContextCommand::Execute()
 	receiver.AddModelNodeBasedViewerContext(simuSearch.second->get());
 }
 
+bool ECellEngine::Editor::IO::EraseMNBVContextCommand::DecodeParameters(const std::vector<std::string>& _args)
+{
+	if ((unsigned char)_args.size() != nbArgs)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseMNBVContextCommand Failed: Wrong number of arguments. Expected %llu, got %u.", nbArgs, _args.size());
+		return false;
+	}
+
+	unsigned short contextIdx = 0;
+	try
+	{
+		contextIdx = std::stoul(_args[1]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseMNBVContextCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a Model Node-Based Viewer (MNBV) Context", _args[1].c_str());
+		return false;
+	}
+
+	args.contextIdx = contextIdx;
+
+	return true;
+}
+
+bool ECellEngine::Editor::IO::EraseMNBVContextCommand::Execute()
+{
+	if (!receiver.EraseModelNodeBasedViewerContext(args.contextIdx))
+	{
+		ECellEngine::Logging::Logger::LogError("EraseMNBVContextCommand Failed: Could not erase the Model Node-Based Viewer (MNBV) Context at index %u.", args.contextIdx);
+		return false;
+	}
+
+	return true;
+}
+
 bool ECellEngine::Editor::IO::FocusNodeCommand::DecodeParameters(const std::vector<std::string>& _args)
 {
 	if ((unsigned char)_args.size() != nbArgs)
@@ -88,41 +123,6 @@ bool ECellEngine::Editor::IO::FocusNodeCommand::Execute()
 	if (!receiver.FocusNode(args.contextIdx, args.nodeID))
 	{
 		ECellEngine::Logging::Logger::LogError("FocusNodeCommand Failed: Could not focus on node with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
-		return false;
-	}
-
-	return true;
-}
-
-bool ECellEngine::Editor::IO::RemoveMNBVContextCommand::DecodeParameters(const std::vector<std::string>& _args)
-{
-	if ((unsigned char)_args.size() != nbArgs)
-	{
-		ECellEngine::Logging::Logger::LogError("RemoveMNBVContextCommand Failed: Wrong number of arguments. Expected %llu, got %u.", nbArgs, _args.size());
-		return false;
-	}
-
-	unsigned short contextIdx = 0;
-	try
-	{
-		contextIdx = std::stoul(_args[1]);
-	}
-	catch (const std::invalid_argument& _e)
-	{
-		ECellEngine::Logging::Logger::LogError("RemoveMNBVContextCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a Model Node-Based Viewer (MNBV) Context", _args[1].c_str());
-		return false;
-	}
-
-	args.contextIdx = contextIdx;
-
-	return true;
-}
-
-bool ECellEngine::Editor::IO::RemoveMNBVContextCommand::Execute()
-{
-	if (!receiver.RemoveModelNodeBasedViewerContext(args.contextIdx))
-	{
-		ECellEngine::Logging::Logger::LogError("RemoveMNBVContextCommand Failed: Could not remove the Model Node-Based Viewer (MNBV) Context at index %u.", args.contextIdx);
 		return false;
 	}
 

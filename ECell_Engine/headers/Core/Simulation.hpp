@@ -234,6 +234,39 @@ namespace ECellEngine::Core
 			Util::StrCopy(name, _name, sizeof(name));
 		}
 
+		/*!
+		@brief Erases the module at the position @p _moduleIt in ::modules as
+				well as the module-solver links in ::moduleSolverLinks which
+				contains the ID of the module to erase.
+		@details Also maintains the integrity of ::moduleSolverLinks by decrementing
+				 the moduleIdx of all the pairs <moduleIdx, solverIdx> which have
+				 a moduleIdx greater than the moduleIdx of the module to erase.
+		@param _moduleIt The iterator pointing to the module to erase.
+		@remarks Does not check whether _moduleIt is actually in ::modules. To
+				 make sure this is the case, use ::FindModule(const std::size_t _moduleID)
+		*/
+		void EraseModule(std::vector<std::shared_ptr<Data::Module>>::iterator _moduleIt);
+
+		/*!
+		@brief Erases the module-solver link at the position @p _linkIt in
+				::moduleSolverLinks.
+		@param _linkIt The iterator pointing to the module-solver link to erase.
+		*/
+		void EraseModuleSolverLink(std::vector<std::pair<std::size_t, std::size_t>>::iterator _linkIt);
+
+		/*!
+		@brief Erases the solver at the position @p _solverIt in ::solvers as
+				well as the module-solver links in ::moduleSolverLinks which
+				contains the ID of the solver to erase.
+		@details Also maintains the integrity of ::moduleSolverLinks by decrementing
+				 the solverIdx of all the pairs <moduleIdx, solverIdx> which have
+				 a solverIdx greater than the solverIdx of the solver to erase.
+		@param _solverIt The iterator pointing to the solver to erase.
+		@remarks Does not check whether @p _solverIt is actually in ::solvers. To
+				 make sure this is the case, use ::FindSolver(const std::size_t _solverID)
+		*/
+		void EraseSolver(std::vector<std::shared_ptr<Solvers::Solver>>::iterator _solverIt);
+
 		/*
 		@brief Finds the iterator of the module which ID matches the argument
 				@p _moduleID.
@@ -304,39 +337,6 @@ namespace ECellEngine::Core
 		{
 			dependenciesDB.RefreshDependencies(dataState);
 		}
-
-		/*!
-		@brief Erases the module at the position @p _moduleIt in ::modules as
-				well as the module-solver links in ::moduleSolverLinks which
-				contains the ID of the module to remove.
-		@details Also maintains the integrity of ::moduleSolverLinks by decrementing
-				 the moduleIdx of all the pairs <moduleIdx, solverIdx> which have
-				 a moduleIdx greater than the moduleIdx of the module to remove.
-		@param _moduleIt The iterator pointing to the module to remove.
-		@remarks Does not check whether _moduleIt is actually in ::modules. To
-				 make sure this is the case, use ::FindModule(const std::size_t _moduleID)
-		*/
-		void RemoveModule(std::vector<std::shared_ptr<Data::Module>>::iterator _moduleIt);
-
-		/*!
-		@brief Erases the module-solver link at the position @p _linkIt in
-				::moduleSolverLinks.
-		@param _linkIt The iterator pointing to the module-solver link to remove.
-		*/
-		void RemoveModuleSolverLink(std::vector<std::pair<std::size_t, std::size_t>>::iterator _linkIt);
-
-		/*!
-		@brief Erases the solver at the position @p _solverIt in ::solvers as
-				well as the module-solver links in ::moduleSolverLinks which
-				contains the ID of the solver to remove.
-		@details Also maintains the integrity of ::moduleSolverLinks by decrementing
-				 the solverIdx of all the pairs <moduleIdx, solverIdx> which have
-				 a solverIdx greater than the solverIdx of the solver to remove.
-		@param _solverIt The iterator pointing to the solver to remove.
-		@remarks Does not check whether @p _solverIt is actually in ::solvers. To
-				 make sure this is the case, use ::FindSolver(const std::size_t _solverID)
-		*/
-		void RemoveSolver(std::vector<std::shared_ptr<Solvers::Solver>>::iterator _solverIt);
 
 		/*!
 		@brief Resets all the data state and solvers of this simulation.

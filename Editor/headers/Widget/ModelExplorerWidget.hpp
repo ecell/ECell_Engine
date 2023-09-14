@@ -80,8 +80,8 @@ namespace ECellEngine::Editor::Widget
 		@details The contexts are sorted by the id of the simulation they are
 				 based on.
 		@remark There is always at least one context in this vector. In particular
-				::RemoveModelNodeBasedViewerContext(std::size_t _idx) will never
-				remove the last context.
+				::EraseModelNodeBasedViewerContext(std::size_t _idx) will never
+				erase the last context.
 		@see ECellEngine::Editor::Utility::ModelNodeBasedViewerContext
 		*/
 		std::vector<MNBV::ModelNodeBasedViewerContext> mnbvCtxts;
@@ -170,30 +170,46 @@ namespace ECellEngine::Editor::Widget
 		/*!
 		@brief Retrieves the pointer to ::modelHierarchy
 		*/
-		inline ModelHierarchyWidget* GetModelHierarchy() noexcept
+		/*inline ModelHierarchyWidget& GetModelHierarchy() noexcept
 		{
-			return &modelHierarchy;
-		}
+			return modelHierarchy;
+		}*/
 
 		/*!
 		@brief Retrieves the pointer to the model node-based viewer at index
 				@p _idx in ::mnbViewers.
 		@param _idx The index of the viewer to retrieve in ::mnbViewers.
 		*/
-		inline MNBV::ModelNodeBasedViewerWidget* GetMNBViewer(const std::size_t _idx) noexcept
+		/*inline MNBV::ModelNodeBasedViewerWidget& GetMNBViewer(const std::size_t _idx) noexcept
 		{
-			return &mnbViewers[_idx];
-		}
+			return mnbViewers[_idx];
+		}*/
 
 		/*!
 		@brief Retrieves the pointer to the node editor style data at index
 				@p _idx in ::mnbvCtxts.
 		@param _idx The index of the style struct to retrieve in ::mnbvCtxts.
 		*/
-		inline MNBV::ModelNodeBasedViewerContext* GetModelNodeBasedViewerContext(std::size_t _idx)
+		/*inline MNBV::ModelNodeBasedViewerContext& GetModelNodeBasedViewerContext(std::size_t _idx)
 		{
-			return &mnbvCtxts[_idx];
-		}
+			return mnbvCtxts[_idx];
+		}*/
+
+		/*!
+		@brief Erases the model node-based viewer at index @p _idx in ::mnbViewers.
+		@param _idx The index of the viewer to erase from ::mnbViewers.
+		@remarks Checks that @p _idx is not out of bounds of ::mnbViewers.
+		*/
+		bool EraseModelNodeBasedViewerWidget(std::size_t _idx);
+
+		/*!
+		@brief Erases the node editor styles struct stored a index @p _idx in
+				::mnbvCtxts.
+		@param _idx The index of the style struct to erase from ::mnbvCtxts.
+		@remarks Checks that @p _idx is not out of bounds of ::mnbvCtxts. Does
+				 not erase the last context.
+		*/
+		bool EraseModelNodeBasedViewerContext(std::size_t _idx);
 
 		/*!
 		@brief Focus on the node with ID @p _nodeID in every possible viewer.
@@ -222,22 +238,6 @@ namespace ECellEngine::Editor::Widget
 				 in use the boolean is false and the iterator is ::ctxtsPerViewer.end().
 		*/
 		std::pair<bool, std::vector<unsigned short>::iterator> IsMNBVContextInUse(std::size_t _idx);
-
-		/*!
-		@brief Erases the model node-based viewer at index @p _idx in ::mnbViewers.
-		@param _idx The index of the viewer to erase from ::mnbViewers.
-		@remarks Checks that @p _idx is not out of bounds of ::mnbViewers.
-		*/
-		bool RemoveModelNodeBasedViewerWidget(std::size_t _idx);
-
-		/*!
-		@brief Erases the node editor styles struct stored a index @p _idx in 
-				::mnbvCtxts.
-		@param _idx The index of the style struct to erase from ::mnbvCtxts.
-		@remarks Checks that @p _idx is not out of bounds of ::mnbvCtxts. Does
-				 not remove the last context.
-		*/
-		bool RemoveModelNodeBasedViewerContext(std::size_t _idx);
 
 		void Awake() override;
 
