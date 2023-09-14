@@ -193,6 +193,34 @@ namespace ECellEngine::Editor::Widget
 		}
 
 		/*!
+		@brief Focus on the node with ID @p _nodeID in every possible viewer.
+				Focusing means the node will be selected and the viewer will
+				center on it.
+		@details Linear search on ::ctxtsPerViewer. Loops through the
+				::ctxtsPerViewer and tries to focus on a node with ID @p _nodeID
+				for all viewers that use the context with index @p _contextIdx.
+		@remark Does not check whether the context at index @p _contextIdx in
+				::mnbvCtxts is currently being displayed in a viewer. See 
+				::IsMNBVContextInUse(std::size_t _idx) for that.
+		@param _contextIdx The index of the context in ::mnbvCtxts to use.
+		@param _nodeID The ID of the node to focus on.
+		@returns @a True if the node was found and focused on. @a False otherwise.
+		*/
+		bool FocusNode(const unsigned short _contextIdx, const unsigned long long _nodeID);
+
+		/*!
+		@brief Checks whether the context at index @p _idx in ::mnbvCtxts is
+				currently being displayed in a viewer.
+		@details Linear search on ::ctxtsPerViewer. Loops through the
+				::ctxtsPerViewer and tests <em> _contextIdx == ctxtsPerViewer[i] </em>.
+		@returns A pair containing a boolean indicating whether the context is
+				 currently being displayed in a viewer and an iterator to the
+				 index of the viewer in ::ctxtsPerViewer. If the context is not
+				 in use the boolean is false and the iterator is ::ctxtsPerViewer.end().
+		*/
+		std::pair<bool, std::vector<unsigned short>::iterator> IsMNBVContextInUse(std::size_t _idx);
+
+		/*!
 		@brief Erases the model node-based viewer at index @p _idx in ::mnbViewers.
 		@param _idx The index of the viewer to erase from ::mnbViewers.
 		@remarks Checks that @p _idx is not out of bounds of ::mnbViewers.

@@ -4,19 +4,19 @@
 
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Awake()
 {
-    //Updates global style values that we want to be applied to every MNBV by default.
-    ax::NodeEditor::SetCurrentEditor(editorCtxt);
+	//Updates global style values that we want to be applied to every MNBV by default.
+	ax::NodeEditor::SetCurrentEditor(editorCtxt);
 
-    ax::NodeEditor::Style& axStyle = ax::NodeEditor::GetStyle();
-    Style::NodeEditorStyle& neStyle = Style::EditorStyle::GetMNBVStyle();
-    axStyle.NodeRounding = neStyle.nodeRounding;
-    axStyle.NodeBorderWidth = neStyle.nodeBorderWidth;
-    axStyle.HoveredNodeBorderWidth = neStyle.hoveredNodeBorderWidth;
-    axStyle.SelectedNodeBorderWidth = neStyle.selectedNodeBorderWidth;
-    axStyle.PinBorderWidth = neStyle.pinBorderWidth;
-    axStyle.PinRounding = neStyle.pinRounding;
+	ax::NodeEditor::Style& axStyle = ax::NodeEditor::GetStyle();
+	Style::NodeEditorStyle& neStyle = Style::EditorStyle::GetMNBVStyle();
+	axStyle.NodeRounding = neStyle.nodeRounding;
+	axStyle.NodeBorderWidth = neStyle.nodeBorderWidth;
+	axStyle.HoveredNodeBorderWidth = neStyle.hoveredNodeBorderWidth;
+	axStyle.SelectedNodeBorderWidth = neStyle.selectedNodeBorderWidth;
+	axStyle.PinBorderWidth = neStyle.pinBorderWidth;
+	axStyle.PinRounding = neStyle.pinRounding;
 
-    ax::NodeEditor::SetCurrentEditor(nullptr);
+	ax::NodeEditor::SetCurrentEditor(nullptr);
 
 	currentMNBVContext = GetCurrentMNBVContext();
 
@@ -38,29 +38,32 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Awake()
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
 {	
 	if (ImGui::Begin("Model Viewer"))
-    {
-        ImGuiIO& io = ImGui::GetIO();
-        ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
-        ImGui::Separator();
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
+		ImGui::Separator();
 
-        ax::NodeEditor::SetCurrentEditor(editorCtxt);
-        //Start interaction with editor.
-        ax::NodeEditor::Begin("Model Exploration Space");
-        currentMNBVContext = GetCurrentMNBVContext();
+		ax::NodeEditor::SetCurrentEditor(editorCtxt);
+		//Start interaction with editor.
+		ax::NodeEditor::Begin("Model Exploration Space");
+		currentMNBVContext = GetCurrentMNBVContext();
 
-        //Checks for incomming Drag & Drop payloads
-        HandleSimuDataRefDrop();
 
-        //Draw the popup menu to choose which node to add (if it is open)
-        DrawNodesPopupMenu();
+		//Checks for incomming Drag & Drop payloads
+		HandleSimuDataRefDrop();
+
+		//Draw the popup menu to choose which node to add (if it is open)
+		DrawNodesPopupMenu();
 
 		if (Util::IsFlagSet(utilityState, MNBVState_ImportAssetPopup))
 		{
 			DrawImportAssetPopup();
 		}
 
-        //Draw the nodes
-        DrawNodes();
+		//Draw the nodes
+		DrawNodes();
+
+		ax::NodeEditor::NavigateToSelection();
 
 		Utility::MNBV::NodeEditorDraw::NodeDestruction();
 
@@ -69,6 +72,12 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::Draw()
 		Utility::MNBV::NodeEditorDraw::StaticLinkDestruction(currentMNBVContext->staticLinks);
 
 		Utility::MNBV::NodeEditorDraw::LinkCreation(currentMNBVContext->dynamicLinks);
+
+		if (Util::IsFlagSet(utilityState, MNBVState_FocusNode))
+		{
+			ax::NodeEditor::NavigateToSelection();
+			Util::ClearFlag(utilityState, MNBVState_FocusNode);
+		}
 
 		// End of interaction with editor.
 		ax::NodeEditor::End();
@@ -575,17 +584,32 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodesPop
 	ax::NodeEditor::Resume();
 }
 
+void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::FocusNode(const std::size_t _nodeID)
+{
+	//Start interaction with editor.
+	ax::NodeEditor::SetCurrentEditor(editorCtxt);
+	ax::NodeEditor::Begin("Model Exploration Space");
+	
+	ax::NodeEditor::SelectNode(_nodeID);
+	Util::SetFlag(utilityState, MNBVState_FocusNode);
+
+	//// End of interaction with editor.
+	ax::NodeEditor::End();
+	ax::NodeEditor::SetCurrentEditor(nullptr);
+
+}
+
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::HandleSimuDataRefDrop()
 {
-    if (ImGui::BeginDragDropTarget())
-    {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ASSET"))
-        {
-            IM_ASSERT(payload->DataSize == sizeof(std::size_t));
-            const std::size_t dataIdx = *(const std::size_t*)payload->Data;
-            //AddAssetNode(ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetModule(dataIdx).get());
-        }
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ASSET"))
+		{
+			IM_ASSERT(payload->DataSize == sizeof(std::size_t));
+			const std::size_t dataIdx = *(const std::size_t*)payload->Data;
+			//AddAssetNode(ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetModule(dataIdx).get());
+		}
 
-        ImGui::EndDragDropTarget();
-    }
+		ImGui::EndDragDropTarget();
+	}
 }

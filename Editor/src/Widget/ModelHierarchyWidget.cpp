@@ -41,7 +41,6 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 			if (ImGui::MenuItem("Add Simulation"))
 			{
 				editor->engine.GetCommandsManager().ProcessCommand("addSimulation", ECellEngine::IO::EmptyCommandArgs());
-				openedNodes.push_back(0);
 
 				hierarchyLevel = HierarchyLevel_None;
 			}
@@ -106,9 +105,14 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Leaf))
 		{
 			ImGui::Separator();
-			if (ImGui::MenuItem("This is the context menu of the leaf"))
+			if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_MNBVCtxt))
 			{
-				hierarchyLevel = HierarchyLevel_None;
+				if (ImGui::MenuItem("Focus"))
+				{
+					editor->GetCommandsManager().ProcessCommand("focusNode",
+						ECellEngine::Editor::IO::FocusNodeCommandArgs(
+							{ mnbvCtxtIdx, (std::size_t)((Utility::MNBV::NodeData*)ctxtNodePayload)->id}));
+				}
 			}
 		}
 
@@ -222,6 +226,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsList(c
 					if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 					{
 						TrackContextItem();
+						ctxtNodePayload = &*leafIt;
 						hierarchyLevel = hierarchyLevelAccumulator;
 					}
 

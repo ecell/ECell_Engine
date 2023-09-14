@@ -179,14 +179,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 		{
 			sprintf(name, "%s", "Default Context");
 
-			//It seems there is an ID collision between the node editor context and the 
-			//nodes spawn inside for ID=0. What happens is that the first node spawned
-			//will react to user inputs as well as the node editor. For example, a left
-			//mouse click & drag started in the editor space (not the node) will end up
-			//dragging the node instead of creating a selection box. However, if we start
-			//the ID at 1, the input collision disappears. The cause is not understood but
-			//it can be easily fixed by starting the ID at 1. (I am very frustrated to not
-			//know what's happening here, though!).
+			//increment immediately to work around default behaviour where ID 0 is not allowed.
+			//see: https://github.com/thedmd/imgui-node-editor/issues/47
 			++idProvider;
 
 			authorizedDynamicLinks[Utility::MNBV::PinType_Asset][Utility::MNBV::PinType_Asset] = true;

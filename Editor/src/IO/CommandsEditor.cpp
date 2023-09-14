@@ -37,3 +37,59 @@ bool ECellEngine::Editor::IO::AddMNBVContextCommand::Execute()
 
 	receiver.AddModelNodeBasedViewerContext(simuSearch.second->get());
 }
+
+bool ECellEngine::Editor::IO::FocusNodeCommand::DecodeParameters(const std::vector<std::string>& _args)
+{
+	if ((unsigned char)_args.size() != nbArgs)
+	{
+		ECellEngine::Logging::Logger::LogError("FocusNodeCommand Failed: Wrong number of arguments. Expected %llu, got %u.", nbArgs, _args.size());
+		return false;
+	}
+
+	unsigned short contextIdx = 0;
+	try
+	{
+		contextIdx = std::stoul(_args[1]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("FocusNodeCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a Model Node-Based Viewer (MNBV) Context", _args[1].c_str());
+		return false;
+	}
+
+	unsigned long long nodeID = 0;
+	try
+	{
+		nodeID = std::stoull(_args[2]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("FocusNodeCommand Failed: Could not convert second argument \"%s\" to an integer to represent the ID of a node", _args[2].c_str());
+		return false;
+	}
+
+	args.contextIdx = contextIdx;
+	args.nodeID = nodeID;
+
+	return true;
+}
+
+bool ECellEngine::Editor::IO::FocusNodeCommand::Execute()
+{
+	//First we check whether a viewer is currently displaying the context
+	//at index args.contextIdx
+	std::pair<bool, std::vector<unsigned short>::iterator> it = receiver.IsMNBVContextInUse(args.contextIdx);
+	if (!it.first)
+	{
+		ECellEngine::Logging::Logger::LogError("FocusNodeCommand Failed: The Model Node-Based Viewer (MNBV) Context at index %u is used by any MNBV.", args.contextIdx);
+	}
+
+	//Then we try to focus on the node with ID args.nodeID in every viewer using the context
+	if (!receiver.FocusNode(args.contextIdx, args.nodeID))
+	{
+		ECellEngine::Logging::Logger::LogError("FocusNodeCommand Failed: Could not focus on node with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+		return false;
+	}
+
+	return true;
+}

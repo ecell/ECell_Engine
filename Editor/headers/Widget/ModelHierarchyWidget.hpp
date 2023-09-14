@@ -36,12 +36,7 @@ namespace ECellEngine::Editor::Widget
 		{
 			HierarchyContext_None = 0,
 			HierarchyContext_RenamingInProgress = 1 << 0,
-			//HierarchyContext_RenamingDone = 1 << 1,
-			//HierarchyContext_RenamedNodeWasOpen = 1 << 2,
-			HierarchyContext_RightClick = 1 << 3,
-			//HierarchyContext_RightClickOnBackground = 1 << 4,
-			//HierarchyContext_RightClickOnSimulationNode = 1 << 5,
-			//HierarchyContext_RightClickOnMNBVCtxtNode = 1 << 6,
+			HierarchyContext_RightClick = 1 << 1,
 
 			//to continue as needed
 
@@ -155,7 +150,7 @@ namespace ECellEngine::Editor::Widget
 		@brief A tracker to the index of the MNBV context currently being drawn.
 		@details It follows the index of the MNBV context in ::mnbvCtxts.
 		*/
-		unsigned int mnbvCtxtCount = 0;
+		unsigned short mnbvCtxtCount = 0;
 
 		/*!
 		@brief A buffer of the index of the MNBV context currently being acted upon or
@@ -163,13 +158,29 @@ namespace ECellEngine::Editor::Widget
 		@details When the user interacts with a MNBV context node in the hierarchy, or
 				 one of its children nodes,it is set equal to ::mnbvCtxtCount.
 		*/
-		unsigned int mnbvCtxtIdx = 0;
+		unsigned short mnbvCtxtIdx = 0;
 
 		/*!
 		@brief A buffer for the type of the item currently being acted upon.
+		@details This takes the value of ::hierarchyLevelAccumulator when the user
+				 interacts with a node in the hierarchy.
 		*/
 		unsigned short hierarchyLevel = HierarchyLevel_None;
+
+		/*!
+		@brief A buffer for the tree level of the item currently being drawn.
+		@details Flags of the ::HirarchyLevel enum are set and cleared whenever
+				 entering or exiting a node in the hierarchy. This way, we know
+				 the path to the item currently being drawn.
+		*/
 		unsigned short hierarchyLevelAccumulator = HierarchyLevel_None;
+
+		/*!
+		@brief A convenienve pointer to store access to the underlying data
+				encapsulated in the tree node of the hierarchy currently being
+				interacted with.
+		*/
+		void* ctxtNodePayload = nullptr;
 
 		/*!
 		@brief The buffer to store the new name of the item being renamed.
@@ -177,15 +188,11 @@ namespace ECellEngine::Editor::Widget
 		char renamingBuffer[64] = { 0 };
 
 		/*!
-		@brief The binary flags to store the context of the hierarchy.
+		@brief The convenience byte to represent the state of the interaction
+				between the user and the hierarchy with the flags defined in
+				::HierarchyContext.
 		*/
 		unsigned char hierarchyCtxt = HierarchyContext_None;
-
-		/*!
-		@brief The open/close state of the nodes in the hierarchy (except the
-				leafs, of course).
-		*/
-		std::vector<bool> openedNodes;
 
 		/*!
 		@brief The pointer to the simulationManager to display all simulations.
