@@ -23,4 +23,9 @@ namespace ECellEngine::Editor::IO
 		unsigned short contextIdx = 0;
 		unsigned long long nodeID = 0;
 	};
+
+	struct RemoveMNBVContextCommandArgs
+	{
+		unsigned short contextIdx = 0;
+	};
 }

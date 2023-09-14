@@ -79,6 +79,9 @@ namespace ECellEngine::Editor::Widget
 				Model Explorer.
 		@details The contexts are sorted by the id of the simulation they are
 				 based on.
+		@remark There is always at least one context in this vector. In particular
+				::RemoveModelNodeBasedViewerContext(std::size_t _idx) will never
+				remove the last context.
 		@see ECellEngine::Editor::Utility::ModelNodeBasedViewerContext
 		*/
 		std::vector<MNBV::ModelNodeBasedViewerContext> mnbvCtxts;
@@ -225,15 +228,16 @@ namespace ECellEngine::Editor::Widget
 		@param _idx The index of the viewer to erase from ::mnbViewers.
 		@remarks Checks that @p _idx is not out of bounds of ::mnbViewers.
 		*/
-		void RemoveModelNodeBasedViewerWidget(std::size_t _idx);
+		bool RemoveModelNodeBasedViewerWidget(std::size_t _idx);
 
 		/*!
 		@brief Erases the node editor styles struct stored a index @p _idx in 
 				::mnbvCtxts.
 		@param _idx The index of the style struct to erase from ::mnbvCtxts.
-		@remarks Checks that @p _idx is not out of bounds of ::mnbvCtxts.
+		@remarks Checks that @p _idx is not out of bounds of ::mnbvCtxts. Does
+				 not remove the last context.
 		*/
-		void RemoveModelNodeBasedViewerContext(std::size_t _idx);
+		bool RemoveModelNodeBasedViewerContext(std::size_t _idx);
 
 		void Awake() override;
 
