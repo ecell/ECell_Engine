@@ -232,7 +232,6 @@ namespace ECellEngine::Editor::Widget
 				 method
 		@param _leafsListName The name of the list to display. This will be used as
 								the name of the tree node containing every leaf node.
-		@param _mnbvCtxt The MNBV context to draw the hierarchy of.
 		@param _leafs The list of elements to display.
 		@paramt LeafType The type of the elements in the list.
 		@paramt NameGetterType The type of the function object to access the name
@@ -242,7 +241,7 @@ namespace ECellEngine::Editor::Widget
 		@see NameGetterBySPtr and NameGetterByRef, NameSetterBySPtr and NameSetterByRef
 		*/
 		template<typename LeafType, typename NameGetterType, typename NameSetterType>
-		void DrawHierarchyLeafsList(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, std::vector<LeafType>& _leafs,
+		void DrawHierarchyLeafsList(const char* _leafsListName, std::vector<LeafType>& _leafs,
 			NameGetterType& _nameGetter, NameSetterType& _nameSetter);
 		
 		/*!
@@ -251,7 +250,6 @@ namespace ECellEngine::Editor::Widget
 				 method
 		@param _leafsListName The name of the list to display. This will be used as
 								the name of the tree node containing every leaf node.
-		@param _mnbvCtxt The MNBV context to draw the hierarchy of.
 		@param _leafs The unordered_map of elements to display.
 		@paramt LeafKeyType The type of the keys of the unordered_map.
 		@paramt LeafType The type of the elements in the unordered_map.
@@ -262,7 +260,7 @@ namespace ECellEngine::Editor::Widget
 		@see ::NameGetterBySPtr, ::NameGetterByRef, ::NameSetterBySPtr and ::NameSetterByRef
 		*/
 		template<typename LeafKeyType, typename LeafType, typename NameGetterType, typename NameSetterType>
-		void DrawHierarchyLeafsUMap(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt, const std::unordered_map<LeafKeyType, LeafType>& _leafs,
+		void DrawHierarchyLeafsUMap(const char* _leafsListName, const std::unordered_map<LeafKeyType, LeafType>& _leafs,
 			NameGetterType& _nameGetter, NameSetterType& _nameSetter);
 
 		/*!

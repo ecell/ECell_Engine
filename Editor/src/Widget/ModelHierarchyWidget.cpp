@@ -48,8 +48,6 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 
 		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Simulation))
 		{
-			ImGui::Separator();
-
 			if (ImGui::MenuItem("Delete Simulation"))
 			{
 				ECellEngine::Logging::Logger::LogDebug("Clicked on Delete Simulation");
@@ -76,11 +74,8 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 
 		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_MNBVCtxt))
 		{
-			ImGui::Separator();
-
 			if (ImGui::MenuItem("Delete Context"))
 			{
-				ECellEngine::Logging::Logger::LogDebug("Clicked on Delete Context");
 				editor->GetCommandsManager().ProcessCommand("removeMNBVCtxt",
 					ECellEngine::Editor::IO::RemoveMNBVContextCommandArgs({ mnbvCtxtIdx }));
 
@@ -192,7 +187,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 }
 
 template<typename LeafType, typename NameGetterType, typename NameSetterType>
-void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsList(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt,
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsList(const char* _leafsListName,
 	std::vector<LeafType>& _leafs, NameGetterType& _nameGetter, NameSetterType& _nameSetter)
 {
 	globalNodeCount++;
@@ -244,7 +239,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsList(c
 }
 
 template<typename LeafKeyType, typename LeafType, typename NameGetterType, typename NameSetterType>
-void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsUMap(const char* _leafsListName, MNBV::ModelNodeBasedViewerContext& _mnbvCtxt,
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsUMap(const char* _leafsListName,
 	const std::unordered_map<LeafKeyType, LeafType>& _leafs, NameGetterType& _nameGetter, NameSetterType& _nameSetter)
 {
 	globalNodeCount++;
@@ -300,48 +295,48 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 	static NameGetterByIt nameGetterByIt;
 	static NameSetterByIt nameSetterByIt;
 
-	DrawHierarchyLeafsList("Arithmetic Nodes", _mnbvCtxt, _mnbvCtxt.arithmeticOperationNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Arithmetic Nodes", _mnbvCtxt.arithmeticOperationNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Asset Nodes", _mnbvCtxt, _mnbvCtxt.assetNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Asset Nodes", _mnbvCtxt.assetNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Equation Nodes", _mnbvCtxt, _mnbvCtxt.equationNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Equation Nodes", _mnbvCtxt.equationNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Line Plot Nodes", _mnbvCtxt, _mnbvCtxt.linePlotNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Line Plot Nodes", _mnbvCtxt.linePlotNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Logic Nodes", _mnbvCtxt, _mnbvCtxt.logicOperationNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Logic Nodes", _mnbvCtxt.logicOperationNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Modify Data State Event Nodes", _mnbvCtxt, _mnbvCtxt.modifyDataStateValueEventNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Modify Data State Event Nodes", _mnbvCtxt.modifyDataStateValueEventNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Reaction Nodes", _mnbvCtxt, _mnbvCtxt.reactionNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Reaction Nodes", _mnbvCtxt.reactionNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Parameter Nodes", _mnbvCtxt, _mnbvCtxt.parameterNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Parameter Nodes", _mnbvCtxt.parameterNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Solver Nodes", _mnbvCtxt, _mnbvCtxt.solverNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Solver Nodes", _mnbvCtxt.solverNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Species Nodes", _mnbvCtxt, _mnbvCtxt.speciesNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Species Nodes", _mnbvCtxt.speciesNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Time Nodes", _mnbvCtxt, _mnbvCtxt.timeNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Time Nodes", _mnbvCtxt.timeNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Trigger Nodes", _mnbvCtxt, _mnbvCtxt.triggerNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Trigger Nodes", _mnbvCtxt.triggerNodes, nameGetterByIt, nameSetterByIt);
 
-	DrawHierarchyLeafsList("Value Nodes", _mnbvCtxt, _mnbvCtxt.valueFloatNodes, nameGetterByIt, nameSetterByIt);
+	DrawHierarchyLeafsList("Value Nodes", _mnbvCtxt.valueFloatNodes, nameGetterByIt, nameSetterByIt);
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation)
 {
 	static NameGetterBySPtr nameGetterBySPtr;
 	static NameSetterBySPtr nameSetterBySPtr;
-	MNBV::ModelNodeBasedViewerContext& mnbvCtxt = mnbvCtxts->at(mnbvCtxtCount);
+	
 	globalNodeCount++;
 	if (ImGui::TreeNodeEx("Data State"))
 	{
-		DrawHierarchyLeafsUMap("Equations", mnbvCtxt, mnbvCtxt.simulation->GetDataState().GetEquations(), nameGetterBySPtr, nameSetterBySPtr);
+		DrawHierarchyLeafsUMap("Equations", _simulation->GetDataState().GetEquations(), nameGetterBySPtr, nameSetterBySPtr);
 
-		DrawHierarchyLeafsUMap("Parameters", mnbvCtxt, mnbvCtxt.simulation->GetDataState().GetParameters(), nameGetterBySPtr, nameSetterBySPtr);
+		DrawHierarchyLeafsUMap("Parameters", _simulation->GetDataState().GetParameters(), nameGetterBySPtr, nameSetterBySPtr);
 
-		DrawHierarchyLeafsUMap("Reactions", mnbvCtxt, mnbvCtxt.simulation->GetDataState().GetReactions(), nameGetterBySPtr, nameSetterBySPtr);
+		DrawHierarchyLeafsUMap("Reactions", _simulation->GetDataState().GetReactions(), nameGetterBySPtr, nameSetterBySPtr);
 
-		DrawHierarchyLeafsUMap("Species", mnbvCtxt, mnbvCtxt.simulation->GetDataState().GetAllSpecies(), nameGetterBySPtr, nameSetterBySPtr);
+		DrawHierarchyLeafsUMap("Species", _simulation->GetDataState().GetAllSpecies(), nameGetterBySPtr, nameSetterBySPtr);
 
 		ImGui::TreePop();
 	}
@@ -360,9 +355,10 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 	if (nodeOpen)
 	{
 		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_MNBVCtxt);
-		while (mnbvCtxtCount < mnbvCtxts->size() && mnbvCtxt.simulation->id == _simulation->id)
+		while (mnbvCtxtCount < mnbvCtxts->size() && mnbvCtxts->at(mnbvCtxtCount).simulation->id == _simulation->id)
 		{
 			globalNodeCount++;
+			MNBV::ModelNodeBasedViewerContext& mnbvCtxt = mnbvCtxts->at(mnbvCtxtCount); //there is a reassignment of the same value here for the first iteration
 			ImGui::PushID(mnbvCtxtCount);
 			//If users is trying to rename this asset.
 			if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingInProgress) && globalNodeIdx == globalNodeCount)

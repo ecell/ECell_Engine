@@ -177,7 +177,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 
 		ModelNodeBasedViewerContext()
 		{
-			sprintf(name, "%s", "Default Context");
+			Util::StrCopy(name, "New MNBV Context", sizeof(name));
 
 			//increment immediately to work around default behaviour where ID 0 is not allowed.
 			//see: https://github.com/thedmd/imgui-node-editor/issues/47
