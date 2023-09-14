@@ -14,6 +14,7 @@ ECellEngine::Editor::Editor::Editor()
 
 	commandsManager.RegisterCommand(std::make_shared<IO::AddMNBVContextCommand>(*modelExplorerWidget));
 	commandsManager.RegisterCommand(std::make_shared<IO::FocusNodeCommand>(*modelExplorerWidget));
+	commandsManager.RegisterCommand(std::make_shared<IO::RemoveMNBVContextCommand>(*modelExplorerWidget));
 }
 
 void ECellEngine::Editor::Editor::InitializeImGui()

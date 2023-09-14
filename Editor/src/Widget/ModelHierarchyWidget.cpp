@@ -67,7 +67,8 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 
 			if (ImGui::MenuItem("Add Context"))
 			{
-				editor->GetCommandsManager().ProcessCommand("addMNBVCtxt", ECellEngine::Editor::IO::AddMNBVContextCommandArgs({ simuManager.GetSimulation(simuIdx)->id }));
+				editor->GetCommandsManager().ProcessCommand("addMNBVCtxt",
+					ECellEngine::Editor::IO::AddMNBVContextCommandArgs({ simuManager.GetSimulation(simuIdx)->id }));
 
 				hierarchyLevel = HierarchyLevel_None;
 			}
@@ -80,6 +81,8 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 			if (ImGui::MenuItem("Delete Context"))
 			{
 				ECellEngine::Logging::Logger::LogDebug("Clicked on Delete Context");
+				editor->GetCommandsManager().ProcessCommand("removeMNBVCtxt",
+					ECellEngine::Editor::IO::RemoveMNBVContextCommandArgs({ mnbvCtxtIdx }));
 
 				hierarchyLevel = HierarchyLevel_None;
 			}
