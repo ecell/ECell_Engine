@@ -10,6 +10,7 @@ void ECellEngine::Core::Engine::Start()
 	commandsManager.RegisterCommand(std::make_shared<AddModuleCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<AddSimulationCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<AddSolverCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<EraseSimulationCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<ModuleSolverConnectionCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<ModuleSolverDisconnectionCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<PauseSimulationCommand>(simulationManager));

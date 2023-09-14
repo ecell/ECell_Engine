@@ -48,12 +48,25 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 
 		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Simulation))
 		{
-			if (ImGui::MenuItem("Delete Simulation"))
+			if (ImGui::MenuItem("Erase Simulation"))
 			{
-				ECellEngine::Logging::Logger::LogDebug("Clicked on Delete Simulation");
+				ECellEngine::Logging::Logger::LogDebug("Clicked on Erase Simulation");
 
-				//TODO: Delete Simulation
-				//TODO: Delete MNBVContexts
+				ECellEngine::Core::Simulation* _simulation = (ECellEngine::Core::Simulation*)ctxtNodePayload;
+
+				//First erase all MNBVContexts under this simulation
+				unsigned short _mnbvCtxtCount = mnbvCtxtIdx;
+				while (_mnbvCtxtCount < mnbvCtxts->size() && mnbvCtxts->at(_mnbvCtxtCount).simulation->id == _simulation->id)
+				{					
+					editor->GetCommandsManager().ProcessCommand("eraseMNBVCtxt",
+						ECellEngine::Editor::IO::EraseMNBVContextCommandArgs({ _mnbvCtxtCount }));
+					
+					_mnbvCtxtCount++;
+				}
+
+				//Then erase the Simulation
+				editor->engine.GetCommandsManager().ProcessCommand("eraseSimulation",
+										ECellEngine::IO::SimulationCommandArgs({ _simulation->id }));
 
 				hierarchyLevel = HierarchyLevel_None;
 			}
@@ -74,7 +87,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 
 		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_MNBVCtxt))
 		{
-			if (ImGui::MenuItem("Delete Context"))
+			if (ImGui::MenuItem("Erase Context"))
 			{
 				editor->GetCommandsManager().ProcessCommand("eraseMNBVCtxt",
 					ECellEngine::Editor::IO::EraseMNBVContextCommandArgs({ mnbvCtxtIdx }));
@@ -170,6 +183,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchy()
 			if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
 				TrackContextItem();
+				ctxtNodePayload = it->get();
 				hierarchyLevel = hierarchyLevelAccumulator;
 			}
 

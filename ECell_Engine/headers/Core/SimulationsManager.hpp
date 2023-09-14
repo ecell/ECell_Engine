@@ -94,6 +94,24 @@ namespace ECellEngine::Core
 		}
 
 		/*!
+		@brief Instantiates a new simulation and adds it to ::simulations.
+		@returns The raw pointer to the newly created simulation.
+		*/
+		inline Simulation* AddSimulation() noexcept
+		{
+			return simulations.emplace_back(std::make_unique<Simulation>(++simulationIDProvider)).get();
+		}
+
+		/*!
+		@brief Erases the simulation at the position indicated by the iterator
+				@p _simulation in ::simulations. Also erases the pointer to the
+				simulation if it is in ::playingSimulations.
+		@param _simulation The iterator to the target simulation in ::simulations.
+		@return True if the simulation was erased; false otherwise.
+		*/
+		bool EraseSimulation(std::vector<std::unique_ptr<Simulation>>::iterator _simulation) noexcept;
+
+		/*!
 		@brief Finds the simulation with ID @p _id in ::playingSimulations.
 		@details Performs a binary search.
 		@param _id The ID of the simulation to retrieve from ::playingSimulations.
@@ -114,16 +132,9 @@ namespace ECellEngine::Core
 		std::pair<bool, std::vector<std::unique_ptr<Simulation>>::iterator> FindSimulation(const std::size_t _id) noexcept;
 
 		/*!
-		@brief Instantiates a new simulation and adds it to ::simulations.
-		@returns The raw pointer to the newly created simulation.
-		*/
-		inline Simulation* AddSimulation() noexcept
-		{
-			return simulations.emplace_back(std::make_unique<Simulation>(++simulationIDProvider)).get();
-		}
-
-		/*!
 		@brief Pauses the execution the simulation with ID @p _id in ::playingSimulations.
+		@details Do no check whether the simulation is indeed in ::playingSimulations. Use
+				 ::FindPlayingSimulation(std::size_t _id) for that.
 		@param _playingSimulation The iterator to the target simulation in ::playingSimulations.
 		*/
 		bool PauseSimulation(std::vector<Simulation*>::iterator _playingSimulation) noexcept;
@@ -131,12 +142,17 @@ namespace ECellEngine::Core
 		/*!
 		@brief Adds in ::playingSimulations the simulation with ID @p _id in
 				::simulations.
+		@details It first checks whether the simulation is already playing.
 		@param _simulation The iterator to the target simulation in ::simulations.
+		@returns @a True if the simulation transitioned from stopped to playing;
+				 @a false otherwise (it is already playing).
 		*/
 		bool PlaySimulation(std::vector<std::unique_ptr<Simulation>>::iterator _simulation) noexcept;
 
 		/*!
 		@brief Removes the playing simulation with ID @p _id from ::playingSimulations.
+		@details Do no check whether the simulation is indeed in ::playingSimulations. Use
+				 ::FindPlayingSimulation(std::size_t _id) for that.
 		@param _playingSimulation The iterator to the target simulation in ::playingSimulations.
 		*/
 		bool StopSimulation(std::vector<Simulation*>::iterator _playingSimulation) noexcept;
