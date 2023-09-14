@@ -8,6 +8,20 @@ ECellEngine::Core::SimulationsManager& ECellEngine::Core::SimulationsManager::Ge
 	return instance;
 }
 
+bool ECellEngine::Core::SimulationsManager::EraseSimulation(std::vector<std::unique_ptr<Simulation>>::iterator _simulation) noexcept
+{
+	//Check if simulation is playing
+	std::pair<bool, std::vector<Simulation*>::iterator> search = FindPlayingSimulation(_simulation->get()->id);
+	if (search.first)
+	{
+		playingSimulations.erase(search.second);
+	}
+
+	//Erase simulation
+	simulations.erase(_simulation);
+	return true;
+}
+
 std::pair<bool, std::vector<ECellEngine::Core::Simulation*>::iterator> ECellEngine::Core::SimulationsManager::FindPlayingSimulation(const std::size_t _id) noexcept
 {
 	static CompareSimulationIDs compareSimulationIDs;
