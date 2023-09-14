@@ -390,11 +390,11 @@ std::pair<bool, std::vector<unsigned short>::iterator> ECellEngine::Editor::Widg
 	return std::pair(false, ctxtsPerViewer.end());
 }
 
-bool ECellEngine::Editor::Widget::ModelExplorerWidget::RemoveModelNodeBasedViewerWidget(std::size_t _idx)
+bool ECellEngine::Editor::Widget::ModelExplorerWidget::EraseModelNodeBasedViewerWidget(std::size_t _idx)
 {
 	if (_idx >= mnbViewers.size())
 	{
-		ECellEngine::Logging::Logger::LogError("Tried to destroy a ModelNodeBasedViewerWidget at an index beyond the size of current list.");
+		ECellEngine::Logging::Logger::LogError("Tried to erase a ModelNodeBasedViewerWidget at an index beyond the size of current list.");
 		return false;
 	}
 	ax::NodeEditor::DestroyEditor(mnbViewers[_idx].editorCtxt);
@@ -403,17 +403,17 @@ bool ECellEngine::Editor::Widget::ModelExplorerWidget::RemoveModelNodeBasedViewe
 	return true;
 }
 
-bool ECellEngine::Editor::Widget::ModelExplorerWidget::RemoveModelNodeBasedViewerContext(std::size_t _idx)
+bool ECellEngine::Editor::Widget::ModelExplorerWidget::EraseModelNodeBasedViewerContext(std::size_t _idx)
 {
 	if (_idx >= mnbvCtxts.size())
 	{
-		ECellEngine::Logging::Logger::LogError("Tried to destroy a ModelNodeBasedViewerContext at an index beyond the size of current list.");
+		ECellEngine::Logging::Logger::LogError("Tried to erase a ModelNodeBasedViewerContext at an index beyond the size of current list.");
 		return false;
 	}
 
 	if (mnbvCtxts.size() == 1)
 	{
-		ECellEngine::Logging::Logger::LogError("Tried to destroy the last ModelNodeBasedViewerContext; this is not allowed, there must be at least one MNBV context available in the model explorer.");
+		ECellEngine::Logging::Logger::LogError("Tried to erase the last ModelNodeBasedViewerContext; this is not allowed, there must be at least one MNBV context available in the model explorer.");
 		return false;
 	}
 

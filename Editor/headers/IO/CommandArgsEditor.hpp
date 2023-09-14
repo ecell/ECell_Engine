@@ -18,14 +18,14 @@ namespace ECellEngine::Editor::IO
 		unsigned long long simulationID = 0;
 	};
 
+	struct EraseMNBVContextCommandArgs
+	{
+		unsigned short contextIdx = 0;
+	};
+
 	struct FocusNodeCommandArgs
 	{
 		unsigned short contextIdx = 0;
 		unsigned long long nodeID = 0;
-	};
-
-	struct RemoveMNBVContextCommandArgs
-	{
-		unsigned short contextIdx = 0;
 	};
 }
