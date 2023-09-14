@@ -13,6 +13,7 @@ ECellEngine::Editor::Editor::Editor()
 	Widget::ModelExplorerWidget* modelExplorerWidget = AddWidget<Widget::ModelExplorerWidget>();
 
 	commandsManager.RegisterCommand(std::make_shared<IO::AddMNBVContextCommand>(*modelExplorerWidget));
+	commandsManager.RegisterCommand(std::make_shared<IO::FocusNodeCommand>(*modelExplorerWidget));
 }
 
 void ECellEngine::Editor::Editor::InitializeImGui()

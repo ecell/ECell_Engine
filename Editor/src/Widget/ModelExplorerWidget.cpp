@@ -356,6 +356,40 @@ void ECellEngine::Editor::Widget::ModelExplorerWidget::DrawPreferencesPopup()
 	}
 }
 
+bool ECellEngine::Editor::Widget::ModelExplorerWidget::FocusNode(unsigned short _ctxtIdx, unsigned long long _nodeID)
+{
+	MNBV::SetCurrentMNBVContext(&mnbvCtxts[_ctxtIdx]);
+	Utility::MNBV::NodeData* _node = MNBV::FindNodeInAll(_nodeID);
+	if (_node == nullptr)
+	{
+		ECellEngine::Logging::Logger::LogError("Could not find node with ID \"%llu\" in context \"%u\"", _nodeID, _ctxtIdx);
+		return false;
+	}
+
+	for (unsigned short i = 0; i < (unsigned short)ctxtsPerViewer.size(); i++)
+	{
+		if (ctxtsPerViewer[i] == _ctxtIdx)
+		{
+			mnbViewers[i].FocusNode(_nodeID);
+		}
+	}
+	MNBV::SetCurrentMNBVContext(nullptr);
+
+	return true;
+}
+
+std::pair<bool, std::vector<unsigned short>::iterator> ECellEngine::Editor::Widget::ModelExplorerWidget::IsMNBVContextInUse(std::size_t _idx)
+{
+	for (std::vector<unsigned short>::iterator it = ctxtsPerViewer.begin(); it != ctxtsPerViewer.end(); it++)
+	{
+		if (*it == _idx)
+		{
+			return std::pair(true, it);
+		}
+	}
+	return std::pair(false, ctxtsPerViewer.end());
+}
+
 void ECellEngine::Editor::Widget::ModelExplorerWidget::RemoveModelNodeBasedViewerWidget(std::size_t _idx)
 {
 	if (_idx >= mnbViewers.size())

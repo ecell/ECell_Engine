@@ -38,6 +38,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		{
 			MNBVState_None = 0,
 			MNBVState_ImportAssetPopup = 1 << 0,
+			MNBVState_FocusNode = 1 << 1,
 		};
 
 		/*
@@ -49,7 +50,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 		@brief A char array to hold the path to an asset to import.
 		*/
 		//char assetPathBuffer[256] = "C:/Users/EliottJacopin/Documents/Source/External/Papers/p53/Hat-et-al_p53_BNG/S2_Code_BioNetGen/export/p53_L3V2_mod2.xml";
-		char assetPathBuffer[256] = "C:/Users/EliottJacopin/Documents/Source/External/Papers/Novak-et-al_FissionYeast_CellCycle/BIOMD0000000111_L3V2.xml";
+		//char assetPathBuffer[256] = "C:/Users/eliott/Documents/Source/External/Papers/p53/Hat-et-al_p53_BNG/S2_Code_BioNetGen/export/p53_L3V2_mod2.xml";
+		char assetPathBuffer[256] = "C:/Users/eliot/Documents/Source/External/Papers/Novak-et-al_FissionYeast_CellCycle/BIOMD0000000111_L3V2.xml";
 
 		/*!
 		@brief A char array to hold the name of the asset node to be drawn in the
@@ -113,5 +115,10 @@ namespace ECellEngine::Editor::Widget::MNBV
 		void Awake() override;
 
 		void Draw() override;
+
+		/*!
+		@brief Uses the API of the imgui-node-editor to focus the view on the node.
+		*/
+		void FocusNode(const std::size_t _nodeID);
 	};
 }
