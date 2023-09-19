@@ -309,31 +309,57 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 	static NameGetterByIt nameGetterByIt;
 	static NameSetterByIt nameSetterByIt;
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_ArithmeticNodes);
 	DrawHierarchyLeafsList("Arithmetic Nodes", _mnbvCtxt.arithmeticOperationNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_ArithmeticNodes);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_AssetNodes);
 	DrawHierarchyLeafsList("Asset Nodes", _mnbvCtxt.assetNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_AssetNodes);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Equations);
 	DrawHierarchyLeafsList("Equation Nodes", _mnbvCtxt.equationNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Equations);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_LinePlotNodes);
 	DrawHierarchyLeafsList("Line Plot Nodes", _mnbvCtxt.linePlotNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_LinePlotNodes);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_LogicNodes);
 	DrawHierarchyLeafsList("Logic Nodes", _mnbvCtxt.logicOperationNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_LogicNodes);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_ModifyDataStateValueEventNodes);
 	DrawHierarchyLeafsList("Modify Data State Event Nodes", _mnbvCtxt.modifyDataStateValueEventNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_ModifyDataStateValueEventNodes);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Reactions);
 	DrawHierarchyLeafsList("Reaction Nodes", _mnbvCtxt.reactionNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Reactions);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Parameters);
 	DrawHierarchyLeafsList("Parameter Nodes", _mnbvCtxt.parameterNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Parameters);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_SolverNodes);
 	DrawHierarchyLeafsList("Solver Nodes", _mnbvCtxt.solverNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_SolverNodes);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Species);
 	DrawHierarchyLeafsList("Species Nodes", _mnbvCtxt.speciesNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Species);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_TimeNodes);
 	DrawHierarchyLeafsList("Time Nodes", _mnbvCtxt.timeNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_TimeNodes);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_TriggerNodes);
 	DrawHierarchyLeafsList("Trigger Nodes", _mnbvCtxt.triggerNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_TriggerNodes);
 
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_ValueNodes);
 	DrawHierarchyLeafsList("Value Nodes", _mnbvCtxt.valueFloatNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_ValueNodes);
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation)
@@ -344,13 +370,21 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 	globalNodeCount++;
 	if (ImGui::TreeNodeEx("Data State"))
 	{
+		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Equations);
 		DrawHierarchyLeafsUMap("Equations", _simulation->GetDataState().GetEquations(), nameGetterBySPtr, nameSetterBySPtr);
+		Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Equations);
 
+		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Parameters);
 		DrawHierarchyLeafsUMap("Parameters", _simulation->GetDataState().GetParameters(), nameGetterBySPtr, nameSetterBySPtr);
+		Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Parameters);
 
+		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Reactions);
 		DrawHierarchyLeafsUMap("Reactions", _simulation->GetDataState().GetReactions(), nameGetterBySPtr, nameSetterBySPtr);
+		Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Reactions);
 
+		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Species);
 		DrawHierarchyLeafsUMap("Species", _simulation->GetDataState().GetAllSpecies(), nameGetterBySPtr, nameSetterBySPtr);
+		Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Species);
 
 		ImGui::TreePop();
 	}
