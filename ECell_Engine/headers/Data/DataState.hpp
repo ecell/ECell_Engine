@@ -261,6 +261,46 @@ namespace ECellEngine::Data
 			return triggers.emplace_back(std::make_shared<ECellEngine::Core::Trigger<Operand*, Operand*>>());
 		}
 
+		inline void ClearEquations()
+		{
+			equations.clear();
+		}
+
+		inline void ClearParameters()
+		{
+			parameters.clear();
+		}
+
+		inline void ClearReactions()
+		{
+			reactions.clear();
+		}
+
+		inline void ClearSpecies()
+		{
+			species.clear();
+		}
+
+		inline void EraseEquation(const std::size_t _lhsID)
+		{
+			equations.erase(_lhsID);
+		}
+
+		inline void EraseParameter(const std::size_t _parameterID)
+		{
+			parameters.erase(_parameterID);
+		}
+
+		inline void EraseReaction(const std::size_t _reactionID)
+		{
+			reactions.erase(_reactionID);
+		}
+
+		inline void EraseSpecies(const std::size_t _speciesID)
+		{
+			species.erase(_speciesID);
+		}
+
 		inline void LinkOperandToOperation(const std::size_t _operandID, const std::size_t _operationID)
 		{
 			operandsToOperations.emplace(_operandID, _operationID);
