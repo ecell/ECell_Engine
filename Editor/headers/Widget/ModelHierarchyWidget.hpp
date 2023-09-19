@@ -56,6 +56,23 @@ namespace ECellEngine::Editor::Widget
 			HierarchyLevel_Leafs = 1 << 4, //the node containing the leafs
 			HierarchyLevel_MNBVCtxt = 1 << 5, //a MNBVContext node
 			HierarchyLevel_MNBVCtxts = 1 << 6, //the node containing the MNBVContext nodes
+
+			HierarchyLevel_Equations = 1 << 7, //equation nodes & data (it's either since we also have HierarchyLevel_DataState & HierarchyLevel_MNBVCtxt to know which once it really is)
+			HierarchyLevel_Parameters = 1 << 8, //parameter nodes & data
+			HierarchyLevel_Reactions = 1 << 9, //reaction nodes & data
+			HierarchyLevel_Species = 1 << 10, //species nodes & data
+
+			HierarchyLevel_ArithmeticNodes = 1 << 11, //arithmetic nodes
+			HierarchyLevel_AssetNodes = 1 << 12, //asset nodes
+			HierarchyLevel_LinePlotNodes = 1 << 13, //line plot nodes
+			HierarchyLevel_LogicNodes = 1 << 14, //logic nodes
+			HierarchyLevel_ModifyDataStateValueEventNodes = 1 << 15, //modify data state value events
+			HierarchyLevel_SolverNodes = 1 << 16, //solver nodes
+			HierarchyLevel_TimeNodes = 1 << 17, //time nodes
+			HierarchyLevel_TriggerNodes = 1 << 18, //trigger nodes
+			HierarchyLevel_ValueNodes = 1 << 19, //value nodes
+
+
 		};
 
 		/*!
