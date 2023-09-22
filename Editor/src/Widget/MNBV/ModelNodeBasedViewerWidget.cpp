@@ -1,4 +1,5 @@
 #include "Util/BitwiseOperationsUtility.hpp"
+#include "Utility/DragAndDrop.hpp"
 #include "Widget/ModelExplorerWidget.hpp"//forward declaration
 #include "Editor.hpp"
 
@@ -600,15 +601,26 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::FocusNode(co
 
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::HandleSimuDataRefDrop()
 {
-	if (ImGui::BeginDragDropTarget())
+	if (ECellEngine::Editor::Utility::DragAndDrop::payloadCharged)
 	{
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_ASSET"))
+		if (ECellEngine::Editor::Utility::DragAndDrop::AcceptPayload("Hierarchy_Equation_DND"))
 		{
-			IM_ASSERT(payload->DataSize == sizeof(std::size_t));
-			const std::size_t dataIdx = *(const std::size_t*)payload->Data;
-			//AddAssetNode(ECellEngine::Core::SimulationsManager::GetSingleton().GetSimulation(0)->GetModule(dataIdx).get());
+			currentMNBVContext->equationNodes.emplace_back(Utility::MNBV::EquationNodeData(*Utility::DragAndDrop::GetPayload<std::shared_ptr<ECellEngine::Maths::Equation>>(), &currentMNBVContext->simulation->GetDependenciesDatabase()));
 		}
 
-		ImGui::EndDragDropTarget();
+		if(ECellEngine::Editor::Utility::DragAndDrop::AcceptPayload("Hierarchy_Parameter_DND"))
+		{
+			currentMNBVContext->parameterNodes.emplace_back(Utility::MNBV::ParameterNodeData(*Utility::DragAndDrop::GetPayload<std::shared_ptr<ECellEngine::Data::Parameter>>(), &currentMNBVContext->simulation->GetDependenciesDatabase()));
+		}
+		
+		if (ECellEngine::Editor::Utility::DragAndDrop::AcceptPayload("Hierarchy_Reaction_DND"))
+		{
+			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(*Utility::DragAndDrop::GetPayload<std::shared_ptr<ECellEngine::Data::Reaction>>()));
+		}
+
+		if (ECellEngine::Editor::Utility::DragAndDrop::AcceptPayload("Hierarchy_Species_DND"))
+		{
+			currentMNBVContext->speciesNodes.emplace_back(Utility::MNBV::SpeciesNodeData(*Utility::DragAndDrop::GetPayload<std::shared_ptr<ECellEngine::Data::Species>>(), &currentMNBVContext->simulation->GetDependenciesDatabase()));
+		}
 	}
 }
