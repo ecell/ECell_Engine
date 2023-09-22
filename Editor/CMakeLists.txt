@@ -30,9 +30,9 @@ add_executable( ECellEngineEditor
 "src/Style/NodeEditorStyle.cpp"
 
 "src/Utility/BackendUtility.cpp"
+"src/Utility/DragAndDrop.cpp"
 "src/Utility/MNBV/NodeEditorData.cpp"
 "src/Utility/MNBV/NodeEditorDraw.cpp"
-
 "src/Utility/Plot/Line.cpp"
 "src/Utility/Plot/LinePlot.cpp"
 "src/Utility/Plot/ScrollingBuffer.cpp"
