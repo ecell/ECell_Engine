@@ -245,5 +245,40 @@ namespace ECellEngine::Editor::Widget::MNBV
 				 This method is then called whenever a node is added.
 		*/
 		void ConserveLinkDataIntegrity();
+
+		/*!
+		@brief Erases all the nodes in one of the nodes lists of this context.
+		@details Nodes lists are:
+				 - ::arithmeticOperationNodes
+				 - ::assetNodes
+				 - ::equationNodes
+				 - ::linePlotNodes
+				 - ::logicOperationNodes
+				 - ::modifyDataStateValueEventNodes
+				 - ::reactionNodes
+				 - ::parameterNodes
+				 - ::solverNodes
+				 - ::speciesNodes
+				 - ::timeNodes
+				 - ::triggerNodes
+				 - ::valueFloatNodes
+		@param _nodesTypeName The name of the type of nodes to clear.
+				Valid values are:
+				 - "Arithmetic"
+				 - "Asset"
+				 - "Equation"
+				 - "LinePlot"
+				 - "Logic"
+				 - "ModifyDataStateValueEvent"
+				 - "Reaction"
+				 - "Parameter"
+				 - "Solver"
+				 - "Species"
+				 - "Time"
+				 - "Trigger"
+				 - "Value Float"
+		@return True if the nodes list was found and cleared, false otherwise.
+		*/
+		bool EraseAllNodesOfType(const char* _nodesTypeName) noexcept;
 	};
 }
