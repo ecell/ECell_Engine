@@ -32,11 +32,12 @@ namespace ECellEngine::Editor::Widget
 	class ModelHierarchyWidget : public Widget
 	{
 	private:
-		enum HierarchyContext
+		enum HierarchyContext : unsigned char
 		{
 			HierarchyContext_None = 0,
 			HierarchyContext_RenamingInProgress = 1 << 0,
 			HierarchyContext_RightClick = 1 << 1,
+			HierarchyContext_DnD = 1 << 2,
 
 			//to continue as needed
 
@@ -46,7 +47,7 @@ namespace ECellEngine::Editor::Widget
 		@brief The binary flags to indicate the type of the item currently being
 				acted upon.
 		*/
-		enum HierarchyLevel
+		enum HierarchyLevel : unsigned int
 		{
 			HierarchyLevel_None = 0,
 			HierarchyLevel_Background = 1 << 0, //background
@@ -182,7 +183,7 @@ namespace ECellEngine::Editor::Widget
 		@details This takes the value of ::hierarchyLevelAccumulator when the user
 				 interacts with a node in the hierarchy.
 		*/
-		unsigned short hierarchyLevel = HierarchyLevel_None;
+		unsigned int hierarchyLevel = HierarchyLevel_None;
 
 		/*!
 		@brief A buffer for the tree level of the item currently being drawn.
@@ -190,14 +191,14 @@ namespace ECellEngine::Editor::Widget
 				 entering or exiting a node in the hierarchy. This way, we know
 				 the path to the item currently being drawn.
 		*/
-		unsigned short hierarchyLevelAccumulator = HierarchyLevel_None;
+		unsigned int hierarchyLevelAccumulator = HierarchyLevel_None;
 
 		/*!
 		@brief A convenienve pointer to store access to the underlying data
 				encapsulated in the tree node of the hierarchy currently being
 				interacted with.
 		*/
-		void* ctxtNodePayload = nullptr;
+		const void* ctxtNodePayload = nullptr;
 
 		/*!
 		@brief The buffer to store the new name of the item being renamed.
@@ -294,6 +295,12 @@ namespace ECellEngine::Editor::Widget
 		*/
 		void DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation);
 		
+		/*!
+		@brief Handles the logic of the drag and drop of a leaf node in the
+				hierarchy.
+		*/
+		void HandleDnD();
+
 		/*!
 		@brief A convenience function to assign the values of ::globalNodeIdx,
 					::simuIdx and ::mnbvCtxtIdx to the value of ::globalNodeCount,

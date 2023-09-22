@@ -1,5 +1,6 @@
 #include "IO/CommandArgs.hpp"
 #include "Util/BitwiseOperationsUtility.hpp"
+#include "Utility/DragAndDrop.hpp"
 #include "Widget/ModelExplorerWidget.hpp" //includes MNBVContext as well
 #include "Editor.hpp"//We use editor here so we need to finish the forward declaration initiated in the  base class "Widget"
 
@@ -26,6 +27,8 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::Draw()
 		DrawHierarchy();
 
 		DrawContextMenu();
+
+		HandleDnD();
 
 		Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_Background);
 	}
@@ -242,6 +245,15 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsList(c
 						hierarchyLevel = hierarchyLevelAccumulator;
 					}
 
+					if (ImGui::BeginDragDropSource())
+					{
+						TrackContextItem();
+						ctxtNodePayload = &*leafIt;
+						hierarchyLevel = hierarchyLevelAccumulator;
+						Util::SetFlag(hierarchyCtxt, HierarchyContext_DnD);
+						ImGui::EndDragDropSource();
+					}
+
 					ImGui::TreePop();
 				}
 			}
@@ -263,22 +275,22 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsUMap(c
 		if (ImGui::TreeNodeEx(_leafsListName))
 		{
 			Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Leaf);
-			for (auto [_leafKey, _leaf] : _leafs)
+			for (std::unordered_map<LeafKeyType, LeafType>::const_iterator leafIt = _leafs.begin(); leafIt != _leafs.end(); leafIt++)
 			{
 				globalNodeCount++;
 
 				//If users is trying to rename this asset.
 				if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_RenamingInProgress) && globalNodeIdx == globalNodeCount)
 				{
-					std::strcpy(renamingBuffer, _nameGetter(_leaf));
+					std::strcpy(renamingBuffer, _nameGetter(leafIt->second));
 					if (TreeNodeRename(renamingBuffer))
 					{
-						_nameSetter(_leaf, renamingBuffer);
+						_nameSetter(leafIt->second, renamingBuffer);
 					}
 				}
 				else
 				{
-					ImGui::TreeNodeEx(_nameGetter(_leaf), leafNodeFlags);
+					ImGui::TreeNodeEx(_nameGetter(leafIt->second), leafNodeFlags);
 
 					//If user performs the action to rename this node.
 					if (ImGui::IsItemFocused() && ImGui::IsKeyDown(ImGuiKey_F2))
@@ -291,7 +303,17 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsUMap(c
 					if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
 					{
 						TrackContextItem();
+						ctxtNodePayload = &(leafIt->second);
 						hierarchyLevel = hierarchyLevelAccumulator;
+					}
+
+					if (ImGui::BeginDragDropSource())
+					{
+						TrackContextItem();
+						ctxtNodePayload = &(leafIt->second);
+						hierarchyLevel = hierarchyLevelAccumulator;
+						Util::SetFlag(hierarchyCtxt, HierarchyContext_DnD);
+						ImGui::EndDragDropSource();
 					}
 
 					ImGui::TreePop();
@@ -368,6 +390,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 	static NameSetterBySPtr nameSetterBySPtr;
 	
 	globalNodeCount++;
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_DataState);
 	if (ImGui::TreeNodeEx("Data State"))
 	{
 		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Equations);
@@ -388,6 +411,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 
 		ImGui::TreePop();
 	}
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_DataState);
 
 	globalNodeCount++;
 
@@ -456,6 +480,45 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 		ImGui::TreePop();
 	}
 	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_MNBVCtxts);	
+}
+
+void ECellEngine::Editor::Widget::ModelHierarchyWidget::HandleDnD()
+{
+	if (Util::IsFlagSet(hierarchyCtxt, HierarchyContext_DnD))
+	{
+		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_DataState))
+		{
+			if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Equations))
+			{
+				std::shared_ptr<ECellEngine::Maths::Equation>* eq_sptr = (std::shared_ptr<ECellEngine::Maths::Equation>*)(ctxtNodePayload);
+				ImGui::SetTooltip("Equation: %s", eq_sptr->get()->GetName());
+				ECellEngine::Editor::Utility::DragAndDrop::SetPayload("Hierarchy_Equation_DND", eq_sptr);
+			}
+
+			if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Reactions))
+			{
+				std::shared_ptr<ECellEngine::Data::Reaction>* rxn_sptr = (std::shared_ptr<ECellEngine::Data::Reaction>*)(ctxtNodePayload);
+				ImGui::SetTooltip("Reaction: %s", rxn_sptr->get()->GetName());
+				ECellEngine::Editor::Utility::DragAndDrop::SetPayload("Hierarchy_Reaction_DND", rxn_sptr);
+			}
+
+			if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Parameters))
+			{
+				std::shared_ptr<ECellEngine::Data::Parameter>* param_sptr = (std::shared_ptr<ECellEngine::Data::Parameter>*)(ctxtNodePayload);
+				ImGui::SetTooltip("Parameter: %s", param_sptr->get()->GetName());
+				ECellEngine::Editor::Utility::DragAndDrop::SetPayload("Hierarchy_Parameter_DND", param_sptr);
+			}
+
+			if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Species))
+			{
+				std::shared_ptr<ECellEngine::Data::Species>* sp_sptr = (std::shared_ptr<ECellEngine::Data::Species>*)(ctxtNodePayload);
+				ImGui::SetTooltip("Species: %s", sp_sptr->get()->GetName());
+				ECellEngine::Editor::Utility::DragAndDrop::SetPayload("Hierarchy_Species_DND", sp_sptr);
+			}
+
+		}
+		Util::ClearFlag(hierarchyCtxt, HierarchyContext_DnD);
+	}
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::TrackContextItem() noexcept
