@@ -235,6 +235,27 @@ namespace ECellEngine::Editor::Widget
 			ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_Bullet;
 		
 		/*!
+		@brief A utility function to get the name of the MNBV node type accessible
+				in the hierarchy.
+		@details This uses a subset of the enum ::HierarchyLevel.
+		@returns Standardized names. The possible values are:
+					- "Equation"
+					- "Parameter"
+					- "Reaction"
+					- "Species"
+					- "Arithmetic"
+					- "Asset"
+					- "LinePlot"
+					- "Logic"
+					- "ModifyDataStateValueEvent"
+					- "Solver"
+					- "Time"
+					- "Trigger"
+					- "Value"
+		*/
+		char* GetNodeTypeName() noexcept;
+
+		/*!
 		@brief Draws the context menu upon right clicking on the hierarchy.
 		*/
 		void DrawContextMenu();
