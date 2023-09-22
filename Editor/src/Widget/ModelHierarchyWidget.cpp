@@ -9,6 +9,63 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::Awake()
 	
 }
 
+char* ECellEngine::Editor::Widget::ModelHierarchyWidget::GetNodeTypeName() noexcept
+{
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_ArithmeticNodes))
+	{
+		return "Arithmetic";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_AssetNodes))
+	{
+		return "Asset";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Equations))
+	{
+		return "Equation";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_LinePlotNodes))
+	{
+		return "LinePlot";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_LogicNodes))
+	{
+		return "Logic";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_ModifyDataStateValueEventNodes))
+	{
+		return "ModifyDataStateValueEvent";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Reactions))
+	{
+		return "Reaction";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Parameters))
+	{
+		return "Parameter";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_SolverNodes))
+	{
+		return "Solver";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Species))
+	{
+		return "Species";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_TimeNodes))
+	{
+		return "Time";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_TriggerNodes))
+	{
+		return "Trigger";
+	}
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_ValueNodes))
+	{
+		return "Value";
+	}
+	return "Unknown";
+}
+
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::Draw()
 {
 	if (ImGui::Begin("Model Hierarchy"))
@@ -97,22 +154,18 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 
 				hierarchyLevel = HierarchyLevel_None;
 			}
-
-			/*if (ImGui::MenuItem("Rename Context"))
-			{
-				Util::SetFlag(hierarchyCtxt, HierarchyContext_RenamingInProgress);
-				globalNodeIdx = simuIdx;
-
-				hierarchyLevel = HierarchyLevel_None;
-			}*/
 		}
 		
 		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Leafs))
 		{
 			ImGui::Separator();
-			if (ImGui::MenuItem("This is the context menu of the leafs"))
+			if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_MNBVCtxt))
 			{
-				hierarchyLevel = HierarchyLevel_None;
+				if (ImGui::MenuItem("Erase List"))
+				{
+					editor->GetCommandsManager().ProcessCommand("eraseAllNodesOfType",
+						ECellEngine::Editor::IO::EraseAllNodesOfTypeCommandArgs({ mnbvCtxtIdx, GetNodeTypeName() }));
+				}
 			}
 		}
 
@@ -211,7 +264,16 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsList(c
 	if (_leafs.size() > 0)
 	{
 		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Leafs);
-		if (ImGui::TreeNodeEx(_leafsListName))
+		
+		bool leafsOpen = ImGui::TreeNodeEx(_leafsListName);
+		//If user performs the action to open the context menu of this node.
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+		{
+			TrackContextItem();
+			hierarchyLevel = hierarchyLevelAccumulator;
+		}
+
+		if (leafsOpen)
 		{
 			Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Leaf);
 			for (std::vector<LeafType>::iterator leafIt = _leafs.begin(); leafIt != _leafs.end(); leafIt++)
@@ -272,7 +334,15 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawHierarchyLeafsUMap(c
 	if (_leafs.size() > 0)
 	{
 		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Leafs);
-		if (ImGui::TreeNodeEx(_leafsListName))
+		bool leafsOpen = ImGui::TreeNodeEx(_leafsListName);
+		//If user performs the action to open the context menu of this node.
+		if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+		{
+			TrackContextItem();
+			hierarchyLevel = hierarchyLevelAccumulator;
+		}
+
+		if (leafsOpen)
 		{
 			Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Leaf);
 			for (std::unordered_map<LeafKeyType, LeafType>::const_iterator leafIt = _leafs.begin(); leafIt != _leafs.end(); leafIt++)
