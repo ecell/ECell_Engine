@@ -16,6 +16,9 @@ namespace ECellEngine::Editor::Widget
 
 namespace ECellEngine::Editor::IO
 {
+	/*!
+	@brief Command to add a Model Node-Based Viewer Context under a simulation.
+	*/
 	class AddMNBVContextCommand : public ECellEngine::IO::Command<AddMNBVContextCommandArgs>
 	{
 		Widget::ModelExplorerWidget& receiver;
@@ -52,13 +55,16 @@ namespace ECellEngine::Editor::IO
 		bool Execute() override;
 	};
 
+	/*!
+	@brief Command to erase a Model Node-Based Viewer Context from under a simulation.
+	*/
 	class EraseMNBVContextCommand : public ECellEngine::IO::Command<EraseMNBVContextCommandArgs>
 	{
 		Widget::ModelExplorerWidget& receiver;
 
 	public:
 		EraseMNBVContextCommand(Widget::ModelExplorerWidget& _receiver) :
-			Command("eraseMNBVCtxt", 3), receiver(_receiver)
+			Command("eraseMNBVCtxt", 2), receiver(_receiver)
 		{
 
 		}
@@ -86,7 +92,53 @@ namespace ECellEngine::Editor::IO
 		*/
 		bool Execute() override;
 	};
+
+	/*!
+	@brief Command to erase all the nodes of a certain type in a target Model
+			Node-Based Viewer Context.
+	*/
+	class EraseAllNodesOfTypeCommand : public ECellEngine::IO::Command<EraseAllNodesOfTypeCommandArgs>
+	{
+		Widget::ModelExplorerWidget& receiver;
+
+	public:
+		EraseAllNodesOfTypeCommand(Widget::ModelExplorerWidget& _receiver) :
+			Command("eraseAllNodesOfType", 3), receiver(_receiver)
+		{
+
+		}
+
+		inline const char* GetHelpMessage() const override
+		{
+			return "---- Erases all the nodes of a certain type in a target model node-based viewer context.\n"
+				"Usage: eraseAllNodesOfType <MNBVContext Index> <Node Type>\n"
+				"MNBVContext Index: The index of the model node-based viewer context in the model explorer.\n"
+				"Node Type: The type of the node to erase.\n"
+				"			Authorized values are: Equation, Parameter, Reaction, Species, Arithmetic,\n"
+				"			Asset, LinePlot, Logic, ModifyDataStateValueEvent, Solver, Time, Trigger,\n"
+				"			ValueFloat.\n";
+		}
+
+		/*!
+		@brief Decodes the parameters, and stores them in ::args.
+		@details Performs checks on @p _args to guarentee that the string command
+				 is well formed.
+		*/
+		bool DecodeParameters(const std::vector<std::string>& _args) override;
+
+		/*
+		@brief Executes the code to erase a model node-based viewer context.
+		@details Uses the parameters defined in ::args. If you want use this
+				 interface to execute the command rather than the one based on
+				 the string, make sure to call ::DecodeParameters(const std::vector<std::string>& _args)
+				 or to set the parameters manually with ::SetArgs(const EraseAllNodesOfTypeCommandArgs& _params).
+		*/
+		bool Execute() override;
+	};
 	
+	/*!
+	@brief Command to focus a node in a Model Node-Based Viewer Context.
+	*/
 	class FocusNodeCommand : public ECellEngine::IO::Command<FocusNodeCommandArgs>
 	{
 		Widget::ModelExplorerWidget& receiver;

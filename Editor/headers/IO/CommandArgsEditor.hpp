@@ -23,6 +23,12 @@ namespace ECellEngine::Editor::IO
 		unsigned short contextIdx = 0;
 	};
 
+	struct EraseAllNodesOfTypeCommandArgs
+	{
+		unsigned short contextIdx = 0;
+		char* nodeType = nullptr;
+	};
+
 	struct FocusNodeCommandArgs
 	{
 		unsigned short contextIdx = 0;

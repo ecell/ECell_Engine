@@ -186,14 +186,14 @@ namespace ECellEngine::Editor::Widget
 		}*/
 
 		/*!
-		@brief Retrieves the pointer to the node editor style data at index
-				@p _idx in ::mnbvCtxts.
+		@brief Retrieves the reference to the MNBV Context at index @p _idx in
+				::mnbvCtxts.
 		@param _idx The index of the style struct to retrieve in ::mnbvCtxts.
 		*/
-		/*inline MNBV::ModelNodeBasedViewerContext& GetModelNodeBasedViewerContext(std::size_t _idx)
+		inline MNBV::ModelNodeBasedViewerContext& GetModelNodeBasedViewerContext(std::size_t _idx)
 		{
 			return mnbvCtxts[_idx];
-		}*/
+		}
 
 		/*!
 		@brief Erases the model node-based viewer at index @p _idx in ::mnbViewers.
