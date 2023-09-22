@@ -128,7 +128,6 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawImportAs
 
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 {
-
 	for (std::vector<Utility::MNBV::ArithmeticOperationNodeData>::iterator it = currentMNBVContext->arithmeticOperationNodes.begin(); it != currentMNBVContext->arithmeticOperationNodes.end(); it++)
 	{
 		Utility::MNBV::NodeEditorDraw::ArithmeticOperationNode(*it);
@@ -172,7 +171,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		if (it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Reactions].IsAnItemDoubleClicked())
 		{
 			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(
-				currentMNBVContext->simulation->GetDataState().GetReaction(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Reactions].GetDoubleClickedItem()).get()));
+				currentMNBVContext->simulation->GetDataState().GetReaction(it->nlbsData[Utility::MNBV::AssetNodeData::NodeListBoxString_Reactions].GetDoubleClickedItem())));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::AssetNodeData::OutputPin_CollHdrReactions], &currentMNBVContext->reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_Asset]));
 			currentMNBVContext->staticLinks.back().OverrideEndFallbackPin(currentMNBVContext->reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::CollapsingHeader_ModelLinks].id, 1);
@@ -214,7 +213,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		if (it->nlbsDataRKLDep.IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::Reaction> reaction = it->nlbsDataRKLDep.GetDoubleClickedItem().lock();;
-			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction.get()));
+			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::EquationNodeData::OutputPin_CollHdrKineticLaws], &currentMNBVContext->reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_NLBSEquations]));
 			currentMNBVContext->staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::EquationNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
@@ -371,7 +370,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		if (it->nlbsDataRKLDep.IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::Reaction> reaction = it->nlbsDataRKLDep.GetDoubleClickedItem().lock();;
-			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction.get()));
+			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::ParameterNodeData::OutputPin_CollHdrKineticLaws], &currentMNBVContext->reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_NLBSParameters]));
 			currentMNBVContext->staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::ParameterNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
@@ -405,7 +404,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		if (it->nlbsDataRPDep.IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::Reaction> reaction = it->nlbsDataRPDep.GetDoubleClickedItem().lock();;
-			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction.get()));
+			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::SpeciesNodeData::OutputPin_CollHdrAsProduct], &currentMNBVContext->reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_CollHdrProducts]));
 			currentMNBVContext->staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
@@ -416,7 +415,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		if (it->nlbsDataRRDep.IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::Reaction> reaction = it->nlbsDataRRDep.GetDoubleClickedItem().lock();;
-			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction.get()));
+			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::SpeciesNodeData::OutputPin_CollHdrAsReactant], &currentMNBVContext->reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_CollHdrReactants]));
 			currentMNBVContext->staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node
@@ -427,7 +426,7 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodes()
 		if (it->nlbsDataRKLDep.IsAnItemDoubleClicked())
 		{
 			std::shared_ptr<ECellEngine::Data::Reaction> reaction = it->nlbsDataRKLDep.GetDoubleClickedItem().lock();;
-			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction.get()));
+			currentMNBVContext->reactionNodes.emplace_back(Utility::MNBV::ReactionNodeData(reaction));
 
 			currentMNBVContext->staticLinks.emplace_back(Utility::MNBV::LinkData(&it->outputPins[Utility::MNBV::SpeciesNodeData::OutputPin_CollHdrInKineticLaw], &currentMNBVContext->reactionNodes.back().inputPins[Utility::MNBV::ReactionNodeData::InputPin_NLBSSpecies]));
 			currentMNBVContext->staticLinks.back().OverrideEndFallbackPin(it->inputPins[Utility::MNBV::SpeciesNodeData::CollapsingHeader_ModelLinks].id, 1);//fallback of this node

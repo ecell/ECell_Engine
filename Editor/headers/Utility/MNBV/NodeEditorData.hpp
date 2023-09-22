@@ -1730,7 +1730,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		/*!
 		@brief Pointer to the reaction represented by this node.
 		*/
-		ECellEngine::Data::Reaction* data;
+		std::shared_ptr<ECellEngine::Data::Reaction> data;
 
 		/*!
 		@brief The local copy of ECellEngine::Data::Reaction::kineticLawValueCache of ::data.
@@ -1805,7 +1805,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			}
 		}
 
-		ReactionNodeData(ECellEngine::Data::Reaction* _data) :
+		ReactionNodeData(std::shared_ptr<ECellEngine::Data::Reaction> _data) :
 			NodeData(), data{ _data }
 		{
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
