@@ -7,8 +7,6 @@
 #include "IO/CommandsManager.hpp"
 #include "Logging/Logger.hpp"
 
-using namespace ECellEngine::IO;
-
 namespace ECellEngine::Core
 {
 	/*!

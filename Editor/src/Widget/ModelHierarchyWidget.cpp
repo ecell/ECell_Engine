@@ -130,6 +130,50 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 			}
 		}
 
+		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_DataState))
+		{
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Clear Data State"))
+			{
+				//First delete all the nodes that use elements of the data state
+				for (unsigned short i = 0; i < (unsigned short)mnbvCtxts->size(); ++i)
+				{
+					if(mnbvCtxts->at(i).simulation->id == simuManager.GetSimulation(simuIdx)->id)
+					{
+						//Then delete all the nodes that use elements of the data state
+						editor->GetCommandsManager().ProcessCommand("eraseAllNodesOfType",
+							ECellEngine::Editor::IO::EraseAllNodesOfTypeCommandArgs({ i, "Asset" }));
+						editor->GetCommandsManager().ProcessCommand("eraseAllNodesOfType",
+							ECellEngine::Editor::IO::EraseAllNodesOfTypeCommandArgs({ i, "Species" }));
+						editor->GetCommandsManager().ProcessCommand("eraseAllNodesOfType",
+							ECellEngine::Editor::IO::EraseAllNodesOfTypeCommandArgs({ i, "Parameter" }));
+						editor->GetCommandsManager().ProcessCommand("eraseAllNodesOfType",
+							ECellEngine::Editor::IO::EraseAllNodesOfTypeCommandArgs({ i, "Equation" }));
+						editor->GetCommandsManager().ProcessCommand("eraseAllNodesOfType",
+							ECellEngine::Editor::IO::EraseAllNodesOfTypeCommandArgs({ i, "Reaction" }));
+						editor->GetCommandsManager().ProcessCommand("eraseAllNodesOfType",
+							ECellEngine::Editor::IO::EraseAllNodesOfTypeCommandArgs({ i, "Logic" }));
+						editor->GetCommandsManager().ProcessCommand("eraseAllNodesOfType",
+							ECellEngine::Editor::IO::EraseAllNodesOfTypeCommandArgs({ i, "ModifyDataStateValueEvent" }));
+						editor->GetCommandsManager().ProcessCommand("eraseAllNodesOfType",
+							ECellEngine::Editor::IO::EraseAllNodesOfTypeCommandArgs({ i, "Trigger" }));
+					}
+				}
+
+				//Then clear the data state
+				editor->engine.GetCommandsManager().ProcessCommand("clearDataState",
+					ECellEngine::IO::SimulationCommandArgs({ simuManager.GetSimulation(simuIdx)->id }));
+
+				hierarchyLevel = HierarchyLevel_None;
+			}
+
+			if (ImGui::IsItemHovered())
+			{
+				ImGui::SetTooltip("Destructive action. This will also delete all nodes in all the contexts that use elements of the data state.");
+			}
+		}
+
 		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_MNBVCtxts))
 		{
 			ImGui::Separator();
@@ -465,7 +509,16 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(
 	
 	globalNodeCount++;
 	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_DataState);
-	if (ImGui::TreeNodeEx("Data State"))
+
+	bool openDataState = ImGui::TreeNodeEx("Data State");
+	//If user performs the action to open the context menu of this node.
+	if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+	{
+		TrackContextItem();
+		hierarchyLevel = hierarchyLevelAccumulator;
+	}
+
+	if (openDataState)
 	{
 		Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_Equations);
 		DrawHierarchyLeafsUMap("Equations", _simulation->GetDataState().GetEquations(), nameGetterBySPtr, nameSetterBySPtr);
