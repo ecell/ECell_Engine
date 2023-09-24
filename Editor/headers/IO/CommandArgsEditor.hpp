@@ -18,15 +18,22 @@ namespace ECellEngine::Editor::IO
 		unsigned long long simulationID = 0;
 	};
 
+	struct EraseAllNodesOfTypeCommandArgs
+	{
+		unsigned short contextIdx = 0;
+		char* nodeType = nullptr;
+	};
+
 	struct EraseMNBVContextCommandArgs
 	{
 		unsigned short contextIdx = 0;
 	};
 
-	struct EraseAllNodesOfTypeCommandArgs
+	struct EraseNodeCommandArgs
 	{
 		unsigned short contextIdx = 0;
 		char* nodeType = nullptr;
+		unsigned long long nodeID = 0;
 	};
 
 	struct FocusNodeCommandArgs

@@ -71,7 +71,7 @@ namespace ECellEngine::Editor::Widget
 			HierarchyLevel_SolverNodes = 1 << 16, //solver nodes
 			HierarchyLevel_TimeNodes = 1 << 17, //time nodes
 			HierarchyLevel_TriggerNodes = 1 << 18, //trigger nodes
-			HierarchyLevel_ValueNodes = 1 << 19, //value nodes
+			HierarchyLevel_ValueFloatNodes = 1 << 19, //value float nodes
 
 
 		};
