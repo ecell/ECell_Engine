@@ -7,17 +7,18 @@ void ECellEngine::Core::Engine::Start()
 
 	//SimulationManager Commands
 	SimulationsManager& simulationManager = SimulationsManager::GetSingleton();
-	commandsManager.RegisterCommand(std::make_shared<AddModuleCommand>(simulationManager));
-	commandsManager.RegisterCommand(std::make_shared<AddSimulationCommand>(simulationManager));
-	commandsManager.RegisterCommand(std::make_shared<AddSolverCommand>(simulationManager));
-	commandsManager.RegisterCommand(std::make_shared<EraseSimulationCommand>(simulationManager));
-	commandsManager.RegisterCommand(std::make_shared<ModuleSolverConnectionCommand>(simulationManager));
-	commandsManager.RegisterCommand(std::make_shared<ModuleSolverDisconnectionCommand>(simulationManager));
-	commandsManager.RegisterCommand(std::make_shared<PauseSimulationCommand>(simulationManager));
-	commandsManager.RegisterCommand(std::make_shared<PlaySimulationCommand>(simulationManager));
-	commandsManager.RegisterCommand(std::make_shared<StepSimulationBackwardCommand>(simulationManager));
-	commandsManager.RegisterCommand(std::make_shared<StepSimulationForwardCommand>(simulationManager));
-	commandsManager.RegisterCommand(std::make_shared<StopSimulationCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::AddModuleCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::AddSimulationCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::AddSolverCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::ClearDataStateCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::EraseSimulationCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::ModuleSolverConnectionCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::ModuleSolverDisconnectionCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::PauseSimulationCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::PlaySimulationCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::StepSimulationBackwardCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::StepSimulationForwardCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::StopSimulationCommand>(simulationManager));
 
 	//Creates a new simulation by default.
 	simulationManager.AddSimulation();

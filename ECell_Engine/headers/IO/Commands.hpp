@@ -145,7 +145,48 @@ namespace ECellEngine::IO
 		*/
 		bool Execute() override;
 	};
-	
+
+	/*
+	@brief The command to let the user clear the datastate of a simulation.
+	@details At position [0] is always the name of the command ("clearDataState").
+			 Then, for this command, come [1] the ID of the target
+			 simulation in the SimulationsManager's simulation list.
+	*/
+	class ClearDataStateCommand final : public Command<SimulationCommandArgs>
+	{
+		ECellEngine::Core::SimulationsManager& receiver;
+
+	public:
+		ClearDataStateCommand(ECellEngine::Core::SimulationsManager& _receiver) :
+			Command("clearDataState", 2), receiver(_receiver)
+		{
+			
+		}
+
+		inline const char* GetHelpMessage() const override
+		{
+			return "---- Clears the datastate of a simulation.\n"
+				"Usage: clearDataState <simulationID>\n"
+				"simulationID: the ID of the target simulation for which we want to clear the data state.\n";
+		}
+
+		/*!
+		@brief Decodes the parameters, and stores them in ::args.
+		@details Performs checks on @p _args to guarentee that the string command
+				 is well formed.
+		*/
+		bool DecodeParameters(const std::vector<std::string>& _args) override;
+
+		/*
+		@brief Executes the code to erase a simulation.
+		@details Uses the parameters defined in ::args. If you want use this
+				 interface to execute the command rather than the one based on
+				 the string, make sure to call ::DecodeParameters(const std::vector<std::string>& _args)
+				 or to set the parameters manually with ::SetArgs(const SimulationCommandArgs& _params).
+		*/
+		bool Execute() override;
+	};
+
 	/*
 	@brief The command to let the user erase a simulation.
 	@details At position [0] is always the name of the command ("eraseSimulation").
@@ -182,7 +223,7 @@ namespace ECellEngine::IO
 		@details Uses the parameters defined in ::args. If you want use this
 				 interface to execute the command rather than the one based on
 				 the string, make sure to call ::DecodeParameters(const std::vector<std::string>& _args)
-				 or to set the parameters manually with ::SetArgs(const AddModuleCommandArgs& _params).
+				 or to set the parameters manually with ::SetArgs(const SimulationCommandArgs& _params).
 		*/
 		bool Execute() override;
 	};
