@@ -17,6 +17,21 @@ Operand* ECellEngine::Data::DataState::GetOperand(const std::size_t _id)
 	return s3->second.get();//this is null
 }
 
+void ECellEngine::Data::DataState::Clear() noexcept
+{
+	species.clear();
+	parameters.clear();
+	equations.clear();
+	reactions.clear();
+
+	operandsToOperations.clear();
+
+	operations.clear();
+	logicOperations.clear();
+	modifyDataStateValueEvents.clear();
+	triggers.clear();
+}
+
 void ECellEngine::Data::DataState::Reset() noexcept
 {
 	for (auto& [spName, _sp] : species)

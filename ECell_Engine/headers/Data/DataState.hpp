@@ -261,22 +261,29 @@ namespace ECellEngine::Data
 			return triggers.emplace_back(std::make_shared<ECellEngine::Core::Trigger<Operand*, Operand*>>());
 		}
 
-		inline void ClearEquations()
+		/*!
+		@brief Clears all data.
+		@details Includes ::equations, ::parameters, ::reactions, ::species, ::operations,
+				 ::logicOperations, ::modifyDataStateValueEvents and ::triggers.
+		*/
+		void Clear() noexcept;
+
+		inline void ClearEquations() noexcept
 		{
 			equations.clear();
 		}
 
-		inline void ClearParameters()
+		inline void ClearParameters() noexcept
 		{
 			parameters.clear();
 		}
 
-		inline void ClearReactions()
+		inline void ClearReactions() noexcept
 		{
 			reactions.clear();
 		}
 
-		inline void ClearSpecies()
+		inline void ClearSpecies() noexcept
 		{
 			species.clear();
 		}
