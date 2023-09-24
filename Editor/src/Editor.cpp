@@ -13,8 +13,9 @@ ECellEngine::Editor::Editor::Editor()
 	Widget::ModelExplorerWidget* modelExplorerWidget = AddWidget<Widget::ModelExplorerWidget>();
 
 	commandsManager.RegisterCommand(std::make_shared<IO::AddMNBVContextCommand>(*modelExplorerWidget));
-	commandsManager.RegisterCommand(std::make_shared<IO::EraseMNBVContextCommand>(*modelExplorerWidget));
 	commandsManager.RegisterCommand(std::make_shared<IO::EraseAllNodesOfTypeCommand>(*modelExplorerWidget));
+	commandsManager.RegisterCommand(std::make_shared<IO::EraseMNBVContextCommand>(*modelExplorerWidget));
+	commandsManager.RegisterCommand(std::make_shared<IO::EraseNodeCommand>(*modelExplorerWidget));
 	commandsManager.RegisterCommand(std::make_shared<IO::FocusNodeCommand>(*modelExplorerWidget));
 	
 }

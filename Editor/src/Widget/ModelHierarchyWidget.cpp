@@ -59,9 +59,9 @@ char* ECellEngine::Editor::Widget::ModelHierarchyWidget::GetNodeTypeName() noexc
 	{
 		return "Trigger";
 	}
-	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_ValueNodes))
+	if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_ValueFloatNodes))
 	{
-		return "Value";
+		return "ValueFloat";
 	}
 	return "Unknown";
 }
@@ -110,8 +110,6 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 		{
 			if (ImGui::MenuItem("Erase Simulation"))
 			{
-				ECellEngine::Logging::Logger::LogDebug("Clicked on Erase Simulation");
-
 				ECellEngine::Core::Simulation* _simulation = (ECellEngine::Core::Simulation*)ctxtNodePayload;
 
 				//First erase all MNBVContexts under this simulation
@@ -174,7 +172,13 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 			ImGui::Separator();
 			if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_MNBVCtxt))
 			{
-				if (ImGui::MenuItem("Focus"))
+				if (ImGui::MenuItem("Erase Node"))
+				{
+					editor->GetCommandsManager().ProcessCommand("eraseNode",
+						ECellEngine::Editor::IO::EraseNodeCommandArgs({ mnbvCtxtIdx, GetNodeTypeName(), (std::size_t)((Utility::MNBV::NodeData*)ctxtNodePayload)->id }));
+				}
+				
+				if (ImGui::MenuItem("Focus Node"))
 				{
 					editor->GetCommandsManager().ProcessCommand("focusNode",
 						ECellEngine::Editor::IO::FocusNodeCommandArgs(
@@ -449,9 +453,9 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawMNBVCtxtHierarchy(MN
 	DrawHierarchyLeafsList("Trigger Nodes", _mnbvCtxt.triggerNodes, nameGetterByIt, nameSetterByIt);
 	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_TriggerNodes);
 
-	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_ValueNodes);
-	DrawHierarchyLeafsList("Value Nodes", _mnbvCtxt.valueFloatNodes, nameGetterByIt, nameSetterByIt);
-	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_ValueNodes);
+	Util::SetFlag(hierarchyLevelAccumulator, HierarchyLevel_ValueFloatNodes);
+	DrawHierarchyLeafsList("Value Float Nodes", _mnbvCtxt.valueFloatNodes, nameGetterByIt, nameSetterByIt);
+	Util::ClearFlag(hierarchyLevelAccumulator, HierarchyLevel_ValueFloatNodes);
 }
 
 void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawSimulationHierarchy(ECellEngine::Core::Simulation* _simulation)

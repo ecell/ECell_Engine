@@ -8,6 +8,7 @@
 #include "Core/IDProvider.hpp"
 #include "Core/Simulation.hpp"
 #include "IO/CommandsManager.hpp"
+#include "Util/BinarySearch.hpp"
 #include "Utility/MNBV/NodeEditorDraw.hpp"
 
 namespace ECellEngine::Editor::Widget::MNBV
@@ -21,7 +22,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 		/*!
 		@brief The name of this context.
 		*/
-		char name[64] = { '0'};
+		char name[64] = { '0' };
 
 		/*!
 		@brief The unique Id to be used by any newly created data that will be
@@ -100,20 +101,20 @@ namespace ECellEngine::Editor::Widget::MNBV
 		std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData> modifyDataStateValueEventNodes;
 
 		/*!
-		@brief The list of reaction nodes in this context.
-		@details It contains the information used to draw the nodes corresponding
-				 to each reaction of various assets imported in the current
-				 simulation space.
-		*/
-		std::vector<Utility::MNBV::ReactionNodeData> reactionNodes;
-
-		/*!
 		@brief The list of parameter nodes in this context.
 		@details It contains the information used to draw the nodes corresponding
 				 to each parameter of various assets imported in the current
 				 simulation space.
 		*/
 		std::vector<Utility::MNBV::ParameterNodeData> parameterNodes;
+		
+		/*!
+		@brief The list of reaction nodes in this context.
+		@details It contains the information used to draw the nodes corresponding
+				 to each reaction of various assets imported in the current
+				 simulation space.
+		*/
+		std::vector<Utility::MNBV::ReactionNodeData> reactionNodes;
 
 		/*!
 		@brief The list of solver nodes.
@@ -211,6 +212,15 @@ namespace ECellEngine::Editor::Widget::MNBV
 		}
 
 		/*!
+		@brief Gets the list of nodes of this context matching the template type.
+		@details Implemented all the relevant template specializations.
+		@tparam NodeType The type of the nodes to get.
+		@returns The list of nodes of this context matching the template type.
+		*/
+		template<typename NodeType>
+		std::vector<NodeType>& GetNodesOfType() noexcept;
+
+		/*!
 		@brief Sets the ::engineCommandsManager pointer of this context.
 		*/
 		inline void SetEngineCommandsManager(ECellEngine::IO::CommandsManager* _engineCommandsManager) noexcept
@@ -247,38 +257,16 @@ namespace ECellEngine::Editor::Widget::MNBV
 		void ConserveLinkDataIntegrity();
 
 		/*!
-		@brief Erases all the nodes in one of the nodes lists of this context.
-		@details Nodes lists are:
-				 - ::arithmeticOperationNodes
-				 - ::assetNodes
-				 - ::equationNodes
-				 - ::linePlotNodes
-				 - ::logicOperationNodes
-				 - ::modifyDataStateValueEventNodes
-				 - ::reactionNodes
-				 - ::parameterNodes
-				 - ::solverNodes
-				 - ::speciesNodes
-				 - ::timeNodes
-				 - ::triggerNodes
-				 - ::valueFloatNodes
-		@param _nodesTypeName The name of the type of nodes to clear.
-				Valid values are:
-				 - "Arithmetic"
-				 - "Asset"
-				 - "Equation"
-				 - "LinePlot"
-				 - "Logic"
-				 - "ModifyDataStateValueEvent"
-				 - "Reaction"
-				 - "Parameter"
-				 - "Solver"
-				 - "Species"
-				 - "Time"
-				 - "Trigger"
-				 - "Value Float"
-		@return True if the nodes list was found and cleared, false otherwise.
+		@brief Erases the node of this context matching the template type and the
+				given ID.
+		@details Implemented all the relevant template specializations. This
+				was unavoidable as it relies on ::GetNodesOfType() for which we
+				had to implement the specializations.
+		@param _nodeID The ID of the node to erase.
+		@tparam NodeType The type of the node to erase.
+		@return @a True if the node was found and erased, @a false otherwise.
 		*/
-		bool EraseAllNodesOfType(const char* _nodesTypeName) noexcept;
+		template<typename NodeType>
+		bool EraseNodeOfType(const std::size_t _nodeID) noexcept;
 	};
 }

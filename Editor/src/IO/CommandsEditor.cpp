@@ -39,6 +39,100 @@ bool ECellEngine::Editor::IO::AddMNBVContextCommand::Execute()
 	receiver.AddModelNodeBasedViewerContext(simuSearch.second->get());
 }
 
+bool ECellEngine::Editor::IO::EraseAllNodesOfTypeCommand::DecodeParameters(const std::vector<std::string>& _args)
+{
+	if ((unsigned char)_args.size() != nbArgs)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseAllNodesOfTypeCommand Failed: Wrong number of arguments. Expected %llu, got %u.", nbArgs, _args.size());
+		return false;
+	}
+
+	unsigned short contextIdx = 0;
+	try
+	{
+		contextIdx = std::stoul(_args[1]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseAllNodesOfTypeCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a Model Node-Based Viewer (MNBV) Context", _args[1].c_str());
+		return false;
+	}
+
+	args.contextIdx = contextIdx;
+	Util::StrCopy(args.nodeType, _args[2].c_str(), 32);
+
+	return true;
+}
+
+bool ECellEngine::Editor::IO::EraseAllNodesOfTypeCommand::Execute()
+{
+	if (args.contextIdx >= receiver.CountModelNodeBasedViewerContext())
+	{
+		ECellEngine::Logging::Logger::LogError("EraseAllNodesOfTypeCommand Failed: The Model Node-Based Viewer (MNBV) Context at index %u does not exist.", args.contextIdx);
+		return false;
+	}
+
+	if (!strcmp(args.nodeType, "Equation"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::EquationNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "Parameter"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::ParameterNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "Reaction"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::ReactionNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "Species"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::SpeciesNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "Arithmetic"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::ArithmeticOperationNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "Asset"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::AssetNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "LinePlot"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::LinePlotNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "Logic"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::LogicOperationNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "ModifyDataStateValueEvent"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::ModifyDataStateValueEventNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "Solver"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::SolverNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "Time"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::TimeNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "Trigger"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::TriggerNodeData>().clear();
+	}
+	else if (!strcmp(args.nodeType, "ValueFloat"))
+	{
+		receiver.GetModelNodeBasedViewerContext(args.contextIdx).GetNodesOfType<Utility::MNBV::ValueFloatNodeData>().clear();
+	}
+	else
+	{
+		ECellEngine::Logging::Logger::LogError("EraseAllNodesOfTypeCommand Failed: Invalid node type \"%s\".", args.nodeType);
+		return false;
+	}
+
+	return true;
+}
+
 bool ECellEngine::Editor::IO::EraseMNBVContextCommand::DecodeParameters(const std::vector<std::string>& _args)
 {
 	if ((unsigned char)_args.size() != nbArgs)
@@ -74,11 +168,11 @@ bool ECellEngine::Editor::IO::EraseMNBVContextCommand::Execute()
 	return true;
 }
 
-bool ECellEngine::Editor::IO::EraseAllNodesOfTypeCommand::DecodeParameters(const std::vector<std::string>& _args)
+bool ECellEngine::Editor::IO::EraseNodeCommand::DecodeParameters(const std::vector<std::string>& _args)
 {
 	if ((unsigned char)_args.size() != nbArgs)
 	{
-		ECellEngine::Logging::Logger::LogError("EraseAllNodesOfTypeCommand Failed: Wrong number of arguments. Expected %llu, got %u.", nbArgs, _args.size());
+		ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Wrong number of arguments. Expected %llu, got %u.", nbArgs, _args.size());
 		return false;
 	}
 
@@ -89,27 +183,143 @@ bool ECellEngine::Editor::IO::EraseAllNodesOfTypeCommand::DecodeParameters(const
 	}
 	catch (const std::invalid_argument& _e)
 	{
-		ECellEngine::Logging::Logger::LogError("EraseAllNodesOfTypeCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a Model Node-Based Viewer (MNBV) Context", _args[1].c_str());
+		ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a Model Node-Based Viewer (MNBV) Context", _args[1].c_str());
+		return false;
+	}
+
+	unsigned long long nodeID = 0;
+	try
+	{
+		nodeID = std::stoull(_args[3]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not convert third argument \"%s\" to an integer to represent the ID of a node", _args[3].c_str());
 		return false;
 	}
 
 	args.contextIdx = contextIdx;
 	Util::StrCopy(args.nodeType, _args[2].c_str(), 32);
+	args.nodeID = nodeID;
 
 	return true;
 }
 
-bool ECellEngine::Editor::IO::EraseAllNodesOfTypeCommand::Execute()
+bool ECellEngine::Editor::IO::EraseNodeCommand::Execute()
 {
 	if (args.contextIdx >= receiver.CountModelNodeBasedViewerContext())
 	{
-		ECellEngine::Logging::Logger::LogError("EraseAllNodesOfTypeCommand Failed: The Model Node-Based Viewer (MNBV) Context at index %u does not exist.", args.contextIdx);
+		ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: The Model Node-Based Viewer (MNBV) Context at index %u does not exist.", args.contextIdx);
 		return false;
 	}
 
-	if (!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseAllNodesOfType(args.nodeType))
+	if (!strcmp(args.nodeType, "Equation"))
 	{
-		ECellEngine::Logging::Logger::LogError("EraseAllNodesOfTypeCommand Failed: Could not erase all nodes of type \"%s\" in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeType, args.contextIdx);
+		if(!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::EquationNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"Equation\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false;
+		}
+	}
+	else if (!strcmp(args.nodeType, "Parameter"))
+	{
+		if(!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::ParameterNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"Parameter\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false;
+		}
+	}
+	else if (!strcmp(args.nodeType, "Reaction"))
+	{
+		if(!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::ReactionNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"Reaction\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false;
+		}
+	}
+	else if (!strcmp(args.nodeType, "Species"))
+	{
+		if(!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::SpeciesNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"Species\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false;
+		}
+	}
+	else if (!strcmp(args.nodeType, "Arithmetic"))
+	{
+		if(!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::ArithmeticOperationNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"Arithmetic\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false;
+		}
+	}
+	else if (!strcmp(args.nodeType, "Asset"))
+	{
+		if(!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::AssetNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"Asset\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false;
+		}
+	}
+	else if (!strcmp(args.nodeType, "LinePlot"))
+	{
+		if(!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::LinePlotNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"LinePlot\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false;
+		}
+	}
+	else if (!strcmp(args.nodeType, "Logic"))
+	{
+		if (!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::LogicOperationNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"Logic\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false;
+		}
+	}
+	else if (!strcmp(args.nodeType, "ModifyDataStateValueEvent"))
+	{
+		if(!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::ModifyDataStateValueEventNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"ModifyDataStateValueEvent\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false;
+		}
+	}
+	else if (!strcmp(args.nodeType, "Solver"))
+	{
+		if (!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::SolverNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"Solver\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false;
+		}
+	}
+	else if (!strcmp(args.nodeType, "Time"))
+	{
+		if(!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::TimeNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"Time\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false; 
+		}
+	}
+	else if (!strcmp(args.nodeType, "Trigger"))
+	{
+		if(!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::TriggerNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"Trigger\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false; 
+		}
+	}
+	else if (!strcmp(args.nodeType, "ValueFloat"))
+	{
+		if(!receiver.GetModelNodeBasedViewerContext(args.contextIdx).EraseNodeOfType<Utility::MNBV::ValueFloatNodeData>(args.nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeCommand Failed: Could not erase node of type \"ValueFloat\" with ID %llu in the Model Node-Based Viewer (MNBV) Context at index %u.", args.nodeID, args.contextIdx);
+			return false; 
+		}
+	}
+	else
+	{
+		ECellEngine::Logging::Logger::LogError("EraseAllNodesOfTypeCommand Failed: Invalid node type \"%s\".", args.nodeType);
 		return false;
 	}
 
