@@ -8,249 +8,178 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::ConserveLin
 	}
 }
 
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
+bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseAllNodesOfType(const char* _nodeType) noexcept
 {
-	return arithmeticOperationNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::AssetNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return assetNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::EquationNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return equationNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::LinePlotNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return linePlotNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return logicOperationNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return modifyDataStateValueEventNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::ReactionNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return reactionNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::ParameterNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return parameterNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::SolverNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return solverNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::SpeciesNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return speciesNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::TimeNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return timeNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::TriggerNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return triggerNodes;
-}
-
-template<>
-std::vector<ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData>& ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::GetNodesOfType() noexcept
-{
-	return valueFloatNodes;
-}
-
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::ArithmeticOperationNodeData>& nodes = GetNodesOfType<Utility::MNBV::ArithmeticOperationNodeData>();
-	std::vector<Utility::MNBV::ArithmeticOperationNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
+	if (!strcmp(_nodeType, "Equation"))
 	{
-		nodes.erase(nodeIt);
-		return true;
+		equationNodes.clear();
 	}
-	return false;
+	else if (!strcmp(_nodeType, "Parameter"))
+	{
+		parameterNodes.clear();
+	}
+	else if (!strcmp(_nodeType, "Reaction"))
+	{
+		reactionNodes.clear();
+	}
+	else if (!strcmp(_nodeType, "Species"))
+	{
+		speciesNodes.clear();
+	}
+	else if (!strcmp(_nodeType, "Arithmetic"))
+	{
+		arithmeticOperationNodes.clear();
+	}
+	else if (!strcmp(_nodeType, "Asset"))
+	{
+		assetNodes.clear();
+	}
+	else if (!strcmp(_nodeType, "LinePlot"))
+	{
+		linePlotNodes.clear();
+	}
+	else if (!strcmp(_nodeType, "Logic"))
+	{
+		logicOperationNodes.clear();
+	}
+	else if (!strcmp(_nodeType, "ModifyDataStateValueEvent"))
+	{
+		modifyDataStateValueEventNodes.clear();
+	}
+	else if (!strcmp(_nodeType, "Solver"))
+	{
+		solverNodes.clear();
+	}
+	else if (!strcmp(_nodeType, "Time"))
+	{
+		timeNodes.clear();
+	}
+	else if (!strcmp(_nodeType, "Trigger"))
+	{
+		triggerNodes.clear();
+	}
+	else if (!strcmp(_nodeType, "ValueFloat"))
+	{
+		valueFloatNodes.clear();
+	}
+	else
+	{
+		return false;
+	}
+	return true;
 }
 
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::AssetNodeData>(const std::size_t _nodeID) noexcept
+bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType(const char* _nodeType, const std::size_t _nodeID) noexcept
 {
-	std::vector<Utility::MNBV::AssetNodeData>& nodes = GetNodesOfType<Utility::MNBV::AssetNodeData>();
-	std::vector<Utility::MNBV::AssetNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
+	if (!strcmp(_nodeType, "Equation"))
 	{
-		nodes.erase(nodeIt);
-		return true;
+		if (!EraseNodeOfType(equationNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"Equation\" with ID %llu.", _nodeID);
+			return false;
+		}
 	}
-	return false;
-}
+	else if (!strcmp(_nodeType, "Parameter"))
+	{
+		if (!EraseNodeOfType(parameterNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"Parameter\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else if (!strcmp(_nodeType, "Reaction"))
+	{
+		if (!EraseNodeOfType(reactionNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"Reaction\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else if (!strcmp(_nodeType, "Species"))
+	{
+		if (!EraseNodeOfType(speciesNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"Species\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else if (!strcmp(_nodeType, "Arithmetic"))
+	{
+		if (!EraseNodeOfType(arithmeticOperationNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"Arithmetic\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else if (!strcmp(_nodeType, "Asset"))
+	{
+		if (!EraseNodeOfType(assetNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"Asset\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else if (!strcmp(_nodeType, "LinePlot"))
+	{
+		if (!EraseNodeOfType(linePlotNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"LinePlot\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else if (!strcmp(_nodeType, "Logic"))
+	{
+		if (!EraseNodeOfType(logicOperationNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"Logic\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else if (!strcmp(_nodeType, "ModifyDataStateValueEvent"))
+	{
+		if (!EraseNodeOfType(modifyDataStateValueEventNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"ModifyDataStateValueEvent\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else if (!strcmp(_nodeType, "Solver"))
+	{
+		if (!EraseNodeOfType(solverNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"Solver\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else if (!strcmp(_nodeType, "Time"))
+	{
+		if (!EraseNodeOfType(timeNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"Time\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else if (!strcmp(_nodeType, "Trigger"))
+	{
+		if (!EraseNodeOfType(triggerNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"Trigger\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else if (!strcmp(_nodeType, "ValueFloat"))
+	{
+		if (!EraseNodeOfType(valueFloatNodes, _nodeID))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Could not erase node of type \"ValueFloat\" with ID %llu.", _nodeID);
+			return false;
+		}
+	}
+	else
+	{
+		ECellEngine::Logging::Logger::LogError("EraseNodeOfType: Invalid node type \"%s\".", _nodeType);
+		return false;
+	}
 
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::EquationNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::EquationNodeData>& nodes = GetNodesOfType<Utility::MNBV::EquationNodeData>();
-	std::vector<Utility::MNBV::EquationNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
-	{
-		nodes.erase(nodeIt);
-		return true;
-	}
-	return false;
-}
-
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::LinePlotNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::LinePlotNodeData>& nodes = GetNodesOfType<Utility::MNBV::LinePlotNodeData>();
-	std::vector<Utility::MNBV::LinePlotNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
-	{
-		nodes.erase(nodeIt);
-		return true;
-	}
-	return false;
-}
-
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::LogicOperationNodeData>& nodes = GetNodesOfType<Utility::MNBV::LogicOperationNodeData>();
-	std::vector<Utility::MNBV::LogicOperationNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
-	{
-		nodes.erase(nodeIt);
-		return true;
-	}
-	return false;
-}
-
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData>& nodes = GetNodesOfType<Utility::MNBV::ModifyDataStateValueEventNodeData>();
-	std::vector<Utility::MNBV::ModifyDataStateValueEventNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
-	{
-		nodes.erase(nodeIt);
-		return true;
-	}
-	return false;
-}
-
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::ParameterNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::ParameterNodeData>& nodes = GetNodesOfType<Utility::MNBV::ParameterNodeData>();
-	std::vector<Utility::MNBV::ParameterNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
-	{
-		nodes.erase(nodeIt);
-		return true;
-	}
-	return false;
-}
-
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::ReactionNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::ReactionNodeData>& nodes = GetNodesOfType<Utility::MNBV::ReactionNodeData>();
-	std::vector<Utility::MNBV::ReactionNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
-	{
-		nodes.erase(nodeIt);
-		return true;
-	}
-	return false;
-}
-
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::SolverNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::SolverNodeData>& nodes = GetNodesOfType<Utility::MNBV::SolverNodeData>();
-	std::vector<Utility::MNBV::SolverNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
-	{
-		nodes.erase(nodeIt);
-		return true;
-	}
-	return false;
-}
-
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::SpeciesNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::SpeciesNodeData>& nodes = GetNodesOfType<Utility::MNBV::SpeciesNodeData>();
-	std::vector<Utility::MNBV::SpeciesNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
-	{
-		nodes.erase(nodeIt);
-		return true;
-	}
-	return false;
-}
-
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::TimeNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::TimeNodeData>& nodes = GetNodesOfType<Utility::MNBV::TimeNodeData>();
-	std::vector<Utility::MNBV::TimeNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
-	{
-		nodes.erase(nodeIt);
-		return true;
-	}
-	return false;
-}
-
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::TriggerNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::TriggerNodeData>& nodes = GetNodesOfType<Utility::MNBV::TriggerNodeData>();
-	std::vector<Utility::MNBV::TriggerNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
-	{
-		nodes.erase(nodeIt);
-		return true;
-	}
-	return false;
-}
-
-template<>
-bool ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::EraseNodeOfType<ECellEngine::Editor::Utility::MNBV::ValueFloatNodeData>(const std::size_t _nodeID) noexcept
-{
-	std::vector<Utility::MNBV::ValueFloatNodeData>& nodes = GetNodesOfType<Utility::MNBV::ValueFloatNodeData>();
-	std::vector<Utility::MNBV::ValueFloatNodeData>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(nodes.begin(), nodes.end(), _nodeID);
-	if (nodeIt != nodes.end() && (std::size_t)nodeIt->id == _nodeID)
-	{
-		nodes.erase(nodeIt);
-		return true;
-	}
-	return false;
+	return true;
 }
