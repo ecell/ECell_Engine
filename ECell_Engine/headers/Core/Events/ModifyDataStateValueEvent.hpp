@@ -44,8 +44,8 @@ namespace ECellEngine::Core::Events
 		std::shared_ptr<std::function<void(bool, bool)>> conditionCallbackToken = nullptr;
 		std::shared_ptr<std::function<void(float, float)>> valueCallbackToken = nullptr;
 
-		ModifyDataStateValueEvent() :
-			Event(), valueType(DataStateValueType::Species), dataStateValueId("")
+		ModifyDataStateValueEvent(const std::size_t _id) :
+			Event(_id), valueType(DataStateValueType::Species), dataStateValueId("")
 		{
 
 		}

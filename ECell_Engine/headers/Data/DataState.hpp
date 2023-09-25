@@ -231,7 +231,7 @@ namespace ECellEngine::Data
 
 		inline std::shared_ptr<Core::Events::ModifyDataStateValueEvent> AddModifyDataStateValueEvent()
 		{
-			return modifyDataStateValueEvents.emplace_back(std::make_shared<Core::Events::ModifyDataStateValueEvent>());
+			return modifyDataStateValueEvents.emplace_back(std::make_shared<Core::Events::ModifyDataStateValueEvent>(++idProvider));
 		}
 
 		inline std::shared_ptr<Parameter> AddParameter(const char* _parameterName, const float _value)
