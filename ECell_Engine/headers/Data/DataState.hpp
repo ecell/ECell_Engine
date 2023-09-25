@@ -271,11 +271,25 @@ namespace ECellEngine::Data
 
 		/*!
 		@brief Erases all data of a certain type in this data state.
+		@param _dataType The type of the data to erase.
+				Valid values for @p _dataType are: Equation, Parameter, Reaction,
+				Species, OperandsToOperation, Arithmetic, Logic, ModifyDataStateValueEvent,
+				and Trigger.
+		@returns @a True if the data was erased, @a false otherwise.
+		*/
+		bool EraseAllDataOfType(const char* _dataType) noexcept;
+
+		/*!
+		@brief Erases the data with ID @p _id in the container of type @p _dataType
+				in the datastate.
 		@details Valid values for @p _dataType are: Equation, Parameter, Reaction,
 					Species, OperandsToOperation, Arithmetic, Logic,
 					ModifyDataStateValueEvent, Trigger.
+		@param _dataType The type of the data to erase.
+		@param _id The ID of the data to erase.
+		@returns @a True if the data was erased, @a false otherwise.
 		*/
-		bool EraseAllDataOfType(const char* _dataType) noexcept;
+		bool EraseDataOfType(const char* _dataType, const std::size_t _id) noexcept;
 
 		inline void LinkOperandToOperation(const std::size_t _operandID, const std::size_t _operationID)
 		{

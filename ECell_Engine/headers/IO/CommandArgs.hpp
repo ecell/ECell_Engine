@@ -51,6 +51,13 @@ namespace ECellEngine::IO
 		char* dataType = nullptr;
 	};
 
+	struct EraseDataOfTypeCommandArgs
+	{
+		unsigned long long simulationID = 0;
+		char* dataType = nullptr;
+		unsigned long long dataID = 0;
+	};
+
 	struct StepSimulationCommandArgs
 	{
 		unsigned long long simulationID = 0;

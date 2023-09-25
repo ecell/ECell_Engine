@@ -235,6 +235,55 @@ namespace ECellEngine::IO
 	};
 
 	/*
+	@brief The command to let the user erase one element from a container in
+				the datastate of a simulation.
+	@details At position [0] is always the name of the command ("eraseDataOfType").
+			 Then, for this command, come [1] the ID of the target
+			 simulation in the SimulationsManager's simulation list; [2] is the
+			 string describing which data container to clear; [3] is the ID of
+			 the element in the datastate.
+	*/
+	class EraseDataOfTypeCommand final : public Command<EraseDataOfTypeCommandArgs>
+	{
+		ECellEngine::Core::SimulationsManager& receiver;
+
+	public:
+		EraseDataOfTypeCommand(ECellEngine::Core::SimulationsManager& _receiver) :
+			Command("eraseDataOfType", 4), receiver(_receiver)
+		{
+			
+		}
+
+		inline const char* GetHelpMessage() const override
+		{
+			return "---- Erases a target element of a container identified by its contained data type in the datastate of a simulation.\n"
+				"Usage: eraseDataOfType <simulationID> <dataType> <dataID>\n"
+				"simulationID: The ID of the target simulation for which we want to clear the data state.\n"
+				"dataType: The string describing which data container to clear.\n"
+				"			Allowed values are: Equation, Parameter, Reaction, Species, OperandsToOperation,\n"
+				"			Operation, LogicOperation, ModifyDataStateValueEvent, Trigger\n"
+				"dataID: The ID of the element in the datastate.\n";
+		}
+
+		/*!
+		@brief Decodes the parameters, and stores them in ::args.
+		@details Performs checks on @p _args to guarentee that the string command
+				 is well formed.
+		*/
+		bool DecodeParameters(const std::vector<std::string>& _args) override;
+
+		/*
+		@brief Executes the code to erase one element from a container in
+				the datastate of a simulation.
+		@details Uses the parameters defined in ::args. If you want use this
+				 interface to execute the command rather than the one based on
+				 the string, make sure to call ::DecodeParameters(const std::vector<std::string>& _args)
+				 or to set the parameters manually with ::SetArgs(const EraseDataOfTypeCommandArgs& _params).
+		*/
+		bool Execute() override;
+	};
+
+	/*
 	@brief The command to let the user erase a simulation.
 	@details At position [0] is always the name of the command ("eraseSimulation").
 			 Then, for this command, come [1] the ID of the target
