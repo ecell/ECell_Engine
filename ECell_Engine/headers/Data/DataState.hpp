@@ -253,7 +253,7 @@ namespace ECellEngine::Data
 
 		inline std::shared_ptr<Maths::LogicOperation> AddLogicOperation()
 		{
-			return logicOperations.emplace_back(std::make_shared<Maths::LogicOperation>());
+			return logicOperations.emplace_back(std::make_shared<Maths::LogicOperation>(++idProvider));
 		}
 
 		inline std::shared_ptr<Core::Trigger<Operand*, Operand*>> AddTrigger() noexcept

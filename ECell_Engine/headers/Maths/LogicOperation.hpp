@@ -11,6 +11,12 @@ namespace ECellEngine::Maths
 	class LogicOperation
 	{
 	private:
+
+		/*!
+		@brief The ID of the operation.
+		*/
+		std::size_t id = 0;
+
 		/*!
 		@brief The logic operator used to compute the result.
 		*/
@@ -66,9 +72,28 @@ namespace ECellEngine::Maths
 		*/
 		ECellEngine::Core::Callback<const bool, const bool> onResultChange;
 
-		LogicOperation()
+		LogicOperation(const std::size_t _id) :
+			id(_id)
 		{
 			SetLogic();//update the logic operator based on the value of ::operatorType
+		}
+
+		/*!
+		@brief Operator used to compare the ID of this operation with the ID of
+				another operation.
+		*/
+		inline bool operator<(const LogicOperation& _rhs) const noexcept
+		{
+			return id < _rhs.id;
+		}
+
+		/*!
+		@brief Operator used to compare the ID of this operation with a given
+				ID.
+		*/
+		inline bool operator<(const std::size_t _id) const noexcept
+		{
+			return id < _id;
 		}
 
 		/*!
@@ -77,6 +102,14 @@ namespace ECellEngine::Maths
 		inline bool operator()() const noexcept
 		{
 			return (*logic)(lhs, rhs);
+		}
+
+		/*!
+		@brief Gets the ID of this operation.
+		*/
+		inline std::size_t GetID() const noexcept
+		{
+			return id;
 		}
 
 		/*!
