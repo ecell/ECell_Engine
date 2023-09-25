@@ -258,7 +258,7 @@ namespace ECellEngine::Data
 
 		inline std::shared_ptr<Core::Trigger<Operand*, Operand*>> AddTrigger() noexcept
 		{
-			return triggers.emplace_back(std::make_shared<ECellEngine::Core::Trigger<Operand*, Operand*>>());
+			return triggers.emplace_back(std::make_shared<ECellEngine::Core::Trigger<Operand*, Operand*>>(++idProvider));
 		}
 
 		/*!

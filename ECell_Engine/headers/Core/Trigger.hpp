@@ -12,7 +12,6 @@
 // TODO: Find a way to remove this circular dependency
 //#include "Core/SimulationsManager.hpp"
 
-//#include "Core/Events/Event.hpp"
 #include "Core/Callback.hpp"
 
 namespace ECellEngine::Core
@@ -40,11 +39,11 @@ namespace ECellEngine::Core
 		};
 
 	private:
+
 		/*!
-		@brief Collection of events that should be trigger when the condition
-				held by this watcher is fulfilled.
+		@brief The ID of this trigger.
 		*/
-		//std::vector<std::shared_ptr<Events::Event>> triggerEvents;
+		std::size_t id = SIZE_MAX;
 
 		/*!
 		@brief The previous value of the comparison between target and threshold.
@@ -107,10 +106,26 @@ namespace ECellEngine::Core
 		*/
 		Callback<bool, bool> onTriggerExit;
 
-		Trigger() :
-			target(nullptr), comparator(Comparator::Greater), threshold(nullptr)
+		Trigger(const std::size_t _id) :
+			id(_id), target(nullptr), comparator(Comparator::Greater), threshold(nullptr)
 		{
 			
+		}
+
+		/*!
+		@brief The operator to compare two triggers based in their IDs.
+		*/
+		inline bool operator<(const Trigger& _rhs) const noexcept
+		{
+			return id < _rhs.id;
+		}
+
+		/*!
+		@brief The operator to compare a trigger with an ID.
+		*/
+		inline bool operator<(const std::size_t _id) const noexcept
+		{
+			return id < _id;
 		}
 
 		/*!
@@ -119,6 +134,14 @@ namespace ECellEngine::Core
 		inline Comparator& GetComparator() noexcept
 		{
 			return comparator;
+		}
+
+		/*!
+		@brief Gets the ID of this trigger.
+		*/
+		inline std::size_t GetID() const noexcept
+		{
+			return id;
 		}
 
 		/*!

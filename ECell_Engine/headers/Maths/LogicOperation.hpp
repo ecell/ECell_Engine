@@ -15,7 +15,7 @@ namespace ECellEngine::Maths
 		/*!
 		@brief The ID of the operation.
 		*/
-		std::size_t id = 0;
+		std::size_t id = SIZE_MAX;
 
 		/*!
 		@brief The logic operator used to compute the result.

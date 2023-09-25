@@ -15,7 +15,7 @@ namespace ECellEngine::Core
 			/*!
 			@brief ID of the event.
 			*/
-			std::size_t id = 0;
+			std::size_t id = SIZE_MAX;
 
 		public:
 			Event() = default;
