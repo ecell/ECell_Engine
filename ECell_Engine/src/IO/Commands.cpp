@@ -152,6 +152,50 @@ bool ECellEngine::IO::ClearDataStateCommand::Execute()
 	return true;
 }
 
+bool ECellEngine::IO::EraseAllDataOfTypeCommand::DecodeParameters(const std::vector<std::string>& _args)
+{
+	if ((unsigned char)_args.size() != nbArgs)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseAllDataOfTypeCommand Failed: Wrong number of arguments. Expected %llu, got %u.", nbArgs, _args.size());
+		return false;
+	}
+
+	std::size_t simulationID = 0;
+	try
+	{
+		simulationID = std::stoll(_args[1]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseAllDataOfTypeCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a simulation", _args[1].c_str());
+		return false;
+	}
+
+	args.simulationID = simulationID;
+	Util::StrCopy(args.dataType, _args[2].c_str(), 32);
+
+	return true;
+}
+
+bool ECellEngine::IO::EraseAllDataOfTypeCommand::Execute()
+{
+	std::pair<bool, std::vector<std::unique_ptr<Core::Simulation>>::iterator> simuSearch = receiver.FindSimulation(args.simulationID);
+
+	if (!simuSearch.first)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseAllDataOfTypeCommand Failed: Could not find simulation with ID \"%llu\".", args.simulationID);
+		return false;
+	}
+
+	if (!simuSearch.second->get()->GetDataState().EraseAllDataOfType(args.dataType))
+	{
+		ECellEngine::Logging::Logger::LogError("EraseAllDataOfTypeCommand Failed: Could not erase all data of type \"%s\".", args.dataType);
+		return false;
+	}
+
+	return true;
+}
+
 bool ECellEngine::IO::EraseSimulationCommand::DecodeParameters(const std::vector<std::string>& _args)
 {
 	if ((unsigned char)_args.size() != nbArgs)

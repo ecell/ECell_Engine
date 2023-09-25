@@ -32,6 +32,52 @@ void ECellEngine::Data::DataState::Clear() noexcept
 	triggers.clear();
 }
 
+bool ECellEngine::Data::DataState::EraseAllDataOfType(const char* _dataType) noexcept
+{
+	if (!strcmp(_dataType, "Equation"))
+	{
+		equations.clear();
+	}
+    else if (!strcmp(_dataType, "Parameter"))
+	{
+		parameters.clear();
+	}
+	else if (!strcmp(_dataType, "Reaction"))
+	{
+		reactions.clear();
+	}
+	else if (!strcmp(_dataType, "Species"))
+	{
+		species.clear();
+	}
+	else if (!strcmp(_dataType, "OperandsToOperation"))
+	{
+		operandsToOperations.clear();
+	}
+	else if (!strcmp(_dataType, "Arithmetic"))
+	{
+		operations.clear();
+	}
+	else if (!strcmp(_dataType, "Logic"))
+	{
+		logicOperations.clear();
+	}
+	else if (!strcmp(_dataType, "ModifyDataStateValueEvent"))
+	{
+		modifyDataStateValueEvents.clear();
+	}
+	else if (!strcmp(_dataType, "Trigger"))
+	{
+		triggers.clear();
+	}
+	else
+	{
+		ECellEngine::Logging::Logger::LogError("Invalid data of type \"%s\": could not erase all the corresponding data.", _dataType);
+		return false;
+	}
+	return true;
+}
+
 void ECellEngine::Data::DataState::Reset() noexcept
 {
 	for (auto& [spName, _sp] : species)

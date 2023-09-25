@@ -211,6 +211,28 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 					hierarchyLevel = HierarchyLevel_None;
 				}
 			}
+
+			if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_DataState))
+			{
+				if (ImGui::MenuItem("Erase Data List"))
+				{
+					//First we delete the nodes that use elements of the data state
+					for (unsigned short i = 0; i < (unsigned short)mnbvCtxts->size(); ++i)
+					{
+						if (mnbvCtxts->at(i).simulation->id == simuManager.GetSimulation(simuIdx)->id)
+						{
+							editor->GetCommandsManager().ProcessCommand("eraseAllNodesOfType",
+								ECellEngine::Editor::IO::EraseAllNodesOfTypeCommandArgs({ i, GetNodeTypeName() }));
+						}
+					}
+
+					//engine command to erase the list of elements of the data state matching the hirarchy level
+					editor->engine.GetCommandsManager().ProcessCommand("eraseAllDataOfType",
+							ECellEngine::IO::EraseAllDataOfTypeCommandArgs({ simuManager.GetSimulation(simuIdx)->id, GetNodeTypeName() }));
+				
+					hierarchyLevel = HierarchyLevel_None;
+				}
+			}
 		}
 
 		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Leaf))

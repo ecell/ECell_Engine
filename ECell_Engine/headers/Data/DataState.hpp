@@ -264,49 +264,18 @@ namespace ECellEngine::Data
 		/*!
 		@brief Clears all data.
 		@details Includes ::equations, ::parameters, ::reactions, ::species, ::operations,
-				 ::logicOperations, ::modifyDataStateValueEvents and ::triggers.
+					::operandsToOperations ::logicOperations, ::modifyDataStateValueEvents,
+					and ::triggers.
 		*/
 		void Clear() noexcept;
 
-		inline void ClearEquations() noexcept
-		{
-			equations.clear();
-		}
-
-		inline void ClearParameters() noexcept
-		{
-			parameters.clear();
-		}
-
-		inline void ClearReactions() noexcept
-		{
-			reactions.clear();
-		}
-
-		inline void ClearSpecies() noexcept
-		{
-			species.clear();
-		}
-
-		inline void EraseEquation(const std::size_t _lhsID)
-		{
-			equations.erase(_lhsID);
-		}
-
-		inline void EraseParameter(const std::size_t _parameterID)
-		{
-			parameters.erase(_parameterID);
-		}
-
-		inline void EraseReaction(const std::size_t _reactionID)
-		{
-			reactions.erase(_reactionID);
-		}
-
-		inline void EraseSpecies(const std::size_t _speciesID)
-		{
-			species.erase(_speciesID);
-		}
+		/*!
+		@brief Erases all data of a certain type in this data state.
+		@details Valid values for @p _dataType are: Equation, Parameter, Reaction,
+					Species, OperandsToOperation, Arithmetic, Logic,
+					ModifyDataStateValueEvent, Trigger.
+		*/
+		bool EraseAllDataOfType(const char* _dataType) noexcept;
 
 		inline void LinkOperandToOperation(const std::size_t _operandID, const std::size_t _operationID)
 		{
