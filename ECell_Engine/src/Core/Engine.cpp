@@ -11,6 +11,7 @@ void ECellEngine::Core::Engine::Start()
 	commandsManager.RegisterCommand(std::make_shared<IO::AddSimulationCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<IO::AddSolverCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<IO::ClearDataStateCommand>(simulationManager));
+	commandsManager.RegisterCommand(std::make_shared<IO::EraseAllDataOfTypeCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<IO::EraseSimulationCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<IO::ModuleSolverConnectionCommand>(simulationManager));
 	commandsManager.RegisterCommand(std::make_shared<IO::ModuleSolverDisconnectionCommand>(simulationManager));
