@@ -196,6 +196,62 @@ bool ECellEngine::IO::EraseAllDataOfTypeCommand::Execute()
 	return true;
 }
 
+bool ECellEngine::IO::EraseDataOfTypeCommand::DecodeParameters(const std::vector<std::string>& _args)
+{
+	if ((unsigned char)_args.size() != nbArgs)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseDataOfTypeCommand Failed: Wrong number of arguments. Expected %llu, got %u.", nbArgs, _args.size());
+		return false;
+	}
+
+	std::size_t simulationID = 0;
+	try
+	{
+		simulationID = std::stoll(_args[1]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseDataOfTypeCommand Failed: Could not convert first argument \"%s\" to an integer to represent the ID of a simulation", _args[1].c_str());
+		return false;
+	}
+
+	std::size_t dataID = 0;
+	try
+	{
+			dataID = std::stoll(_args[3]);
+	}
+	catch (const std::invalid_argument& _e)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseDataOfTypeCommand Failed: Could not convert third argument \"%s\" to an integer to represent the ID of a data", _args[2].c_str());
+		return false;
+	}
+
+	args.simulationID = simulationID;
+	Util::StrCopy(args.dataType, _args[2].c_str(), 32);
+	args.dataID = dataID;
+
+	return true;
+}
+
+bool ECellEngine::IO::EraseDataOfTypeCommand::Execute()
+{
+	std::pair<bool, std::vector<std::unique_ptr<Core::Simulation>>::iterator> simuSearch = receiver.FindSimulation(args.simulationID);
+
+	if (!simuSearch.first)
+	{
+		ECellEngine::Logging::Logger::LogError("EraseDataOfTypeCommand Failed: Could not find simulation with ID \"%llu\".", args.simulationID);
+		return false;
+	}
+
+	if (!simuSearch.second->get()->GetDataState().EraseDataOfType(args.dataType, args.dataID))
+	{
+		ECellEngine::Logging::Logger::LogError("EraseDataOfTypeCommand Failed: Could not erase data of type \"%s\" with ID \"%llu\".", args.dataType, args.dataID);
+		return false;
+	}
+
+	return true;
+}
+
 bool ECellEngine::IO::EraseSimulationCommand::DecodeParameters(const std::vector<std::string>& _args)
 {
 	if ((unsigned char)_args.size() != nbArgs)

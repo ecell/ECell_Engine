@@ -1,3 +1,4 @@
+#include "Util/BinarySearch.hpp"
 #include "Data/DataState.hpp"
 
 Operand* ECellEngine::Data::DataState::GetOperand(const std::size_t _id)
@@ -72,7 +73,97 @@ bool ECellEngine::Data::DataState::EraseAllDataOfType(const char* _dataType) noe
 	}
 	else
 	{
-		ECellEngine::Logging::Logger::LogError("Invalid data of type \"%s\": could not erase all the corresponding data.", _dataType);
+		ECellEngine::Logging::Logger::LogError("Invalid data of type \"%s\": there is no container to be matched with this data type in the datastate.", _dataType);
+		return false;
+	}
+	return true;
+}
+
+bool ECellEngine::Data::DataState::EraseDataOfType(const char* _dataType, const std::size_t _id) noexcept
+{
+	if (!strcmp(_dataType, "Equation"))
+	{
+		if (!equations.erase(_id))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Equation\" with ID %llu.", _id);
+			return false;
+		}
+	}
+    else if (!strcmp(_dataType, "Parameter"))
+	{
+		if (!parameters.erase(_id))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Parameter\" with ID %llu.", _id);
+			return false;
+		}
+	}
+	else if (!strcmp(_dataType, "Reaction"))
+	{
+		if (!reactions.erase(_id))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Reaction\" with ID %llu.", _id);
+			return false;
+		}
+	}
+	else if (!strcmp(_dataType, "Species"))
+	{
+		if (!species.erase(_id))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Species\" with ID %llu.", _id);
+			return false;
+		}
+	}
+	else if (!strcmp(_dataType, "OperandsToOperation"))
+	{
+		if (!operandsToOperations.erase(_id))
+		{
+			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"OperandsToOperation\" with ID %llu.", _id);
+			return false;
+		}
+	}
+	else if (!strcmp(_dataType, "Arithmetic"))
+	{
+		std::vector<std::shared_ptr<Maths::Operation>>::iterator opIt = Util::BinarySearch::LowerBound(operations.begin(), operations.end(), _id, [](const std::shared_ptr<Maths::Operation>& _op, const std::size_t _id) { return _op->GetID() < _id; });
+		if (opIt == operations.end() || (*opIt)->GetID() != _id)
+		{
+			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Arithmetic\" with ID %llu.", _id);
+			return false;
+		}
+		operations.erase(opIt);
+	}
+	else if (!strcmp(_dataType, "Logic"))
+	{
+		std::vector<std::shared_ptr<Maths::LogicOperation>>::iterator opIt = Util::BinarySearch::LowerBound(logicOperations.begin(), logicOperations.end(), _id, [](const std::shared_ptr<Maths::LogicOperation>& _op, const std::size_t _id) { return _op->GetID() < _id; });
+		if (opIt == logicOperations.end() || (*opIt)->GetID() != _id)
+		{
+			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Logic\" with ID %llu.", _id);
+			return false;
+		}
+		logicOperations.erase(opIt);
+	}
+	else if (!strcmp(_dataType, "ModifyDataStateValueEvent"))
+	{
+		std::vector<std::shared_ptr<Core::Events::ModifyDataStateValueEvent>>::iterator evIt = Util::BinarySearch::LowerBound(modifyDataStateValueEvents.begin(), modifyDataStateValueEvents.end(), _id, [](const std::shared_ptr<Core::Events::ModifyDataStateValueEvent>& _ev, const std::size_t _id) { return _ev->GetID() < _id; });
+		if (evIt == modifyDataStateValueEvents.end() || (*evIt)->GetID() != _id)
+		{
+			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"ModifyDataStateValueEvent\" with ID %llu.", _id);
+			return false;
+		}
+		modifyDataStateValueEvents.erase(evIt);
+	}
+	else if (!strcmp(_dataType, "Trigger"))
+	{
+		std::vector<std::shared_ptr<Core::Trigger<Operand*, Operand*>>>::iterator tgrIt = Util::BinarySearch::LowerBound(triggers.begin(), triggers.end(), _id, [](const std::shared_ptr<Core::Trigger<Operand*, Operand*>>& _tgr, const std::size_t _id) { return _tgr->GetID() < _id; });
+		if (tgrIt == triggers.end() || (*tgrIt)->GetID() != _id)
+		{
+			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Trigger\" with ID %llu.", _id);
+			return false;
+		}
+		triggers.erase(tgrIt);
+	}
+	else
+	{
+		ECellEngine::Logging::Logger::LogError("Invalid data of type \"%s\": there is no container to be matched with this data type in the datastate.", _dataType);
 		return false;
 	}
 	return true;

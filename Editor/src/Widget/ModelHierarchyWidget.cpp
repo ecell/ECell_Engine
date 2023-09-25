@@ -257,6 +257,48 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 					hierarchyLevel = HierarchyLevel_None;
 				}
 			}
+
+			if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_DataState))
+			{
+				if (ImGui::MenuItem("Erase Data"))
+				{
+					//First delete all the nodes that use elements of the data state
+					//for (unsigned short i = 0; i < (unsigned short)mnbvCtxts->size(); ++i)
+					//{
+					//	if (mnbvCtxts->at(i).simulation->id == simuManager.GetSimulation(simuIdx)->id)
+					//	{
+					//		//Then delete all the nodes that use elements of the data state
+					//		editor->GetCommandsManager().ProcessCommand("eraseNode",
+					//			ECellEngine::Editor::IO::EraseNodeCommandArgs({ mnbvCtxtIdx, GetNodeTypeName(), (std::size_t)((Utility::MNBV::NodeData*)ctxtNodePayload)->id }));
+
+					//	}
+					//}
+
+					//Then delete the element of the data state
+					std::size_t dataID = 0;
+					if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Equations))
+					{
+						dataID = ((std::shared_ptr<ECellEngine::Maths::Equation>*)ctxtNodePayload)->get()->GetID();
+					}
+
+					if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Reactions))
+					{
+						dataID = ((std::shared_ptr<ECellEngine::Data::Reaction>*)ctxtNodePayload)->get()->GetID();
+					}
+
+					if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Parameters))
+					{
+						dataID = ((std::shared_ptr<ECellEngine::Data::Parameter>*)ctxtNodePayload)->get()->GetID();
+					}
+
+					if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Species))
+					{
+						dataID = ((std::shared_ptr<ECellEngine::Data::Species>*)ctxtNodePayload)->get()->GetID();
+					}
+					editor->engine.GetCommandsManager().ProcessCommand("eraseDataOfType",
+						ECellEngine::IO::EraseDataOfTypeCommandArgs({ simuManager.GetSimulation(simuIdx)->id, GetNodeTypeName(), dataID }));
+				}
+			}
 		}
 
 		if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_MNBVCtxt) ||
