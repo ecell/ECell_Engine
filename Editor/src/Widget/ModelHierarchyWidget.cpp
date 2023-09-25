@@ -203,10 +203,12 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 			ImGui::Separator();
 			if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_MNBVCtxt))
 			{
-				if (ImGui::MenuItem("Erase List"))
+				if (ImGui::MenuItem("Erase Nodes List"))
 				{
 					editor->GetCommandsManager().ProcessCommand("eraseAllNodesOfType",
 						ECellEngine::Editor::IO::EraseAllNodesOfTypeCommandArgs({ mnbvCtxtIdx, GetNodeTypeName() }));
+
+					hierarchyLevel = HierarchyLevel_None;
 				}
 			}
 		}
@@ -220,6 +222,8 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 				{
 					editor->GetCommandsManager().ProcessCommand("eraseNode",
 						ECellEngine::Editor::IO::EraseNodeCommandArgs({ mnbvCtxtIdx, GetNodeTypeName(), (std::size_t)((Utility::MNBV::NodeData*)ctxtNodePayload)->id }));
+				
+					hierarchyLevel = HierarchyLevel_None;
 				}
 				
 				if (ImGui::MenuItem("Focus Node"))
@@ -227,6 +231,8 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 					editor->GetCommandsManager().ProcessCommand("focusNode",
 						ECellEngine::Editor::IO::FocusNodeCommandArgs(
 							{ mnbvCtxtIdx, (std::size_t)((Utility::MNBV::NodeData*)ctxtNodePayload)->id}));
+
+					hierarchyLevel = HierarchyLevel_None;
 				}
 			}
 		}
