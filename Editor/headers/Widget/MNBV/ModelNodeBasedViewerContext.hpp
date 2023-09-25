@@ -212,15 +212,6 @@ namespace ECellEngine::Editor::Widget::MNBV
 		}
 
 		/*!
-		@brief Gets the list of nodes of this context matching the template type.
-		@details Implemented all the relevant template specializations.
-		@tparam NodeType The type of the nodes to get.
-		@returns The list of nodes of this context matching the template type.
-		*/
-		template<typename NodeType>
-		std::vector<NodeType>& GetNodesOfType() noexcept;
-
-		/*!
 		@brief Sets the ::engineCommandsManager pointer of this context.
 		*/
 		inline void SetEngineCommandsManager(ECellEngine::IO::CommandsManager* _engineCommandsManager) noexcept
@@ -257,16 +248,65 @@ namespace ECellEngine::Editor::Widget::MNBV
 		void ConserveLinkDataIntegrity();
 
 		/*!
-		@brief Erases the node of this context matching the template type and the
+		@brief Erases all the nodes of this context matching the given type by clearing
+				the corresponding list.
+		@param _nodeType The type of the nodes to erase. Allowed values are:
+							- "Equation"
+							- "Parameter"
+							- "Reaction"
+							- "Species"
+							- "Arithmetic"
+							- "Asset"
+							- "LinePlot"
+							- "LogicOperation"
+							- "ModifyDataStateValueEvent"
+							- "Solver"
+							- "Time"
+							- "Trigger"
+							- "ValueFloat"
+		@return @a True if the nodes were found (valid type) and erased, @a false otherwise.
+		*/
+		bool EraseAllNodesOfType(const char* _nodeType) noexcept;
+		
+		/*!
+		@brief Erases the node of this context matching the given type and the
 				given ID.
-		@details Implemented all the relevant template specializations. This
-				was unavoidable as it relies on ::GetNodesOfType() for which we
-				had to implement the specializations.
+		@param _nodeType The type of the node to erase. Allowed values are:
+							- "Equation"
+							- "Parameter"
+							- "Reaction"
+							- "Species"
+							- "Arithmetic"
+							- "Asset"
+							- "LinePlot"
+							- "LogicOperation"
+							- "ModifyDataStateValueEvent"
+							- "Solver"
+							- "Time"
+							- "Trigger"
+							- "ValueFloat"
 		@param _nodeID The ID of the node to erase.
+		@return @a True if the node was found (valid type and ID) and erased, @a false otherwise.
+		*/
+		bool EraseNodeOfType(const char* _nodeType, const std::size_t _nodeID) noexcept;
+
+		/*!
+		@brief Erases the node of with ID @p _nodeID in the list of nodes @p _nodes.
 		@tparam NodeType The type of the node to erase.
+		@param _nodes The list of nodes to erase from.
+		@param _nodeID The ID of the node to erase.
 		@return @a True if the node was found and erased, @a false otherwise.
 		*/
 		template<typename NodeType>
-		bool EraseNodeOfType(const std::size_t _nodeID) noexcept;
+		bool EraseNodeOfType(std::vector<NodeType>& _nodes, const std::size_t _nodeID) noexcept
+		{
+			std::vector<NodeType>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(_nodes.begin(), _nodes.end(), _nodeID);
+			if (nodeIt != _nodes.end() && (std::size_t)nodeIt->id == _nodeID)
+			{
+				_nodes.erase(nodeIt);
+				return true;
+			}
+			return false;
+		}
 	};
 }
