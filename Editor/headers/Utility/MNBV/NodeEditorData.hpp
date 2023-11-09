@@ -1067,6 +1067,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::vector<std::size_t> parametersOperands;
 		std::vector<std::size_t> equationsOperands;
 
+		/*!
+		@brief The token to the subscription to the event onDestroy of the
+				::data. It keeps the subscription alive.
+		*/
+		std::shared_ptr<std::function<void()>> onDataDestroySubToken = nullptr;
+
 		EquationNodeData(const EquationNodeData& _cpnd) :
 			NodeData(_cpnd), data{ _cpnd.data }, depDB{ _cpnd.depDB },
 			inputPins{ _cpnd.inputPins[0], _cpnd.inputPins[1] , _cpnd.inputPins[2] ,
@@ -1086,6 +1092,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			parametersOperands{ _cpnd.parametersOperands },
 			equationsOperands{ _cpnd.equationsOperands }
 		{
+			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
@@ -1106,6 +1114,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		EquationNodeData(std::shared_ptr<ECellEngine::Maths::Equation> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
+			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
@@ -1175,6 +1185,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in equation data
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in equation data
+
+		/*!
+		@brief What to do when the ::data is destroyed.
+		@details Triggered by the ::data.onDestroy() callback.
+		*/
+		void OnDataDestroy();
 
 		void OnDestroy() override {};//not used in equation data
 
@@ -1782,7 +1798,6 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		std::size_t collapsingHeadersIds[CollapsingHeader_Count];
 
-
 		/*!
 		@brief All the list boxes to store/display strings.
 		@details Access the pins with the enum values NodeListBoxString_XXX
@@ -1791,6 +1806,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::vector<std::size_t> speciesOperands;
 		std::vector<std::size_t> parametersOperands;
 		std::vector<std::size_t> equationsOperands;
+
+		/*!
+		@brief The token to the subscription to the event onDestroy of the
+				::data. It keeps the subscription alive.
+		*/
+		std::shared_ptr<std::function<void()>> onDataDestroySubToken = nullptr;
 
 		ReactionNodeData(const ReactionNodeData& _rnd) :
 			NodeData(_rnd), data{ _rnd.data },
@@ -1809,6 +1830,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			parametersOperands{ _rnd.parametersOperands },
 			equationsOperands{ _rnd.equationsOperands }
 		{
+			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+
 			nlbsData[NodeListBoxString_SpeciesOperands].data = &speciesOperands;
 			nlbsData[NodeListBoxString_ParameterOperands].data = &parametersOperands;
 			nlbsData[NodeListBoxString_EquationOperands].data = &equationsOperands;
@@ -1827,6 +1850,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		ReactionNodeData(std::shared_ptr<ECellEngine::Data::Reaction> _data) :
 			NodeData(), data{ _data }
 		{
+			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
@@ -1884,6 +1909,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Reaction Node Data
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Reaction Node Data
+
+		/*!
+		@brief What to do when the ::data is destroyed.
+		@details Triggered by the ::data.onDestroy() callback.
+		*/
+		void OnDataDestroy();
 
 		void OnDestroy() override {};//not used in Reaction Node Data
 
@@ -2022,6 +2053,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::vector<std::weak_ptr<ECellEngine::Maths::Equation>> equationDep;
 		std::vector<std::weak_ptr<ECellEngine::Data::Reaction>> reactionKLDep;
 
+		/*!
+		@brief The token to the subscription to the event onDestroy of the
+				::data. It keeps the subscription alive.
+		*/
+		std::shared_ptr<std::function<void()>> onDataDestroySubToken = nullptr;
+
 		ParameterNodeData(const ParameterNodeData& _pnd) :
 			NodeData(_pnd), data{ _pnd.data }, depDB{ _pnd.depDB },
 			inputPins{ _pnd.inputPins[0], _pnd.inputPins[1] , _pnd.inputPins[2] ,
@@ -2034,6 +2071,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataEqDep{ _pnd.nlbsDataEqDep }, nlbsDataRKLDep{ _pnd.nlbsDataRKLDep },
 			equationDep{ _pnd.equationDep }, reactionKLDep{ _pnd.reactionKLDep }
 		{
+			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
@@ -2051,8 +2090,9 @@ namespace ECellEngine::Editor::Utility::MNBV
 		ParameterNodeData(std::shared_ptr<ECellEngine::Data::Parameter> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
-			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
+			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
 
+			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//ModelLinks Collapsing header
 			inputPins[InputPin_CollHdrEquations] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Computed Parameters section
@@ -2104,6 +2144,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override ;
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Parameter Node Data
+
+		/*!
+		@brief What to do when the ::data is destroyed.
+		@details Triggered by the ::data.onDestroy() callback.
+		*/
+		void OnDataDestroy();
 
 		void OnDestroy() override {};//not used in Parameter Node Data
 
@@ -2395,6 +2441,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		std::vector<std::weak_ptr<ECellEngine::Data::Reaction>> reactionPDep;//reaction products dep
 		std::vector<std::weak_ptr<ECellEngine::Data::Reaction>> reactionKLDep;
 
+		/*!
+		@brief The token to the subscription to the event onDestroy of the
+				::data. It keeps the subscription alive.
+		*/
+		std::shared_ptr<std::function<void()>> onDataDestroySubToken = nullptr;
+
 		SpeciesNodeData(const SpeciesNodeData& _snd) :
 			NodeData(_snd), data{ _snd.data }, depDB{ _snd.depDB },
 			speciesQuantityBuffer{ _snd.speciesQuantityBuffer },
@@ -2413,6 +2465,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			equationDep{ _snd.equationDep }, reactionRDep{ _snd.reactionRDep },
 			reactionPDep{ _snd.reactionPDep }, reactionKLDep{ _snd.reactionKLDep }
 		{
+			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+
 			for (int i = 0; i < InputPin_Count; i++)
 			{
 				inputPins[i].node = this;
@@ -2432,6 +2486,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		SpeciesNodeData(std::shared_ptr<ECellEngine::Data::Species> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
+			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
 			inputPins[InputPin_CollHdrModelLinks] = NodeInputPinData(Widget::MNBV::GetMNBVCtxtNextId(), PinType_Default, this);//Collapsing Header Model Links
@@ -2494,6 +2550,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Species Node Data
+
+		/*!
+		@brief What to do when the ::data is destroyed.
+		@details Triggered by the ::data.onDestroy() callback.
+		*/
+		void OnDataDestroy();
 
 		void OnDestroy() override {};//not used in Species Node Data
 

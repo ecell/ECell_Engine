@@ -151,6 +151,14 @@ void ECellEngine::Editor::Utility::MNBV::AssetNodeData::ResetNLBSDUtilityStates(
 	nlbsData[NodeListBoxString_Reactions].ResetUtilityState();
 }
 
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OnDataDestroy()
+{
+	//we must clean the token of the subscription since it is on a callback
+	//that will be lost once we set data = nullptr.
+	onDataDestroySubToken = nullptr;
+	data = nullptr;
+}
+
 void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
 	//Equation operation value
@@ -413,6 +421,14 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 	//_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
 }
 
+void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OnDataDestroy()
+{
+	//we must clean the token of the subscription since it is on a callback
+	//that will be lost once we set data = nullptr.
+	onDataDestroySubToken = nullptr;
+	data = nullptr;
+}
+
 void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
 {
 	//Reaction kinetic law value
@@ -481,6 +497,14 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputDisconnect(Node
 		*((Core::Callback<const float, const float>*)_data) -= data->updateValueSubToken;
 		data->updateValueSubToken = nullptr;
 	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OnDataDestroy()
+{
+	//we must clean the token of the subscription since it is on a callback
+	//that will be lost once we set data = nullptr.
+	onDataDestroySubToken = nullptr;
+	data = nullptr;
 }
 
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
@@ -624,6 +648,14 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputDisconnect(NodeIn
 		*((Core::Callback<const float, const float>*)_data) -= data->updateQuantitySubToken;
 		data->updateQuantitySubToken = nullptr;
 	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OnDataDestroy()
+{
+	//we must clean the token of the subscription since it is on a callback
+	//that will be lost once we set data = nullptr.
+	onDataDestroySubToken = nullptr;
+	data = nullptr;
 }
 
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)

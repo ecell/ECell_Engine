@@ -11,6 +11,10 @@ namespace ECellEngine::Maths
 		Operation rhs;
 
 	public:
+		/*!
+		@brief Callback to be called when the equation is destroyed.
+		*/
+		Core::Callback<> onDestroy;
 
 		Equation(Operand* _lhs, Operation& _rhs) :
 			lhs{ _lhs }, rhs{ _rhs }

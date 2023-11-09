@@ -29,6 +29,10 @@ namespace ECellEngine::Data
 		Operation kineticLaw;
 
 	public:
+		/*!
+		@brief Callback to be called when the reaction is destroyed.
+		*/
+		Core::Callback<> onDestroy;
 
 		Reaction(const char* _name, const std::size_t _id,
 				 const std::vector<std::size_t> _products,
@@ -79,6 +83,16 @@ namespace ECellEngine::Data
 		{
 			kineticLawValueCache = kineticLaw.Get();
 			return kineticLawValueCache;
+		}
+
+		/*!
+		@brief A wrapper around the onDestroy callbacks
+				for this reaction and its kinetic law.
+		*/
+		inline void OnDestroy() noexcept
+		{
+			onDestroy();
+			kineticLaw.onDestroy();
 		}
 	};
 }

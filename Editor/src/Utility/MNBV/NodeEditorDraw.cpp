@@ -153,6 +153,16 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::EquationNode(EquationNo
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Equation));
 	ax::NodeEditor::BeginNode(_equationNodeInfo.id);
 
+	//In case the user has manually deleted the equation from the DataState
+	if (_equationNodeInfo.data == nullptr)
+	{
+		ImGui::Text("The data of this equation node is missing.");
+		ImGui::Text("Please delete this node and add a new one.");
+		ax::NodeEditor::EndNode();
+		Style::NodeEditorStyle::PopNodeStyle();
+		return;
+	}
+
 	_equationNodeInfo.Update();
 
 	const float headerWidth = NodeHeader("Equation:", _equationNodeInfo.GetName(), Style::EditorStyle::GetNodeColors(NodeType_Equation));
@@ -609,6 +619,16 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ReactionNode(ReactionNo
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Reaction));
 	ax::NodeEditor::BeginNode(_reactionNodeInfo.id);
 
+	//In case the user has manually deleted the reaction from the DataState
+	if (_reactionNodeInfo.data == nullptr)
+	{
+		ImGui::Text("The data of this reaction node is missing.");
+		ImGui::Text("Please delete this node and add a new one.");
+		ax::NodeEditor::EndNode();
+		Style::NodeEditorStyle::PopNodeStyle();
+		return;
+	}
+
 	_reactionNodeInfo.Update();
 
 	const float headerWidth = NodeHeader("Reaction:", _reactionNodeInfo.GetName(), Style::EditorStyle::GetNodeColors(NodeType_Reaction));
@@ -702,6 +722,16 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::ParameterNode(Parameter
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Parameter));
 	ax::NodeEditor::BeginNode(_parameterNodeInfo.id);
+
+	//In case the user has manually deleted the parameter from the DataState
+	if (_parameterNodeInfo.data == nullptr)
+	{
+		ImGui::Text("The data of this parameter node is missing.");
+		ImGui::Text("Please delete this node and add a new one.");
+		ax::NodeEditor::EndNode();
+		Style::NodeEditorStyle::PopNodeStyle();
+		return;
+	}
 
 	_parameterNodeInfo.Update();
 
@@ -818,6 +848,16 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::SpeciesNode(SpeciesNode
 {
 	Style::NodeEditorStyle::PushNodeStyle(Style::EditorStyle::GetNodeColors(NodeType_Species));
 	ax::NodeEditor::BeginNode(_speciesNodeInfo.id);
+
+	//In case the user has manually deleted the species from the DataState
+	if (_speciesNodeInfo.data == nullptr)
+	{
+		ImGui::Text("The data of this species node is missing.");
+		ImGui::Text("Please delete this node and add a new one.");
+		ax::NodeEditor::EndNode();
+		Style::NodeEditorStyle::PopNodeStyle();
+		return;
+	}
 
 	_speciesNodeInfo.Update();
 

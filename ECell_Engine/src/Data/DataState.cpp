@@ -36,18 +36,34 @@ bool ECellEngine::Data::DataState::EraseAllDataOfType(const char* _dataType) noe
 {
 	if (!strcmp(_dataType, "Equation"))
 	{
+		for (auto& [eqName, eq] : equations)
+		{
+			eq->onDestroy();
+		}
 		equations.clear();
 	}
     else if (!strcmp(_dataType, "Parameter"))
 	{
+		for (auto& [pName, _p] : parameters)
+		{
+			_p->onDestroy();
+		}
 		parameters.clear();
 	}
 	else if (!strcmp(_dataType, "Reaction"))
 	{
+		for (auto& [rName, _r] : reactions)
+		{
+			_r->OnDestroy();
+		}
 		reactions.clear();
 	}
 	else if (!strcmp(_dataType, "Species"))
 	{
+		for (auto& [spName, _sp] : species)
+		{
+			_sp->onDestroy();
+		}
 		species.clear();
 	}
 	else if (!strcmp(_dataType, "OperandsToOperation"))
@@ -82,35 +98,55 @@ bool ECellEngine::Data::DataState::EraseDataOfType(const char* _dataType, const 
 {
 	if (!strcmp(_dataType, "Equation"))
 	{
-		if (!equations.erase(_id))
+		std::unordered_map<std::size_t, std::shared_ptr<Maths::Equation>>::iterator searchEq = equations.find(_id);
+		if (searchEq == equations.end())
 		{
 			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Equation\" with ID %llu.", _id);
 			return false;
 		}
+
+		// Erase the equation from the data state
+		searchEq->second->onDestroy();
+		equations.erase(searchEq);
 	}
     else if (!strcmp(_dataType, "Parameter"))
 	{
-		if (!parameters.erase(_id))
+		std::unordered_map<std::size_t, std::shared_ptr<Data::Parameter>>::iterator searchParam = parameters.find(_id);
+		if (searchParam == parameters.end())
 		{
 			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Parameter\" with ID %llu.", _id);
 			return false;
 		}
+
+		//Erase the parameter from the data state
+		searchParam->second->onDestroy();
+		parameters.erase(searchParam);
 	}
 	else if (!strcmp(_dataType, "Reaction"))
 	{
-		if (!reactions.erase(_id))
+		std::unordered_map<std::size_t, std::shared_ptr<Data::Reaction>>::iterator searchReact = reactions.find(_id);
+		if (searchReact == reactions.end())
 		{
 			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Reaction\" with ID %llu.", _id);
 			return false;
 		}
+
+		//Erase the reaction from the data state
+		searchReact->second->OnDestroy();
+		reactions.erase(searchReact);
 	}
 	else if (!strcmp(_dataType, "Species"))
 	{
-		if (!species.erase(_id))
+		std::unordered_map<std::size_t, std::shared_ptr<Data::Species>>::iterator searchSp = species.find(_id);
+		if (searchSp == species.end())
 		{
 			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Species\" with ID %llu.", _id);
 			return false;
 		}
+
+		//Erase the species from the data state
+		searchSp->second->onDestroy();
+		species.erase(searchSp);
 	}
 	else if (!strcmp(_dataType, "OperandsToOperation"))
 	{

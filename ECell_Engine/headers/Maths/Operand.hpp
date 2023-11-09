@@ -41,6 +41,10 @@ namespace ECellEngine::Maths
 		char name[64] = { '0' };
 	
 	public:
+		/*!
+		@brief The callback called when the operand is destroyed.
+		*/
+		Core::Callback<> onDestroy;
 
 		/*!
 		@brief The callback called when the operand's value changes.
