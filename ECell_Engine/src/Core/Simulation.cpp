@@ -26,6 +26,18 @@ std::shared_ptr<Solver> ECellEngine::Core::Simulation::AddSolver(const std::stri
 	return nullptr;
 }
 
+void ECellEngine::Core::Simulation::Clear()
+{
+	dataState.Clear();
+	modules.clear();
+	solvers.clear();
+	moduleSolverLinks.clear();
+
+	dependenciesDB.Clear();
+
+	timer.ResetTimes();
+}
+
 void ECellEngine::Core::Simulation::EraseModule(std::vector<std::shared_ptr<Data::Module>>::iterator _moduleIt)
 {
 	// -- Erase the module from the ::modules list --

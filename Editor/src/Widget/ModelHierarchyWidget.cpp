@@ -115,7 +115,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 				//First erase all MNBVContexts under this simulation
 				unsigned short _mnbvCtxtCount = mnbvCtxtIdx;
 				while (_mnbvCtxtCount < mnbvCtxts->size() && mnbvCtxts->at(_mnbvCtxtCount).simulation->id == _simulation->id)
-				{					
+				{
 					editor->GetCommandsManager().ProcessCommand("eraseMNBVCtxt",
 						ECellEngine::Editor::IO::EraseMNBVContextCommandArgs({ _mnbvCtxtCount }));
 					

@@ -1,5 +1,25 @@
 #include "Widget/MNBV/ModelNodeBasedViewerContext.hpp"
 
+void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::Clear()
+{
+	arithmeticOperationNodes.clear();
+	assetNodes.clear();
+	equationNodes.clear();
+	linePlotNodes.clear();
+	logicOperationNodes.clear();
+	modifyDataStateValueEventNodes.clear();
+	reactionNodes.clear();
+	parameterNodes.clear();
+	solverNodes.clear();
+	speciesNodes.clear();
+	timeNodes.clear();
+	triggerNodes.clear();
+	valueFloatNodes.clear();
+
+	dynamicLinks.clear();
+	staticLinks.clear();
+}
+
 void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerContext::ConserveLinkDataIntegrity()
 {
 	for (std::vector<Utility::MNBV::LinkData>::iterator it = dynamicLinks.begin(); it != dynamicLinks.end(); it++)

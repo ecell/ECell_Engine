@@ -239,6 +239,11 @@ namespace ECellEngine::Editor::Widget::MNBV
 		}
 
 		/*!
+		@brief Clears all the nodes and links data of this context.
+		*/
+		void Clear();
+
+		/*!
 		@brief Insures that the data pointers that may be alive between nodes of
 				this context are reassigned to stay valid.
 		@details Typically, when the size of the nodes lists are changed, the pointers

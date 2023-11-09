@@ -82,6 +82,13 @@ void ECellEngine::Data::DependenciesDatabase::RefreshReactionDependencies(const 
 	}
 }
 
+void ECellEngine::Data::DependenciesDatabase::Clear()
+{
+	speciesDependencies.clear();
+	parameterDependencies.clear();
+	equationDependencies.clear();
+}
+
 void ECellEngine::Data::DependenciesDatabase::RefreshDependencies(const DataState& dataState) noexcept
 {
 	speciesDependencies.clear();

@@ -57,7 +57,7 @@ namespace ECellEngine::Data
 		/*!
 		@brief Collection associating a species to all its tracked dependencies (see SpeciesDependencies).
 		*/
-		std::unordered_map<std::shared_ptr<Species>, SpeciesDependencies>				speciesDependencies;
+		std::unordered_map<std::shared_ptr<Species>, SpeciesDependencies>			speciesDependencies;
 
 		/*!
 		@brief Collection associating a simple parameter to all its tracked
@@ -114,6 +114,12 @@ namespace ECellEngine::Data
 		{
 			return equationDependencies;
 		}
+
+		/*!
+		@brief Clears all dependencies.
+		@details Includes ::speciesDependencies, ::parameterDependencies and ::equationDependencies.
+		*/
+		void Clear();
 
 		void RefreshDependencies(const DataState& dataState) noexcept;
 	};

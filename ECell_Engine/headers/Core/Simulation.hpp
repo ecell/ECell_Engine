@@ -136,31 +136,6 @@ namespace ECellEngine::Core
 		}
 
 		/*!
-		@brief Tries to add the file at path @p _filePath as an asset to the simulation.
-		@param _filePath The directory where to look for the target file. This is the 
-						 complete directory with the name the file at the end.
-		@return The shared pointer encapsulating the module if the file was successfully
-				loaded as an asset. Otherwise, returns nullptr.
-		@remaks This method is accessible from outside via the command
-				ECellEngine::IO::AddModuleCommand.
-		*/
-		std::shared_ptr<ECellEngine::Data::Module> AddModule(const std::string& _filePath);
-
-		/*!
-		@brief Adds a solver of type indicated by @p _solverClassName.
-		@param _solverClassName The name of the type of solver to add. It must
-								match a name of class deriving from
-								ECellEngine::Solvers::Solver.
-		@return The shared pointer encapsulating the solver.
-		*/
-		std::shared_ptr<Solver> AddSolver(const std::string& _solverClassName);
-
-		inline ECellEngine::Data::DataState& GetDataState()
-		{
-			return dataState;
-		}
-
-		/*!
 		@brief Gets the dependencies of the datastructure loaded in this simulation.
 		@returns ::dependenciesDB
 		*/
@@ -233,6 +208,38 @@ namespace ECellEngine::Core
 		{
 			Util::StrCopy(name, _name, sizeof(name));
 		}
+
+		/*!
+		@brief Tries to add the file at path @p _filePath as an asset to the simulation.
+		@param _filePath The directory where to look for the target file. This is the
+						 complete directory with the name the file at the end.
+		@return The shared pointer encapsulating the module if the file was successfully
+				loaded as an asset. Otherwise, returns nullptr.
+		@remaks This method is accessible from outside via the command
+				ECellEngine::IO::AddModuleCommand.
+		*/
+		std::shared_ptr<ECellEngine::Data::Module> AddModule(const std::string& _filePath);
+
+		/*!
+		@brief Adds a solver of type indicated by @p _solverClassName.
+		@param _solverClassName The name of the type of solver to add. It must
+								match a name of class deriving from
+								ECellEngine::Solvers::Solver.
+		@return The shared pointer encapsulating the solver.
+		*/
+		std::shared_ptr<Solver> AddSolver(const std::string& _solverClassName);
+
+		inline ECellEngine::Data::DataState& GetDataState()
+		{
+			return dataState;
+		}
+
+		/*!
+		@brief Clears everything in this simulation.
+		@details Includes ::dataState, ::modules, ::solvers, ::moduleSolverLinks,
+				 and ::dependenciesDB. ::timer is simply reset.
+		*/
+		void Clear();
 
 		/*!
 		@brief Erases the module at the position @p _moduleIt in ::modules as
@@ -342,7 +349,7 @@ namespace ECellEngine::Core
 		@brief Resets all the data state and solvers of this simulation.
 		@details It is not necessary to reset the modules as the data encapsulated
 				 in them is reset at the same time the data state is. Solvers
-				 must be reset separately however as they may contain internal
+				 must be reset separately, however, as they may contain internal
 				 data based on the data state.
 		*/
 		void Reset() noexcept;

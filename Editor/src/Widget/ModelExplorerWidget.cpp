@@ -413,18 +413,19 @@ bool ECellEngine::Editor::Widget::ModelExplorerWidget::EraseModelNodeBasedViewer
 
 	if (mnbvCtxts.size() == 1)
 	{
-		ECellEngine::Logging::Logger::LogError("Tried to erase the last ModelNodeBasedViewerContext; this is not allowed, there must be at least one MNBV context available in the model explorer.");
-		return false;
+		ECellEngine::Logging::Logger::LogWarning("Tried to erase the last ModelNodeBasedViewerContext; this is not allowed, there must be at least one MNBV context available in the model explorer. So, instead, all the data in the last MNBV context was cleared.");
+		mnbvCtxts[0].Clear();
 	}
-
-	mnbvCtxts.erase(mnbvCtxts.begin() + _idx);
-
-	//compensate the indeces in ctxtsPerViewer for the removed context
-	for (std::vector<unsigned short>::iterator it = ctxtsPerViewer.begin(); it != ctxtsPerViewer.end(); it++)
+	else
 	{
-		if (*it > _idx)
+		mnbvCtxts.erase(mnbvCtxts.begin() + _idx);
+		//compensate the indeces in ctxtsPerViewer for the removed context
+		for (std::vector<unsigned short>::iterator it = ctxtsPerViewer.begin(); it != ctxtsPerViewer.end(); it++)
 		{
-			(*it)--;
+			if (*it > _idx)
+			{
+				(*it)--;
+			}
 		}
 	}
 

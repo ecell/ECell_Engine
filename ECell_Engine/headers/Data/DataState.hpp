@@ -263,11 +263,11 @@ namespace ECellEngine::Data
 
 		/*!
 		@brief Clears all data.
-		@details Includes ::equations, ::parameters, ::reactions, ::species, ::operations,
-					::operandsToOperations ::logicOperations, ::modifyDataStateValueEvents,
-					and ::triggers.
+		@details Includes ::equations, ::parameters, ::reactions, ::species,
+				 ::operandsToOperations, ::operations, ::logicOperations,
+				 ::modifyDataStateValueEvents and ::triggers.
 		*/
-		void Clear() noexcept;
+		void Clear();
 
 		/*!
 		@brief Erases all data of a certain type in this data state.

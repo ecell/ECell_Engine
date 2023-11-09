@@ -18,7 +18,7 @@ Operand* ECellEngine::Data::DataState::GetOperand(const std::size_t _id)
 	return s3->second.get();//this is null
 }
 
-void ECellEngine::Data::DataState::Clear() noexcept
+void ECellEngine::Data::DataState::Clear()
 {
 	species.clear();
 	parameters.clear();
@@ -26,7 +26,6 @@ void ECellEngine::Data::DataState::Clear() noexcept
 	reactions.clear();
 
 	operandsToOperations.clear();
-
 	operations.clear();
 	logicOperations.clear();
 	modifyDataStateValueEvents.clear();

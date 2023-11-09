@@ -17,8 +17,17 @@ bool ECellEngine::Core::SimulationsManager::EraseSimulation(std::vector<std::uni
 		playingSimulations.erase(search.second);
 	}
 
-	//Erase simulation
-	simulations.erase(_simulation);
+	if (simulations.size() == 1)
+	{
+		ECellEngine::Logging::Logger::LogWarning("Tried to erase the last simulation; this is not allowed, there must always be at least one simulation. So, instead, the last simulation was cleared.");
+		simulations[0]->Clear();
+	}
+	else
+	{
+		//Erase simulation
+		simulations.erase(_simulation);
+	}
+
 	return true;
 }
 
