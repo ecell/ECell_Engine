@@ -308,6 +308,7 @@ namespace ECellEngine::Editor::Widget::MNBV
 			std::vector<NodeType>::iterator nodeIt = ECellEngine::Util::BinarySearch::LowerBound(_nodes.begin(), _nodes.end(), _nodeID);
 			if (nodeIt != _nodes.end() && (std::size_t)nodeIt->id == _nodeID)
 			{
+				nodeIt->OnDestroy();
 				_nodes.erase(nodeIt);
 				return true;
 			}

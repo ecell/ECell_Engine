@@ -564,7 +564,8 @@ void ECellEngine::Editor::Widget::MNBV::ModelNodeBasedViewerWidget::DrawNodesPop
 						GetCurrentMNBVContext()->simulation->GetSolvers().back(),
 						mousePos));
 					currentMNBVContext->ConserveLinkDataIntegrity();
-				}			}
+				}
+			}
 
 			ImGui::EndMenu();
 		}

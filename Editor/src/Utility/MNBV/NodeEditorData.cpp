@@ -98,6 +98,12 @@ void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::OutputConn
 	}
 }
 
+void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::OnDestroy()
+{
+	Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().EraseDataOfType("Arithmetic", data->GetID());
+	data = nullptr;
+}
+
 void ECellEngine::Editor::Utility::MNBV::ArithmeticOperationNodeData::OutputDisconnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
 {
 	//The output pin with the result of the comparison when LHS or RHS changes
@@ -297,6 +303,12 @@ void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::InputDisconnect
 	}
 }
 
+void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::OnDestroy()
+{
+	Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().EraseDataOfType("Logic", data->GetID());
+	data = nullptr;
+}
+
 void ECellEngine::Editor::Utility::MNBV::LogicOperationNodeData::OutputConnect(NodeInputPinData* _nodeInputPin, NodeOutputPinData* _nodeOutputPinData)
 {
 	//The output pin when LHS or RHS changes
@@ -363,6 +375,12 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Inpu
 		*((Core::Callback<bool, bool>*)_data) -= data->conditionCallbackToken;
 		data->conditionCallbackToken = nullptr;
 	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::OnDestroy()
+{
+	Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().EraseDataOfType("ModifyDataStateValueEvent", data->GetID());
+	data = nullptr;
 }
 
 void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)
@@ -762,6 +780,12 @@ void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::InputRefresh(NodeInput
 	{
 		data->SetThreshold((Operand*)_data);
 	}
+}
+
+void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::OnDestroy()
+{
+	Widget::MNBV::GetCurrentMNBVContext()->simulation->GetDataState().EraseDataOfType("Trigger", data->GetID());
+	data = nullptr;
 }
 
 void ECellEngine::Editor::Utility::MNBV::TriggerNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPinData)

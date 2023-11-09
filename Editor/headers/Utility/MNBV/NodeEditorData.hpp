@@ -286,6 +286,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		virtual void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) = 0;
 
 		/*!
+		@brief Method to implement what to do when the node is destroyed.
+		@details Typically used to delete some data associated with this node.
+		*/
+		virtual void OnDestroy() = 0;
+
+		/*!
 		@brief Method to implement what to do when a new link is connected
 				from @p _nodeOutput to @p _nodeInput.
 		@param _nodeInput The pointer to the end pin of the link.
@@ -720,6 +726,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Logic Operation Node Data
 
+		void OnDestroy() override;
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
@@ -898,6 +906,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {}; //not used in asset node data
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in asset node data
+
+		void OnDestroy() override {}; //not used in asset node data
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
@@ -1166,6 +1176,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in equation data
 
+		void OnDestroy() override {};//not used in equation data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
@@ -1333,6 +1345,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};
 
+		void OnDestroy() override {};//not used in line plot node data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};// not used in line plot node data
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};// not used in line plot node data
@@ -1473,6 +1487,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Logic Operation Node Data
+
+		void OnDestroy() override;
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
@@ -1629,6 +1645,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Modify DataState Value Event Node Data
+
+		void OnDestroy() override;
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
@@ -1867,6 +1885,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Reaction Node Data
 
+		void OnDestroy() override {};//not used in Reaction Node Data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
@@ -2085,6 +2105,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Parameter Node Data
 
+		void OnDestroy() override {};//not used in Parameter Node Data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
@@ -2234,6 +2256,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Solver Node Data
+
+		void OnDestroy() override {};//not used in Solver Node Data
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
@@ -2471,6 +2495,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Species Node Data
 
+		void OnDestroy() override {};//not used in Species Node Data
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
@@ -2582,17 +2608,19 @@ namespace ECellEngine::Editor::Utility::MNBV
 			Util::StrCopy(name, _name, sizeof(name));
 		}
 
-		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
+		void InputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Time Node Data
 
-		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
+		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Time Node Data
 
-		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Simulation Time Node Data
+		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Time Node Data
+
+		void OnDestroy() override {};//not used in Time Node Data
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
-		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Simulation Time Node Data
+		void OutputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override {};//not used in Time Node Data
 	};
 
 	/*!
@@ -2750,6 +2778,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override;
 
+		void OnDestroy() override;
+
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
 		void OutputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
@@ -2857,6 +2887,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 		void InputDisconnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data
 
 		void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) override {};//not used in Value Float Node Data
+
+		void OnDestroy() override {};//not used in Value Float Node Data
 
 		void OutputConnect(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput) override;
 
