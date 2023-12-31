@@ -391,7 +391,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			yn[i] = system[i].GetOperand()->Get();
 			//k1 = f(y_n)
 			coeffs.ks[i * coeffs.stages] = system[i].GetOperation().Get();
-			//ECellEngine::Logging::Logger::LogDebug("k1[" + std::to_string(i) + "] = " + std::to_string(coeffs.ks[i]));
+			//ECellEngine::Logging::Logger::LogDebug("k1[%u] = %f", i, coeffs.ks[i]);
 		}
 
 		//Storing the value of the external equations at the beginning of the step
@@ -598,7 +598,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			else
 			{
 				//Value Debugging
-				//ECellEngine::Logging::Logger::LogDebug("--- ACCEPTED ---");
+				ECellEngine::Logging::Logger::LogDebug("--- ACCEPTED ---");
 
 				//We update the system with the new value of y_n+1
 				for (unsigned short i = 0; i < systemSize; ++i)
@@ -639,7 +639,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 		else
 		{
 			//Value Debugging
-			//ECellEngine::Logging::Logger::LogDebug("--- REJECTED ---");
+			ECellEngine::Logging::Logger::LogDebug("--- REJECTED ---");
 
 			//We reset the system to the values at the beginning of the step
 			for (unsigned short i = 0; i < systemSize; ++i)
@@ -656,28 +656,25 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			stepper.ComputeNext(coeffs.estimationsMinOrder);
 		}
 
-		/*ECellEngine::Logging::Logger::LogDebug(
-			"t= " + std::to_string(stepper.timer.elapsedTime) +
-			"; error= " + std::to_string(stepper.error) + 
-			"; h_prev= " + std::to_string(stepper.h_prev) +
-			"; h= " + std::to_string(stepper.h));
+		ECellEngine::Logging::Logger::LogDebug("t= %f; error= %f; h= %f",
+			stepper.timer.elapsedTime, stepper.error, stepper.h);
 
 		std::string log;
 		for (unsigned short i = 0; i < systemSize; ++i)
 		{
-			log = "System; " + system[i].GetOperand()->GetName();
+			log = system[i].GetOperand()->GetName();
 			log += "=" + std::to_string(system[i].Get());
 			for (unsigned short j = 0; j < coeffs.stages; ++j)
 			{
 				log += "; k" + std::to_string(j + 1) + "=" + std::to_string(coeffs.ks[i * coeffs.stages + j]);
 			}
-			ECellEngine::Logging::Logger::LogDebug(log);
+			ECellEngine::Logging::Logger::LogDebug("System; %s", log.c_str());
 		}
-		for (auto [equationName, equation] : dataState.GetEquations())
+		for (auto [equationID, equation] : dataState.GetEquations())
 		{
-			ECellEngine::Logging::Logger::LogDebug("Extern; " + equationName + "=" + std::to_string(equation->Get()));
+			ECellEngine::Logging::Logger::LogDebug("Extern; %s = %f", equation->GetName(), equation->Get());
 		}
 
-		ECellEngine::Logging::Logger::LogDebug("------");*/
+		ECellEngine::Logging::Logger::LogDebug("------");
 	}
 }
