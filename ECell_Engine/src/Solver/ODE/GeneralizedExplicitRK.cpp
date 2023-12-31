@@ -5,7 +5,7 @@ ECellEngine::Maths::Operation ECellEngine::Solvers::ODE::GeneralizedExplicitRK::
 {
 	unsigned short size = std::distance(_start, _end);
 	//If only one operation, then there is no need to sum
-	if (size)
+	if (size==1)
 	{
 		return *_start;
 	}
@@ -175,7 +175,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::ScanForTriggersOnExtEq() 
 			equationName = externalEquations[i]->GetName();
 			if (triggerTargetName == equationName || triggerThresholdName == equationName)
 			{
-				ECellEngine::Logging::Logger::LogDebug("Trigger involving target %s and %s was found to match variable %s in the External equations.", triggerTargetName, triggerThresholdName, equationName);
+				ECellEngine::Logging::Logger::LogDebug("Trigger involving target %s and %s was found to match variable %s in the External equations.", triggerTargetName.c_str(), triggerThresholdName.c_str(), equationName.c_str());
 
 				triggersOnExtEq.push_back(std::pair(it->get(), i));
 			}
@@ -200,7 +200,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::ScanForTriggersOnODE() no
 			systemVariableName = system[i].GetOperand()->GetName();
 			if (triggerTargetName == systemVariableName || triggerThresholdName == systemVariableName)
 			{
-				ECellEngine::Logging::Logger::LogDebug("Trigger involving target %s and %s was found to match variable %s in the ODEs.", triggerTargetName, triggerThresholdName, systemVariableName);
+				ECellEngine::Logging::Logger::LogDebug("Trigger involving target %s and %s was found to match variable %s in the ODEs.", triggerTargetName.c_str(), triggerThresholdName.c_str(), systemVariableName.c_str());
 
 				triggersOnODE.push_back(std::pair(it->get(), i));
 			}
@@ -598,7 +598,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			else
 			{
 				//Value Debugging
-				ECellEngine::Logging::Logger::LogDebug("--- ACCEPTED ---");
+				//ECellEngine::Logging::Logger::LogDebug("--- ACCEPTED ---");
 
 				//We update the system with the new value of y_n+1
 				for (unsigned short i = 0; i < systemSize; ++i)
@@ -639,7 +639,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 		else
 		{
 			//Value Debugging
-			ECellEngine::Logging::Logger::LogDebug("--- REJECTED ---");
+			//ECellEngine::Logging::Logger::LogDebug("--- REJECTED ---");
 
 			//We reset the system to the values at the beginning of the step
 			for (unsigned short i = 0; i < systemSize; ++i)
@@ -656,7 +656,7 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			stepper.ComputeNext(coeffs.estimationsMinOrder);
 		}
 
-		ECellEngine::Logging::Logger::LogDebug("t= %f; error= %f; h= %f",
+		/*ECellEngine::Logging::Logger::LogDebug("t= %f; error= %f; h= %f",
 			stepper.timer.elapsedTime, stepper.error, stepper.h);
 
 		std::string log;
@@ -675,6 +675,6 @@ void ECellEngine::Solvers::ODE::GeneralizedExplicitRK::UpdateWithErrorControl(co
 			ECellEngine::Logging::Logger::LogDebug("Extern; %s = %f", equation->GetName(), equation->Get());
 		}
 
-		ECellEngine::Logging::Logger::LogDebug("------");
+		ECellEngine::Logging::Logger::LogDebug("------")*/;
 	}
 }
