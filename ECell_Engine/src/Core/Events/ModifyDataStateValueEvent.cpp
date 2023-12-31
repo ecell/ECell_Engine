@@ -7,7 +7,7 @@ void ECellEngine::Core::Events::ModifyDataStateValueEvent::UpdateCondition(const
 	condition = _newValue;
 }
 
-void ECellEngine::Core::Events::ModifyDataStateValueEvent::UpdateDataStateValueId(const std::string& _previousValue, const std::string& _newValue) noexcept
+void ECellEngine::Core::Events::ModifyDataStateValueEvent::UpdateDataStateValueId(const std::size_t _previousValue, const std::size_t _newValue) noexcept
 {
 	dataStateValueId = _newValue;
 }
@@ -19,7 +19,7 @@ void ECellEngine::Core::Events::ModifyDataStateValueEvent::UpdateValue(const flo
 
 void ECellEngine::Core::Events::ModifyDataStateValueEvent::Execute(std::size_t _targetSimulationIndex) noexcept
 {
-	if (condition && dataStateValueId != "")
+	if (condition && dataStateValueId != SIZE_MAX)
 	{
 		switch (valueType)
 		{
