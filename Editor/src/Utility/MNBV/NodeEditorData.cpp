@@ -372,14 +372,14 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 	SpeciesNodeData* speciesNodeData = dynamic_cast<SpeciesNodeData*>(_nodeInputPinData->node);
 	if (speciesNodeData != nullptr)
 	{
-		data->dataStateValueId = speciesNodeData->data.get()->GetName();
+		data->dataStateValueId = speciesNodeData->data.get()->GetID();
 		data->valueType = ECellEngine::Core::Events::ModifyDataStateValueEvent::DataStateValueType::Species;
 	}
 
 	ParameterNodeData* parameterNodeData = dynamic_cast<ParameterNodeData*>(_nodeInputPinData->node);
 	if (parameterNodeData != nullptr)
 	{
-		data->dataStateValueId = parameterNodeData->data.get()->GetName();
+		data->dataStateValueId = parameterNodeData->data.get()->GetID();
 		data->valueType = ECellEngine::Core::Events::ModifyDataStateValueEvent::DataStateValueType::Parameter;
 	}
 
@@ -391,7 +391,7 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 	//There is only one output pin (Modify Pin), so we don't need to check the id of the output pin
 
 	//Reset the data state value id
-	data->dataStateValueId = "";
+	data->dataStateValueId = SIZE_MAX;
 	//_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
 }
 

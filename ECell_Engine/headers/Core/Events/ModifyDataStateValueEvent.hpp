@@ -21,9 +21,9 @@ namespace ECellEngine::Core::Events
 		};
 		
 		/*!
-		@brief Name of the value this event will modify (species or parameter).
+		@brief ID of the value this event will modify (species or parameter).
 		*/
-		std::string dataStateValueId;
+		std::size_t dataStateValueId = SIZE_MAX;
 
 		/*!
 		@brief The condition controlling the execution of this event.
@@ -45,7 +45,7 @@ namespace ECellEngine::Core::Events
 		std::shared_ptr<std::function<void(float, float)>> valueCallbackToken = nullptr;
 
 		ModifyDataStateValueEvent(const std::size_t _id) :
-			Event(_id), valueType(DataStateValueType::Species), dataStateValueId("")
+			Event(_id), valueType(DataStateValueType::Species)
 		{
 
 		}
@@ -64,7 +64,7 @@ namespace ECellEngine::Core::Events
 
 		void UpdateCondition(const bool _previousValue, const bool _newValue) noexcept;
 
-		void UpdateDataStateValueId(const std::string& _previousValue, const std::string& _newValue) noexcept;
+		void UpdateDataStateValueId(const std::size_t _previousValue, const std::size_t _newValue) noexcept;
 
 		void UpdateValue(const float _previousValue, const float _newValue) noexcept;
 	};
