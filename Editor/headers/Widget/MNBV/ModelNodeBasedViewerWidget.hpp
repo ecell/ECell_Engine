@@ -50,8 +50,8 @@ namespace ECellEngine::Editor::Widget::MNBV
 		@brief A char array to hold the path to an asset to import.
 		*/
 		//char assetPathBuffer[256] = "C:/Users/EliottJacopin/Documents/Source/External/Papers/p53/Hat-et-al_p53_BNG/S2_Code_BioNetGen/export/p53_L3V2_mod2.xml";
-		//char assetPathBuffer[256] = "C:/Users/eliott/Documents/Source/External/Papers/p53/Hat-et-al_p53_BNG/S2_Code_BioNetGen/export/p53_L3V2_mod2.xml";
-		char assetPathBuffer[256] = "C:/Users/eliot/Documents/Source/External/Papers/Novak-et-al_FissionYeast_CellCycle/BIOMD0000000111_L3V2.xml";
+		//char assetPathBuffer[256] = "C:/Users/EliottJacopin/Documents/Source/External/Papers/p53/Hat-et-al_p53_BNG/S2_Code_BioNetGen/export/p53_L3V2_mod2.xml";
+		char assetPathBuffer[256] = "C:/Users/EliottJacopin/Documents/Source/External/Papers/Novak-et-al_FissionYeast_CellCycle/BIOMD0000000111_L3V2.xml";
 
 		/*!
 		@brief A char array to hold the name of the asset node to be drawn in the

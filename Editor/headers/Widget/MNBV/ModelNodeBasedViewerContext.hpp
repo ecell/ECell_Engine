@@ -309,7 +309,14 @@ namespace ECellEngine::Editor::Widget::MNBV
 			if (nodeIt != _nodes.end() && (std::size_t)nodeIt->id == _nodeID)
 			{
 				nodeIt->OnDestroy();
-				_nodes.erase(nodeIt);
+				nodeIt = _nodes.erase(nodeIt);
+
+				while( nodeIt != _nodes.end())
+				{
+					nodeIt->OnDataMove();
+					++nodeIt;
+				}
+
 				return true;
 			}
 			return false;

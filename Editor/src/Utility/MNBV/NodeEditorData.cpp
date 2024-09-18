@@ -155,6 +155,8 @@ void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OnDataDestroy()
 {
 	//we must clean the token of the subscription since it is on a callback
 	//that will be lost once we set data = nullptr.
+	ECellEngine::Logging::Logger::LogDebug("EquationNodeData::OnDataDestroy: Killing the link with equation with ID %llu and name %s", data->GetID(), data->GetName());
+	data->onDestroy -= onDataDestroySubToken;
 	onDataDestroySubToken = nullptr;
 	data = nullptr;
 }

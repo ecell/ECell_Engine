@@ -105,6 +105,7 @@ bool ECellEngine::Data::DataState::EraseDataOfType(const char* _dataType, const 
 			return false;
 		}
 
+		ECellEngine::Logging::Logger::LogDebug("EraseDataOfType: Erasing data of type \"Equation\" with ID %llu with name %s", searchEq->second->GetID(), searchEq->second->GetName());
 		// Erase the equation from the data state
 		searchEq->second->onDestroy();
 		equations.erase(searchEq);

@@ -278,6 +278,7 @@ void ECellEngine::Editor::Widget::ModelHierarchyWidget::DrawContextMenu()
 					std::size_t dataID = 0;
 					if (Util::IsFlagSet(hierarchyLevel, HierarchyLevel_Equations))
 					{
+						ECellEngine::Logging::Logger::LogDebug("Erase Data: Erasing equation with ID %llu and name %s", ((std::shared_ptr<ECellEngine::Maths::Equation>*)ctxtNodePayload)->get()->GetID(), ((std::shared_ptr<ECellEngine::Maths::Equation>*)ctxtNodePayload)->get()->GetName());
 						dataID = ((std::shared_ptr<ECellEngine::Maths::Equation>*)ctxtNodePayload)->get()->GetID();
 					}
 

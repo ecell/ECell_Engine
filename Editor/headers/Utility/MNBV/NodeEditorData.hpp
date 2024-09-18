@@ -285,6 +285,11 @@ namespace ECellEngine::Editor::Utility::MNBV
 		*/
 		virtual void InputRefresh(NodeInputPinData* _nodeInput, NodeOutputPinData* _nodeOutput, void* _data) = 0;
 
+		virtual void OnDataMove()
+		{
+
+		}
+
 		/*!
 		@brief Method to implement what to do when the node is destroyed.
 		@details Typically used to delete some data associated with this node.
@@ -1092,7 +1097,8 @@ namespace ECellEngine::Editor::Utility::MNBV
 			parametersOperands{ _cpnd.parametersOperands },
 			equationsOperands{ _cpnd.equationsOperands }
 		{
-			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+			ECellEngine::Logging::Logger::LogDebug("Copy Constructor of node encasulating %s", data->GetName());
+			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&EquationNodeData::OnDataDestroy, this));
 
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -1114,7 +1120,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		EquationNodeData(std::shared_ptr<ECellEngine::Maths::Equation> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
-			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&EquationNodeData::OnDataDestroy, this));
 
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -1191,6 +1197,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@details Triggered by the ::data.onDestroy() callback.
 		*/
 		void OnDataDestroy();
+
+		void OnDataMove() override
+		{
+			data->onDestroy -= onDataDestroySubToken;
+			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&EquationNodeData::OnDataDestroy, this));
+		}
 
 		void OnDestroy() override {};//not used in equation data
 
