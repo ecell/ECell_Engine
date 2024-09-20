@@ -1747,6 +1747,12 @@ void ECellEngine::Editor::Utility::MNBV::NodeEditorDraw::NodeStringListBox(NodeL
 	const float itemWidth = _widgetWidth - hasScrollBar * style.ScrollbarSize - NodeFramePadding.x - NodeFramePadding.y;//includes left and right
 	const char* itemString;
 	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + NodeFramePadding.z);//Top Padding
+	
+	if(_nlbsData.cursor > _nlbsData.data->size())
+	{
+		_nlbsData.cursor = _nlbsData.data->size();
+	}
+	
 	for (std::size_t n = _nlbsData.cursor; n > _nlbsData.cursor - actualViewHeight; n--)
 	{
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + NodeFramePadding.x);//Left Padding

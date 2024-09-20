@@ -151,7 +151,7 @@ void ECellEngine::Editor::Utility::MNBV::AssetNodeData::ResetNLBSDUtilityStates(
 	nlbsData[NodeListBoxString_Reactions].ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OnDataDestroy()
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OnDataDestroy(ECellEngine::Maths::Equation* _data)
 {
 	//we must clean the token of the subscription since it is on a callback
 	//that will be lost once we set data = nullptr.

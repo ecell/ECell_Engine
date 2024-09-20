@@ -1076,7 +1076,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The token to the subscription to the event onDestroy of the
 				::data. It keeps the subscription alive.
 		*/
-		std::shared_ptr<std::function<void()>> onDataDestroySubToken = nullptr;
+		std::shared_ptr<std::function<void(ECellEngine::Maths::Equation*)>> onDataDestroySubToken = nullptr;
 
 		EquationNodeData(const EquationNodeData& _cpnd) :
 			NodeData(_cpnd), data{ _cpnd.data }, depDB{ _cpnd.depDB },
@@ -1098,7 +1098,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			equationsOperands{ _cpnd.equationsOperands }
 		{
 			ECellEngine::Logging::Logger::LogDebug("Copy Constructor of node encasulating %s", data->GetName());
-			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&EquationNodeData::OnDataDestroy, this));
+			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&EquationNodeData::OnDataDestroy, this, std::placeholders::_1));
 
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -1120,7 +1120,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		EquationNodeData(std::shared_ptr<ECellEngine::Maths::Equation> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
-			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&EquationNodeData::OnDataDestroy, this));
+			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&EquationNodeData::OnDataDestroy, this,  std::placeholders::_1));
 
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -1196,13 +1196,14 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief What to do when the ::data is destroyed.
 		@details Triggered by the ::data.onDestroy() callback.
 		*/
-		void OnDataDestroy();
+		void OnDataDestroy(ECellEngine::Maths::Equation* _data);
 
-		void OnDataMove() override
-		{
-			data->onDestroy -= onDataDestroySubToken;
-			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&EquationNodeData::OnDataDestroy, this));
-		}
+		// void OnDataMove() override
+		// {
+		// 	data->onDestroy -= onDataDestroySubToken;
+		// 	std::move(*((Core::Callback<const bool, const bool>*)_data) += std::bind(&Maths::LogicOperation::UpdateLHS, data, std::placeholders::_1, std::placeholders::_2));
+		// 	onDataDestroySubToken = std::move(((Core::Callback<ECellEngine::Maths::Equation*>)data->onDestroy) += std::bind(&EquationNodeData::OnDataDestroy, this));
+		// }
 
 		void OnDestroy() override {};//not used in equation data
 

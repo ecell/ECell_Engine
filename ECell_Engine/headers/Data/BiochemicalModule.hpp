@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Core/Callback.hpp"
 #include "Solver/BiochemicalSolver.hpp"
 #include "Data/Module.hpp"
 
@@ -10,6 +11,8 @@ namespace ECellEngine::Data
 	class BiochemicalModule final : public Module
 	{
 	protected:
+
+		std::shared_ptr<std::function<void(Equation*)>> onEquationDestroySubToken;
 		std::vector<std::size_t> equations;
 		std::vector<std::size_t> reactions;
 		std::vector<std::size_t> parameters;
@@ -92,6 +95,8 @@ namespace ECellEngine::Data
 		std::size_t AddSpecies(const std::string _speciesName, const float _quantity);
 
 		bool IsValidSolverType(const ECellEngine::Solvers::Solver* _solver) noexcept override;
+
+		void OnEquationDestroy(Equation* _eq) noexcept;
 
 		/*!
 		@brief Resets the species, parameters, equations and reaction kinetic
