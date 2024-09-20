@@ -10,9 +10,6 @@ find_package(implot CONFIG REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
 
 add_executable( ECellEngineEditor
-"src/imgui/imgui_impl_glfw.cpp"
-"src/imgui/imgui_impl_vulkan.cpp"
-
 "src/imgui-node-editor/crude_json.cpp"
 "src/imgui-node-editor/imgui_canvas.cpp"
 "src/imgui-node-editor/imgui_node_editor.cpp"
@@ -70,7 +67,6 @@ target_include_directories(ECellEngineEditor
 							PRIVATE
 								"./headers"
 								"./headers/imgui-node-editor"
-								"./headers/imgui"
 								"../ECell_Engine/engine_system_files"
 								"../ECell_Engine/headers"
 )

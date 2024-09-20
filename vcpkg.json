@@ -5,7 +5,7 @@
     "libxml2",
     {
       "name": "imgui",
-      "features": [ "docking-experimental" ]
+      "features": [ "docking-experimental", "glfw-binding", "vulkan-binding" ]
     },
     "glfw3",
     "vulkan",
