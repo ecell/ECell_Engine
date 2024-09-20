@@ -152,7 +152,8 @@ void ECellEngine::Editor::Utility::BackendUtility::InitializeEditorWindow()
     init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
     init_info.Allocator = allocator;
     init_info.CheckVkResultFn = CheckVkResult;
-    ImGui_ImplVulkan_Init(&init_info, (&mainWindowData)->RenderPass);
+    init_info.RenderPass = (&mainWindowData)->RenderPass;
+    ImGui_ImplVulkan_Init(&init_info);
 
     
 }
@@ -359,7 +360,7 @@ void ECellEngine::Editor::Utility::BackendUtility::VulkanFontUpload()
     err = vkBeginCommandBuffer(command_buffer, &begin_info);
     CheckVkResult(err);
 
-    ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
+    ImGui_ImplVulkan_CreateFontsTexture();
 
     VkSubmitInfo end_info = {};
     end_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -372,5 +373,4 @@ void ECellEngine::Editor::Utility::BackendUtility::VulkanFontUpload()
 
     err = vkDeviceWaitIdle(device);
     CheckVkResult(err);
-    ImGui_ImplVulkan_DestroyFontUploadObjects();
 }

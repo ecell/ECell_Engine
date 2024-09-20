@@ -40,10 +40,10 @@ namespace ECellEngine::Editor::Widget
 		/*!
 		  @brief Flags for the docking conditions to this window.
 		  @details Nothing can be docked on this window. We do this to preserve
-					theintegratity and visibility of these important controls.
+					the integratity and visibility of these important controls.
 		*/
 		const ImGuiDockNodeFlags dockFlags =
-			ImGuiDockNodeFlags_NoDockingOverMe | ImGuiDockNodeFlags_NoDockingSplitMe | ImGuiDockNodeFlags_NoTabBar;
+			ImGuiDockNodeFlags_NoDockingOverMe | ImGuiDockNodeFlags_NoDockingSplit | ImGuiDockNodeFlags_NoTabBar;
 
 		ECellEngine::Core::Simulation* simulation = nullptr;
 		//short* simuDirection;
