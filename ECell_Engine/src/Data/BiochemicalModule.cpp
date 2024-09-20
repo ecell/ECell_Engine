@@ -3,7 +3,7 @@
 void ECellEngine::Data::BiochemicalModule::AddEquation(Operand* _lhs, Operation& _rhs)
 {
 	dataState.AddEquation(_lhs, _rhs);
-	onEquationDestroySubToken = std::move(dataState.GetEquation(_lhs->GetID())->onDestroy += std::bind(&ECellEngine::Data::BiochemicalModule::OnEquationDestroy, this, std::placeholders::_1));
+	onEquationDestroySubTokens.push_back(std::move(dataState.GetEquation(_lhs->GetID())->onDestroy += std::bind(&ECellEngine::Data::BiochemicalModule::OnEquationDestroy, this, std::placeholders::_1)));
 	equations.push_back(_lhs->GetID());
 }
 
@@ -38,16 +38,22 @@ bool ECellEngine::Data::BiochemicalModule::IsValidSolverType(const ECellEngine::
 
 void ECellEngine::Data::BiochemicalModule::OnEquationDestroy(Equation* _eq) noexcept
 {
-	std::vector<std::size_t>::iterator it = std::find(equations.begin(), equations.end(), _eq->GetID());
-	if (it != equations.end())
+	int idx = 0;
+	while (idx < equations.size() && equations[idx] != _eq->GetID())
 	{
-		equations.erase(it);
-		_eq->onDestroy -= onEquationDestroySubToken;
+		++idx;
+	}
+
+	if (idx < equations.size())
+	{
+		equations.erase(equations.begin() + idx);
+		onEquationDestroySubTokens.erase(onEquationDestroySubTokens.begin() + idx);
 	}
 	else
 	{
-		ECellEngine::Logging::Logger::LogError("BiochemicalModule (%s) OnEquationDestroy: Could not find equation with ID %llu.", GetName(), _eq->GetID());
+		ECellEngine::Logging::Logger::LogError("BiochemicalModule (%s) OnEquationDestroy: Equation (ID: %llu) not found in the list of equations.", GetName(), _eq->GetID());
 	}
+
 }
 
 void ECellEngine::Data::BiochemicalModule::Reset() noexcept
