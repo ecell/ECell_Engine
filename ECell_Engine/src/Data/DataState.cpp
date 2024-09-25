@@ -106,8 +106,9 @@ bool ECellEngine::Data::DataState::EraseDataOfType(const char* _dataType, const 
 		}
 
 		ECellEngine::Logging::Logger::LogDebug("EraseDataOfType: Erasing data of type \"Equation\" with ID %llu with name %s", searchEq->second->GetID(), searchEq->second->GetName());
-		// Erase the equation from the data state
+		// Call the onDestroy callback of the equation to notify the subscribers
 		searchEq->second->onDestroy(searchEq->second.get());
+		// Erase the equation from the data state
 		equations.erase(searchEq);
 	}
     else if (!strcmp(_dataType, "Parameter"))

@@ -153,10 +153,9 @@ void ECellEngine::Editor::Utility::MNBV::AssetNodeData::ResetNLBSDUtilityStates(
 
 void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OnDataDestroy(ECellEngine::Maths::Equation* _data)
 {
-	//we must clean the token of the subscription since it is on a callback
-	//that will be lost once we set data = nullptr.
-	ECellEngine::Logging::Logger::LogDebug("EquationNodeData::OnDataDestroy: Killing the link with equation with ID %llu and name %s", data->GetID(), data->GetName());
-	data->onDestroy -= onDataDestroySubToken;
+	//The data associated with the equation is being destroyed.
+	//Hence we must clean the subscription token and set the data to nullptr.
+	ECellEngine::Logging::Logger::LogDebug("EquationNodeData::OnDataDestroy: Responding to equation %s (ID %llu) getting destroyed", data->GetName(), data->GetID());
 	onDataDestroySubToken = nullptr;
 	data = nullptr;
 }

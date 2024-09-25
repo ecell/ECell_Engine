@@ -58,7 +58,7 @@ namespace ECellEngine::Core
 		void operator()(Args ... args)
 		{
 			auto subscribers_copy = subscribers;//prevent concurrent modification
-			for (auto& wp_subscriber : subscribers)
+			for (auto& wp_subscriber : subscribers_copy)
 			{
 				if (auto sp_subscriber = wp_subscriber.lock())
 				{
