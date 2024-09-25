@@ -151,13 +151,23 @@ void ECellEngine::Editor::Utility::MNBV::AssetNodeData::ResetNLBSDUtilityStates(
 	nlbsData[NodeListBoxString_Reactions].ResetUtilityState();
 }
 
-void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OnDataDestroy(ECellEngine::Maths::Equation* _data)
+void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OnDataDestroy(ECellEngine::Maths::Equation* _eq)
 {
-	//The data associated with the equation is being destroyed.
-	//Hence we must clean the subscription token and set the data to nullptr.
-	ECellEngine::Logging::Logger::LogDebug("EquationNodeData::OnDataDestroy: Responding to equation %s (ID %llu) getting destroyed", data->GetName(), data->GetID());
-	onDataDestroySubToken = nullptr;
-	data = nullptr;
+	if(data != nullptr)
+	{
+		if (data->GetID() == _eq->GetID())
+		{
+			//The data associated with the equation is being destroyed.
+			//Hence we must clean the subscription token and set the data to nullptr.
+			ECellEngine::Logging::Logger::LogDebug("EquationNodeData::OnDataDestroy: Responding to equation %s (ID %llu) getting destroyed.", _eq->GetName(), _eq->GetID());
+			onDataDestroySubToken = nullptr;
+			data = nullptr;
+		}
+		else
+		{
+			ECellEngine::Logging::Logger::LogError("EquationNodeData::OnDataDestroy: Equation %s (ID %llu) does not match the data ID %llu.", _eq->GetName(), _eq->GetID(), data->GetID());
+		}
+	}
 }
 
 void ECellEngine::Editor::Utility::MNBV::EquationNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
