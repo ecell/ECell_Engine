@@ -46,7 +46,7 @@ bool ECellEngine::Data::DataState::EraseAllDataOfType(const char* _dataType) noe
 	{
 		for (auto& [pName, _p] : parameters)
 		{
-			_p->onDestroy();
+			_p->onDestroy(_p.get());
 		}
 		parameters.clear();
 	}
@@ -62,7 +62,7 @@ bool ECellEngine::Data::DataState::EraseAllDataOfType(const char* _dataType) noe
 	{
 		for (auto& [spName, _sp] : species)
 		{
-			_sp->onDestroy();
+			_sp->onDestroy(_sp.get());
 		}
 		species.clear();
 	}
@@ -119,9 +119,10 @@ bool ECellEngine::Data::DataState::EraseDataOfType(const char* _dataType, const 
 			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Parameter\" with ID %llu.", _id);
 			return false;
 		}
-
-		//Erase the parameter from the data state
-		searchParam->second->onDestroy();
+		ECellEngine::Logging::Logger::LogDebug("EraseDataOfType: Erasing data of type \"Parameter\" with ID %llu with name %s", searchParam->second->GetID(), searchParam->second->GetName());
+		// Call the onDestroy callback of the parameter to notify the subscribers
+		searchParam->second->onDestroy((ECellEngine::Maths::Operand*)(searchParam->second.get()));
+		// Erase the parameter from the data state
 		parameters.erase(searchParam);
 	}
 	else if (!strcmp(_dataType, "Reaction"))
@@ -132,9 +133,10 @@ bool ECellEngine::Data::DataState::EraseDataOfType(const char* _dataType, const 
 			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Reaction\" with ID %llu.", _id);
 			return false;
 		}
-
-		//Erase the reaction from the data state
+		ECellEngine::Logging::Logger::LogDebug("EraseDataOfType: Erasing data of type \"Reaction\" with ID %llu with name %s", searchReact->second->GetID(), searchReact->second->GetName());
+		//Call the onDestroy callback of the reaction to notify the subscribers
 		searchReact->second->OnDestroy();
+		//Erase the reaction from the data state
 		reactions.erase(searchReact);
 	}
 	else if (!strcmp(_dataType, "Species"))
@@ -145,9 +147,10 @@ bool ECellEngine::Data::DataState::EraseDataOfType(const char* _dataType, const 
 			ECellEngine::Logging::Logger::LogError("EraseDataOfType: Could not erase data of type \"Species\" with ID %llu.", _id);
 			return false;
 		}
-
+		ECellEngine::Logging::Logger::LogDebug("EraseDataOfType: Erasing data of type \"Species\" with ID %llu with name %s", searchSp->second->GetID(), searchSp->second->GetName());
+		//Call the onDestroy callback of the species to notify the subscribers
+		searchSp->second->onDestroy((ECellEngine::Maths::Operand*)(searchSp->second.get()));
 		//Erase the species from the data state
-		searchSp->second->onDestroy();
 		species.erase(searchSp);
 	}
 	else if (!strcmp(_dataType, "OperandsToOperation"))

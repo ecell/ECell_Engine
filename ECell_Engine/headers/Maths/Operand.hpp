@@ -43,8 +43,10 @@ namespace ECellEngine::Maths
 	public:
 		/*!
 		@brief The callback called when the operand is destroyed.
+		@details It includes a pointer to itself to allow the subscribers to
+				 access the operand's data if needed.
 		*/
-		Core::Callback<> onDestroy;
+		Core::Callback<Operand*> onDestroy;
 
 		/*!
 		@brief The callback called when the operand's value changes.

@@ -32,7 +32,7 @@ namespace ECellEngine::Data
 		/*!
 		@brief Callback to be called when the reaction is destroyed.
 		*/
-		Core::Callback<> onDestroy;
+		Core::Callback<Reaction*> onDestroy;
 
 		Reaction(const char* _name, const std::size_t _id,
 				 const std::vector<std::size_t> _products,
@@ -91,8 +91,8 @@ namespace ECellEngine::Data
 		*/
 		inline void OnDestroy() noexcept
 		{
-			onDestroy();
-			kineticLaw.onDestroy();
+			onDestroy(this);
+			kineticLaw.onDestroy((ECellEngine::Maths::Operand*)&kineticLaw);
 		}
 	};
 }

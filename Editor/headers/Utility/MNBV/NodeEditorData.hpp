@@ -1194,16 +1194,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		/*!
 		@brief What to do when the ::data is destroyed.
-		@details Triggered by the ::data.onDestroy() callback.
+		@details Triggered by the ::data.onDestroy() callback. Contains checks
+				 to make sure the trigger originated from the ::data.
+		@param _data The pointer to the equation that is being destroyed. It should
+					 be the same as ::data.
 		*/
 		void OnDataDestroy(ECellEngine::Maths::Equation* _data);
-
-		// void OnDataMove() override
-		// {
-		// 	data->onDestroy -= onDataDestroySubToken;
-		// 	std::move(*((Core::Callback<const bool, const bool>*)_data) += std::bind(&Maths::LogicOperation::UpdateLHS, data, std::placeholders::_1, std::placeholders::_2));
-		// 	onDataDestroySubToken = std::move(((Core::Callback<ECellEngine::Maths::Equation*>)data->onDestroy) += std::bind(&EquationNodeData::OnDataDestroy, this));
-		// }
 
 		void OnDestroy() override {};//not used in equation data
 
@@ -1824,7 +1820,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The token to the subscription to the event onDestroy of the
 				::data. It keeps the subscription alive.
 		*/
-		std::shared_ptr<std::function<void()>> onDataDestroySubToken = nullptr;
+		std::shared_ptr<std::function<void(ECellEngine::Data::Reaction*)>> onDataDestroySubToken = nullptr;
 
 		ReactionNodeData(const ReactionNodeData& _rnd) :
 			NodeData(_rnd), data{ _rnd.data },
@@ -1843,7 +1839,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			parametersOperands{ _rnd.parametersOperands },
 			equationsOperands{ _rnd.equationsOperands }
 		{
-			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&ReactionNodeData::OnDataDestroy, this, std::placeholders::_1));
 
 			nlbsData[NodeListBoxString_SpeciesOperands].data = &speciesOperands;
 			nlbsData[NodeListBoxString_ParameterOperands].data = &parametersOperands;
@@ -1863,7 +1859,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		ReactionNodeData(std::shared_ptr<ECellEngine::Data::Reaction> _data) :
 			NodeData(), data{ _data }
 		{
-			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&ReactionNodeData::OnDataDestroy, this, std::placeholders::_1));
 
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -1925,9 +1921,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		/*!
 		@brief What to do when the ::data is destroyed.
-		@details Triggered by the ::data.onDestroy() callback.
+		@details Triggered by the ::data.onDestroy() callback. Contains checks
+				 to make sure the trigger originated from the ::data of this node.
+		@param _data The pointer to the reaction that is being destroyed. It should
+					 be the same as ::data.
 		*/
-		void OnDataDestroy();
+		void OnDataDestroy(ECellEngine::Data::Reaction* _data);
 
 		void OnDestroy() override {};//not used in Reaction Node Data
 
@@ -2070,7 +2069,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The token to the subscription to the event onDestroy of the
 				::data. It keeps the subscription alive.
 		*/
-		std::shared_ptr<std::function<void()>> onDataDestroySubToken = nullptr;
+		std::shared_ptr<std::function<void(ECellEngine::Maths::Operand*)>> onDataDestroySubToken = nullptr;
 
 		ParameterNodeData(const ParameterNodeData& _pnd) :
 			NodeData(_pnd), data{ _pnd.data }, depDB{ _pnd.depDB },
@@ -2084,7 +2083,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			nlbsDataEqDep{ _pnd.nlbsDataEqDep }, nlbsDataRKLDep{ _pnd.nlbsDataRKLDep },
 			equationDep{ _pnd.equationDep }, reactionKLDep{ _pnd.reactionKLDep }
 		{
-			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&ParameterNodeData::OnDataDestroy, this, std::placeholders::_1));
 
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -2103,7 +2102,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		ParameterNodeData(std::shared_ptr<ECellEngine::Data::Parameter> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
-			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&ParameterNodeData::OnDataDestroy, this, std::placeholders::_1));
 
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -2160,9 +2159,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		/*!
 		@brief What to do when the ::data is destroyed.
-		@details Triggered by the ::data.onDestroy() callback.
+		@details Triggered by the ::data.onDestroy() callback. Contains checks
+				 to make sure the trigger originated from the ::data of this node.
+		@param _operand The pointer to the operand that is being destroyed. It should
+					 be the same as ::data.
 		*/
-		void OnDataDestroy();
+		void OnDataDestroy(ECellEngine::Maths::Operand* _operand);
 
 		void OnDestroy() override {};//not used in Parameter Node Data
 
@@ -2458,7 +2460,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		@brief The token to the subscription to the event onDestroy of the
 				::data. It keeps the subscription alive.
 		*/
-		std::shared_ptr<std::function<void()>> onDataDestroySubToken = nullptr;
+		std::shared_ptr<std::function<void(ECellEngine::Maths::Operand*)>> onDataDestroySubToken = nullptr;
 
 		SpeciesNodeData(const SpeciesNodeData& _snd) :
 			NodeData(_snd), data{ _snd.data }, depDB{ _snd.depDB },
@@ -2478,7 +2480,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 			equationDep{ _snd.equationDep }, reactionRDep{ _snd.reactionRDep },
 			reactionPDep{ _snd.reactionPDep }, reactionKLDep{ _snd.reactionKLDep }
 		{
-			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&SpeciesNodeData::OnDataDestroy, this, std::placeholders::_1));
 
 			for (int i = 0; i < InputPin_Count; i++)
 			{
@@ -2499,7 +2501,7 @@ namespace ECellEngine::Editor::Utility::MNBV
 		SpeciesNodeData(std::shared_ptr<ECellEngine::Data::Species> _data, const ECellEngine::Data::DependenciesDatabase* _depDB) :
 			NodeData(), data{ _data }, depDB{ _depDB }
 		{
-			onDataDestroySubToken = std::move(data->onDestroy += [this]() { OnDataDestroy(); });
+			onDataDestroySubToken = std::move(data->onDestroy += std::bind(&SpeciesNodeData::OnDataDestroy, this, std::placeholders::_1));
 
 			ax::NodeEditor::SetNodePosition(id, ImVec2(300.f + ImGui::GetIO().MousePos.x, 0.f + ImGui::GetIO().MousePos.y));
 
@@ -2566,9 +2568,12 @@ namespace ECellEngine::Editor::Utility::MNBV
 
 		/*!
 		@brief What to do when the ::data is destroyed.
-		@details Triggered by the ::data.onDestroy() callback.
+		@details Triggered by the ::data.onDestroy() callback. Contains checks
+				 to make sure the trigger originated from the ::data of this node.
+		@param _operand The pointer to the operand that is being destroyed. It should
+					 be the same as ::data.
 		*/
-		void OnDataDestroy();
+		void OnDataDestroy(ECellEngine::Maths::Operand* _operand);
 
 		void OnDestroy() override {};//not used in Species Node Data
 

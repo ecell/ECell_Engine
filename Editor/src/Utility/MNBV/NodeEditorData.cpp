@@ -432,12 +432,27 @@ void ECellEngine::Editor::Utility::MNBV::ModifyDataStateValueEventNodeData::Outp
 	//_nodeInputPinData->OnDisconnect(_nodeOutputPinData, nullptr);
 }
 
-void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OnDataDestroy()
+void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OnDataDestroy(ECellEngine::Data::Reaction* _data)
 {
-	//we must clean the token of the subscription since it is on a callback
-	//that will be lost once we set data = nullptr.
-	onDataDestroySubToken = nullptr;
-	data = nullptr;
+	if(data != nullptr)
+	{
+		if (data->GetID() == _data->GetID())
+		{
+			//The data associated with the equation is being destroyed.
+			//Hence we must clean the subscription token and set the data to nullptr.
+			ECellEngine::Logging::Logger::LogDebug("ReactionNodeData::OnDataDestroy: Responding to reaction %s (ID %llu) getting destroyed", data->GetName(), data->GetID());
+			onDataDestroySubToken = nullptr;
+			data = nullptr;
+		}
+		else
+		{
+			ECellEngine::Logging::Logger::LogError("ReactionNodeData::OnDataDestroy: The data %s (ID %llu) associated with the reaction node does not match the reaction %s (ID %llu)", data->GetName(), data->GetID(), _data->GetName(), _data->GetID());
+		}
+	}
+	else
+	{
+		ECellEngine::Logging::Logger::LogError("ReactionNodeData::OnDataDestroy: The data of the reaction node is already nullptr. It is not possible to destroy it again despited the callback originating from the reaction %s (ID %llu)", _data->GetName(), _data->GetID());
+	}
 }
 
 void ECellEngine::Editor::Utility::MNBV::ReactionNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
@@ -510,12 +525,27 @@ void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::InputDisconnect(Node
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OnDataDestroy()
+void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OnDataDestroy(ECellEngine::Maths::Operand* _operand)
 {
-	//we must clean the token of the subscription since it is on a callback
-	//that will be lost once we set data = nullptr.
-	onDataDestroySubToken = nullptr;
-	data = nullptr;
+	if (data != nullptr)
+	{
+		if (data->GetID() == _operand->GetID())
+		{
+			//The data associated with the equation is being destroyed.
+			//Hence we must clean the subscription token and set the data to nullptr.
+			ECellEngine::Logging::Logger::LogDebug("ParameterNodeData::OnDataDestroy: Responding to parameter %s (ID %llu) getting destroyed", data->GetName(), data->GetID());
+			onDataDestroySubToken = nullptr;
+			data = nullptr;
+		}
+		else
+		{
+			ECellEngine::Logging::Logger::LogError("ParameterNodeData::OnDataDestroy: The data %s (ID %llu) associated with the parameter node does not match the operand %s (ID %llu)", data->GetName(), data->GetID(), _operand->GetName(), _operand->GetID());
+		}
+	}
+	else
+	{
+		ECellEngine::Logging::Logger::LogError("ParameterNodeData::OnDataDestroy: The data of the parameter node is already nullptr. It is not possible to destroy it again despited the callback originating from the operand %s (ID %llu)", _operand->GetName(), _operand->GetID());
+	}
 }
 
 void ECellEngine::Editor::Utility::MNBV::ParameterNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
@@ -661,12 +691,27 @@ void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::InputDisconnect(NodeIn
 	}
 }
 
-void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OnDataDestroy()
+void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OnDataDestroy(ECellEngine::Maths::Operand* _data)
 {
-	//we must clean the token of the subscription since it is on a callback
-	//that will be lost once we set data = nullptr.
-	onDataDestroySubToken = nullptr;
-	data = nullptr;
+	if(data != nullptr)
+	{
+		if (data->GetID() == _data->GetID())
+		{
+			//The data associated with the equation is being destroyed.
+			//Hence we must clean the subscription token and set the data to nullptr.
+			ECellEngine::Logging::Logger::LogDebug("SpeciesNodeData::OnDataDestroy: Responding to species %s (ID %llu) getting destroyed", data->GetName(), data->GetID());
+			onDataDestroySubToken = nullptr;
+			data = nullptr;
+		}
+		else
+		{
+			ECellEngine::Logging::Logger::LogError("SpeciesNodeData::OnDataDestroy: The data %s (ID %llu) associated with the species node does not match the operand %s (ID %llu)", data->GetName(), data->GetID(), _data->GetName(), _data->GetID());
+		}
+	}
+	else
+	{
+		ECellEngine::Logging::Logger::LogError("SpeciesNodeData::OnDataDestroy: The data of the species node is already nullptr. It is not possible to destroy it again despited the callback originating from the operand %s (ID %llu)", _data->GetName(), _data->GetID());
+	}
 }
 
 void ECellEngine::Editor::Utility::MNBV::SpeciesNodeData::OutputConnect(NodeInputPinData* _nodeInputPinData, NodeOutputPinData* _nodeOutputPin)
