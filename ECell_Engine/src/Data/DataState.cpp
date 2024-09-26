@@ -18,6 +18,25 @@ Operand* ECellEngine::Data::DataState::GetOperand(const std::size_t _id)
 	return s3->second.get();//this is null
 }
 
+std::shared_ptr<ECellEngine::Data::Reaction> ECellEngine::Data::DataState::AddReaction(const char* _reactionName,
+			const std::vector<std::size_t> _products,
+			const std::vector<std::size_t> _reactants,
+			const Operation _kineticLaw)
+{
+	++idProvider;
+	std::shared_ptr<Reaction> reaction = reactions.emplace(idProvider(), std::make_shared<Reaction>(_reactionName, idProvider(), _kineticLaw)).first->second;
+	for(const std::size_t& _productID : _products)
+	{
+		reaction->AddProduct(GetSpecies(_productID).get());
+	}
+
+	for(const std::size_t& _reactantID : _reactants)
+	{
+		reaction->AddReactant(GetSpecies(_reactantID).get());
+	}
+	return reaction;
+}
+
 void ECellEngine::Data::DataState::Clear()
 {
 	species.clear();

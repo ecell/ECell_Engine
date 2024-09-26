@@ -22,7 +22,10 @@ namespace ECellEngine::Data
 
 		std::size_t id;
 
+		std::vector<std::shared_ptr<std::function<void(Operand*)>>> onProductDestroySubTokens;
 		std::vector<std::size_t> products;
+
+		std::vector<std::shared_ptr<std::function<void(Operand*)>>> onReactantDestroySubTokens;
 		std::vector<std::size_t> reactants;
 
 		float kineticLawValueCache = 0;
@@ -35,10 +38,8 @@ namespace ECellEngine::Data
 		Core::Callback<Reaction*> onDestroy;
 
 		Reaction(const char* _name, const std::size_t _id,
-				 const std::vector<std::size_t> _products,
-				 const std::vector<std::size_t> _reactants,
 				 const Operation _kineticLaw):
-			id{_id}, products{_products}, reactants{_reactants}, kineticLaw{_kineticLaw}
+			id{_id}, kineticLaw{_kineticLaw}
 		{
 			Util::StrCopy(name, _name, sizeof(name));
 		}
@@ -78,6 +79,10 @@ namespace ECellEngine::Data
 		{
 			Util::StrCopy(name, _name, sizeof(name));
 		}
+		
+		void AddProduct(Operand* _sp);
+
+		void AddReactant(Operand* _sp);
 
 		inline const float ComputeKineticLaw() noexcept
 		{
@@ -94,5 +99,9 @@ namespace ECellEngine::Data
 			onDestroy(this);
 			kineticLaw.onDestroy((ECellEngine::Maths::Operand*)&kineticLaw);
 		}
+
+		void OnProductDestroy(Operand* _sp);
+
+		void OnReactantDestroy(Operand* _sp);
 	};
 }

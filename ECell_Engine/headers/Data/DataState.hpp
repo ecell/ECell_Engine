@@ -215,14 +215,7 @@ namespace ECellEngine::Data
 			return triggers;
 		}
 
-		inline std::shared_ptr<Reaction> AddReaction(const char* _reactionName,
-			const std::vector<std::size_t> _products,
-			const std::vector<std::size_t> _reactants,
-			const Operation _kineticLaw)
-		{
-			++idProvider;
-			return reactions.emplace(idProvider(), std::make_shared<Reaction>(_reactionName, idProvider(), _products, _reactants, _kineticLaw)).first->second;
-		}
+		std::shared_ptr<Reaction> AddReaction(const char* _reactionName, const std::vector<std::size_t> _products, const std::vector<std::size_t> _reactants, const Operation _kineticLaw);
 
 		inline std::shared_ptr<Maths::Equation> AddEquation(Operand* _lhs, Operation& _rhs)
 		{

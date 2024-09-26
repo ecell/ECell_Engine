@@ -17,6 +17,7 @@ add_library(ECellEngine SHARED
     "src/Data/DataState.cpp"
     "src/Data/DependenciesDatabase.cpp"
     "src/Data/Parameter.cpp"
+    "src/Data/Reaction.cpp"
     "src/Data/Species.cpp"
     "src/Data/IndexedMinHeap.cpp"
 
